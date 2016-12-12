@@ -1,0 +1,130 @@
+{
+  "author": {
+    "email": "yaw.etse@gmail.com",
+    "name": "Yaw Joseph Etse",
+    "url": "http://about.me/yawjosephetse"
+  },
+  "bugs": {
+    "url": "https://github.com/typesettin/periodicjs.ext.reactadmin/issues"
+  },
+  "contributors": [
+    {
+      "email": "hello@vishnu.io",
+      "name": "Vishnu Ravi",
+      "url": "http://www.vishnu.io"
+    },
+    {
+      "email": "alandavidgarcia@gmail.com",
+      "name": "Alan David Garcia",
+      "url": "http://alangalan.tumblr.com"
+    },
+    {
+      "email": "ecasilla@icloud.com",
+      "name": "Ernie Casilla",
+      "url": "http://www.erniecasilla.com"
+    },
+    {
+      "email": "janbialostok@gmail.com",
+      "name": "Jan Bialostok",
+      "url": "https://github.com/janbialostok"
+    }
+  ],
+  "dependencies": {
+    "bindie": "^2.1.0",
+    "classie": "^1.0.0",
+    "codemirror": "^5.4.0",
+    "debounce": "^1.0.0",
+    "diff": "^2.2.1",
+    "forbject": "^1.4.0",
+    "formie": "^1.2.0",
+    "minimist": "^1.2.0",
+    "node-json2html": "^1.0.0",
+    "numeral": "^1.5.3",
+    "platterjs": "^1.0.0",
+    "prettysize": "0.0.3",
+    "pushie": "^1.0.2",
+    "replie": "^1.0.2",
+    "socket.io": "^1.3.5",
+    "socket.io-client": "^1.4.0",
+    "stylie.treeview": "^1.0.1",
+    "validate-js": "^1.5.1"
+  },
+  "description": "An authentication extension for periodicjs that uses passport to authenticate user sessions.",
+  "devDependencies": {
+    "async": "^2.0.0-rc.5",
+    "babel-preset-es2015": "^6.9.0",
+    "babelify": "^7.3.0",
+    "bindie": "^2.1.0",
+    "browserify": "^13.0.0",
+    "capitalize": "^1.0.0",
+    "chai": "^3.0.0",
+    "coveralls": "^2.11.11",
+    "ejs": "^2.4.1",
+    "es6-promise": "^3.2.1",
+    "grunt": "^1.0.1",
+    "grunt-browserify": "^5.0.0",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-cssmin": "^1.0.1",
+    "grunt-contrib-jshint": "^1.0.0",
+    "grunt-contrib-less": "^1.0.1",
+    "grunt-contrib-uglify": "^1.0.1",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-coveralls": "^1.0.1",
+    "grunt-jsbeautifier": "^0.2.12",
+    "grunt-jsdoc": "^2.0.0",
+    "grunt-mocha-cov": "^0.4.0",
+    "grunt-mocha-istanbul": "^4.0.2",
+    "grunt-newer": "^1.1.1",
+    "grunt-simple-mocha": "^0.4.1",
+    "istanbul": "^0.4.4",
+    "jsdoc": "^3.3.2",
+    "mocha": "^2.4.5",
+    "mocha-lcov-reporter": "^1.2.0",
+    "moment": "^2.13.0",
+    "pluralize": "^2.0.0",
+    "proxy-polyfill": "^0.1.6",
+    "stylie": "^2.0.1",
+    "stylie.modals": "^2.0.1",
+    "stylie.notifications": "^2.0.1",
+    "stylie.tabs": "^2.0.1",
+    "superagent": "^2.0.0-alpha.3",
+    "test-periodicjs": "^8.30.50",
+    "uglify-js": "^2.4.15",
+    "uglifyify": "^3.0.1"
+  },
+  "directories": {},
+  "engines": {
+    "node": ">=6.x"
+  },
+  "gitHead": "5815ea1110e2dca76fdea369310bcacf1ab4023e",
+  "homepage": "https://github.com/typesettin/periodicjs.ext.reactadmin",
+  "keywords": [
+    "authentication",
+    "cms",
+    "drupal",
+    "express",
+    "passport",
+    "periodicjs",
+    "react",
+    "wordpress"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "maintainers": [
+    {
+      "email": "yaw.etse@gmail.com",
+      "name": "yawetse"
+    }
+  ],
+  "name": "periodicjs.ext.reactadmin",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/typesettin/periodicjs.ext.reactadmin.git"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "version": "0.0.9"
+}
