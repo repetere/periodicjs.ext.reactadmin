@@ -1,0 +1,44 @@
+{
+  "development":{
+    "login":{
+      "url":"https://localhost:8786/api/jwt/token",
+      "devurl":"https://localhost:8786/api/jwt/token",
+      "options":{
+        "method":"POST",
+        "headers":{
+          "Accept":"application/json",
+          "Content-Type":"application/json",
+          "clientid":"clientIDNEEDED",
+          "entitytype":"account"
+        }
+      }
+    },
+    "userprofile":{
+      "url":"https://localhost:8786/api/jwt/profile",
+      "devurl":"https://localhost:8786/api/jwt/profile",
+      "options":{
+        "method":"POST",
+        "headers":{
+          "Accept":"application/json",
+          "Content-Type":"application/json",
+          "clientid":"clientIDNEEDED",
+          "entitytype":"account"
+        }
+      }
+    },
+    "login_extension":{
+      "logo_dimensions":{
+        "height":200,
+        "width":200
+      },
+      "styles":{
+        "appNameBackground": {
+          "backgroundColor":"gainsboro"
+        },
+        "formBackground": {
+          "backgroundColor":"white"
+        }
+      }
+    }
+  }
+}
