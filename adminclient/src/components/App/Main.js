@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Notification } from 're-bulma';
+// import { Notification } from 're-bulma';
 import styles from '../../styles';
 import AppHeader from '../AppHeader';
 import AppFooter from '../AppFooter';
@@ -104,21 +104,13 @@ class MainApp extends Component{
   render() {
     console.log('this.props', this.props);
     return (
-      <div style={styles.redBkgrd}>
-        <AppHeader {...this.props} />
-        <div>main page --DEBUG BELOW HERE</div>
-        <main>
+      <div>
+      {/*<div style={styles.redBkgrd}>*/}
+        <AppHeader {...this.props}/>
+        <main style={styles.mainContainer}>
           {/*DEBUG HERE */}
           {this.props.children}
         </main>  
-        <Notification
-          closeButtonProps={{ onClick: () => console.log('clicked') }}
-          style={styles}
-        >
-          lorem ipsum dolor sit amet, consectetur
-          adipiscing elit lorem ipsum dolor sit amet,
-          consectetur adipiscing elit
-        </Notification>
         <AppFooter  {...this.props}/>
       </div>
     );

@@ -1,26 +1,36 @@
 import React, { Component } from 'react';
-import { Footer, Container, Content, } from 're-bulma';
+import { Nav, NavGroup, NavItem, Container, Button, Icon} from 're-bulma';
+// import { Link, } from 'react-router';
 import 'font-awesome/css/font-awesome.css';
+import styles from '../../styles';
 
 
 class AppFooter extends Component {
   render() {
     return (
-      <Footer>
+      <Nav style={Object.assign(styles.fixedBottom,styles.footerContainer)}>
         <Container>
-          <Content>
-            <p style={{ textAlign: 'center'}}>
-              <strong>reBulma</strong> by <a href="https://github.com/bokuweb">bokuweb</a>. The source code is licensed
-              <a href="http://opensource.org/licenses/mit-license.php">MIT</a>.
-            </p>
-            <p style={{ textAlign: 'center'}}>
-              <a className="icon" href="https://github.com/bokuweb/re-bulma">
-                <i className="fa fa-github"></i>
+          <NavGroup align="left">
+            <NavItem>
+              {'Name of App'}
+              {/*
+              <Link to="/home">
+                Home
+              </Link>
+              */}
+            </NavItem>
+          </NavGroup>
+          <NavGroup align="center">
+          </NavGroup>
+          <NavGroup align="right">
+            <NavItem>
+              <a style={styles.noUnderline} isPrimary href="#">
+                <Button buttonStyle="isInverted" color="isInfo" ><Icon icon="fa fa-terminal" size="isSmall"/> &nbsp;Debug</Button>
               </a>
-            </p>
-          </Content>
+            </NavItem>
+          </NavGroup>
         </Container>
-      </Footer>
+      </Nav>
     );
   }
 }

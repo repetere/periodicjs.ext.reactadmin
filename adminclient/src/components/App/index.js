@@ -1,9 +1,9 @@
-import React, { Component, PropTypes } from 'react';
-import { Notification } from 're-bulma';
-import { AsyncStorage } from 'react-native-web';
+import React, { Component, } from 'react';
+// import { Notification } from 're-bulma';
+// import { AsyncStorage } from 'react-native-web';
 // import { Nav, NavGroup, NavItem, Button, Icon, NavToggle, } from 're-bulma';
 // import { createStore, } from 'redux';
-import { Router, Route, IndexRoute, } from 'react-router';
+import { Router,/* Route, IndexRoute,*/ } from 'react-router';
 import { Provider, connect, } from 'react-redux';
 import { push, replace, go, goForward, goBack } from 'react-router-redux';
 import { historySettings, getHistory, } from '../../routers/history';
