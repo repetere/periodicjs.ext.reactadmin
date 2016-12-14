@@ -26,6 +26,7 @@ const history = getHistory(historySettings, AppConfigSettings, store);
 const mapStateToProps = (state) => {
   return {
     page: state.page,
+    ui: state.ui,
     user: state.user,
     // tabBarExtensions: state.tabBarExtensions,
     // fetchData: state.fetchData,
@@ -47,6 +48,7 @@ const mapDispatchToProps = (dispatch) => {
     // getUserProfile: (jwt_token) => store.dispatch(actions.user.getUserProfile(jwt_token)),
     // saveUserProfile: (url, response, json) => store.dispatch(actions.user.saveUserProfile(url, response, json)),
     loginUser: (formdata) => store.dispatch(actions.user.loginUser(formdata)),
+    toggleUISidebar: () => store.dispatch(actions.ui.toggleUISidebar()),
     // logoutUser: () => store.dispatch(actions.user.logoutUser()),
     reduxRouter: {
       push: (location) => store.dispatch(push(location)),

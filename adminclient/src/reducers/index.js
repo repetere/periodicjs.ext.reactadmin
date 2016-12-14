@@ -4,6 +4,7 @@ import { combineReducers, } from 'redux';
 // import messageBarReducer from './messageBar';
 // import clientCacheDataReducer from './pages';
 import userReducer from './user';
+import uiReducer from './ui';
 // import tabBarExtensionReducer from './tabBarExtensions';
 import { routerReducer, } from 'react-router-redux';
 
@@ -14,6 +15,7 @@ const NativeCMSReducer = combineReducers({
   // fetchData: fetchDataReducer,
   // messageBar: messageBarReducer,
   // clientCacheData: clientCacheDataReducer,
+  ui: uiReducer,
   user: userReducer,
 });
 

@@ -103,6 +103,7 @@ class MainApp extends Component{
   }
   render() {
     console.log('this.props', this.props);
+    
     return (
       <div>
       {/*<div style={styles.redBkgrd}>*/}

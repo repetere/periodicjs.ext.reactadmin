@@ -1,4 +1,5 @@
 // import pages from './pages';
+import ui from './ui';
 import user from './user';
 // import fetchData from './fetchData';
 // import tabBarExtension from './tabBarExtension';
@@ -6,6 +7,7 @@ import user from './user';
 const actionCreators = {
   // pages,
   // fetchData,
+  ui,
   user,
   // tabBarExtension,
 };

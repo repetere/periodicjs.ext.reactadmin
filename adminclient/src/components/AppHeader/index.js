@@ -3,7 +3,7 @@ import { Nav, NavGroup, NavItem, Button, Icon, NavToggle, Container, FormHorizon
 import { Link, } from 'react-router';
 import 'font-awesome/css/font-awesome.css';
 import styles from '../../styles';
-
+//https://github.com/lolJS/react-animate.css/blob/master/src/app.js
 class AppFooter extends Component {
   render() {
     function handleClick(e) {
@@ -15,7 +15,7 @@ class AppFooter extends Component {
         <Container>
           <NavGroup align="left">
             <NavItem>
-              <Button onClick={handleClick}  buttonStyle="isOutlined" color="isWhite">
+              <Button onClick={this.props.toggleUISidebar}  buttonStyle="isOutlined" color="isWhite">
                 <Icon style={styles.noMarginLeftRight} icon="fa fa-bars" size="isSmall" />
               </Button> 
             </NavItem>

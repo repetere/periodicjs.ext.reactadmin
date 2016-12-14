@@ -42,4 +42,9 @@ export default {
   async_token: {
     TABBAR_TOKEN: 'AppTabs',
   },
+  ui: {
+    TOGGLE_SIDEBAR:'toggle side menu',
+    OPEN_SIDEBAR:'open side menu',
+    CLOSE_SIDEBAR:'close side menu',
+  },
 };
