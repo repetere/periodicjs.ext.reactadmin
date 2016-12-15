@@ -1,8 +1,10 @@
 import React, { Component, PropTypes } from 'react';
-// import { Notification } from 're-bulma';
+import { Column, Columns } from 're-bulma';
 import styles from '../../styles';
 import AppHeader from '../AppHeader';
 import AppFooter from '../AppFooter';
+import AppSidebar from '../AppSidebar';
+import AppSectionLoading from '../AppSectionLoading';
 
 class MainApp extends Component{
   constructor(props,context) {
@@ -22,10 +24,15 @@ class MainApp extends Component{
     // }
   }
   componentWillReceiveProps(nextProps) {
+    // console.log('componentWillReceiveProps nextProps', nextProps);
     this.setState(nextProps);
-    console.log('componentWillReceiveProps nextProps', nextProps);
   }
   componentDidMount() {
+    setTimeout(() => {
+      console.log('this.props',this.props)
+      this.props.setUILoadedState(true);
+      console.log('load app');
+    }, 1000);
     // setTimeout(() => {
     //   this.props.reduxRouter.push('/blog/234');
     //   setTimeout(() => {
@@ -102,17 +109,27 @@ class MainApp extends Component{
     // perform any preparations for an upcoming update
   }
   render() {
-    console.log('this.props', this.props);
-    
+    console.log('this.state', this.state);
+    let sidebarColumn = (this.state.ui.sidebar_is_open)
+      ? (<Column size="isNarrow">
+        <AppSidebar {...this.state} />
+      </Column>) : null;
+    // return (<AppSectionLoading/>);
     return (
+      (this.state.ui.ui_is_loaded ===false)? <AppSectionLoading/> :
       <div>
-      {/*<div style={styles.redBkgrd}>*/}
-        <AppHeader {...this.props}/>
-        <main style={styles.mainContainer}>
-          {/*DEBUG HERE */}
-          {this.props.children}
-        </main>  
-        <AppFooter  {...this.props}/>
+        {/*<div style={styles.redBkgrd}>*/}
+        <AppHeader {...this.state} />
+          <main style={styles.mainContainer}>
+            {/*DEBUG HERE */}
+            <Columns>
+              {sidebarColumn}
+              <Column>
+                {this.props.children}
+              </Column>  
+            </Columns> 
+          </main>   
+        <AppFooter  {...this.state}/>
       </div>
     );
   }

@@ -17,7 +17,6 @@ import AppConfigSettings from '../../content/config/settings.json';
 import { getRoutes, } from '../../routers/routes';
 // import logo from './logo.svg';
 // import './App.css';
-import 'font-awesome/css/font-awesome.css';
 // import capitalize from 'capitalize';
 // import moment from 'moment';
 // import debounce from 'debounce';
@@ -49,6 +48,7 @@ const mapDispatchToProps = (dispatch) => {
     // saveUserProfile: (url, response, json) => store.dispatch(actions.user.saveUserProfile(url, response, json)),
     loginUser: (formdata) => store.dispatch(actions.user.loginUser(formdata)),
     toggleUISidebar: () => store.dispatch(actions.ui.toggleUISidebar()),
+    setUILoadedState: (loaded) => store.dispatch(actions.ui.setUILoadedState(loaded)),
     // logoutUser: () => store.dispatch(actions.user.logoutUser()),
     reduxRouter: {
       push: (location) => store.dispatch(push(location)),

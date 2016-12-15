@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
+    "animate.css": "^3.5.2",
     "font-awesome": "^4.7.0",
     "re-bulma": "^0.2.3",
     "react-addons-css-transition-group": "^15.4.1",

@@ -1,6 +1,6 @@
 import constants from '../constants';
 import LoginSettings from '../content/config/login.json';
-import AppConfigSettings from '../content/config/settings.json';
+// import AppConfigSettings from '../content/config/settings.json';
 // import { AsyncStorage, } from 'react-web';
 import pageActions from './pages';
 // import { Platform, } from 'react-web';

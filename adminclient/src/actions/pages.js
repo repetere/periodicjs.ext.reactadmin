@@ -1,6 +1,6 @@
 import constants from '../constants';
 // import { AsyncStorage, } from 'react-web';
-import customSettings from '../content/config/settings.json';
+// import customSettings from '../content/config/settings.json';
 // import Immutable from 'immutable';
 
 
@@ -40,7 +40,7 @@ const pages = {
    * once initial check of user login status, then set app state to loaded
    */
   initialAppLoaded(location) {
-    let initialLocation = (customSettings.defaultExtensionRoute) ? customSettings.defaultExtensionRoute : location;
+    // let initialLocation = (customSettings.defaultExtensionRoute) ? customSettings.defaultExtensionRoute : location;
     return (dispatch) => {
       // AsyncStorage.getItem(constants.pages.ASYNCSTORAGE_KEY)
       //   .then((page_location) => {

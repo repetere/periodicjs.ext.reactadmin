@@ -1,6 +1,6 @@
 import constants from '../constants';
 // import { AsyncStorage, } from 'react-web';
-import customSettings from '../content/config/settings.json';
+// import customSettings from '../content/config/settings.json';
 // import Immutable from 'immutable';
 
 
@@ -12,6 +12,13 @@ const ui = {
     return {
       type: constants.ui.TOGGLE_SIDEBAR,
       payload: { },
+    };
+  },
+  setUILoadedState(loaded) {
+    console.log('called laoded action')
+    return {
+      type: constants.ui.SET_UI_LOADED,
+      payload: loaded,
     };
   },
 };

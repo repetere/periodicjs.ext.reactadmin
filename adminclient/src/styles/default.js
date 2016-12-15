@@ -28,6 +28,9 @@ const defaultStyles = {
   fullWidth: {
     width:'100%',
   },
+  displayNone: {
+    display:'none',
+  },
 };
 
 export default defaultStyles;

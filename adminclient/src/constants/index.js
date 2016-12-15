@@ -45,6 +45,7 @@ export default {
   ui: {
     TOGGLE_SIDEBAR:'toggle side menu',
     OPEN_SIDEBAR:'open side menu',
-    CLOSE_SIDEBAR:'close side menu',
+    CLOSE_SIDEBAR: 'close side menu',
+    SET_UI_LOADED:'set ui loaded state',
   },
 };
