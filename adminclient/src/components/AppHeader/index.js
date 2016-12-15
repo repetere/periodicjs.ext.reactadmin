@@ -19,17 +19,21 @@ class AppFooter extends Component {
                 <Icon style={styles.noMarginLeftRight} icon="fa fa-bars" size="isSmall" />
               </Button> 
             </NavItem>
-            <NavItem  style={styles.fullWidth}>
-              <Input type="text" placeholder="Name" isExpanded style={styles.fullWidth}/>
+            <NavItem> 
+              <Button style={{border:'none'}} color="isWhite" buttonStyle="isOutlined">Admin</Button> 
             </NavItem>
           </NavGroup>
-          <NavToggle />
+          <NavGroup align="center" style={{flex:3}}>
+            <NavItem  style={styles.fullWidth}>
+              <Input type="text" placeholder="Search" isExpanded style={styles.fullWidth}/>
+            </NavItem>
+          </NavGroup>
           <NavGroup align="right" isMenu>
             <NavItem>
               <Link to="/user"  style={styles.noUnderline}>
                 <Button buttonStyle="isOutlined" color="isWhite">
-                   <Icon style={styles.noMarginLeftRight} icon="fa fa-user" size="isSmall" />&nbsp;
-                   yawetse
+                  <Icon style={styles.noMarginLeftRight} icon="fa fa-user" size="isSmall" />&nbsp;
+                  yawetse
                 </Button>
               </Link>
             </NavItem>
