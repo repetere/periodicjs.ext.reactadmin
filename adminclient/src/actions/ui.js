@@ -15,7 +15,7 @@ const ui = {
     };
   },
   setUILoadedState(loaded) {
-    console.log('called laoded action')
+    // console.log('called laoded action')
     return {
       type: constants.ui.SET_UI_LOADED,
       payload: loaded,

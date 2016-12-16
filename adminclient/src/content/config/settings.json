@@ -1,5 +1,5 @@
 {
-  "name":"Analytics",
+  "name":"reactadmin",
   "routerHistory":"browserHistory",
   "allHistoryOptions":"browserHistory|hashHistory|createMemoryHistory",
   "defaultExtensionRoute":"/pipelines"

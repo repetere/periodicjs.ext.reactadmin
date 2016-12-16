@@ -1,30 +1,43 @@
 import containers from '../containers';
 
-function getRoutes(appContainer){
+let requireAuth = (nextState, replaceState) => {
+  console.log({ nextState, replaceState });
+};
+
+function getRoutes(appContainer) {
+  console.log({appContainer})
   return {
     path: '/',
     component: appContainer,
+    onEnter: requireAuth,
     indexRoute: { 
+    onEnter: requireAuth,
       component: containers.PageComponents.HomePage,
     },
     childRoutes:[{
       path:'home',
+      onEnter: requireAuth,
       component: containers.PageComponents.HomePage, 
     }, {
       path:'documentation',
+      onEnter: requireAuth,
       component: containers.PageComponents.DocumentationPage, 
     }, {
       path:'blog',
       component: containers.PageComponents.BlogPage, 
+      onEnter: requireAuth,
       indexRoute: { 
+        onEnter: requireAuth,
         component: containers.PageComponents.BlogIndex,
       },
       childRoutes: [{
         path:':id',
+        onEnter: requireAuth,
         component: containers.PageComponents.BlogItem, 
       }]
     }, {
       path:'*',
+      onEnter: requireAuth,
       component: containers.PageComponents.Error404, 
     }],
   }

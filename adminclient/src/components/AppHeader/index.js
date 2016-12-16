@@ -7,7 +7,7 @@ import styles from '../../styles';
 class AppHeader extends Component {
   constructor(props,context) {
     super(props);
-    console.log({ props, context });
+    // console.log({ props, context });
     this.state = {
       page: props.page,
       ui: props.ui,
@@ -48,7 +48,7 @@ class AppHeader extends Component {
           </NavGroup>
           <NavGroup align="right" isMenu>
             <NavItem>
-              <Link to="/user"  style={styles.noUnderline}>
+              <Link to="/documentation"  style={styles.noUnderline}>
                 <Button buttonStyle="isOutlined" color="isWhite">
                   <Icon style={styles.noMarginLeftRight} icon="fa fa-user" size="isSmall" />&nbsp;
                   yawetse
@@ -56,9 +56,11 @@ class AppHeader extends Component {
               </Link>
             </NavItem>
             <NavItem>
-              <Button buttonStyle="isOutlined" color="isWhite" onClick={handleClick}>
+              <Link to="/blog/odfijo"  style={styles.noUnderline}>
+              <Button buttonStyle="isOutlined" color="isWhite">
                 <Icon style={styles.noMarginLeftRight} icon="fa fa-sign-out" size="isSmall" />
               </Button>
+              </Link>
             </NavItem>
           </NavGroup>
         </Container>
