@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-// import { Nav, NavGroup, NavItem, Container, Button, } from 're-bulma'; //Icon
+import { Menu, MenuLabel, MenuLink, MenuList, } from 're-bulma'; //Icon
 // import { Link, } from 'react-router';
 // import Animate from 'react-animate.css';
-// import styles from '../../styles';
+import styles from '../../styles';
 
 class AppSidebar extends Component {
   constructor(props) {
@@ -16,10 +16,45 @@ class AppSidebar extends Component {
   }
   render() {
     return (
-      <div
-        className={(this.state.ui.sidebar_is_open)?'animated fadeInLeft Nav-Sidebar-Speed':'animated slideOutLeft Nav-Sidebar-Speed'}>
-        sidebar
-
+      <div style={Object.assign({ padding: '1rem', borderRight:'1px solid black'}, styles.fullHeight, styles.mainContainer)}
+        className={(this.state.ui.sidebar_is_open) ? 'animated fadeInLeft Nav-Sidebar-Speed' : 'animated slideOutLeft Nav-Sidebar-Speed'}>
+        <div style={{
+          position: 'fixed',
+        }}>
+          <Menu>
+            <MenuLabel>
+              General
+            </MenuLabel>
+            <MenuList>
+              <li><MenuLink href="#">Dashboard</MenuLink></li>
+              <li><MenuLink href="#">Customers</MenuLink></li>
+            </MenuList>
+            <MenuLabel>
+              Administration
+            </MenuLabel>
+            <MenuList>
+              <li><MenuLink>Team Settings</MenuLink></li>
+              <li>
+                <MenuLink isActive>Manage Your Team</MenuLink>
+                <ul>
+                  <li><a href="#">Members</a></li>
+                  <li><a href="#">Plugins</a></li>
+                  <li><a href="#">Add a member</a></li>
+                </ul>
+              </li>
+              <li><a href="#">Invitations</a></li>
+              <li><a href="#">Authentication</a></li>
+            </MenuList>
+            <MenuLabel>
+              Transactions
+            </MenuLabel>
+            <MenuList>
+              <li><a href="#">Payments</a></li>
+              <li><a href="#">Transfers</a></li>
+              <li><a href="#">Balance</a></li>
+            </MenuList>
+          </Menu>
+        </div>
       </div>
     );
     // return (

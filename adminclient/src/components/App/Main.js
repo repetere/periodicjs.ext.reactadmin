@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { Column, Columns } from 're-bulma';
 import {  AsyncStorage,  } from 'react-native';
 import moment from 'moment';
-import styles from '../../styles';
+// import styles from '../../styles';
 import constants from '../../constants';
 import AppHeader from '../AppHeader';
 import AppFooter from '../AppFooter';
@@ -48,7 +48,7 @@ class MainApp extends Component{
   componentDidMount() {
     testNavigation();
     // setLayoutHandler.call(this);
-    console.log('componentDidMount this.props', this.props);
+    // console.log('componentDidMount this.props', this.props);
     Promise.all([
       AsyncStorage.getItem(constants.jwt_token.TOKEN_NAME),
       AsyncStorage.getItem(constants.jwt_token.TOKEN_DATA),
@@ -119,11 +119,11 @@ class MainApp extends Component{
       <div>
         {/*<div style={styles.redBkgrd}>*/}
         <AppHeader {...this.state} />
-          <main style={styles.mainContainer}>
+          <main>
             {/*DEBUG HERE */}
-            <Columns>
+            <Columns >
               {sidebarColumn}
-              <Column>
+              <Column >
                 {this.props.children}
               </Column>  
             </Columns> 

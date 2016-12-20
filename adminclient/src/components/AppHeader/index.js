@@ -24,10 +24,10 @@ class AppHeader extends Component {
     console.log('AppHeader componentWillReceiveProps nextProps', nextProps);
   }
   render() {
-    function handleClick(e) {
-      e.preventDefault();
-      console.log('The link was clicked.');
-    }
+    // function handleClick(e) {
+    //   e.preventDefault();
+    //   console.log('The link was clicked.');
+    // }
     return (
       <Nav style={Object.assign(styles.fixedTop, styles.navContainer)}>
         <Container>

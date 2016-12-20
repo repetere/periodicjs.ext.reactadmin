@@ -65,6 +65,7 @@ const MainAppContainer = connect(mapStateToProps, mapDispatchToProps)(MainApp);
 
 class Main extends Component{
   render() {
+    // console.log('initial store',{store})
     return (
       <Provider store={store}>
         <Router history={history} routes={getRoutes(MainAppContainer)} />

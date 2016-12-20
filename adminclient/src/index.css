@@ -10,4 +10,11 @@ body {
 .Nav-Sidebar-Speed{
   /*-webkit-animation-duration: .25s;*/
   animation-duration: .25s;
+  width:10rem;
+}
+#root{
+  height:100%;
+}
+div[data-reactroot]{
+  height:100%;
 }

@@ -1,20 +1,36 @@
 import containers from '../containers';
+import constants from '../constants';
+
+let isLoggedIn = () => {
+  return window && !!window.localStorage[ constants.jwt_token.TOKEN_NAME ];
+};
 
 let requireAuth = (nextState, replaceState) => {
   console.log({ nextState, replaceState });
+  if (!isLoggedIn()) {
+    replaceState({
+      pathname: '/login',
+      state: {
+        nextPathname: nextState.location.pathname
+      },
+    })
+  }
 };
 
 function getRoutes(appContainer) {
-  console.log({appContainer})
+  // console.log('appContainer',appContainer)
   return {
     path: '/',
     component: appContainer,
-    onEnter: requireAuth,
+    // onEnter: requireAuth,
     indexRoute: { 
-    onEnter: requireAuth,
+    // onEnter: requireAuth,
       component: containers.PageComponents.HomePage,
     },
     childRoutes:[{
+      path:'login',
+      component: containers.PageComponents.LoginPage, 
+    }, {
       path:'home',
       onEnter: requireAuth,
       component: containers.PageComponents.HomePage, 
@@ -37,7 +53,7 @@ function getRoutes(appContainer) {
       }]
     }, {
       path:'*',
-      onEnter: requireAuth,
+      // onEnter: requireAuth,
       component: containers.PageComponents.Error404, 
     }],
   }
