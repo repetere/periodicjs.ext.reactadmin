@@ -11,20 +11,6 @@ const testpaths = 'test/**/*.js';
 module.exports = function (grunt) {
 	grunt.initConfig({
 		mocha_istanbul: {
-			// coverage: {
-			//   src: testPaths, // a folder works nicely
-			//   options: {
-			//   }
-			// },
-			// coverageSpecial: {
-			//   src: ['testSpecial/*/*.js', 'testUnique/*/*.js'], // specifying file patterns works as well
-			//   options: {
-			//       coverageFolder: 'coverageSpecial',
-			//       mask: '*.spec.js',
-			//       mochaOptions: ['--harmony','--async-only'], // any extra options
-			//       istanbulOptions: ['--harmony','--handle-sigint']
-			//   }
-			// },
 			coveralls: {
 				src: testpaths, // multiple folders also works
 				options: {
@@ -83,24 +69,6 @@ module.exports = function (grunt) {
 				src: testpaths
 			}
 		},
-		jshint: {
-			options: {
-				jshintrc: '.jshintrc'
-			},
-			all: [
-				'Gruntfile.js',
-				'index.js',
-				'controller/**/*.js',
-				'resources/**/*.js',
-				testpaths,
-			]
-		},
-		jsbeautifier: {
-			files: ['<%= jshint.all %>'],
-			options: {
-				config: '.jsbeautify'
-			}
-		},
 		jsdoc: {
 			dist: {
 				src: [
@@ -114,66 +82,7 @@ module.exports = function (grunt) {
 				}
 			}
 		},
-		browserify: {
-			dist: {
-				files: [{
-					expand: true,
-					cwd: 'resources',
-					src: ['**/*_src.js'],
-					dest: 'public',
-					rename: function (dest, src) {
-						var finallocation = path.join(dest, src);
-						finallocation = finallocation.replace('_src', '_build');
-						finallocation = finallocation.replace('resources', 'public');
-						finallocation = path.resolve(finallocation);
-						return finallocation;
-					}
-				}],
-				options: {
-					transform: [
-						["babelify", {
-							presets: ["es2015"]
-						}]
-					]
-				},
-			}
-		},
-		uglify: {
-			options: {
-				sourceMap: true,
-				compress: {
-					drop_console: false
-				}
-			},
-			all: {
-				files: [{
-					expand: true,
-					cwd: 'public',
-					src: ['**/*_build.js'],
-					dest: 'public',
-					rename: function (dest, src) {
-						var finallocation = path.join(dest, src);
-						finallocation = finallocation.replace('_build', '.min');
-						finallocation = path.resolve(finallocation);
-						return finallocation;
-					}
-				}]
-			}
-		},
-		less: {
-			development: {
-				options: {
-					sourceMap: true,
-					sourceMapURL: 'asyncadmin.css.map',
-					yuicompress: true,
-					compress: true
-				},
-				files: {
-					'public/stylesheets/asyncadmin.css': 'resources/stylesheets/asyncadmin.less',
-					'public/v2/stylesheets/asyncadmin.bulma.css': 'resources/v2/stylesheets/asyncadmin.bulma.less'
-				}
-			}
-		},
+
 		copy: {
 			main: {
 				cwd: 'public',
@@ -193,35 +102,11 @@ module.exports = function (grunt) {
 					'resources/**/*.js',
 					testpaths,
 				],
-				tasks: ['lint', 'packagejs', 'less', 'copy', 'test'],
+				tasks: ['lint', 'copy', 'test'],
 				options: {
 					interrupt: true
 				}
 			},
-			no_tests: {
-				files: [
-					'Gruntfile.js',
-					'index.js',
-					'controller/**/*.js',
-					'resources/**/*.less',
-					'resources/**/*.js',
-				],
-				tasks: ['lint', 'packagejs', 'less', 'copy'],
-				options: {
-					interrupt: true
-				}
-			},
-			only_less: {
-				files: [
-					'Gruntfile.js',
-					'index.js',
-					'resources/**/*.less',
-				],
-				tasks: ['less', 'copy'],
-				options: {
-					interrupt: true
-				}
-			}
 		}
 	});
 
@@ -233,9 +118,9 @@ module.exports = function (grunt) {
 		}
 	}
 
-	grunt.registerTask('default', ['jshint', 'mocha_istanbul']);
-	grunt.registerTask('lint', 'jshint', 'jsbeautifier');
-	grunt.registerTask('packagejs', ['browserify', 'uglify']);
+	grunt.registerTask('default', ['mocha_istanbul']);
+	// grunt.registerTask('lint', 'jshint', 'jsbeautifier');
+	// grunt.registerTask('packagejs', ['browserify', 'uglify']);
 	grunt.registerTask('doc', 'jsdoc');
 	grunt.registerTask('test', 'mocha_istanbul');
 };
