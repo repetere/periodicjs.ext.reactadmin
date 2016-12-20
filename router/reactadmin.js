@@ -2,9 +2,9 @@
 
 module.exports = function(resources) {
     const reactadminController = resources.app.controller.extension.reactadmin.controller.reactadmin;
-    const ExtensionRouter = periodic.express.Router();
+    const ReactAdminRouter = resources.express.Router();
 
-    ExtensionRouter.all('/process_application',
+    ReactAdminRouter.all('*',
     	reactadminController.index);
 
     return ReactAdminRouter;

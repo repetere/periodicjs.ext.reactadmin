@@ -19,43 +19,55 @@ let requireAuth = (nextState, replaceState) => {
 
 function getRoutes(appContainer) {
   // console.log('appContainer',appContainer)
-  return {
-    path: '/',
-    component: appContainer,
-    // onEnter: requireAuth,
-    indexRoute: { 
-    // onEnter: requireAuth,
-      component: containers.PageComponents.HomePage,
+  let sharedChildRoutes = [ {
+    path: 'login',
+    component: containers.PageComponents.LoginPage,
+  }, {
+    path: 'home',
+    onEnter: requireAuth,
+    component: containers.PageComponents.HomePage,
+  }, {
+    path: 'documentation',
+    onEnter: requireAuth,
+    component: containers.PageComponents.DocumentationPage,
+  }, {
+    path: 'blog',
+    component: containers.PageComponents.BlogPage,
+    onEnter: requireAuth,
+    indexRoute: {
+      onEnter: requireAuth,
+      component: containers.PageComponents.BlogIndex,
     },
-    childRoutes:[{
-      path:'login',
-      component: containers.PageComponents.LoginPage, 
-    }, {
-      path:'home',
+    childRoutes: [ {
+      path: ':id',
       onEnter: requireAuth,
-      component: containers.PageComponents.HomePage, 
-    }, {
-      path:'documentation',
-      onEnter: requireAuth,
-      component: containers.PageComponents.DocumentationPage, 
-    }, {
-      path:'blog',
-      component: containers.PageComponents.BlogPage, 
-      onEnter: requireAuth,
-      indexRoute: { 
-        onEnter: requireAuth,
-        component: containers.PageComponents.BlogIndex,
-      },
-      childRoutes: [{
-        path:':id',
-        onEnter: requireAuth,
-        component: containers.PageComponents.BlogItem, 
-      }]
-    }, {
-      path:'*',
+      component: containers.PageComponents.BlogItem,
+    }]
+  }, {
+    path: '*',
+    // onEnter: requireAuth,
+    component: containers.PageComponents.Error404,
+  }];
+  return {
+    childRoutes: [ {
+      path: '/',
+      component: appContainer,
       // onEnter: requireAuth,
-      component: containers.PageComponents.Error404, 
-    }],
+      indexRoute: { 
+      // onEnter: requireAuth,
+        component: containers.PageComponents.HomePage,
+      },
+      childRoutes: sharedChildRoutes,
+    },{
+      path: '/p-admin',
+      component: appContainer,
+      // onEnter: requireAuth,
+      indexRoute: { 
+      // onEnter: requireAuth,
+        component: containers.PageComponents.HomePage,
+      },
+      childRoutes: sharedChildRoutes,
+    }]
   }
 };
 

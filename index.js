@@ -7,7 +7,7 @@ module.exports = function (periodic) {
 		//configure locals
 		periodic = require('./utility/locals')(periodic);
 		periodic.app.controller.extension.reactadmin.utility = require('./utility/index.js')(periodic);
-		periodic.app.controller.extension.reactadmin.controller = Object.assign(periodic.app.controller.extension.reactadmin.controller, require('./controller/index')(periodic));
+		periodic.app.controller.extension.reactadmin.controller = Object.assign({},periodic.app.controller.extension.reactadmin.controller, require('./controller/index')(periodic));
 		ReactAdminRouter = require('./router/index')(periodic);
 		periodic.app.use(ReactAdminRouter);
 	}
