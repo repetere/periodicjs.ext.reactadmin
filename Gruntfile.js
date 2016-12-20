@@ -85,10 +85,11 @@ module.exports = function (grunt) {
 
 		copy: {
 			main: {
-				cwd: 'public',
+				cwd: 'adminclient/build',
+				// cwd: 'public',
 				expand: true,
 				src: '**/*.*',
-				dest: '../../public/extensions/periodicjs.ext.asyncadmin',
+				dest: '../../public/extensions/periodicjs.ext.reactadmin',
 			},
 		},
 		watch: {
