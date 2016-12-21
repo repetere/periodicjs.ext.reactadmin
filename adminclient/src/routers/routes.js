@@ -7,9 +7,10 @@ let isLoggedIn = () => {
 
 let requireAuth = (nextState, replaceState) => {
   console.log({ nextState, replaceState });
+  console.log("nextState.location.pathname.indexOf('p-admin')!==-1",nextState.location.pathname.indexOf('p-admin')!==-1)
   if (!isLoggedIn()) {
     replaceState({
-      pathname: '/login',
+      pathname: (nextState.location.pathname.indexOf('p-admin')!==-1)?'/p-admin/login':'/login',
       state: {
         nextPathname: nextState.location.pathname
       },
@@ -50,7 +51,7 @@ function getRoutes(appContainer) {
   }];
   return {
     childRoutes: [ {
-      path: '/',
+      path: '/p-admin',
       component: appContainer,
       // onEnter: requireAuth,
       indexRoute: { 
@@ -59,7 +60,7 @@ function getRoutes(appContainer) {
       },
       childRoutes: sharedChildRoutes,
     },{
-      path: '/p-admin',
+      path: '/',
       component: appContainer,
       // onEnter: requireAuth,
       indexRoute: { 
