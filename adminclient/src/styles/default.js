@@ -31,6 +31,9 @@ const defaultStyles = {
   fullHeight: {
     height:'100%',
   },
+  fullMinHeight: {
+    minHeight:'100%',
+  },
   displayNone: {
     display:'none',
   },

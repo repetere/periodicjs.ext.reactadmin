@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { Column, Columns } from 're-bulma';
 import {  AsyncStorage,  } from 'react-native';
 import moment from 'moment';
-// import styles from '../../styles';
+import styles from '../../styles';
 import constants from '../../constants';
 import AppHeader from '../AppHeader';
 import AppFooter from '../AppFooter';
@@ -56,7 +56,7 @@ class MainApp extends Component{
       // AsyncStorage.getItem(constants.async_token.TABBAR_TOKEN),
     ])
       .then((results) => {
-        console.log({ results });
+        // console.log({ results });
         let jwt_token = results[ 0 ];
         let jwt_token_data = JSON.parse(results[ 1 ]);
         let jwt_user_profile = JSON.parse(results[ 2 ]);
@@ -119,11 +119,11 @@ class MainApp extends Component{
       <div>
         {/*<div style={styles.redBkgrd}>*/}
         <AppHeader {...this.state} />
-          <main>
+          <main style={styles.fullHeight}>
             {/*DEBUG HERE */}
-            <Columns >
+            <Columns  style={styles.fullHeight}>
               {sidebarColumn}
-              <Column >
+              <Column  style={styles.fullMinHeight}>
                 {this.props.children}
               </Column>  
             </Columns> 

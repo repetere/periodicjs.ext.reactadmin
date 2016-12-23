@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
-// import { Footer, Container, Content, } from 're-bulma';
-import 'font-awesome/css/font-awesome.css';
-
+import { Container, Content, } from 're-bulma';
+import styles from '../styles';
 
 class Error404 extends Component {
   render() {
     return (
-      <div>Error404page</div>
+      <Container  style={styles.mainContainer}>
+        <Content>  
+          <div>Error404page</div>
+        </Content>  
+      </Container>
     );
   }
 }

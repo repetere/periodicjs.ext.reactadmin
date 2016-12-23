@@ -7,10 +7,10 @@ let isLoggedIn = () => {
 
 let requireAuth = (nextState, replaceState) => {
   console.log({ nextState, replaceState });
-  console.log("nextState.location.pathname.indexOf('p-admin')!==-1",nextState.location.pathname.indexOf('p-admin')!==-1)
+  // console.log("nextState.location.pathname.indexOf('p-admin')!==-1",nextState.location.pathname.indexOf('p-admin')!==-1)
   if (!isLoggedIn()) {
     replaceState({
-      pathname: (nextState.location.pathname.indexOf('p-admin')!==-1)?'/p-admin/login':'/login',
+      pathname: (nextState.location.pathname.indexOf('p-admin')!==-1)?`/p-admin/login?return_url=${nextState.location.pathname}`:`/login?return_url=${nextState.location.pathname}`,
       state: {
         nextPathname: nextState.location.pathname
       },
@@ -21,8 +21,11 @@ let requireAuth = (nextState, replaceState) => {
 function getRoutes(appContainer) {
   // console.log('appContainer',appContainer)
   let sharedChildRoutes = [ {
-    path: 'login',
+    path: 'login**',
     component: containers.PageComponents.LoginPage,
+    indexRoute: { 
+      component: containers.PageComponents.LoginPage,
+    },
   }, {
     path: 'home',
     onEnter: requireAuth,
@@ -46,7 +49,6 @@ function getRoutes(appContainer) {
     }]
   }, {
     path: '*',
-    // onEnter: requireAuth,
     component: containers.PageComponents.Error404,
   }];
   return {

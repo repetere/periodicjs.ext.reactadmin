@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import { Container, Content, } from 're-bulma';
-import 'font-awesome/css/font-awesome.css';
-
+import styles from '../styles';
 
 class Home extends Component {
   render() {
     return (
-      <Container>
+      <Container  style={styles.mainContainer}>
         <Content>  
           <div>homepage</div>
         </Content>  
