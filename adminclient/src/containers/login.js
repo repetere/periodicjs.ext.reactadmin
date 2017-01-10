@@ -29,7 +29,33 @@ let loginLayout = {
         children: 'Subtitle Login',
         //   props: {
         // },  
-      }]
+        }, 
+        {
+          component: 'ResponsiveForm',
+          // children:'hello',
+          props: {
+            formgroups: [ {
+              gridProps: {},
+              formElements: [ {
+                type: 'text',
+                label: 'Username',
+                name:'username',
+                layoutProps: {},
+              },{
+                type: 'text',
+                label: 'Password',
+                name: 'password',
+                passProps: {
+                  type:'password'
+                },
+                layoutProps: {
+                  horizontalform:true,
+                },
+              }]
+            }]
+          },
+      }
+      ]
     }]
   }]
 };

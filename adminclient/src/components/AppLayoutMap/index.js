@@ -1,12 +1,17 @@
 import React, { createElement, } from 'react';
-import * as rebulma from 're-bulma'; // FormHorizontal, NavToggle, ControlLabel, Group,
+import * as rebulma from 're-bulma';
+import ResponsiveForm from '../ResponsiveForm'; 
+import FormItem from '../FormItem'; // FormHorizontal, NavToggle, ControlLabel, Group,
 // import * as reactdom from 'react-dom';
 //https://github.com/lolJS/react-animate.css/blob/master/src/app.js
 let renderIndex = 0;
 
-export let AppLayoutMap = Object.assign({},React.DOM,rebulma);
+export let AppLayoutMap = Object.assign({}, {ResponsiveForm,FormItem}, React.DOM, rebulma);
+
+console.log({ AppLayoutMap });
 
 export function getRenderedComponent(componentObject) {
+  // console.log('AppLayoutMap[ componentObject.component ]',AppLayoutMap[ componentObject.component ])
   renderIndex++;
   let renderedCompProps = Object.assign({key:renderIndex}, componentObject.props);
   return createElement(
@@ -18,3 +23,4 @@ export function getRenderedComponent(componentObject) {
   );
 };
 // export AppLayoutMap;
+

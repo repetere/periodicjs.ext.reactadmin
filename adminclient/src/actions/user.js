@@ -164,14 +164,14 @@ const user = {
     return (dispatch, getState) => {
       let fetchResponse;
       let cachedResponseData;
-      let url = LoginSettings[getState().page.runtime.environment].login.url;
+      let url = getState().settings.login.url;
       dispatch(this.loginRequest(url));
       fetch(url, {
-        method: LoginSettings[getState().page.runtime.environment].login.method || 'POST',
+        method: getState().settings.login.method || 'POST',
         headers: Object.assign({
           'Accept': 'application/json',
           'Content-Type': 'application/json',
-        }, LoginSettings[getState().page.runtime.environment].login.options.headers, {
+        }, getState().settings.login.options.headers, {
           username: loginData.username,
           password: loginData.password,
         }),
