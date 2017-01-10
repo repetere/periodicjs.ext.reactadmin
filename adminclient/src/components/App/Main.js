@@ -110,7 +110,7 @@ class MainApp extends Component{
   render() {
     // console.log('this.state', this.state);
     let sidebarColumn = (this.state.ui.sidebar_is_open)
-      ? (<Column size="isNarrow">
+      ? (<Column size="isNarrow" style={Object.assign({},styles.fullMinHeight,styles.fullHeight)}>
         <AppSidebar {...this.state} />
       </Column>) : null;
     // return (<AppSectionLoading/>);
@@ -121,7 +121,7 @@ class MainApp extends Component{
         <AppHeader {...this.state} />
           <main style={styles.fullHeight}>
             {/*DEBUG HERE */}
-            <Columns  style={styles.fullHeight}>
+            <Columns style={Object.assign({},styles.fullMinHeight,styles.fullHeight)}>
               {sidebarColumn}
               <Column  style={styles.fullMinHeight}>
                 {this.props.children}

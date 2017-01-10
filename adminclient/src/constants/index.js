@@ -48,4 +48,7 @@ export default {
     CLOSE_SIDEBAR: 'close side menu',
     SET_UI_LOADED:'set ui loaded state',
   },
+  settings: {
+    UPDATE_APP_SETTINGS:'update application settings',
+  },
 };

@@ -1,7 +1,7 @@
 import constants from '../constants';
 import LoginSettings from '../content/config/login.json';
 // import AppConfigSettings from '../content/config/settings.json';
-// import { AsyncStorage, } from 'react-web';
+import { AsyncStorage, } from 'react-native';
 import pageActions from './pages';
 // import { Platform, } from 'react-web';
 
@@ -97,21 +97,21 @@ const user = {
   logoutUser() {
     return (dispatch) => {
       dispatch(pageActions.resetAppLoadedState());
-      // Promise.all([
-      //   AsyncStorage.removeItem(constants.jwt_token.TOKEN_NAME),
-      //   AsyncStorage.removeItem(constants.jwt_token.TOKEN_DATA),
-      //   AsyncStorage.removeItem(constants.jwt_token.PROFILE_JSON),
-      //   AsyncStorage.removeItem(constants.pages.ASYNCSTORAGE_KEY),
-      // ])
-      //   .then(results => {
-      //     // console.log('logout user results', results);
-      //     dispatch(this.logoutUserSuccess());
-      //     dispatch(pageActions.initialAppLoaded());
-      //   })
-      //   .catch(error => { 
-      //     dispatch(this.failedLogoutRequest(error));
-      //     dispatch(pageActions.initialAppLoaded());
-      //   });
+      Promise.all([
+        AsyncStorage.removeItem(constants.jwt_token.TOKEN_NAME),
+        AsyncStorage.removeItem(constants.jwt_token.TOKEN_DATA),
+        AsyncStorage.removeItem(constants.jwt_token.PROFILE_JSON),
+        AsyncStorage.removeItem(constants.pages.ASYNCSTORAGE_KEY),
+      ])
+        .then(results => {
+          // console.log('logout user results', results);
+          dispatch(this.logoutUserSuccess());
+          dispatch(pageActions.initialAppLoaded());
+        })
+        .catch(error => { 
+          dispatch(this.failedLogoutRequest(error));
+          dispatch(pageActions.initialAppLoaded());
+        });
     };
   },
   getUserProfile(jwt_token, responseFormatter) {
@@ -175,10 +175,10 @@ const user = {
           username: loginData.username,
           password: loginData.password,
         }),
-        // body: JSON.stringify({
-        //   username: loginData.username,
-        //   password: loginData.password,
-        // })
+        body: JSON.stringify({
+          username: loginData.username,
+          password: loginData.password,
+        })
       })
         .then(checkStatus)
         .then((response) => {
@@ -195,17 +195,17 @@ const user = {
           }
         })
         .then((responseData) => {
+          console.log('login USER responseData', responseData);
           cachedResponseData = responseData;
           return Promise.all([
-            // AsyncStorage.setItem(constants.jwt_token.TOKEN_NAME, responseData.token),
-            // AsyncStorage.setItem(constants.jwt_token.TOKEN_DATA, JSON.stringify({
-            //   expires: responseData.expires,
-            //   timeout: responseData.timeout,
-            //   token: responseData.token,
-            // })),
-            // AsyncStorage.setItem(constants.jwt_token.PROFILE_JSON, JSON.stringify(responseData.user)),
+            AsyncStorage.setItem(constants.jwt_token.TOKEN_NAME, responseData.token),
+            AsyncStorage.setItem(constants.jwt_token.TOKEN_DATA, JSON.stringify({
+              expires: responseData.expires,
+              timeout: responseData.timeout,
+              token: responseData.token,
+            })),
+            AsyncStorage.setItem(constants.jwt_token.PROFILE_JSON, JSON.stringify(responseData.user)),
           ]);
-          // console.log('login USER responseData', responseData);
         })
         .then(() => {
           dispatch(this.recievedLoginUser(url, fetchResponse, cachedResponseData));

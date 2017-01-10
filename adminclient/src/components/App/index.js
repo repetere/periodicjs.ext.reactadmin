@@ -25,6 +25,7 @@ const history = getHistory(historySettings, AppConfigSettings, store);
 const mapStateToProps = (state) => {
   return {
     page: state.page,
+    settings: state.settings,
     ui: state.ui,
     user: state.user,
     // tabBarExtensions: state.tabBarExtensions,
