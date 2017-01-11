@@ -52,6 +52,17 @@ let loginLayout = {
                   horizontalform:true,
                 },
               }]
+            }, {
+              gridProps: {},
+              formElements: [ {
+                type: 'text',
+                label: 'Telephone',
+                name:'telephone',
+                passProps: {
+                  name:'telephone'
+                },
+                layoutProps: {},
+              }]
             }]
           },
       }

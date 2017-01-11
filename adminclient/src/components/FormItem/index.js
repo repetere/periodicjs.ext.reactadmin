@@ -3,7 +3,7 @@ import { Column, FormHorizontal, } from 're-bulma';
 
 class FormItem extends Component{
   render() {
-    console.log('FOrmItem props',this.props)
+    // console.log('FOrmItem props',this.props)
     return <Column {...this.props}>
       {
         (this.props.horizontalform)

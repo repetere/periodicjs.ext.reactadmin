@@ -23,7 +23,6 @@ function getPropertyAttribute(options) {
 }
 
 function getFormTextInputArea(options) {
-  console.log({options})
   let { formElement, i, /*formgroup, width,*/ onChangeText, } = options;
   let initialValue = formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
 
@@ -37,7 +36,6 @@ function getFormTextInputArea(options) {
       this.setState(updatedStateProp);
     };
   }
-  console.log('about to render FormItem',FormItem)
   return (<FormItem key={i} {...formElement.layoutProps} >
     {(formElement.layoutProps.horizontalform) ? (<ControlLabel>{formElement.label}</ControlLabel>) : (<Label>{formElement.label}</Label>)}  
     <Input {...formElement.passProps}
@@ -137,7 +135,7 @@ class ResponsiveForm extends Component{
     let formGroupData = this.props.formgroups.map((formgroup, i) => {
       let gridProps = Object.assign({
         isMultiline: true,
-        key: 1,
+        key: i,
       }, formgroup.gridProps);
       console.log({formgroup})
       return (<Columns {...gridProps}>
@@ -160,13 +158,15 @@ class ResponsiveForm extends Component{
           //   return (<HR key={j}/>);
           // } else if (formElement.type === 'textblock') {
           //   return (<Text key={j} style={{ marginTop:10, marginBottom:10, }}>{formElement.value}</Text>);
+            
           } else {
             return <div key={j} />;
           }
         })}
       </Columns>);
     });
-    return (<formGroupData/>);
+    // return (<formGroupData/>);
+    return (<div>{ formGroupData }</div>);
   }
   componentDidUpdate() {
     // console.log('componentDidUpdate this.props.error', this.props.error);
