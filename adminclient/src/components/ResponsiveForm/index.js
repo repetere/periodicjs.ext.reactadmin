@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Columns, ControlLabel, Label, Input, Button, Card, CardContent,  CardFooter, CardFooterItem, Notification } from 're-bulma'; 
+import { Columns, ControlLabel, Label, Input, Button, Card, CardContent,  CardFooter, CardFooterItem, Checkbox, Notification } from 're-bulma'; 
 import FormItem from '../FormItem';
 
 function getPropertyAttribute(options) {
@@ -45,6 +45,26 @@ function getFormTextInputArea(options) {
       value={initialValue} />
   </FormItem>);
 }
+
+function getFormCheckbox(options) {
+  let { formElement, i, onValueChange, } = options;
+  if (!onValueChange) {
+    onValueChange = (event) => {
+      let value = event.target.value;
+      let updatedStateProp = {};
+      updatedStateProp[ formElement.name ] = value;
+      this.setState(updatedStateProp);
+    };
+  }
+  return (<FormItem key={i} {...formElement.layoutProps} >
+    {(formElement.layoutProps.horizontalform) ? (<ControlLabel>{formElement.label}</ControlLabel>) : (<Label>{formElement.label}</Label>)}  
+    <Checkbox {...formElement.passProps}
+      onChange={onValueChange.bind(this)} >
+        {formElement.placeholder}
+    </Checkbox>
+  </FormItem>);
+}
+
 
 function getFormSubmit(options) {
   let { formElement, i, } = options;
@@ -164,8 +184,8 @@ class ResponsiveForm extends Component{
       let getFormElements = (formElement, j) => {
         if (formElement.type === 'text' || formElement.type === 'textarea') {
           return getFormTextInputArea.call(this, { formElement,  i:j, formgroup, });
-        // } else if (formElement.type === 'checkbox') {
-        //   return getFormCheckbox.call(this, { formElement,  i:j, formgroup, });
+        } else if (formElement.type === 'checkbox') {
+          return getFormCheckbox.call(this, { formElement,  i:j, formgroup, });
         // } else if (formElement.type === 'select') {
         //   return getFormSelect.call(this, { formElement,  i:j, formgroup, });
         // } else if (formElement.type === 'button') {

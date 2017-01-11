@@ -114,6 +114,20 @@ function getLoginLayout(options) {
                       horizontalform:true,
                     },
                   }]
+                  },{
+                  gridProps: {},
+                  formElements: [{
+                    type: 'checkbox',
+                    label: '',
+                    placeholder: 'Remember Me',
+                    name: 'rememberme',
+                    passProps: {
+                      type:'rememberme'
+                    },
+                    layoutProps: {
+                      horizontalform:true,
+                    },
+                  }]
                   },
                 /*  {
                   gridProps: {},

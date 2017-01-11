@@ -165,12 +165,22 @@ const user = {
       let fetchResponse;
       let cachedResponseData;
       let url = getState().settings.login.url;
+      console.log({ url }, 'headers',
+      Object.assign({
+          'Accept': 'application/json',
+          // 'Content-Type': 'application/json',
+        }, getState().settings.login.options.headers, {
+          username: loginData.username,
+          password: loginData.password,
+        })
+      );
+
       dispatch(this.loginRequest(url));
       fetch(url, {
         method: getState().settings.login.method || 'POST',
         headers: Object.assign({
           'Accept': 'application/json',
-          'Content-Type': 'application/json',
+          // 'Content-Type': 'application/json',
         }, getState().settings.login.options.headers, {
           username: loginData.username,
           password: loginData.password,
