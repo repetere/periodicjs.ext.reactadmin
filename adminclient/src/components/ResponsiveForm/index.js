@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Columns, ControlLabel, Label, Input } from 're-bulma'; 
+import { Columns, ControlLabel, Label, Input, Button, Card, CardContent, Content, CardFooter, CardFooterItem, Notification } from 're-bulma'; 
 import FormItem from '../FormItem';
 
 function getPropertyAttribute(options) {
@@ -23,14 +23,15 @@ function getPropertyAttribute(options) {
 }
 
 function getFormTextInputArea(options) {
-  let { formElement, i, /*formgroup, width,*/ onChangeText, } = options;
+  let { formElement, i, /*formgroup, width,*/ onChange, } = options;
   let initialValue = formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
 
   if (typeof initialValue !== 'string') {
     initialValue = JSON.stringify(initialValue, null, 2);
   }
-  if (!onChangeText) {
-    onChangeText = (text) => {
+  if (!onChange) {
+    onChange = (event) => {
+      let text = event.target.value;
       let updatedStateProp = {};
       updatedStateProp[ formElement.name ] = text;
       this.setState(updatedStateProp);
@@ -39,10 +40,32 @@ function getFormTextInputArea(options) {
   return (<FormItem key={i} {...formElement.layoutProps} >
     {(formElement.layoutProps.horizontalform) ? (<ControlLabel>{formElement.label}</ControlLabel>) : (<Label>{formElement.label}</Label>)}  
     <Input {...formElement.passProps}
-      onChangeText={onChangeText}
-      placeholder={formElement.label}
+      onChange={onChange}
+      placeholder={formElement.placeholder||formElement.label}
       value={initialValue} />
   </FormItem>);
+}
+
+function getFormSubmit(options) {
+  let { formElement, i, } = options;
+  return (<FormItem key={i} {...formElement.layoutProps} >
+    <Button {...formElement.passProps}
+      onClick={this.submitForm.bind(this)}>
+      {formElement.value}
+    </Button>
+  </FormItem>);
+}
+
+function getCardFooterItem(options) {
+  let { formElement, i, } = options;
+  formElement.layoutProps = Object.assign({
+    style: { cursor: 'pointer', textAlign:'center', }
+  }, formElement.layoutProps);
+  return (<CardFooterItem key={i} {...formElement.layoutProps} onClick={this.submitForm.bind(this)}>
+    <span {...formElement.passProps}>
+      {formElement.value}
+    </span>
+  </CardFooterItem>);
 }
 
 class ResponsiveForm extends Component{
@@ -71,6 +94,7 @@ class ResponsiveForm extends Component{
     });
   }
   submitForm() {
+    // console.log('submitting Form', this);
     let formdata = Object.assign({}, this.state);
     delete formdata.formDataError;
     delete formdata.formDataLists;
@@ -131,42 +155,75 @@ class ResponsiveForm extends Component{
     }
   }
   render() {
-    console.log('Form this.props', this.props);
+    // console.log('Form this.props', this.props);
     let formGroupData = this.props.formgroups.map((formgroup, i) => {
       let gridProps = Object.assign({
         isMultiline: true,
         key: i,
       }, formgroup.gridProps);
-      console.log({formgroup})
+      let getFormElements = (formElement, j) => {
+        if (formElement.type === 'text' || formElement.type === 'textarea') {
+          return getFormTextInputArea.call(this, { formElement,  i:j, formgroup, });
+        // } else if (formElement.type === 'checkbox') {
+        //   return getFormCheckbox.call(this, { formElement,  i:j, formgroup, });
+        // } else if (formElement.type === 'select') {
+        //   return getFormSelect.call(this, { formElement,  i:j, formgroup, });
+        // } else if (formElement.type === 'button') {
+        //   return getFormButton.call(this, { formElement,  i:j, formgroup, });
+        } else if (formElement.type === 'submit') {
+          return getFormSubmit.call(this, { formElement,  i:j, formgroup, });
+        // } else if (formElement.type === 'datalist') {
+        //   return getFormDatalist.call(this, { formElement,  i:j, formgroup, });
+        // } else if (formElement.type === 'datatable') {
+        //   return getFormDataTable.call(this, { formElement,  i:j, formgroup, });
+        // } else if (formElement.type === 'divider') {
+        //   return (<HR key={j}/>);
+        // } else if (formElement.type === 'textblock') {
+        //   return (<Text key={j} style={{ marginTop:10, marginBottom:10, }}>{formElement.value}</Text>);
+          
+        } else {
+          return <div key={j} />;
+        }
+      }      
       return (<Columns {...gridProps}>
-        {formgroup.formElements.map((formElement, j) => {
-          if (formElement.type === 'text' || formElement.type === 'textarea') {
-            return getFormTextInputArea.call(this, { formElement,  i:j, formgroup, });
-          // } else if (formElement.type === 'checkbox') {
-          //   return getFormCheckbox.call(this, { formElement,  i:j, formgroup, });
-          // } else if (formElement.type === 'select') {
-          //   return getFormSelect.call(this, { formElement,  i:j, formgroup, });
-          // } else if (formElement.type === 'button') {
-          //   return getFormButton.call(this, { formElement,  i:j, formgroup, });
-          // } else if (formElement.type === 'submit') {
-          //   return getFormSubmit.call(this, { formElement,  i:j, formgroup, });
-          // } else if (formElement.type === 'datalist') {
-          //   return getFormDatalist.call(this, { formElement,  i:j, formgroup, });
-          // } else if (formElement.type === 'datatable') {
-          //   return getFormDataTable.call(this, { formElement,  i:j, formgroup, });
-          // } else if (formElement.type === 'divider') {
-          //   return (<HR key={j}/>);
-          // } else if (formElement.type === 'textblock') {
-          //   return (<Text key={j} style={{ marginTop:10, marginBottom:10, }}>{formElement.value}</Text>);
-            
-          } else {
-            return <div key={j} />;
-          }
-        })}
+        {formgroup.formElements.map(getFormElements)}
       </Columns>);
     });
-    // return (<formGroupData/>);
-    return (<div>{ formGroupData }</div>);
+    let footerGroupData = this.props.footergroups.map((formgroup, i) => { 
+      let gridProps = Object.assign({
+        isMultiline: true,
+        key: i,
+      }, formgroup.gridProps);
+      let getFormElements = (formElement, j) => {
+        if (formElement.type === 'submit') {
+          return getCardFooterItem.call(this, { formElement,  i:j, formgroup, });
+        } else {
+          return <CardFooterItem>
+            <div key={j} />
+          </CardFooterItem>;
+        }
+      }      
+      return (<CardFooter {...gridProps}>
+        {formgroup.formElements.map(getFormElements)}
+      </CardFooter>);
+    });
+
+    if (this.props.cardForm) {
+      return (<Card {...this.props.cardFormProps}>
+        <CardContent>
+          {formGroupData}
+        </CardContent>
+        {footerGroupData}
+      </Card>);
+    }
+    else if(this.props.notificationForm){
+      return(<div>
+      <Notification>{formGroupData}</Notification>
+      </div>);
+    }
+    else {
+      return (<div>{ formGroupData }</div>);
+    }
   }
   componentDidUpdate() {
     // console.log('componentDidUpdate this.props.error', this.props.error);

@@ -19,7 +19,17 @@ let loginLayout = {
       props: {
         // children: 'container text'
       },
-      children: [ {
+      children: [
+        {
+          component: 'Columns',
+          children: [ {
+            component: 'Column',
+            props:{},
+          },{
+            component: 'Column',
+            props: {},
+            children:[
+        {
         component: 'Title',
         // props: {
         // },
@@ -34,6 +44,29 @@ let loginLayout = {
           component: 'ResponsiveForm',
           // children:'hello',
           props: {
+            cardForm: true,
+            cardFormProps: {
+              isFullwidth:true,
+            },
+            // notificationForm: true,
+            // notificationProps: {},
+            onSubmit: (data) => {
+              console.log('formsubmit', data);
+            },
+            footergroups: [{
+              gridProps: {},
+              formElements: [ {
+                type: 'submit',
+                value: 'login',
+                name:'login',
+                passProps: {
+                  // name:'telephone'
+                },
+                layoutProps: {
+                  // style:{textAlign:'center'}
+                },
+              }]
+            }],
             formgroups: [ {
               gridProps: {},
               formElements: [ {
@@ -62,10 +95,36 @@ let loginLayout = {
                   name:'telephone'
                 },
                 layoutProps: {},
+              },{
+                type: 'text',
+                placeholder: 'Telephone',
+                name:'telephone',
+                passProps: {
+                  name:'telephone'
+                },
+                layoutProps: {},
+              }]
+            }, {
+              gridProps: {},
+              formElements: [ {
+                type: 'submit',
+                value: 'login',
+                name:'login',
+                passProps: {
+                  // name:'telephone'
+                },
+                layoutProps: {
+                  style:{textAlign:'center'}
+                },
               }]
             }]
           },
-      }
+        }]
+          },{
+            component: 'Column',
+            props:{},
+          }]
+        },
       ]
     }]
   }]
