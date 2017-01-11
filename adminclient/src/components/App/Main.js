@@ -9,20 +9,20 @@ import AppFooter from '../AppFooter';
 import AppSidebar from '../AppSidebar';
 import AppSectionLoading from '../AppSectionLoading';
 
-let testNavigation = () => {
-  // setTimeout(() => {
-  //   this.props.reduxRouter.push('/blog/234');
-  //   setTimeout(() => {
-  //     this.props.reduxRouter.push('/documentation');
-  //     setTimeout(() => {
-  //       this.props.reduxRouter.goBack();
-  //       setTimeout(() => {
-  //         this.props.reduxRouter.goForward();
-  //       }, 1000);
-  //     }, 1000);
-  //   }, 1000);
-  // }, 1000);
-}
+// let testNavigation = () => {
+//   // setTimeout(() => {
+//   //   this.props.reduxRouter.push('/blog/234');
+//   //   setTimeout(() => {
+//   //     this.props.reduxRouter.push('/documentation');
+//   //     setTimeout(() => {
+//   //       this.props.reduxRouter.goBack();
+//   //       setTimeout(() => {
+//   //         this.props.reduxRouter.goForward();
+//   //       }, 1000);
+//   //     }, 1000);
+//   //   }, 1000);
+//   // }, 1000);
+// }
 
 class MainApp extends Component{
   constructor(props,context) {
@@ -46,7 +46,7 @@ class MainApp extends Component{
     this.setState(nextProps);
   }
   componentDidMount() {
-    testNavigation();
+    // testNavigation();
     // setLayoutHandler.call(this);
     // console.log('componentDidMount this.props', this.props);
     Promise.all([

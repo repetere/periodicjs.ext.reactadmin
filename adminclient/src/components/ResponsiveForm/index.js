@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Columns, ControlLabel, Label, Input, Button, Card, CardContent, Content, CardFooter, CardFooterItem, Notification } from 're-bulma'; 
+import { Columns, ControlLabel, Label, Input, Button, Card, CardContent,  CardFooter, CardFooterItem, Notification } from 're-bulma'; 
 import FormItem from '../FormItem';
 
 function getPropertyAttribute(options) {
@@ -62,9 +62,9 @@ function getCardFooterItem(options) {
     style: { cursor: 'pointer', textAlign:'center', }
   }, formElement.layoutProps);
   return (<CardFooterItem key={i} {...formElement.layoutProps} onClick={this.submitForm.bind(this)}>
-    <span {...formElement.passProps}>
+    <Label {...formElement.passProps}>
       {formElement.value}
-    </span>
+    </Label>
   </CardFooterItem>);
 }
 

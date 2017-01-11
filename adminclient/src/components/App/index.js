@@ -3,7 +3,7 @@ import React, { Component, } from 'react';
 // import { AsyncStorage } from 'react-native-web';
 // import { Nav, NavGroup, NavItem, Button, Icon, NavToggle, } from 're-bulma';
 // import { createStore, } from 'redux';
-import { Router,/* Route, IndexRoute,*/ } from 'react-router';
+import { Router,applyRouterMiddleware/* Route, IndexRoute,*/ } from 'react-router';
 import { Provider, connect, } from 'react-redux';
 import { push, replace, go, goForward, goBack } from 'react-router-redux';
 import { historySettings, getHistory, } from '../../routers/history';
@@ -34,9 +34,7 @@ const mapStateToProps = (state) => {
   };
 };
 
-
-const mapDispatchToProps = (dispatch) => {
-  return {
+const reduxActions = {
     // initialAppLoaded:()=>store.dispatch(actions.pages.initialAppLoaded()),
     // onChangePage:(location) => store.dispatch(actions.pages.changePage(location)),
     // setAppDimensions:(layout) => store.dispatch(actions.pages.setAppDimensions(layout)),
@@ -58,18 +56,25 @@ const mapDispatchToProps = (dispatch) => {
       goForward: () => store.dispatch(goForward()),
       goBack: () => store.dispatch(goBack()),
     },
-
   };
+const mapDispatchToProps = (dispatch) => {
+  return reduxActions
 };
 
 const MainAppContainer = connect(mapStateToProps, mapDispatchToProps)(MainApp);
-
+const useExtraProps = {
+  renderRouteComponent: child => React.cloneElement(child, Object.assign({},reduxActions)),
+}
 class Main extends Component{
   render() {
     // console.log('initial store',{store})
     return (
       <Provider store={store}>
-        <Router history={history} routes={getRoutes(MainAppContainer)} />
+        <Router
+          history={history}
+          routes={getRoutes(MainAppContainer)}
+          render={applyRouterMiddleware(useExtraProps)}
+          />
       </Provider>
     );
   }

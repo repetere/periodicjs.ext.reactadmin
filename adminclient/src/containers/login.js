@@ -1,9 +1,13 @@
 import { Component, } from 'react';
-// import { Hero, HeroBody, Title, Subtitle, Container, } from 're-bulma';
-// import 'font-awesome/css/font-awesome.css';
+import styles from '../styles';
 import { getRenderedComponent, } from '../components/AppLayoutMap';
 
-let loginLayout = {
+
+
+function getLoginLayout(options) {
+  let {loginfunction} =  options ;
+  // console.log({loginfunction})
+  let loginLayout = {
   component: 'Hero',
   props: {
     size: 'isFullheight',
@@ -24,7 +28,9 @@ let loginLayout = {
           component: 'Columns',
           children: [ {
             component: 'Column',
-            props:{},
+            props: {
+              size:'is3',
+            },
           },{
             component: 'Column',
             props: {},
@@ -34,120 +40,149 @@ let loginLayout = {
         // props: {
         // },
         children: 'Login',
-      }, {
-        component: 'Subtitle',
-        children: 'Subtitle Login',
-        //   props: {
-        // },  
-        }, 
-        {
-          component: 'ResponsiveForm',
-          // children:'hello',
-          props: {
-            cardForm: true,
-            cardFormProps: {
-              isFullwidth:true,
-            },
-            // notificationForm: true,
-            // notificationProps: {},
-            onSubmit: (data) => {
-              console.log('formsubmit', data);
-            },
-            footergroups: [{
-              gridProps: {},
-              formElements: [ {
-                type: 'submit',
-                value: 'login',
-                name:'login',
-                passProps: {
-                  // name:'telephone'
+          }, {
+            component: 'Subtitle',
+            children: 'Subtitle Login',
+            //   props: {
+            // },  
+            }, 
+            {
+              component: 'ResponsiveForm',
+              // children:'hello',
+              props: {
+                cardForm: true,
+                cardFormProps: {
+                  isFullwidth:true,
                 },
-                layoutProps: {
-                  // style:{textAlign:'center'}
-                },
-              }]
-            }],
-            formgroups: [ {
-              gridProps: {},
-              formElements: [ {
-                type: 'text',
-                label: 'Username',
-                name:'username',
-                layoutProps: {},
-              },{
-                type: 'text',
-                label: 'Password',
-                name: 'password',
-                passProps: {
-                  type:'password'
-                },
-                layoutProps: {
-                  horizontalform:true,
-                },
-              }]
-            }, {
-              gridProps: {},
-              formElements: [ {
-                type: 'text',
-                label: 'Telephone',
-                name:'telephone',
-                passProps: {
-                  name:'telephone'
-                },
-                layoutProps: {},
-              },{
-                type: 'text',
-                placeholder: 'Telephone',
-                name:'telephone',
-                passProps: {
-                  name:'telephone'
-                },
-                layoutProps: {},
-              }]
-            }, {
-              gridProps: {},
-              formElements: [ {
-                type: 'submit',
-                value: 'login',
-                name:'login',
-                passProps: {
-                  // name:'telephone'
-                },
-                layoutProps: {
-                  style:{textAlign:'center'}
-                },
-              }]
+                // notificationForm: true,
+                // notificationProps: {},
+                onSubmit: loginfunction,// (data) => { console.log('formsubmit', data); },
+                footergroups: [{
+                  gridProps: {},
+                  formElements: [ {
+                    type: 'submit',
+                    value: 'Login',
+                    name:'login',
+                    passProps: {
+                      style:styles.isPrimary,
+                    },
+                    layoutProps: {
+                      // style:{textAlign:'center'}
+                    },
+                  },{
+                    type: 'submit',
+                    value: 'Forgot Password',
+                    name:'forgot',
+                    passProps: {
+                      style:styles.isLink,
+                    },
+                    layoutProps: {
+                      // style:{textAlign:'center'}
+                    },
+                  },{
+                    type: 'submit',
+                    value: 'New User',
+                    name:'register',
+                    passProps: {
+                      style:styles.isLink,
+                    },
+                    layoutProps: {
+                      // style:{textAlign:'center'}
+                    },
+                  }]
+                }],
+                formgroups: [ {
+                  gridProps: {},
+                  formElements: [ {
+                    type: 'text',
+                    label: 'Username',
+                    name:'username',
+                    layoutProps: {
+                      horizontalform:true,
+                    },
+                  }]
+                }, {
+                  gridProps: {},
+                  formElements: [{
+                    type: 'text',
+                    label: 'Password',
+                    name: 'password',
+                    passProps: {
+                      type:'password'
+                    },
+                    layoutProps: {
+                      horizontalform:true,
+                    },
+                  }]
+                  },
+                /*  {
+                  gridProps: {},
+                  formElements: [ {
+                    type: 'text',
+                    label: 'Telephone',
+                    name:'telephone',
+                    passProps: {
+                      name:'telephone'
+                    },
+                    layoutProps: {},
+                  },{
+                    type: 'text',
+                    placeholder: 'Telephone',
+                    name:'telephone',
+                    passProps: {
+                      name:'telephone'
+                    },
+                    layoutProps: {},
+                  }]
+              },*/
+              /*  
+                {
+                  gridProps: {},
+                  formElements: [ {
+                    type: 'submit',
+                    value: 'login',
+                    name:'login',
+                    passProps: {
+                      // name:'telephone'
+                    },
+                    layoutProps: {
+                      style:{textAlign:'center'}
+                    },
+                  }]
+                }
+                
+                */
+                ]
+              },
             }]
-          },
-        }]
           },{
             component: 'Column',
-            props:{},
+            props: {
+              size:'is3',
+            },
           }]
         },
       ]
     }]
   }]
-};
- 
-// class ResponsiveGrid extends Component {
-//   render() {
-//     return();
-//   }
-// };
-// class ResponsiveLayout extends Component {
-//   render() {
-//     return();
-//   }
-// };
+  };
+  return loginLayout;  
+}
 
 class Login extends Component {
+  // constructor(props) {
+  //   super(props);
+  //   console.log({ props });
+  // }
   componentWillReceiveProps(nextProps) {
     console.log('Login componentWillReceiveProps nextProps', nextProps);
     // this.setState(nextProps);
   }
   render() {
-    return getRenderedComponent(loginLayout);
+    // console.log(this.props)
+    return getRenderedComponent(getLoginLayout({
+      loginfunction:this.props.loginUser,
+    }));
   }
 }
 
