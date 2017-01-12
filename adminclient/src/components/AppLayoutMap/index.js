@@ -9,13 +9,14 @@ let renderIndex = 0;
 export let AppLayoutMap = Object.assign({}, {ResponsiveForm,FormItem}, React.DOM, rebulma);
 
 // console.log({ AppLayoutMap });
+console.log({ ReactDOM: React.DOM['div'] });
 
 export function getRenderedComponent(componentObject) {
   // console.log('AppLayoutMap[ componentObject.component ]',AppLayoutMap[ componentObject.component ])
   renderIndex++;
   let renderedCompProps = Object.assign({key:renderIndex}, componentObject.props);
   return createElement(
-    AppLayoutMap[ componentObject.component ],
+    (React.DOM[componentObject.component])?componentObject.component:AppLayoutMap[ componentObject.component ],
     renderedCompProps,
     (Array.isArray(componentObject.children) && typeof componentObject.children !=='string') ?
       componentObject.children.map(childComponentObject => getRenderedComponent(childComponentObject)) :

@@ -38,7 +38,9 @@ class AppHeader extends Component {
               </Button> 
             </NavItem>
             <NavItem> 
-              <Button style={{border:'none'}} color="isWhite" buttonStyle="isOutlined">Admin</Button> 
+              <Link to="/home"  style={styles.noUnderline}>
+                <Button style={{ border: 'none' }} color="isWhite" buttonStyle="isOutlined">Admin</Button> 
+              </Link>  
             </NavItem>
           </NavGroup>
           <NavGroup align="center" style={{flex:3}}>
@@ -56,11 +58,9 @@ class AppHeader extends Component {
               </Link>
             </NavItem>
             <NavItem>
-              <Link to="/blog/odfijo"  style={styles.noUnderline}>
-              <Button buttonStyle="isOutlined" color="isWhite">
+              <Button buttonStyle="isOutlined" onClick={this.props.logoutUser} color="isWhite">
                 <Icon style={styles.noMarginLeftRight} icon="fa fa-sign-out" size="isSmall" />
               </Button>
-              </Link>
             </NavItem>
           </NavGroup>
         </Container>

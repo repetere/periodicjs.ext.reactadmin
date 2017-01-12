@@ -79,7 +79,7 @@ const userReducer = (state, action) => {
       email: successPayload.json.user.email,
       firstname: successPayload.json.user.firstname,
       lastname: successPayload.json.user.lastname,
-      profile_image_preview: (loginSuccessPayload.json.user.primaryasset) ? loginSuccessPayload.json.user.primaryasset.attributes.location : null,
+      profile_image_preview: (successPayload.json.user.primaryasset) ? successPayload.json.user.primaryasset.attributes.location : null,
       jwt_token: successPayload.json.token,
       jwt_token_expires: successPayload.json.expires,
       jwt_token_timeout: successPayload.json.timeout,
