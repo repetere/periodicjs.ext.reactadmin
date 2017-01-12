@@ -101,7 +101,7 @@ const user = {
         AsyncStorage.removeItem(constants.jwt_token.TOKEN_NAME),
         AsyncStorage.removeItem(constants.jwt_token.TOKEN_DATA),
         AsyncStorage.removeItem(constants.jwt_token.PROFILE_JSON),
-        AsyncStorage.removeItem(constants.pages.ASYNCSTORAGE_KEY),
+        // AsyncStorage.removeItem(constants.pages.ASYNCSTORAGE_KEY),
       ])
         .then(results => {
           // console.log('logout user results', results);
@@ -164,24 +164,16 @@ const user = {
     return (dispatch, getState) => {
       let fetchResponse;
       let cachedResponseData;
-      let url = getState().settings.login.url;
-      console.log({ url }, 'headers',
-      Object.assign({
-          'Accept': 'application/json',
-          // 'Content-Type': 'application/json',
-        }, getState().settings.login.options.headers, {
-          username: loginData.username,
-          password: loginData.password,
-        })
-      );
+      let loginSettings = getState().settings.login;
+      let url = loginSettings.url;
 
       dispatch(this.loginRequest(url));
       fetch(url, {
-        method: getState().settings.login.method || 'POST',
+        method: loginSettings.method || 'POST',
         headers: Object.assign({
           'Accept': 'application/json',
           // 'Content-Type': 'application/json',
-        }, getState().settings.login.options.headers, {
+        }, loginSettings.options.headers, {
           username: loginData.username,
           password: loginData.password,
         }),
@@ -219,7 +211,6 @@ const user = {
         })
         .then(() => {
           dispatch(this.recievedLoginUser(url, fetchResponse, cachedResponseData));
-          
         })
         .catch((error) => {
           dispatch(this.failedUserRequest(url, error));

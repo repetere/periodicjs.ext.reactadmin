@@ -21,7 +21,7 @@ class AppHeader extends Component {
       ui: nextProps.ui,
       user: nextProps.user,
     });
-    console.log('AppHeader componentWillReceiveProps nextProps', nextProps);
+    // console.log('AppHeader componentWillReceiveProps nextProps', nextProps);
   }
   render() {
     // function handleClick(e) {

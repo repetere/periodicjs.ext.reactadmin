@@ -56,42 +56,46 @@ class MainApp extends Component{
       // AsyncStorage.getItem(constants.async_token.TABBAR_TOKEN),
     ])
       .then((results) => {
-        // console.log({ results });
-        let jwt_token = results[ 0 ];
-        let jwt_token_data = JSON.parse(results[ 1 ]);
-        let jwt_user_profile = JSON.parse(results[ 2 ]);
-        // let appTabs = (results[ 3 ]) ? JSON.parse(results[ 3 ]) : false;
-        // console.log('main apptabs',{ appTabs });
-        if (jwt_token_data && jwt_user_profile) {
-          let url = '/api/jwt/token';//AppLoginSettings[this.props.page.runtime.environment].login.url;
-          let response = {};
-          let json = {
-            token: jwt_token_data.token,
-            expires: jwt_token_data.expires,
-            timeout: jwt_token_data.timeout,
-            user: jwt_user_profile,
-          };
-          let currentTime = new Date();
-          
-          if (moment(jwt_token_data.expires).isBefore(currentTime)) {
-            let expiredTokenError = new Error(`Access Token Expired ${moment(jwt_token_data.expires).format('LLLL')}`);
-            setTimeout(() => {
-              this.handleErrorNotification({ message: 'Access Token Expired' + expiredTokenError, }, expiredTokenError);
-            }, 1000);
-            throw expiredTokenError;
-          } else {
-            this.props.saveUserProfile(url, response, json);
-            // if (appTabs) {
-            //   this.props.setTabExtensions(appTabs);
-            // }
+        try {
+          let jwt_token = results[ 0 ];
+          let jwt_token_data = JSON.parse(results[ 1 ]);
+          let jwt_user_profile = JSON.parse(results[ 2 ]);
+          console.log({ jwt_token, jwt_token_data, jwt_user_profile });
+          if (jwt_token_data && jwt_user_profile) {
+            let url = '/api/jwt/token';//AppLoginSettings[this.props.page.runtime.environment].login.url;
+            let response = {};
+            let json = {
+              token: jwt_token_data.token,
+              expires: jwt_token_data.expires,
+              timeout: jwt_token_data.timeout,
+              user: jwt_user_profile,
+            };
+            let currentTime = new Date();
+            
+            if (moment(jwt_token_data.expires).isBefore(currentTime)) {
+              let expiredTokenError = new Error(`Access Token Expired ${moment(jwt_token_data.expires).format('LLLL')}`);
+              setTimeout(() => {
+                this.handleErrorNotification({ message: 'Access Token Expired' + expiredTokenError, }, expiredTokenError);
+              }, 1000);
+              throw expiredTokenError;
+            } else {
+              console.log('saving logged in user',{json})
+              this.props.saveUserProfile(url, response, json);
+              // if (appTabs) {
+              //   this.props.setTabExtensions(appTabs);
+              // }
+            }
+          } else if (jwt_token) {
+            this.props.getUserProfile(jwt_token);
           }
-        } else if (jwt_token) {
-          this.props.getUserProfile(jwt_token);
+          else {
+            console.log('MAIN componentDidMount USER IS NOT LOGGED IN');
+          }      
+          this.props.setUILoadedState(true);  
+        } catch (e) {
+          console.log(e);
         }
-        else {
-          console.log('MAIN componentDidMount USER IS NOT LOGGED IN');
-        }      
-        this.props.setUILoadedState(true);
+        
       })
       .catch((error) => {
         console.log('MAIN componentDidMount: JWT USER Login Error.', error);
