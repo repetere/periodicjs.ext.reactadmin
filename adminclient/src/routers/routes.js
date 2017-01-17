@@ -6,7 +6,7 @@ let isLoggedIn = () => {
 };
 
 let requireAuth = (nextState, replaceState) => {
-  // console.log({ nextState, replaceState });
+  console.log({ nextState, replaceState });
   // console.log("nextState.location.pathname.indexOf('p-admin')!==-1",nextState.location.pathname.indexOf('p-admin')!==-1)
   if (!isLoggedIn()) {
     replaceState({

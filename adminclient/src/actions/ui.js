@@ -21,6 +21,19 @@ const ui = {
       payload: loaded,
     };
   },
+  // sendApplicationState(appState) {
+  //   return {
+  //     type: constants.ui.GET_APP_STATE,
+  //     payload: {
+  //       appState,
+  //     },
+  //   };
+  // },
+  // getApplicationState() {
+  //   return (dispatch, getState)=>{
+  //     dispatch(this.sendApplicationState(getState()));
+  //   };
+  // },
 };
 
 export default ui;

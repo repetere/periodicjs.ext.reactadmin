@@ -4,6 +4,7 @@ import constants from '../constants';
 const initialState = {
   sidebar_is_open: false,
   ui_is_loaded: false,
+  app_data: {},
 };
 
 const uiReducer = (state, action) => {
@@ -28,6 +29,8 @@ const uiReducer = (state, action) => {
       return Object.assign({},state, {
         sidebar_is_open: false,
       });
+    // case constants.ui.GET_APP_STATE:
+    //   return Object.assign({app_data:action.payload.appState}, state); 
     default:
       return Object.assign(initialState, state);
   }

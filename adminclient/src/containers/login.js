@@ -1,7 +1,7 @@
 import { Component, } from 'react';
 import styles from '../styles';
 import { getRenderedComponent, } from '../components/AppLayoutMap';
-
+import qs from 'querystring';
 
 
 function getLoginLayout(options) {
@@ -188,6 +188,14 @@ class Login extends Component {
   //   super(props);
   //   console.log({ props });
   // }
+  componentDidMount() {
+    let queryStrings = qs.parse((window.location.search.charAt(0) === '?') ? window.location.search.substr(1, window.location.search.length) : window.location.search);
+    let returnUrl = (queryStrings.return_url) ? queryStrings.return_url : false;
+    console.log({ returnUrl,queryStrings });
+    if (this.props.isLoggedIn() && returnUrl) {
+      this.props.reduxRouter.push(returnUrl);
+    }
+  }
   componentWillReceiveProps(nextProps) {
     console.log('Login componentWillReceiveProps nextProps', nextProps);
     // this.setState(nextProps);

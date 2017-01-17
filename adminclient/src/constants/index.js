@@ -24,6 +24,7 @@ export default {
     LOGOUT_REQUEST:'user logout request',
     LOGOUT_SUCCESS:'user logout succeeded',    
     LOGOUT_FAILURE:'user logout failed',    
+    // CURRENT_USER_STATUS:'get current login status',    
   },
   clientCacheData:{
     CLIENT_CACHE_DATA_REQUEST:'client cache data save request',
@@ -47,6 +48,7 @@ export default {
     OPEN_SIDEBAR:'open side menu',
     CLOSE_SIDEBAR: 'close side menu',
     SET_UI_LOADED:'set ui loaded state',
+    // GET_APP_STATE:'get current app state',
   },
   settings: {
     UPDATE_APP_SETTINGS:'update application settings',

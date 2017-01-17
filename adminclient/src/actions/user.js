@@ -1,8 +1,9 @@
 import constants from '../constants';
 import LoginSettings from '../content/config/login.json';
-// import AppConfigSettings from '../content/config/settings.json';
+import { push,/* replace, go, goForward, goBack */} from 'react-router-redux';
 import { AsyncStorage, } from 'react-native';
 import pageActions from './pages';
+import qs from 'querystring';
 // import { Platform, } from 'react-web';
 
 // import Immutable from 'immutable';
@@ -18,6 +19,12 @@ const checkStatus = function (response) {
 };
 
 const user = {
+  getUserStatus() {
+    return {
+      type: constants.user.CURRENT_USER_STATUS,
+      payload: {},
+    }
+  },
   /**
    * @param {string} url restful resource
    */
@@ -211,6 +218,13 @@ const user = {
         })
         .then(() => {
           dispatch(this.recievedLoginUser(url, fetchResponse, cachedResponseData));
+          //move to new page
+          let queryStrings = qs.parse((window.location.search.charAt(0) === '?') ? window.location.search.substr(1, window.location.search.length) : window.location.search);
+          let returnUrl = (queryStrings.return_url) ? queryStrings.return_url : false;
+          console.log({ returnUrl,queryStrings });
+          if (getState().user.isLoggedIn && returnUrl) {
+            push(returnUrl);
+          }
         })
         .catch((error) => {
           dispatch(this.failedUserRequest(url, error));
