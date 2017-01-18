@@ -60,7 +60,7 @@ class MainApp extends Component{
           let jwt_token = results[ 0 ];
           let jwt_token_data = JSON.parse(results[ 1 ]);
           let jwt_user_profile = JSON.parse(results[ 2 ]);
-          console.log({ jwt_token, jwt_token_data, jwt_user_profile });
+          // console.log({ jwt_token, jwt_token_data, jwt_user_profile });
           if (jwt_token_data && jwt_user_profile) {
             let url = '/api/jwt/token';//AppLoginSettings[this.props.page.runtime.environment].login.url;
             let response = {};

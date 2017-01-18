@@ -1,0 +1,10 @@
+{
+  "apps":[
+    {
+      "name":"Admin"
+    },
+    {
+      "name":"Extensions"
+    }
+  ]
+}

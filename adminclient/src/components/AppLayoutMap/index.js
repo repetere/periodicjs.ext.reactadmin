@@ -9,7 +9,7 @@ let renderIndex = 0;
 export let AppLayoutMap = Object.assign({}, {ResponsiveForm,FormItem}, React.DOM, rebulma);
 
 // console.log({ AppLayoutMap });
-console.log({ ReactDOM: React.DOM['div'] });
+// console.log({ ReactDOM: React.DOM['div'] });
 
 export function getRenderedComponent(componentObject) {
   // console.log('AppLayoutMap[ componentObject.component ]',AppLayoutMap[ componentObject.component ])

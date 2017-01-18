@@ -114,10 +114,12 @@ const user = {
           // console.log('logout user results', results);
           dispatch(this.logoutUserSuccess());
           dispatch(pageActions.initialAppLoaded());
+          dispatch(push('/'));
         })
         .catch(error => { 
           dispatch(this.failedLogoutRequest(error));
           dispatch(pageActions.initialAppLoaded());
+          dispatch(push('/'));
         });
     };
   },
@@ -223,7 +225,7 @@ const user = {
           let returnUrl = (queryStrings.return_url) ? queryStrings.return_url : false;
           console.log({ returnUrl,queryStrings });
           if (getState().user.isLoggedIn && returnUrl) {
-            push(returnUrl);
+            dispatch(push(returnUrl));
           }
         })
         .catch((error) => {

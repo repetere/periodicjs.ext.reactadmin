@@ -3,7 +3,7 @@ import appDefaultSettings from '../content/config/settings.json';
 let windowState = (window && window.__padmin) ? window.__padmin : {};
 
 const initialState = Object.assign({},appDefaultSettings,windowState);
-console.log({ initialState });
+// console.log({ initialState });
 const settingsReducer = (state, action) => {
   switch (action.type) {
     case constants.settings.UPDATE_APP_SETTINGS:
