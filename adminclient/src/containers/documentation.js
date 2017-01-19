@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 // import { Container, Content, } from 're-bulma';
 import 'font-awesome/css/font-awesome.css';
 import { getRenderedComponent, } from '../components/AppLayoutMap';

@@ -1,12 +1,16 @@
 import React, { createElement, } from 'react';
 import * as rebulma from 're-bulma';
 import ResponsiveForm from '../ResponsiveForm'; 
+import MenuAppLink from '../AppSidebar/MenuAppLink'; 
+import SubMenuLinks from '../AppSidebar/SubMenuLinks'; 
 import FormItem from '../FormItem'; // FormHorizontal, NavToggle, ControlLabel, Group,
 // import * as reactdom from 'react-dom';
 //https://github.com/lolJS/react-animate.css/blob/master/src/app.js
 let renderIndex = 0;
 
-export let AppLayoutMap = Object.assign({}, {ResponsiveForm,FormItem}, React.DOM, rebulma);
+export let AppLayoutMap = Object.assign({}, {
+  ResponsiveForm, FormItem, MenuAppLink, SubMenuLinks
+}, React.DOM, rebulma);
 
 // console.log({ AppLayoutMap });
 // console.log({ ReactDOM: React.DOM['div'] });
