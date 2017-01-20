@@ -9,13 +9,14 @@ export default {
     children: [{
       component: 'MenuAppLink',
       props: {
-        href: '#',
-        label: 'Dashboard'
+        href: '/home',
+        label: 'Dashboard',
+        active: true,
       }
     }, {
       component: 'MenuAppLink',
       props: {
-        href: '#',
+        href: '/documentation',
         label: 'Customers'
       }
     }]
@@ -27,7 +28,7 @@ export default {
     children: [{
       component: 'MenuAppLink',
       props: {
-        href: '#',
+        href: '/dne/randomw',
         label: 'Team Settings'
       }
     }, {
@@ -35,32 +36,32 @@ export default {
       children: [ {
         component: 'MenuAppLink',
         props: {
-          href: '#',
+          href: '/blog',
           label: 'Members'
         }
       }, {
         component: 'MenuAppLink',
         props: {
-          href: '#',
+          href: '/blog/21090',
           label: 'Plugins'
         }
       }, {
         component: 'MenuAppLink',
         props: {
-          href: '#',
+          href: '/whatever',
           label: 'Add a member'
         }
       }]  
     }, {
       component: 'MenuAppLink',
       props: {
-        href: '#',
+        href: '/login',
         label: 'Invitations'
       }
     }, {
       component: 'MenuAppLink',
       props: {
-        href: '#',
+        href: '/login',
         label: 'Authentication'
       }
     }]
@@ -72,7 +73,7 @@ export default {
     children: [{
       component: 'MenuAppLink',
       props: {
-        href: '#',
+        href: '/p-admin',
         label: 'Payments'
       }
     }, {

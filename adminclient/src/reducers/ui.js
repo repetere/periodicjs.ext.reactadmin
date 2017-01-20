@@ -1,9 +1,16 @@
 import constants from '../constants';
-// import Immutable from 'immutable';
+import navigationSettings from '../content/config/navigation';
+let windowState = (window && window.__padmin && window.__padmin.navigation) ? window.__padmin.navigation : {};
 
 const initialState = {
   sidebar_is_open: false,
   ui_is_loaded: false,
+  nav_ui_is_loaded: false,
+  app_container_ui_is_loaded: false,
+  login_ui_is_loaded: false,
+  header_ui_is_loaded: false,
+  footer_ui_is_loaded: false,
+  nav_data: Object.assign({},navigationSettings,windowState),
   app_data: {},
 };
 
