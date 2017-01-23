@@ -10,6 +10,7 @@ let appenvironment;
 let CoreUtilities;
 let dbloggerSettings;
 let mongooseLogger;
+let periodic;
 
 
 /**
@@ -36,7 +37,20 @@ var admin_index = function(req,res){
   CoreController.renderView(req, res, viewtemplate, viewdata);
 };
 
-module.exports = function(resources) {
+var loadSettings = function (req, res) {
+  let reactSettings = periodic.app.locals.extension.reactadmin.settings;
+  console.log('hitting load settings!!');
+  res.status(200).send({
+    result: 'success',
+    status: 200,
+    data: {
+      settings: reactSettings
+    }
+  });
+};
+
+module.exports = function (resources) {
+  periodic = resources;
   appSettings = resources.settings;
   appenvironment = appSettings.application.environment;
   CoreController = resources.core.controller;
@@ -48,5 +62,6 @@ module.exports = function(resources) {
   // return dbloggerController;
   return { 
     index: admin_index,
+    loadSettings
   };
 };

@@ -40,6 +40,12 @@ class MainApp extends Component{
     // if (pageLocation !== defaultExtensionRoute) {
     //   this.props.onChangePage(pageLocation,{config:{onAppStart:true,}});
     // }
+    console.log('in pre mount', window.__padmin);
+    fetch('http://localhost:8786/react/settings')
+      .then(res => res.json())
+      .then(response => {
+        console.log('response', response);
+      }, console.error.bind(console, 'pre mount error'));
   }
   componentWillReceiveProps(nextProps) {
     // console.log('componentWillReceiveProps nextProps', nextProps);
