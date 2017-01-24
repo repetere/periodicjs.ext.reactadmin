@@ -7,6 +7,7 @@ module.exports = function(periodic) {
     const ReactAdminRouter = require(path.resolve(__dirname, './reactadmin'))(periodic);
 		console.log('periodic.app.locals.adminPath', periodic.app.locals.adminPath);
 	
+		ExtensionRouter.use('/load', ReactAdminRouter);
     ExtensionRouter.use(`/${periodic.app.locals.adminPath}`, ReactAdminRouter);
 
     return ExtensionRouter;

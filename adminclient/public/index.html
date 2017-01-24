@@ -16,7 +16,40 @@
     <title>Async Admin</title>
     <script>
     var __padmin={
-      "name":"React Admin"
+      "hostname": "http://localhost:8786",
+      "adminPath":"p-admin",
+      "name":"reactadmin",
+      "routerHistory":"browserHistory",
+      "allHistoryOptions":"browserHistory|hashHistory|createMemoryHistory",
+      "application":{
+        "environment":"development"
+      },
+      "login":{
+        "url":"https://pas-dev.promisefinancial.net:8784/api/jwt/token",
+        "devurl":"https://pas-dev.promisefinancial.net:8784/api/jwt/token",
+        "options":{
+          "method":"POST",
+          "headers":{
+            "Accept":"application/json",
+            "clientid":"fbff80bd23de5b1699cb595167370a1a",
+            "entitytype":"account"
+          }
+        }
+      },
+      "userprofile":{
+        "url":"https://pas-dev.promisefinancial.net:8784/api/jwt/profile",
+        "devurl":"https://pas-dev.promisefinancial.net:8784/api/jwt/profile",
+        "options":{
+          "method":"POST",
+          "headers":{
+            "Accept":"application/json",
+            "Content-Type":"application/json",
+            "clientid":"fbff80bd23de5b1699cb595167370a1a",
+            "clientid_default":"clientIDNEEDED",
+            "entitytype":"account"
+          }
+        }
+      }   
     };
     </script>
   </head>

@@ -1,7 +1,8 @@
-import { Component, } from 'react';
+import React, { Component, } from 'react';
 import styles from '../styles';
 import { getRenderedComponent, } from '../components/AppLayoutMap';
 import qs from 'querystring';
+import AppSectionLoading from '../components/AppSectionLoading';
 
 
 function getLoginLayout(options) {
@@ -184,17 +185,23 @@ function getLoginLayout(options) {
 }
 
 class Login extends Component {
-  // constructor(props) {
-  //   super(props);
-  //   console.log({ props });
-  // }
+  constructor() {
+    super(...arguments);
+    this.state = { componentIsLoaded: false };
+  }
   componentDidMount() {
     let queryStrings = qs.parse((window.location.search.charAt(0) === '?') ? window.location.search.substr(1, window.location.search.length) : window.location.search);
     let returnUrl = (queryStrings.return_url) ? queryStrings.return_url : false;
-    console.log({ returnUrl,queryStrings });
     if (this.props.isLoggedIn() && returnUrl) {
       this.props.reduxRouter.push(returnUrl);
     }
+    this.props.fetchLoginComponent()
+      .then(() => {
+        this.setState(Object.assign({}, this.state, { componentIsLoaded: true }));
+      }, e => {
+        console.error('login component failed to load', e);
+        this.setState(Object.assign({}, this.state, { componentIsLoaded: true }));
+      });
   }
   componentWillReceiveProps(nextProps) {
     console.log('Login componentWillReceiveProps nextProps', nextProps);
@@ -202,9 +209,14 @@ class Login extends Component {
   }
   render() {
     // console.log(this.props)
-    return getRenderedComponent(getLoginLayout({
-      loginfunction:this.props.loginUser,
-    }));
+    if (!this.state.componentIsLoaded) return (<AppSectionLoading />);
+    let ui = this.props.getState().ui;
+    if (ui.containers.login.status === 'undefined' || ui.containers.login.status === 'uninitialized') {
+      return getRenderedComponent(getLoginLayout({
+        loginfunction:this.props.loginUser,
+      }));
+    }
+    else return getRenderedComponent(ui.containers.login);
   }
 }
 
