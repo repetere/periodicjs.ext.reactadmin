@@ -27,29 +27,8 @@ function getRoutes(appContainer) {
       component: containers.PageComponents.LoginPage,
     },
   }, {
-    path: 'home',
-    onEnter: requireAuth,
-    component: containers.PageComponents.HomePage,
-  }, {
-    path: 'documentation',
-    onEnter: requireAuth,
-    component: containers.PageComponents.DocumentationPage,
-  }, {
-    path: 'blog',
-    component: containers.PageComponents.BlogPage,
-    onEnter: requireAuth,
-    indexRoute: {
-      onEnter: requireAuth,
-      component: containers.PageComponents.BlogIndex,
-    },
-    childRoutes: [ {
-      path: ':id',
-      onEnter: requireAuth,
-      component: containers.PageComponents.BlogItem,
-    }]
-  }, {
     path: '*',
-    component: containers.PageComponents.Error404,
+    component: containers.PageComponents.DynamicPage,
   }];
   return {
     childRoutes: [ {

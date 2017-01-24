@@ -28,6 +28,7 @@ const mapStateToProps = (state) => {
     settings: state.settings,
     ui: state.ui,
     user: state.user,
+    manifest: state.manifest,
     // tabBarExtensions: state.tabBarExtensions,
     // fetchData: state.fetchData,
     // messageBar: state.messageBar,

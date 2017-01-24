@@ -3,6 +3,7 @@ import { combineReducers, } from 'redux';
 // import fetchDataReducer from './fetchData';
 // import messageBarReducer from './messageBar';
 // import clientCacheDataReducer from './pages';
+import manifestReducer from './manifest';
 import userReducer from './user';
 import uiReducer from './ui';
 import settingsReducer from './settings';
@@ -18,6 +19,7 @@ const NativeCMSReducer = combineReducers({
   settings: settingsReducer,
   ui: uiReducer,
   user: userReducer,
+  manifest: manifestReducer,
 });
 
 export default NativeCMSReducer;
