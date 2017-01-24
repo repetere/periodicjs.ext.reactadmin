@@ -9,7 +9,7 @@ class AppHeader extends Component {
     super(props);
     // console.log({ props, context });
     this.state = {
-      page: props.page,
+      // page: props.page,
       ui: props.ui,
       user: props.user,
     };
@@ -17,7 +17,7 @@ class AppHeader extends Component {
   }
   componentWillReceiveProps(nextProps) {
     this.setState({
-      page: nextProps.page,
+      // page: nextProps.page,
       ui: nextProps.ui,
       user: nextProps.user,
     });
@@ -49,19 +49,31 @@ class AppHeader extends Component {
             </NavItem>
           </NavGroup>
           <NavGroup align="right" isMenu>
-            <NavItem>
-              <Link to="/documentation"  style={styles.noUnderline}>
-                <Button buttonStyle="isOutlined" color="isWhite">
-                  <Icon style={styles.noMarginLeftRight} icon="fa fa-user" size="isSmall" />&nbsp;
-                  yawetse
+            {(this.state.user.isLoggedIn) ?
+              (<NavItem>
+                <Link to="/documentation" style={styles.noUnderline}>
+                  <Button buttonStyle="isOutlined" color="isWhite">
+                    <Icon style={styles.noMarginLeftRight} icon="fa fa-user" size="isSmall" />&nbsp;
+                      {this.state.user.email}
+                    </Button>
+                </Link>
+              </NavItem>) : null}
+            {(this.state.user.isLoggedIn) ? 
+              (<NavItem>
+                <Button buttonStyle="isOutlined" onClick={this.props.logoutUser} color="isWhite">
+                  <Icon style={styles.noMarginLeftRight} icon="fa fa-sign-out" size="isSmall" />
                 </Button>
-              </Link>
-            </NavItem>
-            <NavItem>
-              <Button buttonStyle="isOutlined" onClick={this.props.logoutUser} color="isWhite">
-                <Icon style={styles.noMarginLeftRight} icon="fa fa-sign-out" size="isSmall" />
-              </Button>
-            </NavItem>
+              </NavItem>)
+              :
+                (<NavItem>
+                  <Link to="/login"  style={styles.noUnderline}>
+                    <Button buttonStyle="isOutlined" color="isWhite">
+                      <Icon style={styles.noMarginLeftRight} icon="fa fa-sign-in" size="isSmall" />
+                    </Button>
+                  </Link>
+                </NavItem>)
+             } 
+            
           </NavGroup>
         </Container>
       </Nav>
