@@ -19,7 +19,7 @@ class AppSidebar extends Component {
     this.setState(nextProps);
   }
   render() {
-    console.log('this.props', this.props);
+    // console.log('this.props', this.props);
     return (
       <div style={Object.assign({ padding: '1rem', borderRight:'1px solid black'}, styles.fullHeight, styles.mainContainer)}
         className={(this.state.ui.sidebar_is_open) ? 'animated fadeInLeft Nav-Sidebar-Speed' : 'animated slideOutLeft Nav-Sidebar-Speed'}>

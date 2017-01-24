@@ -1,6 +1,7 @@
 import React, { createElement, } from 'react';
 import * as rebulma from 're-bulma';
 import ResponsiveForm from '../ResponsiveForm'; 
+import RawOutput from '../RawOutput'; 
 import MenuAppLink from '../AppSidebar/MenuAppLink'; 
 import SubMenuLinks from '../AppSidebar/SubMenuLinks'; 
 import FormItem from '../FormItem'; // FormHorizontal, NavToggle, ControlLabel, Group,
@@ -9,7 +10,7 @@ import FormItem from '../FormItem'; // FormHorizontal, NavToggle, ControlLabel, 
 let renderIndex = 0;
 
 export let AppLayoutMap = Object.assign({}, {
-  ResponsiveForm, FormItem, MenuAppLink, SubMenuLinks
+  ResponsiveForm, RawOutput, FormItem, MenuAppLink, SubMenuLinks
 }, React.DOM, rebulma);
 
 // console.log({ AppLayoutMap });

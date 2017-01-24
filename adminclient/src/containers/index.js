@@ -5,6 +5,7 @@ import BlogIndex from './blogindex';
 import BlogItem from './blogitem';
 import DocumentationPage from './documentation';
 import Error404 from './Error404';
+import DynamicPage from './DynamicPage';
 
 exports.PageComponents = {
   HomePage,
@@ -14,4 +15,5 @@ exports.PageComponents = {
   BlogItem,
   DocumentationPage,
   Error404,
+  DynamicPage,
 };

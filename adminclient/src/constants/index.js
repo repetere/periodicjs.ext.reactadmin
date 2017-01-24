@@ -40,8 +40,10 @@ export default {
     TOKEN_DATA: `${AppConfigSettings.name}_jwt_token_data`,
     PROFILE_JSON: `${AppConfigSettings.name}_jwt_profile`,
   },
-  async_token: {
-    TABBAR_TOKEN: 'AppTabs',
+  manifest: {
+    MANIFEST_DATA_REQUEST:'manifest data request',
+    MANIFEST_DATA_FAILURE:'manifest data failed',
+    MANIFEST_DATA_SUCCESS:'manifest data succeeded',
   },
   ui: {
     TOGGLE_SIDEBAR:'toggle side menu',

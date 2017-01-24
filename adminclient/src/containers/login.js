@@ -150,7 +150,7 @@ function getLoginLayout(options) {
                     layoutProps: {},
                   }]
               },*/
-              /*  
+              
                 {
                   gridProps: {},
                   formElements: [ {
@@ -166,7 +166,7 @@ function getLoginLayout(options) {
                   }]
                 }
                 
-                */
+                
                 ]
               },
             }]
