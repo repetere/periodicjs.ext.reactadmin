@@ -49,6 +49,8 @@ export default {
     CLOSE_SIDEBAR: 'close side menu',
     SET_UI_LOADED:'set ui loaded state',
     LOAD_NAV_DATA_SUCCESS:'set nav ui loaded state',
+    LOGIN_COMPONENT: 'fetchLoginComponent',
+    MAIN_COMPONENT: 'fetchMainComponent',
     // GET_APP_STATE:'get current app state',
   },
   settings: {

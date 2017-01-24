@@ -31,13 +31,20 @@ class MainApp extends Component{
     this.state = props;
     // this.previousRoute = {};
   }
-  componentWillMount() {
-    fetch('http://localhost:8786/load/settings')
-      .then(res => res.json())
-      .then(response => {
-        window.__padmin = Object.assign({}, response.data.settings);
-      }, console.error.bind(console, 'pre mount error'));
-  }
+  // componentWillMount() {
+  //   let urls = ['http://localhost:8786/load/settings', 'http://localhost:8786/load/components/login', 'http://localhost:8786/load/components/main'];
+  //   let resolved = urls.map(url => fetchJSON(url));
+  //   Promise.all(resolved)
+  //     .then(result => {
+  //       let [settings, login_component, main_component] = result;
+  //       if (settings.result === 'success') window.__padmin = Object.assign({}, settings.data.settings);
+  //       console.log({ login_component, main_component });
+  //       if (login_component.result === 'success' || main_component.result === 'success') {
+  //         window.__component_config = Object.assign({}, (login_component.success) ? { login: login_component.data.settings } : { login: {} }, (main_component.success) ? { main: main_component.data.settings } : { main: {} });
+  //         console.log('will mount', window.__component_config);
+  //       }
+  //     }, console.error.bind(console, 'pre mount error'));
+  // }
   componentWillReceiveProps(nextProps) {
     // console.log('componentWillReceiveProps nextProps', nextProps);
     this.setState(nextProps);
@@ -50,6 +57,7 @@ class MainApp extends Component{
       AsyncStorage.getItem(constants.jwt_token.TOKEN_NAME),
       AsyncStorage.getItem(constants.jwt_token.TOKEN_DATA),
       AsyncStorage.getItem(constants.jwt_token.PROFILE_JSON),
+      this.props.fetchMainComponent()
       // AsyncStorage.getItem(constants.async_token.TABBAR_TOKEN),
     ])
       .then((results) => {
@@ -87,7 +95,7 @@ class MainApp extends Component{
           }
           else {
             console.log('MAIN componentDidMount USER IS NOT LOGGED IN');
-          }      
+          }
           this.props.setUILoadedState(true);  
         } catch (e) {
           console.log(e);
@@ -116,7 +124,7 @@ class MainApp extends Component{
       </Column>) : null;
     // return (<AppSectionLoading/>);
     return (
-      (this.state.ui.ui_is_loaded ===false)? <AppSectionLoading/> :
+      (this.state.ui.ui_is_loaded ===false) ? <AppSectionLoading/> :
       <div>
         {/*<div style={styles.redBkgrd}>*/}
         <AppHeader {...this.state} />

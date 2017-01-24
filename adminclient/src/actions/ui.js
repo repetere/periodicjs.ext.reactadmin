@@ -3,6 +3,15 @@ import constants from '../constants';
 // import customSettings from '../content/config/settings.json';
 // import Immutable from 'immutable';
 
+var fetchComponent = function (url, options = {}) {
+  return function () {
+    return fetch(url, Object.assign({}, options))
+      .then(res => res.json())
+      .catch(e => Promise.reject(e));
+  };
+};
+
+const COMPONENTS = {};
 
 const ui = {
   /**
@@ -21,6 +30,30 @@ const ui = {
       payload: loaded,
     };
   },
+  fetchComponent: function (type) {
+    let component;
+    switch (type) {
+      case constants.ui.LOGIN_COMPONENT:
+        component = constants.ui.LOGIN_COMPONENT;
+        if (!COMPONENTS[component]) COMPONENTS[component] = fetchComponent(`${ window.__padmin.hostname }/load/components/login`);
+        break;
+      case constants.ui.MAIN_COMPONENT:
+        component = constants.ui.MAIN_COMPONENT;
+        if (!COMPONENTS[component]) COMPONENTS[component] = fetchComponent(`${ window.__padmin.hostname }/load/components/main`);
+        break;
+      default:
+        component = false;
+    }
+    if (!component) throw new Error(`Can't fetch component - ${ component }`);
+    return function (dispatch) {
+      dispatch({ type: `INIT_${ component }` });
+      return COMPONENTS[component]()
+        .then(response => {
+          let settings = response.data.settings;
+          dispatch({ type: component, success: true, settings });
+        }, e => dispatch({ type: component, success: false, error: e }))
+    };
+  }
   // sendApplicationState(appState) {
   //   return {
   //     type: constants.ui.GET_APP_STATE,

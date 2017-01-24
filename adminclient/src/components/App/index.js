@@ -15,6 +15,7 @@ import MainApp from './Main';
 import AppConfigSettings from '../../content/config/settings.json';
 // import AppLoginSettings from '../../content/config/login.json';
 import { getRoutes, } from '../../routers/routes';
+import CONSTANTS from '../../constants/index';
 // import logo from './logo.svg';
 // import './App.css';
 // import capitalize from 'capitalize';
@@ -51,6 +52,8 @@ const reduxActions = {
     toggleUISidebar: () => store.dispatch(actions.ui.toggleUISidebar()),
     setUILoadedState: (loaded) => store.dispatch(actions.ui.setUILoadedState(loaded)),
     logoutUser: () => store.dispatch(actions.user.logoutUser()),
+    fetchLoginComponent: () => store.dispatch(actions.ui.fetchComponent(CONSTANTS.ui.LOGIN_COMPONENT)),
+    fetchMainComponent: () => store.dispatch(actions.ui.fetchComponent(CONSTANTS.ui.MAIN_COMPONENT)),
     reduxRouter: {
       push: (location) => store.dispatch(push(location)),
       replace: (location) => store.dispatch(replace(location)),

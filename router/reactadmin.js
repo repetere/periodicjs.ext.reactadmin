@@ -5,14 +5,9 @@ module.exports = function(resources) {
     const reactadminController = resources.app.controller.extension.reactadmin.controller.reactadmin;
     const ReactAdminRouter = resources.express.Router();
 
-    ReactAdminRouter.get('/settings', function (req, res, next) {
-    	console.log('hitting settings route');
-    	next();
-    }, reactadminController.loadSettings);
-    ReactAdminRouter.all('/!(settings)', function (req, res, next) {
-    	console.log('hitting the catch all');
-    	next();
-   	}, reactadminController.index);
+    ReactAdminRouter.get('/settings', reactadminController.loadSettings);
+    ReactAdminRouter.get('/components/:component', reactadminController.loadComponent);
+    ReactAdminRouter.all('/!(settings)', reactadminController.index);
 
     return ReactAdminRouter;
 };
