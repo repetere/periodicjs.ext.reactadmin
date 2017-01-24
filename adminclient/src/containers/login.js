@@ -197,26 +197,32 @@ class Login extends Component {
     }
     this.props.fetchLoginComponent()
       .then(() => {
-        this.setState(Object.assign({}, this.state, { componentIsLoaded: true }));
+        this.setState({ componentIsLoaded: true });
       }, e => {
-        console.error('login component failed to load', e);
-        this.setState(Object.assign({}, this.state, { componentIsLoaded: true }));
+        // console.error('login component failed to load', e);
+        this.setState({ componentIsLoaded: true });
       });
   }
   componentWillReceiveProps(nextProps) {
-    console.log('Login componentWillReceiveProps nextProps', nextProps);
+    // console.log('Login componentWillReceiveProps nextProps', nextProps);
     // this.setState(nextProps);
   }
   render() {
     // console.log(this.props)
     if (!this.state.componentIsLoaded) return (<AppSectionLoading />);
     let ui = this.props.getState().ui;
-    if (ui.containers.login.status === 'undefined' || ui.containers.login.status === 'uninitialized') {
-      return getRenderedComponent(getLoginLayout({
-        loginfunction:this.props.loginUser,
-      }));
+    let user = this.props.getState().user;
+    if (user.isLoggedIn) {
+      return <div><h1>USER IS LOGGED IN</h1><h2>{user.email}</h2></div>
     }
-    else return getRenderedComponent(ui.containers.login);
+    else {
+      if (typeof ui.containers.login.status === 'undefined' || ui.containers.login.status === 'uninitialized') {
+        return getRenderedComponent(getLoginLayout({
+          loginfunction:this.props.loginUser,
+        }));
+      }
+      else return getRenderedComponent(ui.containers.login);
+    }
   }
 }
 

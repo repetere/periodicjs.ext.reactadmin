@@ -1,15 +1,10 @@
 import constants from '../constants';
+import utilities from '../util';
 // import { AsyncStorage, } from 'react-web';
 // import customSettings from '../content/config/settings.json';
 // import Immutable from 'immutable';
 
-var fetchComponent = function (url, options = {}) {
-  return function () {
-    return fetch(url, Object.assign({}, options))
-      .then(res => res.json())
-      .catch(e => Promise.reject(e));
-  };
-};
+const fetchComponent = utilities.fetchComponent;
 
 const COMPONENTS = {};
 
