@@ -39,7 +39,6 @@ var admin_index = function(req,res){
 
 var loadSettings = function (req, res) {
   let reactSettings = periodic.app.locals.extension.reactadmin.settings;
-  console.log('hitting load settings!!');
   res.status(200).send({
     result: 'success',
     status: 200,

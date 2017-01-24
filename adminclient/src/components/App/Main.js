@@ -32,19 +32,10 @@ class MainApp extends Component{
     // this.previousRoute = {};
   }
   componentWillMount() {
-    // // console.log('componentWillMount this.props',this.props)
-    // /**
-    //  *THIS IS FOR LANDING ON A DIFFERENT PAGE
-    // */
-    // let pageLocation = this.props.location.pathname;
-    // if (pageLocation !== defaultExtensionRoute) {
-    //   this.props.onChangePage(pageLocation,{config:{onAppStart:true,}});
-    // }
-    console.log('in pre mount', window.__padmin);
-    fetch('http://localhost:8786/react/settings')
+    fetch('http://localhost:8786/load/settings')
       .then(res => res.json())
       .then(response => {
-        console.log('response', response);
+        window.__padmin = Object.assign({}, response.data.settings);
       }, console.error.bind(console, 'pre mount error'));
   }
   componentWillReceiveProps(nextProps) {
