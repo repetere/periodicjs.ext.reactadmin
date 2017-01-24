@@ -1,7 +1,8 @@
 'use strict';
 const Promisie = require('promisie');
-const fs = require('fs-extra');
+const fs = Promisie.promisify(require('fs-extra'));
 const path = require('path');
+const MANIFEST = require(path.join(__dirname, '../adminclient/content/config/manifest'));
 const COMPONENTS = {
   login: {
     status: 'uninitialized'
@@ -48,13 +49,12 @@ var admin_index = function(req,res){
   CoreController.renderView(req, res, viewtemplate, viewdata);
 };
 
-var loadSettings = function (req, res) {
-  let reactSettings = periodic.app.locals.extension.reactadmin.settings;
+var loadManifest = function (req, res) {
   res.status(200).send({
     result: 'success',
     status: 200,
     data: {
-      settings: reactSettings
+      settings: MANIFEST
     }
   });
 };
@@ -83,7 +83,7 @@ module.exports = function (resources) {
   // return dbloggerController;
   return { 
     index: admin_index,
-    loadSettings,
+    loadManifest,
     loadComponent
   };
 };

@@ -5,9 +5,9 @@ module.exports = function(resources) {
     const reactadminController = resources.app.controller.extension.reactadmin.controller.reactadmin;
     const ReactAdminRouter = resources.express.Router();
 
-    ReactAdminRouter.get('/settings', reactadminController.loadSettings);
+    ReactAdminRouter.get('/manifest', reactadminController.loadManifest);
     ReactAdminRouter.get('/components/:component', reactadminController.loadComponent);
-    ReactAdminRouter.all('/!(settings)', reactadminController.index);
+    ReactAdminRouter.all('/!(manifest|components)', reactadminController.index);
 
     return ReactAdminRouter;
 };

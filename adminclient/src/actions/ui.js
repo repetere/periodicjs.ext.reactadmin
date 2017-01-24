@@ -25,6 +25,20 @@ const ui = {
       payload: loaded,
     };
   },
+  handleFetchedComponent: function (type, response) {
+    return {
+      type: type,
+      success: true,
+      settings: response.data.settings
+    };
+  },
+  handleFailedFetchComponent: function (data, error) {
+    return {
+      type: type,
+      success: false,
+      error: error
+    };
+  },
   fetchComponent: function (type) {
     let component;
     switch (type) {
@@ -44,10 +58,9 @@ const ui = {
       dispatch({ type: `INIT_${ component }` });
       return COMPONENTS[component]()
         .then(response => {
-          let settings = response.data.settings;
-          dispatch({ type: component, success: true, settings });
-        }, e => dispatch({ type: component, success: false, error: e }))
-    };
+          dispatch(this.handleFetchedComponent(component, response));
+        }, e => dispatch(this.handleFailedFetchComponent(component, e)))
+    }.bind(this);
   }
   // sendApplicationState(appState) {
   //   return {

@@ -124,7 +124,7 @@ class MainApp extends Component{
       </Column>) : null;
     // return (<AppSectionLoading/>);
     return (
-      (this.state.ui.ui_is_loaded ===false) ? <AppSectionLoading/> :
+      (this.state.ui.ui_is_loaded === false) ? <AppSectionLoading/> :
       <div>
         {/*<div style={styles.redBkgrd}>*/}
         <AppHeader {...this.state} />

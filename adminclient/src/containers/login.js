@@ -199,7 +199,6 @@ class Login extends Component {
       .then(() => {
         this.setState({ componentIsLoaded: true });
       }, e => {
-        // console.error('login component failed to load', e);
         this.setState({ componentIsLoaded: true });
       });
   }
@@ -216,7 +215,7 @@ class Login extends Component {
       return <div><h1>USER IS LOGGED IN</h1><h2>{user.email}</h2></div>
     }
     else {
-      if (typeof ui.containers.login.status === 'undefined' || ui.containers.login.status === 'uninitialized') {
+      if (typeof ui.containers.login.status === 'undefined' || ui.containers.login.status === 'undefined' || ui.containers.login.status === 'uninitialized') {
         return getRenderedComponent(getLoginLayout({
           loginfunction:this.props.loginUser,
         }));
