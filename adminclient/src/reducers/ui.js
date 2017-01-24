@@ -36,8 +36,33 @@ const uiReducer = (state, action) => {
       return Object.assign({},state, {
         sidebar_is_open: false,
       });
-    // case constants.ui.GET_APP_STATE:
-    //   return Object.assign({app_data:action.payload.appState}, state); 
+    case `INIT_${ constants.ui.LOGIN_COMPONENT }`:
+      let containers = Object.assign({}, state.containers);
+      containers.login = {};
+      return Object.assign({}, state, { containers });
+    case `INIT_${ constants.ui.MAIN_COMPONENT }`:
+      let components = Object.assign({}, state.components, { header: {}, footer: {} });
+      return Object.assign({}, state, { components });
+    case constants.ui.LOGIN_COMPONENT:
+      if (!action.success) {
+        console.log('There was an error retrieving login component', action.error);
+        break;
+      }
+      else {
+        let containers = Object.assign({}, state.containers, { login: action.settings });
+        return Object.assign({}, state, { containers });
+      }
+    case constants.ui.MAIN_COMPONENT:
+      if (!action.success) {
+        console.log('There was an error retrieving main component', action.error);
+        break;
+      }
+      else {
+        let components = Object.assign({}, state.components);
+        components.header = action.settings.header || {};
+        components.footer = action.settings.footer || {};
+        return Object.assign({}, state, { components });
+      }
     default:
       return Object.assign(initialState, state);
   }

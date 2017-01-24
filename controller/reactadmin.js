@@ -2,6 +2,15 @@
 const Promisie = require('promisie');
 const fs = require('fs-extra');
 const path = require('path');
+const COMPONENTS = {
+  login: {
+    status: 'uninitialized'
+  },
+  main: {
+    footer: { status: 'uninitialized' },
+    header: { status: 'uninitialized' }
+  }
+};
 
 let CoreController;
 let logger;
@@ -10,6 +19,7 @@ let appenvironment;
 let CoreUtilities;
 let dbloggerSettings;
 let mongooseLogger;
+let periodic;
 
 
 /**
@@ -19,6 +29,7 @@ let mongooseLogger;
  * @return {null}        does not return a value
  */
 var admin_index = function(req,res){
+  let reactSettings = periodic.app.locals.extension.reactadmin.settings;
   let viewtemplate = {
       viewname: 'admin/index',
       themefileext: appSettings.templatefileextension,
@@ -30,13 +41,37 @@ var admin_index = function(req,res){
         // toplink: '&raquo; Multi-Factor Authenticator',
       },
       user: req.user,
+      __padmin: reactSettings
       // adminPostRoute: adminPostRoute
     };
 
   CoreController.renderView(req, res, viewtemplate, viewdata);
 };
 
-module.exports = function(resources) {
+var loadSettings = function (req, res) {
+  let reactSettings = periodic.app.locals.extension.reactadmin.settings;
+  res.status(200).send({
+    result: 'success',
+    status: 200,
+    data: {
+      settings: reactSettings
+    }
+  });
+};
+
+var loadComponent = function (req, res) {
+  let component = COMPONENTS[req.params.component] || { status: 'undefined' };
+  res.status(200).send({
+    result: 'success',
+    status: 200,
+    data: {
+      settings: component
+    }
+  });
+};
+
+module.exports = function (resources) {
+  periodic = resources;
   appSettings = resources.settings;
   appenvironment = appSettings.application.environment;
   CoreController = resources.core.controller;
@@ -48,5 +83,7 @@ module.exports = function(resources) {
   // return dbloggerController;
   return { 
     index: admin_index,
+    loadSettings,
+    loadComponent
   };
 };
