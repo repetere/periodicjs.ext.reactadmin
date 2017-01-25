@@ -18,3 +18,18 @@ export const fetchComponent = function (url, options = {}) {
       .catch(e => Promise.reject(e));
   };
 };
+
+export const fetchPaths = function (data = {}) {
+  let result = {};
+  let finished = Object.keys(data).map(key => {
+    if (typeof data[key] === 'string') data[key] = [data[key]];
+    else data[key] = [data[key].url, data[key].options];
+    return fetchComponent(data[key][0], data[key][1])()
+      .then(response => {
+        result[key] = response;
+      }, e => Promise.reject(e));
+  });
+  return Promise.all(finished)
+    .then(() => result)
+    .catch(e => Promise.reject(e));
+};
