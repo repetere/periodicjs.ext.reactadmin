@@ -1,8 +1,9 @@
 'use strict';
 const Promisie = require('promisie');
-const fs = Promisie.promisify(require('fs-extra'));
+const fs = require('fs-extra');
 const path = require('path');
-const MANIFEST = require(path.join(__dirname, '../adminclient/content/config/manifest'));
+const MANIFEST = require(path.join(__dirname, '../adminclient/src/content/config/manifest'));
+const NAVIGATION = require(path.join(__dirname, '../adminclient/src/content/config/navigation'));
 const COMPONENTS = {
   login: {
     status: 'uninitialized'
@@ -13,15 +14,11 @@ const COMPONENTS = {
   }
 };
 
-let CoreController;
-let logger;
-let appSettings;
-let appenvironment;
-let CoreUtilities;
-let dbloggerSettings;
-let mongooseLogger;
-let periodic;
-
+var CoreController;
+var logger;
+var appSettings;
+var appenvironment;
+var CoreUtilities;
 
 /**
  * index page for react admin, that serves admin app
@@ -30,7 +27,6 @@ let periodic;
  * @return {null}        does not return a value
  */
 var admin_index = function(req,res){
-  let reactSettings = periodic.app.locals.extension.reactadmin.settings;
   let viewtemplate = {
       viewname: 'admin/index',
       themefileext: appSettings.templatefileextension,
@@ -41,8 +37,7 @@ var admin_index = function(req,res){
         title: 'React Admin',
         // toplink: '&raquo; Multi-Factor Authenticator',
       },
-      user: req.user,
-      __padmin: reactSettings
+      user: req.user
       // adminPostRoute: adminPostRoute
     };
 
@@ -70,20 +65,38 @@ var loadComponent = function (req, res) {
   });
 };
 
+var loadUserPreferences = function (req, res) {
+  res.status(200).send({
+    result: 'success',
+    status: 200,
+    data: {
+      settings: (req.user && req.user.extensionattributes && req.user.extensionattributes.preferences) ? req.user.extensionattributes.preferences : {}
+    }
+  });
+};
+
+var loadNavigation = function (req, res) {
+  res.status(200).send({
+    result: 'success',
+    status: 200,
+    data: {
+      settings: NAVIGATION
+    }
+  });
+};
+
 module.exports = function (resources) {
-  periodic = resources;
   appSettings = resources.settings;
   appenvironment = appSettings.application.environment;
   CoreController = resources.core.controller;
   CoreUtilities = resources.core.utilities;
-  // dbloggerSettings = resources.app.controller.extension.dblogger.settings;
+  logger = resources.logger;
 
-  // let dbloggerController = CoreController.controller_routes(cronSettings);
-
-  // return dbloggerController;
   return { 
     index: admin_index,
     loadManifest,
-    loadComponent
+    loadComponent,
+    loadUserPreferences,
+    loadNavigation
   };
 };

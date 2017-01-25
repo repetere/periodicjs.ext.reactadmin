@@ -1,16 +1,6 @@
 import constants from '../constants';
 import utilities from '../util';
 
-const checkStatus = function (response) {
-  if (response.status >= 200 && response.status < 300) {
-    return response;
-  } else {
-    let error = new Error(response.statusText);
-    error.response = response;
-    throw error;
-  }
-};
-
 const manifest = {
   manifestRequest() {
     return {
@@ -30,14 +20,14 @@ const manifest = {
       payload: { error, },
     };
   },
-  fetchManifest () {
-    return function (dispatch) {
-      dispatch(this.manifestRequest);
-      return fetchComponent(`${ window.__padmin.hostname }/load/manifest`)
+  fetchManifest (options = {}) {
+    return (dispatch) => {
+      dispatch(this.manifestRequest());
+      return utilities.fetchComponent(`${ window.__padmin.basename }/load/manifest`, options)()
         .then(response => {
           dispatch(this.receivedManifestData(response.data.settings));
         }, e => dispatch(this.failedManifestRetrival(e)))
-    }
+    };
   }
 };
 

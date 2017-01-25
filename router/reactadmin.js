@@ -5,9 +5,11 @@ module.exports = function(resources) {
     const reactadminController = resources.app.controller.extension.reactadmin.controller.reactadmin;
     const ReactAdminRouter = resources.express.Router();
 
-    ReactAdminRouter.get('/manifest', reactadminController.loadManifest);
+    ReactAdminRouter.post('/manifest', reactadminController.loadManifest);
+    ReactAdminRouter.post('/preferences', reactadminController.loadUserPreferences);
+    ReactAdminRouter.post('/navigation', reactadminController.loadNavigation);
     ReactAdminRouter.get('/components/:component', reactadminController.loadComponent);
-    ReactAdminRouter.all('/!(manifest|components)', reactadminController.index);
+    ReactAdminRouter.all('/!(manifest|components|preferences)', reactadminController.index);
 
     return ReactAdminRouter;
 };

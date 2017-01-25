@@ -49,18 +49,18 @@ const uiReducer = (state, action) => {
         break;
       }
       else {
-        let containers = Object.assign({}, state.containers, { login: action.settings });
+        let containers = Object.assign({}, state.containers, { login: action.payload.settings });
         return Object.assign({}, state, { containers });
       }
     case constants.ui.MAIN_COMPONENT:
       if (!action.success) {
-        console.log('There was an error retrieving main component', action.error);
+        console.log('There was an error retrieving main component', action.payload.error);
         break;
       }
       else {
         let components = Object.assign({}, state.components);
-        components.header = action.settings.header || {};
-        components.footer = action.settings.footer || {};
+        components.header = action.payload.settings.header || {};
+        components.footer = action.payload.settings.footer || {};
         return Object.assign({}, state, { components });
       }
     default:

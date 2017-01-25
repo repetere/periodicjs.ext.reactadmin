@@ -15,12 +15,6 @@ export const fetchComponent = function (url, options = {}) {
     return fetch(url, Object.assign({}, options))
       .then(checkStatus)  
       .then(res => res.json())
-      .catch(e => {
-        console.log('THIS IS IN THE ERROR BLOCK ==========================',e)
-        Promise.reject(e)
-
-      }
-        
-      );
+      .catch(e => Promise.reject(e));
   };
 };

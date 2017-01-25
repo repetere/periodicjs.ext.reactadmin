@@ -29,14 +29,16 @@ const ui = {
     return {
       type: type,
       success: true,
-      settings: response.data.settings
+      payload: {
+        settings: response.data.settings
+      }
     };
   },
-  handleFailedFetchComponent: function (data, error) {
+  handleFailedFetchComponent: function (type, error) {
     return {
       type: type,
       success: false,
-      error: error
+      payload: { error }
     };
   },
   fetchComponent: function (type) {
@@ -44,11 +46,11 @@ const ui = {
     switch (type) {
       case constants.ui.LOGIN_COMPONENT:
         component = constants.ui.LOGIN_COMPONENT;
-        if (!COMPONENTS[component]) COMPONENTS[component] = fetchComponent(`${ window.__padmin.hostname }/load/components/login`);
+        if (!COMPONENTS[component]) COMPONENTS[component] = fetchComponent(`${ window.__padmin.basename }/load/components/login`);
         break;
       case constants.ui.MAIN_COMPONENT:
         component = constants.ui.MAIN_COMPONENT;
-        if (!COMPONENTS[component]) COMPONENTS[component] = fetchComponent(`${ window.__padmin.hostname }/load/components/main`);
+        if (!COMPONENTS[component]) COMPONENTS[component] = fetchComponent(`${ window.__padmin.basename }/load/components/main`);
         break;
       default:
         component = false;
@@ -62,19 +64,6 @@ const ui = {
         }, e => dispatch(this.handleFailedFetchComponent(component, e)))
     }.bind(this);
   }
-  // sendApplicationState(appState) {
-  //   return {
-  //     type: constants.ui.GET_APP_STATE,
-  //     payload: {
-  //       appState,
-  //     },
-  //   };
-  // },
-  // getApplicationState() {
-  //   return (dispatch, getState)=>{
-  //     dispatch(this.sendApplicationState(getState()));
-  //   };
-  // },
 };
 
 export default ui;

@@ -23,7 +23,13 @@ export default {
     SAVE_DATA_SUCCESS: 'user profile saving data succeeded',
     LOGOUT_REQUEST:'user logout request',
     LOGOUT_SUCCESS:'user logout succeeded',    
-    LOGOUT_FAILURE:'user logout failed',    
+    LOGOUT_FAILURE:'user logout failed',
+    PREFERENCE_LOAD_SUCCESS: 'preferences loaded',
+    PREFERENCE_LOAD_ERROR: 'preferences failed',
+    PREFERENCE_REQUEST: 'perferences request',
+    NAVIGATION_LOAD_SUCCESS: 'navigation loaded',
+    NAVIGATION_LOAD_ERROR: 'navigation failed',
+    NAVIGATION_REQUEST: 'navigation request'
     // CURRENT_USER_STATUS:'get current login status',    
   },
   clientCacheData:{

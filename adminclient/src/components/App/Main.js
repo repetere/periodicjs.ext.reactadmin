@@ -79,19 +79,22 @@ class MainApp extends Component{
             
             if (moment(jwt_token_data.expires).isBefore(currentTime)) {
               let expiredTokenError = new Error(`Access Token Expired ${moment(jwt_token_data.expires).format('LLLL')}`);
-              setTimeout(() => {
+              let task = setTimeout(() => {
                 this.handleErrorNotification({ message: 'Access Token Expired' + expiredTokenError, }, expiredTokenError);
+                clearTimeout(task);
               }, 1000);
               throw expiredTokenError;
             } else {
               console.log('saving logged in user',{json})
               this.props.saveUserProfile(url, response, json);
+              this.props.initializeAuthenticatedUser(json.token);
               // if (appTabs) {
               //   this.props.setTabExtensions(appTabs);
               // }
             }
           } else if (jwt_token) {
             this.props.getUserProfile(jwt_token);
+            this.props.initializeAuthenticatedUser(jwt_token);
           }
           else {
             console.log('MAIN componentDidMount USER IS NOT LOGGED IN');

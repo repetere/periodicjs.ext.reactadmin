@@ -1,4 +1,4 @@
-{
+module.exports = {
   'containers': {
     '/healthcheck': {
       layout: {
