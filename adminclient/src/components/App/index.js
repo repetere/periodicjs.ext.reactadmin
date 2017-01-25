@@ -49,6 +49,7 @@ const reduxActions = {
     getState: () => store.getState(),//.dispatch(actions.user.getUserStatus()),
     getUserProfile: (jwt_token) => store.dispatch(actions.user.getUserProfile(jwt_token)),
     saveUserProfile: (url, response, json) => store.dispatch(actions.user.saveUserProfile(url, response, json)),
+    initializeAuthenticatedUser: (jwt_token) => store.dispatch(actions.user.initializeAuthenticatedUser(jwt_token)),
     loginUser: (formdata) => store.dispatch(actions.user.loginUser(formdata)),
     toggleUISidebar: () => store.dispatch(actions.ui.toggleUISidebar()),
     setUILoadedState: (loaded) => store.dispatch(actions.ui.setUILoadedState(loaded)),

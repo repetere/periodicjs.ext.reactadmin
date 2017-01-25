@@ -1,14 +1,5 @@
 import constants from '../constants';
-
-const checkStatus = function (response) {
-  if (response.status >= 200 && response.status < 300) {
-    return response;
-  } else {
-    let error = new Error(response.statusText);
-    error.response = response;
-    throw error;
-  }
-};
+import utilities from '../util';
 
 const manifest = {
   manifestRequest() {
@@ -17,32 +8,27 @@ const manifest = {
       payload: { },
     };
   },
-  recievedManifestData(json) {
+  receivedManifestData (data) {
     return {
       type: constants.manifest.MANIFEST_DATA_SUCCESS,
-      payload: json,
+      payload: data,
     };
   },
-  failedManifestRetrival(error) {
+  failedManifestRetrival (error) {
     return {
       type: constants.manifest.MANIFEST_DATA_FAILURE,
       payload: { error, },
     };
   },
-  getApplicationManifest() {
-    return (dispatch, getState)=>{
+  fetchManifest (options = {}) {
+    return (dispatch) => {
       dispatch(this.manifestRequest());
-      fetch('url', {})
-        .then(checkStatus)
-        .then(response => response.json())
-        .then(responseData => {
-          dispatch(this.recievedManifestData(responseData));
-        })
-        .catch(e => {
-          dispatch(this.failedManifestRetrival(e));
-        });
+      return utilities.fetchComponent(`${ window.__padmin.basename }/load/manifest`, options)()
+        .then(response => {
+          dispatch(this.receivedManifestData(response.data.settings));
+        }, e => dispatch(this.failedManifestRetrival(e)))
     };
-  },
+  }
 };
 
 export default manifest;

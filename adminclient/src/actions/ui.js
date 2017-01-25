@@ -25,16 +25,32 @@ const ui = {
       payload: loaded,
     };
   },
+  handleFetchedComponent: function (type, response) {
+    return {
+      type: type,
+      success: true,
+      payload: {
+        settings: response.data.settings
+      }
+    };
+  },
+  handleFailedFetchComponent: function (type, error) {
+    return {
+      type: type,
+      success: false,
+      payload: { error }
+    };
+  },
   fetchComponent: function (type) {
     let component;
     switch (type) {
       case constants.ui.LOGIN_COMPONENT:
         component = constants.ui.LOGIN_COMPONENT;
-        if (!COMPONENTS[component]) COMPONENTS[component] = fetchComponent(`${ window.__padmin.hostname }/load/components/login`);
+        if (!COMPONENTS[component]) COMPONENTS[component] = fetchComponent(`${ window.__padmin.basename }/load/components/login`);
         break;
       case constants.ui.MAIN_COMPONENT:
         component = constants.ui.MAIN_COMPONENT;
-        if (!COMPONENTS[component]) COMPONENTS[component] = fetchComponent(`${ window.__padmin.hostname }/load/components/main`);
+        if (!COMPONENTS[component]) COMPONENTS[component] = fetchComponent(`${ window.__padmin.basename }/load/components/main`);
         break;
       default:
         component = false;
@@ -44,24 +60,10 @@ const ui = {
       dispatch({ type: `INIT_${ component }` });
       return COMPONENTS[component]()
         .then(response => {
-          let settings = response.data.settings;
-          dispatch({ type: component, success: true, settings });
-        }, e => dispatch({ type: component, success: false, error: e }))
-    };
+          dispatch(this.handleFetchedComponent(component, response));
+        }, e => dispatch(this.handleFailedFetchComponent(component, e)))
+    }.bind(this);
   }
-  // sendApplicationState(appState) {
-  //   return {
-  //     type: constants.ui.GET_APP_STATE,
-  //     payload: {
-  //       appState,
-  //     },
-  //   };
-  // },
-  // getApplicationState() {
-  //   return (dispatch, getState)=>{
-  //     dispatch(this.sendApplicationState(getState()));
-  //   };
-  // },
 };
 
 export default ui;
