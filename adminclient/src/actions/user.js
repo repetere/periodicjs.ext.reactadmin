@@ -4,6 +4,8 @@ import { push,/* replace, go, goForward, goBack */} from 'react-router-redux';
 import { AsyncStorage, } from 'react-native';
 import pageActions from './pages';
 import qs from 'querystring';
+import utilities from '../util';
+import manifest from './manifest';
 // import { Platform, } from 'react-web';
 
 // import Immutable from 'immutable';
@@ -101,6 +103,58 @@ const user = {
       },
     };
   },
+  preferenceSuccessResponse (response) {
+    return {
+      type: constants.user.PREFERENCE_LOAD_SUCCESS,
+      payload: {
+        preferences: response.data.settings,
+        updatedAt: new Date(),
+        timestamp: Date.now(),
+      }
+    }
+  },
+  preferenceErrorResponse (error) {
+    return {
+      type: constants.user.PREFERENCE_LOAD_ERROR,
+      payload: { 
+        error,
+        updatedAt: new Date(),
+        timestamp: Date.now(),
+      }
+    };
+  },
+  preferenceRequest () {
+    return {
+      type: constants.user.PREFERENCE_REQUEST,
+      payload: {}
+    };
+  },
+  navigationSuccessResponse (response) {
+    return {
+      type: constants.user.NAVIGATION_LOAD_SUCCESS,
+      payload: {
+        navigation: response.data.settings,
+        updatedAt: new Date(),
+        timestamp: Date.now(),
+      }
+    }
+  },
+  navigationErrorResponse (error) {
+    return {
+      type: constants.user.NAVIGATION_LOAD_ERROR,
+      payload: { 
+        error,
+        updatedAt: new Date(),
+        timestamp: Date.now(),
+      }
+    };
+  },
+  navigationRequest () {
+    return {
+      type: constants.user.NAVIGATION_REQUEST,
+      payload: {}
+    };
+  },
   logoutUser() {
     return (dispatch) => {
       dispatch(pageActions.resetAppLoadedState());
@@ -123,23 +177,41 @@ const user = {
         });
     };
   },
+  fetchPreferences (options = {}) {
+    return (dispatch, getState) => {
+      dispatch(this.preferenceRequest());
+      let state = getState();
+      let basename = state.settings.basename;
+      return utilities.fetchComponent(`${ basename }/load/preferences`, options)()
+        .then(response => {
+          dispatch(this.preferenceSuccessResponse(response));
+        }, e => dispatch(this.preferenceErrorResponse(e)));
+    };
+  },
+  fetchNavigation (options = {}) {
+    return (dispatch, getState) => {
+      dispatch(this.navigationRequest());
+      let state = getState();
+      let basename = state.settings.basename;
+      return utilities.fetchComponent(`${ basename }/load/navigation`, options)()
+        .then(response => {
+          dispatch(this.navigationSuccessResponse(response));
+        }, e => dispatch(this.navigationErrorResponse(e)));
+    };
+  },
   getUserProfile(jwt_token, responseFormatter) {
     return (dispatch, getState) => {
       let fetchResponse;
-      let url = LoginSettings[ getState().page.runtime.environment ].userprofile.url;
+      let url = getState().settings.userprofile.url;
       dispatch(this.loginRequest(url));
       fetch(url, {
-        method: LoginSettings[getState().page.runtime.environment].userprofile.method || 'POST',
+        method: getState().settings.userprofile.method || 'POST',
         headers: Object.assign({
           'Accept': 'application/json',
           'Content-Type': 'application/json',
-        }, LoginSettings[getState().page.runtime.environment].userprofile.options.headers, {
+        }, getState().settings.userprofile.options.headers, {
           'x-access-token': jwt_token,
-        }),
-        // body: JSON.stringify({
-        //   username: loginData.username,
-        //   password: loginData.password,
-        // })
+        })
       })
         .then(checkStatus)
         .then((response) => {
@@ -156,13 +228,29 @@ const user = {
           }
         })
         .then((responseData) => {
-          // AsyncStorage.setItem(constants.jwt_token.PROFILE_JSON, JSON.stringify(responseData.user));
           dispatch(this.saveUserProfile(url, fetchResponse, responseData));
         })
         .catch((error) => {
           dispatch(this.failedUserRequest(url, error));
         });
     }
+  },
+  initializeAuthenticatedUser (token) {
+    return (dispatch, getState) => {
+      let requestOptions = {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'x-access-token': token,
+        }
+      };
+      return Promise.all([
+        manifest.fetchManifest(requestOptions)(dispatch, getState),
+        this.fetchPreferences(requestOptions)(dispatch, getState),
+        this.fetchNavigation(requestOptions)(dispatch, getState)
+      ]);
+    };
   },
   /**
   * @param {string} url url for fetch request
@@ -206,7 +294,6 @@ const user = {
           }
         })
         .then((responseData) => {
-          console.log('login USER responseData', responseData);
           cachedResponseData = responseData;
           return Promise.all([
             AsyncStorage.setItem(constants.jwt_token.TOKEN_NAME, responseData.token),
@@ -216,6 +303,7 @@ const user = {
               token: responseData.token,
             })),
             AsyncStorage.setItem(constants.jwt_token.PROFILE_JSON, JSON.stringify(responseData.user)),
+            this.initializeAuthenticatedUser(responseData.token)(dispatch)
           ]);
         })
         .then(() => {

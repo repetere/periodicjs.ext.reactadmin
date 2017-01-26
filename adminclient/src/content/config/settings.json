@@ -1,5 +1,6 @@
 {
   "name":"reactadmin",
+  "basename": "http://localhost:8786",
   "routerHistory":"browserHistory",
   "allHistoryOptions":"browserHistory|hashHistory|createMemoryHistory",
   "application":{

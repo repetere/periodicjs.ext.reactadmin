@@ -37,7 +37,7 @@ function getRoutes(appContainer) {
       // onEnter: requireAuth,
       indexRoute: { 
       // onEnter: requireAuth,
-        component: containers.PageComponents.HomePage,
+        component: containers.PageComponents.LoginPage,
       },
       childRoutes: sharedChildRoutes,
     },{
@@ -46,7 +46,7 @@ function getRoutes(appContainer) {
       // onEnter: requireAuth,
       indexRoute: { 
       // onEnter: requireAuth,
-        component: containers.PageComponents.HomePage,
+        component: containers.PageComponents.LoginPage,
       },
       childRoutes: sharedChildRoutes,
     }]

@@ -6,9 +6,9 @@ import MenuAppLink from '../AppSidebar/MenuAppLink';
 import SubMenuLinks from '../AppSidebar/SubMenuLinks'; 
 import ResponsiveTable from '../ResponsiveTable';
 import ResponsiveCard from '../ResponsiveCard';
-import FormItem from '../FormItem'; // FormHorizontal, NavToggle, ControlLabel, Group,
-// import * as reactdom from 'react-dom';
-//https://github.com/lolJS/react-animate.css/blob/master/src/app.js
+import FormItem from '../FormItem';
+import utilities from '../../util';
+
 let renderIndex = 0;
 
 export let AppLayoutMap = Object.assign({}, {
@@ -18,17 +18,15 @@ export let AppLayoutMap = Object.assign({}, {
 // console.log({ AppLayoutMap });
 // console.log({ ReactDOM: React.DOM['div'] });
 
-export function getRenderedComponent(componentObject) {
-  // console.log('AppLayoutMap[ componentObject.component ]',AppLayoutMap[ componentObject.component ])
+export function getRenderedComponent (componentObject, resources) {
   renderIndex++;
-  let renderedCompProps = Object.assign({key:renderIndex}, componentObject.props);
+  let asyncprops = (componentObject.asyncprops && typeof componentObject.asyncprops === 'object') ? utilities.traverse(componentObject.asyncprops, resources) : {};
+  let renderedCompProps = Object.assign({ key: renderIndex }, componentObject.props, asyncprops);
   return createElement(
-    (React.DOM[componentObject.component])?componentObject.component:AppLayoutMap[ componentObject.component ],
+    (React.DOM[componentObject.component]) ? componentObject.component : AppLayoutMap[componentObject.component],
     renderedCompProps,
-    (Array.isArray(componentObject.children) && typeof componentObject.children !=='string') ?
-      componentObject.children.map(childComponentObject => getRenderedComponent(childComponentObject)) :
+    (Array.isArray(componentObject.children) && typeof componentObject.children !== 'string') ?
+      componentObject.children.map(childComponentObject => getRenderedComponent(childComponentObject, resources)) :
       componentObject.children
   );
 };
-// export AppLayoutMap;
-

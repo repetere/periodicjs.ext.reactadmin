@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   component: 'Menu',
   props: {},
   children: [ {

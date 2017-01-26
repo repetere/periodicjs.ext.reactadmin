@@ -1,5 +1,6 @@
 {
   "development":{
+  	"basename": "http://localhost:8786",
     "adminPath":"p-admin",
 	  "name":"reactadmin",
 	  "routerHistory":"browserHistory",
