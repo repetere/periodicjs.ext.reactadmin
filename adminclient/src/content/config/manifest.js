@@ -31,6 +31,9 @@ module.exports = {
       layout: {
         component: 'Hero',
         props: { size: 'isFullheight', },
+        asyncprops: {
+          healthcheck: ['healthcheckStatus']
+        },
         children: [ {
           component: 'HeroBody',
           props:{},
@@ -51,7 +54,9 @@ module.exports = {
           }]
         }]
       },
-      resources: {},
+      resources: {
+        healthcheckStatus: '/load/healthcheck'
+      },
       onFinish:'render'
     }
   }

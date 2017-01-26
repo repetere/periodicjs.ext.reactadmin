@@ -3,6 +3,7 @@ import { Hero, HeroBody, Container, Content, } from 're-bulma';
 import styles from '../styles';
 import AppSectionLoading from '../components/AppSectionLoading';
 import { getRenderedComponent, } from '../components/AppLayoutMap';
+import utilities from '../util';
 
 let AppManifest = {};
 class PageNotFound extends Component { 
@@ -30,7 +31,7 @@ const setAppManifest = (props) => {
 class DynamicPage extends Component {
   constructor(props) {
     const Props = Object.assign({}, props, props.getState());
-    super(Props);
+    super(props);
     setAppManifest(Props.manifest);
     this.state = {
       ui_is_loaded: false,
@@ -39,11 +40,28 @@ class DynamicPage extends Component {
     this.uiLayout;
   }
 
-  fetchData(options) {
+  fetchData (options = {}) {
     const pathname = (window.location.pathname) ? window.location.pathname : this.props.location.pathname;
-    if (AppManifest.containers[ pathname ]) {
-      this.uiLayout = getRenderedComponent(AppManifest.containers[ pathname ].layout);
-      this.setState({ ui_is_loaded: true });
+    if (AppManifest.containers[pathname]) {
+      let layout = Object.assign({}, AppManifest.containers[pathname].layout);
+      if (layout.asyncprops && typeof layout.asyncprops === 'object') {
+        this.setState({ ui_is_loaded: false });
+        return utilities.fetchPaths(window.__padmin.basename, AppManifest.containers[pathname].resources)
+          .then(utilities.traverse.bind(null, layout.asyncprops))
+          .then(result => {
+            layout.asyncprops = result;
+            AppManifest.containers[pathname].layout = Object.assign({}, AppManifest.containers[pathname], { layout });
+            this.uiLayout = getRenderedComponent(layout);
+            this.setState({ ui_is_loaded: true, async_data_is_loaded: true });
+          })
+          .catch(e => {
+            this.setState({ ui_is_loaded: true, async_data_is_loaded: true });
+          });
+      }
+      else {
+        this.uiLayout = getRenderedComponent(AppManifest.containers[pathname].layout);
+        this.setState({ ui_is_loaded: true });
+      }
     }
     else {
       this.uiLayout = <PageNotFound/>;
@@ -52,11 +70,11 @@ class DynamicPage extends Component {
   }
   componentDidMount() { // console.log('component DId Mount', this.props);
     this.setState({ ui_is_loaded: false });
-    this.fetchData.call(this, {});
+    this.fetchData();
   }
   componentWillReceiveProps(nextProps) { // console.log('DynamicPage componentWillReceiveProps nextProps', nextProps);
     this.setState({ ui_is_loaded: false });
-    this.fetchData.call(this, {});
+    this.fetchData();
   }
   render() {
     return (this.state.ui_is_loaded ===false)? <AppSectionLoading/> : this.uiLayout;
