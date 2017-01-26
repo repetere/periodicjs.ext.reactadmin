@@ -45,7 +45,7 @@ class DynamicPage extends Component {
     if (AppManifest.containers[pathname]) {
       let layout = Object.assign({}, AppManifest.containers[pathname].layout);
       if (AppManifest.containers[pathname].resources && typeof AppManifest.containers[pathname].resources === 'object') {
-        return utilities.fetchPaths(window.__padmin.basename, AppManifest.containers[pathname].resources)
+        return utilities.fetchPaths(this.props.getState().settings.basename, AppManifest.containers[pathname].resources)
           .then(resources => {
             this.uiLayout = getRenderedComponent(layout, resources);
             this.setState({ ui_is_loaded: true, async_data_is_loaded: true });

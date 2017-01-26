@@ -178,18 +178,22 @@ const user = {
     };
   },
   fetchPreferences (options = {}) {
-    return (dispatch) => {
+    return (dispatch, getState) => {
       dispatch(this.preferenceRequest());
-      return utilities.fetchComponent(`${ window.__padmin.basename }/load/preferences`, options)()
+      let state = getState();
+      let basename = state.settings.basename;
+      return utilities.fetchComponent(`${ basename }/load/preferences`, options)()
         .then(response => {
           dispatch(this.preferenceSuccessResponse(response));
         }, e => dispatch(this.preferenceErrorResponse(e)));
     };
   },
   fetchNavigation (options = {}) {
-    return (dispatch) => {
+    return (dispatch, getState) => {
       dispatch(this.navigationRequest());
-      return utilities.fetchComponent(`${ window.__padmin.basename }/load/navigation`, options)()
+      let state = getState();
+      let basename = state.settings.basename;
+      return utilities.fetchComponent(`${ basename }/load/navigation`, options)()
         .then(response => {
           dispatch(this.navigationSuccessResponse(response));
         }, e => dispatch(this.navigationErrorResponse(e)));
@@ -232,7 +236,7 @@ const user = {
     }
   },
   initializeAuthenticatedUser (token) {
-    return (dispatch) => {
+    return (dispatch, getState) => {
       let requestOptions = {
         method: 'POST',
         headers: {
@@ -242,9 +246,9 @@ const user = {
         }
       };
       return Promise.all([
-        manifest.fetchManifest(requestOptions)(dispatch),
-        this.fetchPreferences(requestOptions)(dispatch),
-        this.fetchNavigation(requestOptions)(dispatch)
+        manifest.fetchManifest(requestOptions)(dispatch, getState),
+        this.fetchPreferences(requestOptions)(dispatch, getState),
+        this.fetchNavigation(requestOptions)(dispatch, getState)
       ]);
     };
   },

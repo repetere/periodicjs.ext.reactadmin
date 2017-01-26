@@ -21,9 +21,11 @@ const manifest = {
     };
   },
   fetchManifest (options = {}) {
-    return (dispatch) => {
+    return (dispatch, getState) => {
       dispatch(this.manifestRequest());
-      return utilities.fetchComponent(`${ window.__padmin.basename }/load/manifest`, options)()
+      let state = getState();
+      let basename = state.settings.basename;
+      return utilities.fetchComponent(`${ basename }/load/manifest`, options)()
         .then(response => {
           dispatch(this.receivedManifestData(response.data.settings));
         }, e => dispatch(this.failedManifestRetrival(e)))
