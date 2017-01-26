@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Menu, MenuLabel, MenuLink, MenuList, } from 're-bulma'; //Icon
+// import { Menu, MenuLabel, MenuLink, MenuList, } from 're-bulma'; //Icon
 import { getRenderedComponent, } from '../AppLayoutMap';
 import styles from '../../styles';
 import navigation from '../../content/config/default_navigation';

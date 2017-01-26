@@ -1,5 +1,4 @@
 import constants from '../constants';
-import LoginSettings from '../content/config/login.json';
 import { push,/* replace, go, goForward, goBack */} from 'react-router-redux';
 import { AsyncStorage, } from 'react-native';
 import pageActions from './pages';
