@@ -5,13 +5,14 @@ import RawOutput from '../RawOutput';
 import MenuAppLink from '../AppSidebar/MenuAppLink'; 
 import SubMenuLinks from '../AppSidebar/SubMenuLinks'; 
 import ResponsiveTable from '../ResponsiveTable';
+import ResponsiveCard from '../ResponsiveCard';
 import FormItem from '../FormItem'; // FormHorizontal, NavToggle, ControlLabel, Group,
 // import * as reactdom from 'react-dom';
 //https://github.com/lolJS/react-animate.css/blob/master/src/app.js
 let renderIndex = 0;
 
 export let AppLayoutMap = Object.assign({}, {
-  ResponsiveForm, RawOutput, FormItem, MenuAppLink, SubMenuLinks, ResponsiveTable
+  ResponsiveForm, RawOutput, FormItem, MenuAppLink, SubMenuLinks, ResponsiveTable, ResponsiveCard,
 }, React.DOM, rebulma);
 
 // console.log({ AppLayoutMap });

@@ -75,11 +75,11 @@ export default class ResponsiveTable extends Component {
         'phone': '(917) 224-4883',
         'state': 'NY'
       }],
-      hasPagination: props.hasPagination || false,
+      hasPagination: props.hasPagination || true,
       hasHeader: props.hasHeader || false,
       hasFooter: props.hasFooter || false,
       maxRows: props.maxRows || 50,
-      currentPage: props.currentPage || 1,
+      currentPage: props.currentPage || 10,
       numItems: props.itemCount || 1000,
       numPages: 20,
       numButtons: props.numButtons
@@ -92,7 +92,7 @@ export default class ResponsiveTable extends Component {
         const pageButtons = [];
 
         let start = currentPage - 2;
-        let end = currentPage + 2;
+        let end = currentPage;
         const lastIndex = numPages - 1;
         if (start < 0) {
             end += -start;
@@ -179,7 +179,7 @@ export default class ResponsiveTable extends Component {
           })}
         </rb.Tbody>
       </rb.Table>
-      {true ? footer : ""}
+      {this.state.hasPagination ? footer : ""}
       </rb.Container>  
     )
   }

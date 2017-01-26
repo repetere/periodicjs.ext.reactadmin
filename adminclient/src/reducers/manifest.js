@@ -11,13 +11,13 @@ const initialState = {
       layout: {
         component: 'Hero',
         props: { size: 'isFullheight', },
-        children: [ {
+        children: [{
           component: 'HeroBody',
-          props:{},
-          children: [ {
+          props: {},
+          children: [{
             component: 'Container',
-            props:{},
-            children:[
+            props: {},
+            children: [
               {
                 component: 'RawOutput',
                 asyncProps: ['healthcheckStatus']
@@ -30,9 +30,9 @@ const initialState = {
         }]
       },
       resources: {
-        healthcheckStatus:'/healthcheck'
+        healthcheckStatus: '/healthcheck'
       },
-      onFinish:'render'
+      onFinish: 'render'
     },
     '/applications': {
       layout: {
@@ -42,12 +42,24 @@ const initialState = {
         //   component: 'HeroBody',
         //   props: {},
         //   children: [{
-            component: 'Container',
-            props: { style: styles.mainContainer },
-            children: [{
-              component: 'ResponsiveTable',
-              props: {}
-            }]
+        component: 'Container',
+        props: { style: styles.mainContainer },
+        children: [{
+            component: 'ResponsiveTable',
+            props: {}
+          }, {
+              component: 'ResponsiveCard',
+              props: { cardTitle: 'Application Overview' },
+              children: []
+          }, {
+              component: 'ResponsiveCard',
+              props: { cardTitle: 'Applicant Detail' },
+              children: []
+          }, {
+              component: 'ResponsiveCard',
+              props: { cardTitle: 'Customer Detail' },
+              children: []
+          }]
         //   }]
         // }]
       },
