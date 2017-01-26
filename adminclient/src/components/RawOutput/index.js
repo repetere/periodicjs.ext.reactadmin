@@ -1,7 +1,15 @@
 import React from 'react';
 
-const RawOutput = (props) => {
-  <pre>{JSON.stringify(props,null,2)}</pre>;
-}
+const RawJSON = (props) => {
+  return (
+  	<pre>{JSON.stringify(props,null,2)}</pre>
+  );
+};
+
+const RawHTML = (props) => {
+	return (
+		
+	);
+};
 
 export default RawOutput;
