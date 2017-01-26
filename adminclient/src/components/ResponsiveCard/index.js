@@ -9,26 +9,27 @@ export default class ResponsiveCard extends Component {
 
     this.state = {
       display: 'block',
-      cardTitle: props.cardTitle
+      icon: 'fa fa-angle-down',
+      cardTitle: props.cardTitle || 'Not set'
     };
   }
 
 
   expandCard() {
     this.setState({
-      display: (this.state.display === 'none') ? 'block' : 'none'
+      display: (this.state.display === 'none') ? 'block' : 'none',
+      icon: (this.state.icon === 'fa fa-angle-down') ? 'fa fa-angle-right' : 'fa fa-angle-down'
     })
   };
-  
 
   render() {
     let fullCard = (
       <Card isFullwidth>
-        <CardHeader>
+        <CardHeader >
           <CardHeaderTitle>
             {this.state.cardTitle}
           </CardHeaderTitle>
-          <CardHeaderIcon icon="fa fa-angle-down" onClick={() => this.expandCard()}/>
+          <CardHeaderIcon icon={this.state.icon} onClick={() => this.expandCard()}/>
         </CardHeader>
         <CardContent style={{ display: this.state.display }}>
           <Content>
@@ -36,8 +37,6 @@ export default class ResponsiveCard extends Component {
           </Content>
         </CardContent>
       </Card>);
-    
     return fullCard;
-
   }
 }
