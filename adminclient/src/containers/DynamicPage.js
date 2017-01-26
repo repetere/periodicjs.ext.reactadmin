@@ -37,7 +37,7 @@ class DynamicPage extends Component {
       ui_is_loaded: false,
       async_data_is_loaded: false,
     };
-    this.uiLayout;
+    this.uiLayout = {};
   }
 
   fetchData (options = {}) {

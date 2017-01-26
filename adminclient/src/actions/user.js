@@ -1,5 +1,4 @@
 import constants from '../constants';
-import LoginSettings from '../content/config/login.json';
 import { push,/* replace, go, goForward, goBack */} from 'react-router-redux';
 import { AsyncStorage, } from 'react-native';
 import pageActions from './pages';
@@ -303,7 +302,7 @@ const user = {
               token: responseData.token,
             })),
             AsyncStorage.setItem(constants.jwt_token.PROFILE_JSON, JSON.stringify(responseData.user)),
-            this.initializeAuthenticatedUser(responseData.token)(dispatch)
+            this.initializeAuthenticatedUser(responseData.token)(dispatch, getState)
           ]);
         })
         .then(() => {

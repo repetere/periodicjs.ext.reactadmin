@@ -30,7 +30,7 @@ module.exports = {
     '/documentation': {
       layout: {
         component: 'Hero',
-        props: { size: 'isFullheight', },
+        props: { size: 'isFullheight' },
         children: [ {
           component: 'HeroBody',
           props:{},
@@ -43,7 +43,9 @@ module.exports = {
             children:[
               {
                 component: 'div',
-                children: 'div text'
+                props: {
+                  dangerouslySetInnerHTML: {__html:'<h1>Hello World</h1>'}
+                }
               },
               {
                 component: 'Title',

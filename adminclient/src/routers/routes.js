@@ -1,22 +1,5 @@
 import containers from '../containers';
-import constants from '../constants';
-
-let isLoggedIn = () => {
-  return window && !!window.localStorage[ constants.jwt_token.TOKEN_NAME ];
-};
-
-let requireAuth = (nextState, replaceState) => {
-  // console.log({ nextState, replaceState });
-  // console.log("nextState.location.pathname.indexOf('p-admin')!==-1",nextState.location.pathname.indexOf('p-admin')!==-1)
-  if (!isLoggedIn()) {
-    replaceState({
-      pathname: (nextState.location.pathname.indexOf('p-admin')!==-1)?`/p-admin/login?return_url=${nextState.location.pathname}`:`/login?return_url=${nextState.location.pathname}`,
-      state: {
-        nextPathname: nextState.location.pathname
-      },
-    })
-  }
-};
+import utilities from '../util';
 
 function getRoutes(appContainer) {
   // console.log('appContainer',appContainer)
@@ -28,6 +11,7 @@ function getRoutes(appContainer) {
     },
   }, {
     path: '*',
+    onEnter: utilities.requireAuth,
     component: containers.PageComponents.DynamicPage,
   }];
   return {
