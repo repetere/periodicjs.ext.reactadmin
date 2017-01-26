@@ -17,9 +17,8 @@ export let AppLayoutMap = Object.assign({}, {
 // console.log({ ReactDOM: React.DOM['div'] });
 
 export function getRenderedComponent(componentObject) {
-  // console.log('AppLayoutMap[ componentObject.component ]',AppLayoutMap[ componentObject.component ])
   renderIndex++;
-  let renderedCompProps = Object.assign({key:renderIndex}, componentObject.props);
+  let renderedCompProps = Object.assign({key:renderIndex}, componentObject.props, componentObject.asyncprops);
   return createElement(
     (React.DOM[componentObject.component])?componentObject.component:AppLayoutMap[ componentObject.component ],
     renderedCompProps,
@@ -28,5 +27,3 @@ export function getRenderedComponent(componentObject) {
       componentObject.children
   );
 };
-// export AppLayoutMap;
-

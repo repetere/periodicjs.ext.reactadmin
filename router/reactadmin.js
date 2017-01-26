@@ -9,6 +9,9 @@ module.exports = function(resources) {
     ReactAdminRouter.post('/preferences', reactadminController.loadUserPreferences);
     ReactAdminRouter.post('/navigation', reactadminController.loadNavigation);
     ReactAdminRouter.get('/components/:component', reactadminController.loadComponent);
+    ReactAdminRouter.get('/healthcheck', function (req, res) {
+    	res.status(200).send({ status: 'ok' });
+    });
     ReactAdminRouter.all('/!(manifest|components|preferences)', reactadminController.index);
 
     return ReactAdminRouter;
