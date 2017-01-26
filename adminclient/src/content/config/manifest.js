@@ -31,12 +31,12 @@ module.exports = {
       layout: {
         component: 'Hero',
         props: { size: 'isFullheight', },
-        asyncprops: {
-          healthcheck: ['healthcheckStatus']
-        },
         children: [ {
           component: 'HeroBody',
           props:{},
+          asyncprops: {
+            healthcheck: ['healthcheckStatus']
+          },
           children: [ {
             component: 'Container',
             props:{},
