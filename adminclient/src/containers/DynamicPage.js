@@ -40,11 +40,11 @@ class DynamicPage extends Component {
     this.uiLayout;
   }
 
-  fetchData(options = {}) {
+  fetchData (options = {}) {
     const pathname = (window.location.pathname) ? window.location.pathname : this.props.location.pathname;
     if (AppManifest.containers[pathname]) {
       let layout = Object.assign({}, AppManifest.containers[pathname].layout);
-      if (Array.isArray(layout.asyncprops) && layout.asyncprops.length) {
+      if (layout.asyncprops && typeof layout.asyncprops === 'object') {
         this.setState({ ui_is_loaded: false });
         return utilities.fetchPaths(window.__padmin.basename, AppManifest.containers[pathname].resources)
           .then(utilities.traverse.bind(null, layout.asyncprops))
@@ -77,7 +77,6 @@ class DynamicPage extends Component {
     this.fetchData();
   }
   render() {
-    if (this.uiLayout) console.log('there is a dynamic component');
     return (this.state.ui_is_loaded ===false)? <AppSectionLoading/> : this.uiLayout;
   }
 }

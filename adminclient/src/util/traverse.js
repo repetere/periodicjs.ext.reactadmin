@@ -1,28 +1,19 @@
 
 export const traverse = function (paths, data) {
-	paths = (Array.isArray(paths)) ? paths : [];
-  return paths.reduce((result, _path) => {
-		if (typeof _path === 'string') result[_path] = data[_path];
-		else {
-		  if (!Array.isArray(_path)) throw new TypeError('traverse expects paths to either be a string or Array');
-  		else {
-  			let value = data;
-  			let _result;
-  			let lastValid;
-  			while (value && typeof value === 'object' && _path.length) {
-  				let key = _path.shift();
-  				value = value[key];
-  				if (!_result) {
-  					result[key] = (!value || typeof value !== 'object' || !_path.length) ? value : {};
-  					_result = result[key];
-  				}
-  				else {
-  					_result[key] = (!value || typeof value !== 'object' || !_path.length) ? value : {};
-  					_result = _result[key];
-  				}
-  			}
-  		} 
+	let keys = Object.keys(paths);
+	if (!keys.length) return paths;
+	return keys.reduce((result, key) => {
+		if (typeof paths[key] === 'string') result[key] = data[paths[key]];
+		else if (Array.isArray(paths[key])) {
+			let _path = Object.assign([], paths[key]);
+			let value = data;
+			while (_path.length && value && typeof value === 'object') {
+				let prop = _path.shift();
+				value = value[prop];
+			}
+			result[key] = value;
 		}
+		else throw new TypeError('asyncprop paths must be a string or an array of strings or numeric indexes');
 		return result;
 	}, {});
 };
