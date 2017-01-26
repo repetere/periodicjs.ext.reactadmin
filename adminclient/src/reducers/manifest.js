@@ -36,20 +36,20 @@ const initialState = {
     },
     '/applications': {
       layout: {
-        component: 'Hero',
-        props: {size: 'isFullheight'},
-        children: [{
-          component: 'HeroBody',
-          props: {},
-          children: [{
+        // component: 'Hero',
+        // props: {size: 'isFullheight'},
+        // children: [{
+        //   component: 'HeroBody',
+        //   props: {},
+        //   children: [{
             component: 'Container',
-            props: {},
+            props: { style: styles.mainContainer },
             children: [{
               component: 'ResponsiveTable',
               props: {}
             }]
-          }]
-        }]
+        //   }]
+        // }]
       },
       resources: {},
       onFinish:'render'
