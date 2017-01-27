@@ -33,8 +33,8 @@ const ui = {
   handleFetchedComponent: function (type, response) {
     return {
       type: type,
-      success: true,
       payload: {
+        success: true,
         settings: response.data.settings,
       },
     };
@@ -42,8 +42,10 @@ const ui = {
   handleFailedFetchComponent: function (type, error) {
     return {
       type: type,
-      success: false,
-      payload: { error, },
+      payload: { 
+        success: false,
+        error,
+      },
     };
   },
   fetchComponent: function (type) {
