@@ -8,8 +8,7 @@
     "ecmaFeatures": {
       "ecmaVersion": 6,
       "jsx": true
-    },
-    "sourceType": "module"
+    }
   },
   "ecmaFeatures": {
     "ecmaVersion": 6
