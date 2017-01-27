@@ -4,6 +4,7 @@ const fs = require('fs-extra');
 const path = require('path');
 const MANIFEST = require(path.join(__dirname, '../adminclient/src/content/config/manifest'));
 const NAVIGATION = require(path.join(__dirname, '../adminclient/src/content/config/navigation'));
+const ERROR404 = require(path.join(__dirname, '../adminclient/src/content/config/dynamic404'));
 const COMPONENTS = {
   login: {
     status: 'uninitialized'
@@ -11,6 +12,12 @@ const COMPONENTS = {
   main: {
     footer: { status: 'uninitialized' },
     header: { status: 'uninitialized' }
+  },
+  error: {
+    ['404']: {
+      status: 'initialized',
+      settings: ERROR404
+    }
   }
 };
 

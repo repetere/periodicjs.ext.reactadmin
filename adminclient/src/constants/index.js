@@ -58,6 +58,7 @@ export default {
     LOAD_NAV_DATA_SUCCESS:'set nav ui loaded state',
     LOGIN_COMPONENT: 'fetchLoginComponent',
     MAIN_COMPONENT: 'fetchMainComponent',
+    ERROR_COMPONENTS: 'fetchErrorComponents',
     // GET_APP_STATE:'get current app state',
   },
   settings: {

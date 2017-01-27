@@ -10,9 +10,13 @@ const initialState = {
   login_ui_is_loaded: false,
   header_ui_is_loaded: false,
   footer_ui_is_loaded: false,
+  error_ui_is_loaded: false,
   nav_data: Object.assign({}, navigationSettings, windowState),
   app_data: {},
 };
+
+var containers;
+var components;
 
 const uiReducer = (state, action) => {
   switch (action.type) {
@@ -37,29 +41,40 @@ const uiReducer = (state, action) => {
       sidebar_is_open: false,
     });
   case `INIT_${ constants.ui.LOGIN_COMPONENT }`:
-    let containers = Object.assign({}, state.containers);
+    containers = Object.assign({}, state.containers);
     containers.login = {};
     return Object.assign({}, state, { containers, });
   case `INIT_${ constants.ui.MAIN_COMPONENT }`:
-    let components = Object.assign({}, state.components, { header: {}, footer: {}, });
+    components = Object.assign({}, state.components, { header: {}, footer: {}, });
     return Object.assign({}, state, { components, });
   case constants.ui.LOGIN_COMPONENT:
     if (!action.success) {
       console.log('There was an error retrieving login component', action.error);
-      break;
+      return state;
     } else {
-      let containers = Object.assign({}, state.containers, { login: action.payload.settings, });
-      return Object.assign({}, state, { containers, });
+      containers = Object.assign({}, state.containers, { login: action.payload.settings, });
+      return Object.assign({}, state, { containers, login_ui_is_loaded: true });
     }
   case constants.ui.MAIN_COMPONENT:
     if (!action.success) {
       console.log('There was an error retrieving main component', action.payload.error);
-      break;
+      return state;
     } else {
-      let components = Object.assign({}, state.components);
+      components = Object.assign({}, state.components);
       components.header = action.payload.settings.header || {};
       components.footer = action.payload.settings.footer || {};
-      return Object.assign({}, state, { components, });
+      return Object.assign({}, state, { components, header_ui_is_loaded: true, footer_ui_is_loaded: true });
+    }
+  case `INIT_${ constants.ui.ERROR_COMPONENTS }`:
+    components = Object.assign({}, state.components, { error: {}, });
+    return Object.assign({}, state, { components, });
+  case constants.ui.ERROR_COMPONENTS:
+    if (!action.success) {
+      console.log('There was an error retrieving error components', action.payload.error);
+      return state;
+    } else {
+      components = Object.assign({}, state.components, { error: action.payload.settings });
+      return Object.assign({}, state, { components, error_ui_is_loaded: true });
     }
   default:
     return Object.assign(initialState, state);

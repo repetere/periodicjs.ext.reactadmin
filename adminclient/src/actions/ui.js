@@ -56,6 +56,12 @@ const ui = {
           return fetchComponent(`${ basename }/load/components/main`);
         }
         break;
+      case constants.ui.ERROR_COMPONENTS:
+        component = constants.ui.ERROR_COMPONENTS;
+        if (!COMPONENTS[component]) COMPONENTS[component] = function (basename) {
+          return fetchComponent(`${ basename }/load/components/error`);
+        }
+        break;
       default:
         component = false;
     }
