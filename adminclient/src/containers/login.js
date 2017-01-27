@@ -211,7 +211,7 @@ class Login extends Component {
   // }
   // component
   render() {
-    // console.log(this.props)
+    this.getRenderedComponent = getRenderedComponent.bind(this);
     if (!this.state.componentIsLoaded) return (<AppSectionLoading />);
     let ui = this.props.getState().ui;
     let user = this.props.getState().user;
@@ -220,10 +220,10 @@ class Login extends Component {
       return <div><h1>USER IS LOGGED IN</h1><h2>{user.email}</h2></div>;
     } else {
       if (typeof ui.containers.login.status === 'undefined' || ui.containers.login.status === 'undefined' || ui.containers.login.status === 'uninitialized') {
-        return getRenderedComponent.call(this, getLoginLayout({
+        return this.getRenderedComponent( getLoginLayout({
           loginfunction:this.props.loginUser,
         }));
-      } else return getRenderedComponent.call(this, ui.containers.login);
+      } else return this.getRenderedComponent( ui.containers.login);
     }
   }
 }
