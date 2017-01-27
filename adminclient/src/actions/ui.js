@@ -18,8 +18,13 @@ const ui = {
       payload: { },
     };
   },
+  closeUISidebar() {
+    return {
+      type: constants.ui.CLOSE_SIDEBAR,
+      payload: { },
+    };
+  },
   setUILoadedState(loaded) {
-    // console.log('called laoded action')
     return {
       type: constants.ui.SET_UI_LOADED,
       payload: loaded,
@@ -30,46 +35,46 @@ const ui = {
       type: type,
       success: true,
       payload: {
-        settings: response.data.settings
-      }
+        settings: response.data.settings,
+      },
     };
   },
   handleFailedFetchComponent: function (type, error) {
     return {
       type: type,
       success: false,
-      payload: { error }
+      payload: { error, },
     };
   },
   fetchComponent: function (type) {
     let component;
     switch (type) {
-      case constants.ui.LOGIN_COMPONENT:
-        component = constants.ui.LOGIN_COMPONENT;
-        if (!COMPONENTS[component]) COMPONENTS[component] = function (basename) {
-          return fetchComponent(`${ basename }/load/components/login`);
-        }
-        break;
-      case constants.ui.MAIN_COMPONENT:
-        component = constants.ui.MAIN_COMPONENT;
-        if (!COMPONENTS[component]) COMPONENTS[component] = function (basename) {
-          return fetchComponent(`${ basename }/load/components/main`);
-        }
-        break;
-      default:
-        component = false;
+    case constants.ui.LOGIN_COMPONENT:
+      component = constants.ui.LOGIN_COMPONENT;
+      if (!COMPONENTS[component]) COMPONENTS[component] = function (basename) {
+        return fetchComponent(`${ basename }/load/components/login`);
+      };
+      break;
+    case constants.ui.MAIN_COMPONENT:
+      component = constants.ui.MAIN_COMPONENT;
+      if (!COMPONENTS[component]) COMPONENTS[component] = function (basename) {
+        return fetchComponent(`${ basename }/load/components/main`);
+      };
+      break;
+    default:
+      component = false;
     }
     if (!component) throw new Error(`Can't fetch component - ${ component }`);
     return function (dispatch, getState) {
       let state = getState();
       let basename = state.settings.basename;
-      dispatch({ type: `INIT_${ component }` });
+      dispatch({ type: `INIT_${ component }`, });
       return COMPONENTS[component](basename)()
         .then(response => {
           dispatch(this.handleFetchedComponent(component, response));
-        }, e => dispatch(this.handleFailedFetchComponent(component, e)))
+        }, e => dispatch(this.handleFailedFetchComponent(component, e)));
     }.bind(this);
-  }
+  },
 };
 
 export default ui;

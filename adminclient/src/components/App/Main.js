@@ -1,5 +1,5 @@
-import React, { Component, PropTypes } from 'react';
-import { Column, Columns } from 're-bulma';
+import React, { Component, PropTypes, } from 'react';
+import { Column, Columns, } from 're-bulma';
 import {  AsyncStorage,  } from 'react-native';
 import moment from 'moment';
 import styles from '../../styles';
@@ -25,7 +25,7 @@ import AppSectionLoading from '../AppSectionLoading';
 // }
 
 class MainApp extends Component{
-  constructor(props,context) {
+  constructor(props/*, context*/) {
     super(props);
     // console.log({ props, context });
     this.state = props;
@@ -57,7 +57,7 @@ class MainApp extends Component{
       AsyncStorage.getItem(constants.jwt_token.TOKEN_NAME),
       AsyncStorage.getItem(constants.jwt_token.TOKEN_DATA),
       AsyncStorage.getItem(constants.jwt_token.PROFILE_JSON),
-      this.props.fetchMainComponent()
+      this.props.fetchMainComponent(),
       // AsyncStorage.getItem(constants.async_token.TABBAR_TOKEN),
     ])
       .then((results) => {
@@ -85,7 +85,7 @@ class MainApp extends Component{
               }, 1000);
               throw expiredTokenError;
             } else {
-              console.log('saving logged in user',{json})
+              // console.log('saving logged in user', { json, });
               this.props.saveUserProfile(url, response, json);
               this.props.initializeAuthenticatedUser(json.token);
               // if (appTabs) {
@@ -106,42 +106,51 @@ class MainApp extends Component{
         
       })
       .catch((error) => {
-        console.log('MAIN componentDidMount: JWT USER Login Error.', error);
+        console.error('MAIN componentDidMount: JWT USER Login Error.', error);
         this.props.logoutUser();
         this.props.setUILoadedState(true);
       });
   }
   componentWillUnmount() {
   }
-  componentWillUpdate(nextProps, nextState) {
-    // console.log('COMPONENT WILL UPDATE');
-    // console.log('COMPONENT WILL UPDATE',{refs:this.refs}, { nextProps }, { nextState })
-    // this.loadExtensionRoute(nextProps.location.pathname);
-    // perform any preparations for an upcoming update
-  }
+  // componentWillUpdate(nextProps, nextState) {
+  //   // console.log('COMPONENT WILL UPDATE');
+  //   // console.log('COMPONENT WILL UPDATE',{refs:this.refs}, { nextProps }, { nextState })
+  //   // this.loadExtensionRoute(nextProps.location.pathname);
+  //   // perform any preparations for an upcoming update
+  // }
   render() {
     // console.log('this.state', this.state);
     let sidebarColumn = (this.state.ui.sidebar_is_open)
-      ? (<Column size="isNarrow" style={Object.assign({},styles.fullMinHeight,styles.fullHeight)}>
+      ? (<Column size="isNarrow" style={Object.assign({}, styles.fullMinHeight, styles.fullHeight)}>
         <AppSidebar {...this.state} />
-      </Column>) : null;
+      </Column>)
+      : null;
+    
+    let headerNav = (this.state.settings.ui.initialization.show_header || this.state.user.isLoggedIn)
+      ? (<AppHeader {...this.state} />)
+    : null;
+    let footerNav = (this.state.settings.ui.initialization.show_footer || this.state.user.isLoggedIn)
+      ? (<AppFooter {...this.state} />)
+    : null;  
     // return (<AppSectionLoading/>);
     return (
-      (this.state.ui.ui_is_loaded === false) ? <AppSectionLoading/> :
-      <div>
-        {/*<div style={styles.redBkgrd}>*/}
-        <AppHeader {...this.state} />
+      (this.state.ui.ui_is_loaded === false)
+        ? <AppSectionLoading />
+        : (<div>
+          {/*<div style={styles.redBkgrd}>*/}
+          {headerNav}
           <main style={styles.fullHeight}>
             {/*DEBUG HERE */}
-            <Columns style={Object.assign({},styles.fullMinHeight,styles.fullHeight)}>
+            <Columns style={Object.assign({}, styles.fullMinHeight, styles.fullHeight)}>
               {sidebarColumn}
-              <Column  style={styles.fullMinHeight}>
+              <Column style={styles.fullMinHeight}>
                 {this.props.children}
-              </Column>  
-            </Columns> 
-          </main>   
-        <AppFooter  {...this.state}/>
-      </div>
+              </Column>
+            </Columns>
+          </main>
+          {footerNav}
+        </div>)
     );
   }
 }

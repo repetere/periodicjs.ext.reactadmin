@@ -6,12 +6,12 @@ const MANIFEST = require(path.join(__dirname, '../adminclient/src/content/config
 const NAVIGATION = require(path.join(__dirname, '../adminclient/src/content/config/navigation'));
 const COMPONENTS = {
   login: {
-    status: 'uninitialized'
+    status: 'uninitialized',
   },
   main: {
-    footer: { status: 'uninitialized' },
-    header: { status: 'uninitialized' }
-  }
+    footer: { status: 'uninitialized', },
+    header: { status: 'uninitialized', },
+  },
 };
 
 var CoreController;
@@ -26,18 +26,18 @@ var CoreUtilities;
  * @param  {object}   res  express reponse
  * @return {null}        does not return a value
  */
-var admin_index = function(req,res){
+var admin_index = function(req, res){
   let viewtemplate = {
       viewname: 'admin/index',
       themefileext: appSettings.templatefileextension,
-      extname: 'periodicjs.ext.reactadmin'
+      extname: 'periodicjs.ext.reactadmin',
     },
     viewdata = {
       pagedata: {
         title: 'React Admin',
         // toplink: '&raquo; Multi-Factor Authenticator',
       },
-      user: req.user
+      user: req.user,
       // adminPostRoute: adminPostRoute
     };
 
@@ -49,19 +49,19 @@ var loadManifest = function (req, res) {
     result: 'success',
     status: 200,
     data: {
-      settings: MANIFEST
-    }
+      settings: MANIFEST,
+    },
   });
 };
 
 var loadComponent = function (req, res) {
-  let component = COMPONENTS[req.params.component] || { status: 'undefined' };
+  let component = COMPONENTS[req.params.component] || { status: 'undefined', };
   res.status(200).send({
     result: 'success',
     status: 200,
     data: {
-      settings: component
-    }
+      settings: component,
+    },
   });
 };
 
@@ -70,8 +70,8 @@ var loadUserPreferences = function (req, res) {
     result: 'success',
     status: 200,
     data: {
-      settings: (req.user && req.user.extensionattributes && req.user.extensionattributes.preferences) ? req.user.extensionattributes.preferences : {}
-    }
+      settings: (req.user && req.user.extensionattributes && req.user.extensionattributes.preferences) ? req.user.extensionattributes.preferences : {},
+    },
   });
 };
 
@@ -80,8 +80,8 @@ var loadNavigation = function (req, res) {
     result: 'success',
     status: 200,
     data: {
-      settings: NAVIGATION
-    }
+      settings: NAVIGATION,
+    },
   });
 };
 
@@ -97,6 +97,6 @@ module.exports = function (resources) {
     loadManifest,
     loadComponent,
     loadUserPreferences,
-    loadNavigation
+    loadNavigation,
   };
 };
