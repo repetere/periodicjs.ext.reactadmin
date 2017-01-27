@@ -216,7 +216,7 @@ class Login extends Component {
     if (!this.state.componentIsLoaded) return (<AppSectionLoading />);
     let ui = this.props.getState().ui;
     let user = this.props.getState().user;
-    // console.log({ user });
+    //console.log({ user });
     if (user.isLoggedIn) {
       return <div><h1>USER IS LOGGED IN</h1><h2>{user.email}</h2></div>;
     } else {
