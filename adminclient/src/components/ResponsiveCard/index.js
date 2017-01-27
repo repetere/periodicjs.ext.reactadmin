@@ -1,19 +1,34 @@
-import React, { Component, } from 'react';
+import React, { Component, PropTypes, } from 'react';
 import { Card, CardHeader, CardHeaderIcon, CardContent, CardHeaderTitle, Content, } from 're-bulma';
 import 'font-awesome/css/font-awesome.css';
 import styles from '../../styles';
 
-export default class ResponsiveCard extends Component {
-  
+const propTypes = {
+  headerColor: PropTypes.string,
+  headerTextColor: PropTypes.string,
+  cardTitle: PropTypes.string,
+  display: PropTypes.string,
+  icon: PropTypes.string,
+};
+
+const defaultProps = {
+  headerColor: styles.isSecondaryBackground,
+  headerTextColor: styles.isWhite,
+  cardTitle: 'Not Set',
+  display: 'block',
+  icon: 'fa fa-angle-down',
+};
+
+class ResponsiveCard extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      headerColor: props.headerColor || styles.isSecondaryBackground,
-      headerText: props.headerText || styles.isWhite,
-      display: 'block',
-      icon: 'fa fa-angle-down',
-      cardTitle: props.cardTitle || 'Not set',
+      headerColor: props.headerColor,
+      headerTextColor: props.headerTextColor,
+      display: props.display,
+      icon: props.icon,
+      cardTitle: props.cardTitle,
     };
   }
 
@@ -25,7 +40,7 @@ export default class ResponsiveCard extends Component {
   }
 
   render() {
-    let fullCard = (
+    const fullCard = (
       <Card isFullwidth>
         <CardHeader>
           <CardHeaderTitle style={this.state.headerColor}>
@@ -35,10 +50,15 @@ export default class ResponsiveCard extends Component {
         </CardHeader>
         <CardContent style={{ display: this.state.display, }}>
           <Content>
-            {this.props.children}  
+            { this.props.children }
           </Content>
         </CardContent>
       </Card>);
     return fullCard;
   }
 }
+
+ResponsiveCard.propTypes = propTypes;
+ResponsiveCard.defaultProps = defaultProps;
+
+export default ResponsiveCard;
