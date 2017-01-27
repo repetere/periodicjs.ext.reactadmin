@@ -6,6 +6,7 @@ import uiActions from './ui';
 import qs from 'querystring';
 import utilities from '../util';
 import manifest from './manifest';
+import notification from './notification';
 // import { Platform, } from 'react-web';
 // import Immutable from 'immutable';
 
@@ -171,6 +172,12 @@ const user = {
           dispatch(push('/'));
         })
         .catch(error => { 
+          console.info('THIS IS AN ERROR');
+          dispatch(notification.createNotification({
+            text: error.message,
+            type: 'error',
+            timeout: 3000,
+          }));
           dispatch(this.failedLogoutRequest(error));
           dispatch(pageActions.initialAppLoaded());
           dispatch(uiActions.closeUISidebar());
@@ -320,6 +327,11 @@ const user = {
           }
         })
         .catch((error) => {
+          dispatch(notification.createNotification({
+            text: error.message,
+            type: 'error',
+            timeout: 3000,
+          }));
           dispatch(this.failedUserRequest(url, error));
         });
     };

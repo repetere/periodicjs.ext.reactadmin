@@ -36,20 +36,14 @@ const mapStateToProps = (state) => {
 };
 
 const reduxActions = {
-  // initialAppLoaded:()=>store.dispatch(actions.pages.initialAppLoaded()),
-  // onChangePage:(location) => store.dispatch(actions.pages.changePage(location)),
-  // setAppDimensions:(layout) => store.dispatch(actions.pages.setAppDimensions(layout)),
-  // requestData: (url, options, responseFormatter) => store.dispatch(actions.fetchData.request(url, options, responseFormatter)),
-  // setTabExtensions: (arrayOfTabExtensions)=>store.dispatch(actions.tabBarExtension.setTabExtensions(arrayOfTabExtensions)),
-  // showError: (notification) => store.dispatch(actions.messageBar.showError(notification)),
-  // showInfo: (notification) => store.dispatch(actions.messageBar.showInfo(notification)),
-  // setLoginStatus: (loggedIn) => store.dispatch(actions.user.setLoginStatus(loggedIn)),
   isLoggedIn: () => store.getState().user.isLoggedIn,
   getState: () => store.getState(), //.dispatch(actions.user.getUserStatus()),
   getUserProfile: (jwt_token) => store.dispatch(actions.user.getUserProfile(jwt_token)),
   saveUserProfile: (url, response, json) => store.dispatch(actions.user.saveUserProfile(url, response, json)),
   initializeAuthenticatedUser: (jwt_token) => store.dispatch(actions.user.initializeAuthenticatedUser(jwt_token)),
   loginUser: (formdata) => store.dispatch(actions.user.loginUser(formdata)),
+  createNotification: (options) => store.dispatch(actions.notification.createNotification(options)),
+  hideNotification: (id) => store.dispatch(actions.notification.hideNotification(id)),
   toggleUISidebar: () => store.dispatch(actions.ui.toggleUISidebar()),
   setUILoadedState: (loaded) => store.dispatch(actions.ui.setUILoadedState(loaded)),
   logoutUser: () => store.dispatch(actions.user.logoutUser()),
