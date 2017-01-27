@@ -24,11 +24,10 @@ class DynamicPage extends Component {
       async_data_is_loaded: false,
     };
     this.uiLayout = {};
+    this.getRenderedComponent = getRenderedComponent.bind(this);
   }
-
   fetchData (/*options = {}*/) {
     const pathname = (window.location.pathname) ? window.location.pathname : this.props.location.pathname;
-    this.getRenderedComponent = getRenderedComponent.bind(this);
     if (AppManifest.containers[pathname]) {
       let layout = Object.assign({}, AppManifest.containers[pathname].layout);
       if (AppManifest.containers[pathname].resources && typeof AppManifest.containers[pathname].resources === 'object') {
