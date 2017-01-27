@@ -1,13 +1,14 @@
 'use strict';
 
 module.exports = function(resources) {
-		console.log('setting up react admin router');
+	console.log('setting up react admin router');
     const reactadminController = resources.app.controller.extension.reactadmin.controller.reactadmin;
     const ReactAdminRouter = resources.express.Router();
+    const ensureApiAuthenticated = resources.app.controller.extension.oauth2server.auth.ensureApiAuthenticated;
 
-    ReactAdminRouter.post('/manifest', reactadminController.loadManifest);
-    ReactAdminRouter.post('/preferences', reactadminController.loadUserPreferences);
-    ReactAdminRouter.post('/navigation', reactadminController.loadNavigation);
+    ReactAdminRouter.post('/manifest', ensureApiAuthenticated, reactadminController.loadManifest);
+    ReactAdminRouter.post('/preferences', ensureApiAuthenticated, reactadminController.loadUserPreferences);
+    ReactAdminRouter.post('/navigation', ensureApiAuthenticated, reactadminController.loadNavigation);
     ReactAdminRouter.get('/components/:component', reactadminController.loadComponent);
     ReactAdminRouter.get('/healthcheck', function (req, res) {
     	res.status(200).send({ status: 'ok' });

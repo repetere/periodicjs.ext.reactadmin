@@ -48,7 +48,7 @@ const uiReducer = (state, action) => {
     components = Object.assign({}, state.components, { header: {}, footer: {}, });
     return Object.assign({}, state, { components, });
   case constants.ui.LOGIN_COMPONENT:
-    if (!action.success) {
+    if (!action.payload.success) {
       console.log('There was an error retrieving login component', action.error);
       return state;
     } else {
@@ -56,7 +56,7 @@ const uiReducer = (state, action) => {
       return Object.assign({}, state, { containers, login_ui_is_loaded: true });
     }
   case constants.ui.MAIN_COMPONENT:
-    if (!action.success) {
+    if (!action.payload.success) {
       console.log('There was an error retrieving main component', action.payload.error);
       return state;
     } else {
@@ -69,7 +69,7 @@ const uiReducer = (state, action) => {
     components = Object.assign({}, state.components, { error: {}, });
     return Object.assign({}, state, { components, });
   case constants.ui.ERROR_COMPONENTS:
-    if (!action.success) {
+    if (!action.payload.success) {
       console.log('There was an error retrieving error components', action.payload.error);
       return state;
     } else {
