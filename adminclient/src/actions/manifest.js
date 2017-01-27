@@ -25,6 +25,9 @@ const manifest = {
       dispatch(this.manifestRequest());
       let state = getState();
       let basename = state.settings.basename;
+      let headers = state.settings.userprofile.options.headers;
+      delete headers.clientid_default;
+      options.headers = Object.assign({}, options.headers, headers);
       return utilities.fetchComponent(`${ basename }/load/manifest`, options)()
         .then(response => {
           dispatch(this.receivedManifestData(response.data.settings));
