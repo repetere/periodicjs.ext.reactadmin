@@ -37,6 +37,9 @@ const defaultStyles = {
   displayNone: {
     display:'none',
   },
+  iconButton: {
+    paddingRight:3,
+  },
 };
 
 export default defaultStyles;

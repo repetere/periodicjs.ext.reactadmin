@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Hero, HeroBody, Container, Content, } from 're-bulma';
-import styles from '../styles';
+import styles from '../../styles';
 
 class Error404 extends Component { 
   render() {
