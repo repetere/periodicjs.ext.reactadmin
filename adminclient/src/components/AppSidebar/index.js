@@ -19,9 +19,9 @@ class AppSidebar extends Component {
   //   // }
   // }
   render() {
-    // console.log('this.props',this.props)
+    console.log('this.props.ui.nav_data: ', this.props.ui.nav_data.container);
     return (
-      <div style={Object.assign({ padding: '1rem', borderRight:'1px solid black', }, styles.fullHeight, styles.mainContainer, this.props.ui.nav_data.container.style)}
+      <div style={Object.assign({ padding: '1rem', borderRight: '1px solid black', }, styles.fullHeight, styles.mainContainer, this.props.ui.nav_data.container.style)}
         className={(this.props.ui.sidebar_is_open) ? 'animated fadeInLeft Nav-Sidebar-Speed' : 'animated slideOutLeft Nav-Sidebar-Speed'}>
         <div style={Object.assign({
           position: 'fixed',
