@@ -2,8 +2,8 @@ import containers from '../containers';
 import utilities from '../util';
 
 function getRoutes(appContainer) {
-  // console.log('appContainer',appContainer)
-  let sharedChildRoutes = [ {
+  // console.log('appContainer',appContainer);
+  let sharedChildRoutes = [{
     path: 'login**',
     component: containers.PageComponents.LoginPage,
     indexRoute: { 
@@ -13,9 +13,9 @@ function getRoutes(appContainer) {
     path: '*',
     onEnter: utilities.requireAuth,
     component: containers.PageComponents.DynamicPage,
-  }];
+  }, ];
   return {
-    childRoutes: [ {
+    childRoutes: [{
       path: '/p-admin',
       component: appContainer,
       // onEnter: requireAuth,
@@ -24,7 +24,7 @@ function getRoutes(appContainer) {
         component: containers.PageComponents.LoginPage,
       },
       childRoutes: sharedChildRoutes,
-    },{
+    }, {
       path: '/',
       component: appContainer,
       // onEnter: requireAuth,
@@ -33,9 +33,9 @@ function getRoutes(appContainer) {
         component: containers.PageComponents.LoginPage,
       },
       childRoutes: sharedChildRoutes,
-    }]
-  }
-};
+    }, ],
+  };
+}
 
 exports.getRoutes = getRoutes;
 

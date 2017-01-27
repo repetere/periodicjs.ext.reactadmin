@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-// import { Menu, MenuLabel, MenuLink, MenuList, } from 're-bulma'; //Icon
+import React, { Component, } from 'react';
 import { getRenderedComponent, } from '../AppLayoutMap';
 import styles from '../../styles';
 import navigation from '../../content/config/default_navigation';
+// import { Menu, MenuLabel, MenuLink, MenuList, } from 're-bulma'; //Icon
 
 class AppSidebar extends Component {
   constructor(props) {
@@ -15,12 +15,12 @@ class AppSidebar extends Component {
   componentDidMount() {
     let state = this.props.getState();
     if (state.settings && state.settings.user && state.settings.user.navigation && Array.isArray(state.settings.user.navigation.children)) {
-      this.setState(Object.assign({}, this.state, { navigation: state.settings.user.navigation }));
+      this.setState(Object.assign({}, this.state, { navigation: state.settings.user.navigation, }));
     }
   }
   render() {
     return (
-      <div style={Object.assign({ padding: '1rem', borderRight:'1px solid black'}, styles.fullHeight, styles.mainContainer)}
+      <div style={Object.assign({ padding: '1rem', borderRight:'1px solid black', }, styles.fullHeight, styles.mainContainer)}
         className={(this.state.ui.sidebar_is_open) ? 'animated fadeInLeft Nav-Sidebar-Speed' : 'animated slideOutLeft Nav-Sidebar-Speed'}>
         <div style={{
           position: 'fixed',

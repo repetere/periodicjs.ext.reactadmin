@@ -98,20 +98,20 @@ class ResponsiveForm extends Component{
       formDataTables:{},
     }, props.formdata);
     this.datalists = {};
-    props.formgroups.forEach((formgroup) => {
-      formgroup.formElements.forEach((formelement) => {
-        if (formelement.type === 'datalist') {
-          this.datalists[ formelement.name ] = {
-            data: formelement.data || [],
-            status: null,
-          };
-          this.state.formDataLists[ formelement.name ] = {
-            data: [], //formelement.data || [],
-            status: null,
-          };
-        }
-      });
-    });
+    // props.formgroups.forEach((formgroup) => {
+    //   formgroup.formElements.forEach((formelement) => {
+    //     if (formelement.type === 'datalist') {
+    //       this.datalists[ formelement.name ] = {
+    //         data: formelement.data || [],
+    //         status: null,
+    //       };
+    //       this.state.formDataLists[ formelement.name ] = {
+    //         data: [], //formelement.data || [],
+    //         status: null,
+    //       };
+    //     }
+    //   });
+    // });
   }
   submitForm() {
     // console.log('submitting Form', this);
@@ -142,7 +142,8 @@ class ResponsiveForm extends Component{
     let { value, attribute, } = options;
     let attrArray = attribute.split('.');
     if (!this.state[ attrArray[ 0 ] ]) {
-      this.state[ attrArray[ 0 ] ] = {};
+      // this.state[ attrArray[ 0 ] ] = {};
+      this.setState({ [ attrArray[ 0 ] ]: {}, });
     }
     let arrayToSet = Object.assign([], this.state[ attrArray[ 0 ] ][ attrArray[ 1 ] ]);
     // let removedItem = arrayToSet.splice(value, 1);
