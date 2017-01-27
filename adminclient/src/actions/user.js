@@ -183,6 +183,9 @@ const user = {
       dispatch(this.preferenceRequest());
       let state = getState();
       let basename = state.settings.basename;
+      let headers = state.settings.userprofile.options.headers;
+      delete headers.clientid_default;
+      options.headers = Object.assign({}, options.headers, headers);
       return utilities.fetchComponent(`${ basename }/load/preferences`, options)()
         .then(response => {
           dispatch(this.preferenceSuccessResponse(response));
@@ -194,6 +197,9 @@ const user = {
       dispatch(this.navigationRequest());
       let state = getState();
       let basename = state.settings.basename;
+      let headers = state.settings.userprofile.options.headers;
+      delete headers.clientid_default;
+      options.headers = Object.assign({}, options.headers, headers);
       return utilities.fetchComponent(`${ basename }/load/navigation`, options)()
         .then(response => {
           dispatch(this.navigationSuccessResponse(response));
