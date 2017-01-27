@@ -10,16 +10,17 @@ import utilities from '../../util';
 let renderIndex = 0;
 
 export let AppLayoutMap = Object.assign({}, {
-  ResponsiveForm, RawOutput, FormItem, MenuAppLink, SubMenuLinks
+  ResponsiveForm, RawOutput, FormItem, MenuAppLink, SubMenuLinks,
 }, React.DOM, rebulma);
 
 // console.log({ AppLayoutMap });
 // console.log({ ReactDOM: React.DOM['div'] });
 
-export function getRenderedComponent (componentObject, resources) {
+export function getRenderedComponent(componentObject, resources) {
+  // console.log('this.props', this);
   renderIndex++;
   let asyncprops = (componentObject.asyncprops && typeof componentObject.asyncprops === 'object') ? utilities.traverse(componentObject.asyncprops, resources) : {};
-  let renderedCompProps = Object.assign({ key: renderIndex }, componentObject.props, asyncprops);
+  let renderedCompProps = Object.assign({ key: renderIndex, }, componentObject.props, asyncprops);
   return createElement(
     (React.DOM[componentObject.component]) ? componentObject.component : AppLayoutMap[componentObject.component],
     renderedCompProps,
@@ -27,4 +28,4 @@ export function getRenderedComponent (componentObject, resources) {
       componentObject.children.map(childComponentObject => getRenderedComponent(childComponentObject, resources)) :
       componentObject.children
   );
-};
+}

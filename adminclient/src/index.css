@@ -8,6 +8,9 @@ body {
   height:100%;
   overflow-x:hidden;
 }
+.Header-Speed{
+  animation-duration: .25s;
+}
 .Nav-Sidebar-Speed{
   /*-webkit-animation-duration: .25s;*/
   animation-duration: .25s;

@@ -18,6 +18,7 @@ const setAppManifest = (props) => {
 class DynamicPage extends Component {
   constructor(props) {
     const Props = Object.assign({}, props, props.getState());
+    // console.log({ Props });
     super(props);
     setAppManifest(Props.manifest);
     this.state = {
@@ -84,7 +85,8 @@ class DynamicPage extends Component {
     this.fetchData();
   }
   render() {
-    const Props = Object.assign({}, this.props, this.props.getState());
+    // const Props = Object.assign({}, this.props, this.props.getState());
+    // console.log({ Props, });
     return (this.state.ui_is_loaded ===false)? <AppSectionLoading/> : this.uiLayout;
   }
 }

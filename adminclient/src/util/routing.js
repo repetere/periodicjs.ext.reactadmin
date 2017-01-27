@@ -5,7 +5,6 @@ export const isLoggedIn = () => {
 };
 
 export const requireAuth = (nextState, replaceState) => {
-  console.log('requireauth');
   // console.log({ nextState, replaceState });
   // console.log("nextState.location.pathname.indexOf('p-admin')!==-1",nextState.location.pathname.indexOf('p-admin')!==-1)
   if (!isLoggedIn()) {
