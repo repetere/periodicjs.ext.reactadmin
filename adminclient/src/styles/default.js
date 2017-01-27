@@ -4,13 +4,13 @@ const defaultStyles = {
     marginBottom:52,
   },
   fixedTop: {
-    position: 'fixed',// !important,
+    position: 'fixed', // !important,
     top: 0,
     left: 0,
     right: 0, 
   },
   fixedBottom: {
-    position: 'fixed',// !important,
+    position: 'fixed', // !important,
     bottom: 0,
     left: 0,
     right: 0, 
@@ -36,6 +36,9 @@ const defaultStyles = {
   },
   displayNone: {
     display:'none',
+  },
+  iconButton: {
+    paddingRight:3,
   },
 };
 

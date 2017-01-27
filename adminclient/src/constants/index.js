@@ -1,5 +1,4 @@
 import AppConfigSettings from '../content/config/settings.json';
-
 export default {
   pages:{
     LOAD_PAGE_ACTION: 'load page component',
@@ -29,7 +28,7 @@ export default {
     PREFERENCE_REQUEST: 'perferences request',
     NAVIGATION_LOAD_SUCCESS: 'navigation loaded',
     NAVIGATION_LOAD_ERROR: 'navigation failed',
-    NAVIGATION_REQUEST: 'navigation request'
+    NAVIGATION_REQUEST: 'navigation request',
     // CURRENT_USER_STATUS:'get current login status',    
   },
   clientCacheData:{

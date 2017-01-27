@@ -1,26 +1,9 @@
 import containers from '../containers';
-import constants from '../constants';
-
-let isLoggedIn = () => {
-  return window && !!window.localStorage[ constants.jwt_token.TOKEN_NAME ];
-};
-
-let requireAuth = (nextState, replaceState) => {
-  // console.log({ nextState, replaceState });
-  // console.log("nextState.location.pathname.indexOf('p-admin')!==-1",nextState.location.pathname.indexOf('p-admin')!==-1)
-  if (!isLoggedIn()) {
-    replaceState({
-      pathname: (nextState.location.pathname.indexOf('p-admin')!==-1)?`/p-admin/login?return_url=${nextState.location.pathname}`:`/login?return_url=${nextState.location.pathname}`,
-      state: {
-        nextPathname: nextState.location.pathname
-      },
-    })
-  }
-};
+import utilities from '../util';
 
 function getRoutes(appContainer) {
-  // console.log('appContainer',appContainer)
-  let sharedChildRoutes = [ {
+  // console.log('appContainer',appContainer);
+  let sharedChildRoutes = [{
     path: 'login**',
     component: containers.PageComponents.LoginPage,
     indexRoute: { 
@@ -28,10 +11,11 @@ function getRoutes(appContainer) {
     },
   }, {
     path: '*',
+    onEnter: utilities.requireAuth,
     component: containers.PageComponents.DynamicPage,
-  }];
+  }, ];
   return {
-    childRoutes: [ {
+    childRoutes: [{
       path: '/p-admin',
       component: appContainer,
       // onEnter: requireAuth,
@@ -40,7 +24,7 @@ function getRoutes(appContainer) {
         component: containers.PageComponents.LoginPage,
       },
       childRoutes: sharedChildRoutes,
-    },{
+    }, {
       path: '/',
       component: appContainer,
       // onEnter: requireAuth,
@@ -49,9 +33,9 @@ function getRoutes(appContainer) {
         component: containers.PageComponents.LoginPage,
       },
       childRoutes: sharedChildRoutes,
-    }]
-  }
-};
+    }, ],
+  };
+}
 
 exports.getRoutes = getRoutes;
 

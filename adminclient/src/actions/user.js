@@ -1,13 +1,11 @@
 import constants from '../constants';
-import LoginSettings from '../content/config/login.json';
-import { push,/* replace, go, goForward, goBack */} from 'react-router-redux';
+import { push, /* replace, go, goForward, goBack */ } from 'react-router-redux';
 import { AsyncStorage, } from 'react-native';
 import pageActions from './pages';
 import qs from 'querystring';
 import utilities from '../util';
 import manifest from './manifest';
 // import { Platform, } from 'react-web';
-
 // import Immutable from 'immutable';
 
 const checkStatus = function (response) {
@@ -25,7 +23,7 @@ const user = {
     return {
       type: constants.user.CURRENT_USER_STATUS,
       payload: {},
-    }
+    };
   },
   /**
    * @param {string} url restful resource
@@ -110,8 +108,8 @@ const user = {
         preferences: response.data.settings,
         updatedAt: new Date(),
         timestamp: Date.now(),
-      }
-    }
+      },
+    };
   },
   preferenceErrorResponse (error) {
     return {
@@ -120,13 +118,13 @@ const user = {
         error,
         updatedAt: new Date(),
         timestamp: Date.now(),
-      }
+      },
     };
   },
   preferenceRequest () {
     return {
       type: constants.user.PREFERENCE_REQUEST,
-      payload: {}
+      payload: {},
     };
   },
   navigationSuccessResponse (response) {
@@ -136,8 +134,8 @@ const user = {
         navigation: response.data.settings,
         updatedAt: new Date(),
         timestamp: Date.now(),
-      }
-    }
+      },
+    };
   },
   navigationErrorResponse (error) {
     return {
@@ -146,13 +144,13 @@ const user = {
         error,
         updatedAt: new Date(),
         timestamp: Date.now(),
-      }
+      },
     };
   },
   navigationRequest () {
     return {
       type: constants.user.NAVIGATION_REQUEST,
-      payload: {}
+      payload: {},
     };
   },
   logoutUser() {
@@ -164,7 +162,7 @@ const user = {
         AsyncStorage.removeItem(constants.jwt_token.PROFILE_JSON),
         // AsyncStorage.removeItem(constants.pages.ASYNCSTORAGE_KEY),
       ])
-        .then(results => {
+        .then((/*results*/) => {
           // console.log('logout user results', results);
           dispatch(this.logoutUserSuccess());
           dispatch(pageActions.initialAppLoaded());
@@ -211,7 +209,7 @@ const user = {
           'Content-Type': 'application/json',
         }, getState().settings.userprofile.options.headers, {
           'x-access-token': jwt_token,
-        })
+        }),
       })
         .then(checkStatus)
         .then((response) => {
@@ -233,7 +231,7 @@ const user = {
         .catch((error) => {
           dispatch(this.failedUserRequest(url, error));
         });
-    }
+    };
   },
   initializeAuthenticatedUser (token) {
     return (dispatch, getState) => {
@@ -243,12 +241,12 @@ const user = {
           Accept: 'application/json',
           'Content-Type': 'application/json',
           'x-access-token': token,
-        }
+        },
       };
       return Promise.all([
         manifest.fetchManifest(requestOptions)(dispatch, getState),
         this.fetchPreferences(requestOptions)(dispatch, getState),
-        this.fetchNavigation(requestOptions)(dispatch, getState)
+        this.fetchNavigation(requestOptions)(dispatch, getState),
       ]);
     };
   },
@@ -277,7 +275,7 @@ const user = {
         body: JSON.stringify({
           username: loginData.username,
           password: loginData.password,
-        })
+        }),
       })
         .then(checkStatus)
         .then((response) => {
@@ -303,7 +301,7 @@ const user = {
               token: responseData.token,
             })),
             AsyncStorage.setItem(constants.jwt_token.PROFILE_JSON, JSON.stringify(responseData.user)),
-            this.initializeAuthenticatedUser(responseData.token)(dispatch, getState)
+            this.initializeAuthenticatedUser(responseData.token)(dispatch, getState),
           ]);
         })
         .then(() => {
@@ -311,7 +309,7 @@ const user = {
           //move to new page
           let queryStrings = qs.parse((window.location.search.charAt(0) === '?') ? window.location.search.substr(1, window.location.search.length) : window.location.search);
           let returnUrl = (queryStrings.return_url) ? queryStrings.return_url : false;
-          console.log({ returnUrl,queryStrings });
+          // console.log({ returnUrl, queryStrings, });
           if (getState().user.isLoggedIn && returnUrl) {
             dispatch(push(returnUrl));
           }

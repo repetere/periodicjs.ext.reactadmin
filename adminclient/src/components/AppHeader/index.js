@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import { Nav, NavGroup, NavItem, Button, Icon, Container,  Input } from 're-bulma'; // FormHorizontal, NavToggle, ControlLabel, Group,
+import React, { Component, } from 'react'; 
+import { Nav, NavGroup, NavItem, Button, Container, Input, } from 're-bulma'; // FormHorizontal, NavToggle, ControlLabel, Group,
 import { Link, } from 'react-router';
 import 'font-awesome/css/font-awesome.css';
 import styles from '../../styles';
 //https://github.com/lolJS/react-animate.css/blob/master/src/app.js
 class AppHeader extends Component {
-  constructor(props,context) {
+  constructor(props, context) {
     super(props);
     // console.log({ props, context });
     this.state = {
@@ -33,17 +33,15 @@ class AppHeader extends Component {
         <Container>
           <NavGroup align="left">
             <NavItem>
-              <Button onClick={this.props.toggleUISidebar} buttonStyle="isOutlined" color="isWhite">
-                <Icon style={styles.noMarginLeftRight} icon="fa fa-bars" size="isSmall" />
-              </Button> 
+              <Button onClick={this.props.toggleUISidebar} buttonStyle="isOutlined" color="isWhite" icon="fa fa-bars" style={styles.iconButton} /> 
             </NavItem>
             <NavItem> 
               <Link to="/home"  style={styles.noUnderline}>
-                <Button style={{ border: 'none' }} color="isWhite" buttonStyle="isOutlined">Admin</Button> 
+                <Button style={{ border: 'none', }} color="isWhite" buttonStyle="isOutlined">Admin</Button> 
               </Link>  
             </NavItem>
           </NavGroup>
-          <NavGroup align="center" style={{flex:3}}>
+          <NavGroup align="center" style={{ flex:3, }}>
             <NavItem  style={styles.fullWidth}>
               <Input type="text" placeholder="Search" isExpanded style={styles.fullWidth}/>
             </NavItem>
@@ -52,24 +50,19 @@ class AppHeader extends Component {
             {(this.state.user.isLoggedIn) ?
               (<NavItem>
                 <Link to="/documentation" style={styles.noUnderline}>
-                  <Button buttonStyle="isOutlined" color="isWhite">
-                    <Icon style={styles.noMarginLeftRight} icon="fa fa-user" size="isSmall" />&nbsp;
-                      {this.state.user.email}
-                    </Button>
+                  <Button buttonStyle="isOutlined" color="isWhite" style={styles.noMarginLeftRight} icon="fa fa-user">
+                    {this.state.user.email}
+                  </Button>
                 </Link>
               </NavItem>) : null}
             {(this.state.user.isLoggedIn) ? 
               (<NavItem>
-                <Button buttonStyle="isOutlined" onClick={this.props.logoutUser} color="isWhite">
-                  <Icon style={styles.noMarginLeftRight} icon="fa fa-sign-out" size="isSmall" />
-                </Button>
+                <Button buttonStyle="isOutlined" onClick={this.props.logoutUser} color="isWhite" icon="fa fa-sign-out"  style={Object.assign({paddingRight:0}, styles.noMarginLeftRight)} />
               </NavItem>)
               :
                 (<NavItem>
                   <Link to="/login"  style={styles.noUnderline}>
-                    <Button buttonStyle="isOutlined" color="isWhite">
-                      <Icon style={styles.noMarginLeftRight} icon="fa fa-sign-in" size="isSmall" />
-                    </Button>
+                  <Button buttonStyle="isOutlined" color="isWhite" style={Object.assign({}, styles.noMarginLeftRight)} icon="fa fa-sign-in" />
                   </Link>
                 </NavItem>)
              } 
