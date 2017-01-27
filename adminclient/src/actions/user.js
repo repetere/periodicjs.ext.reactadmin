@@ -303,7 +303,7 @@ const user = {
               token: responseData.token,
             })),
             AsyncStorage.setItem(constants.jwt_token.PROFILE_JSON, JSON.stringify(responseData.user)),
-            this.initializeAuthenticatedUser(responseData.token)(dispatch)
+            this.initializeAuthenticatedUser(responseData.token)(dispatch, getState)
           ]);
         })
         .then(() => {

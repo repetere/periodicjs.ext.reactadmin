@@ -27,6 +27,38 @@ module.exports = {
       },
       onFinish:'render'
     },
+    '/applications': {
+      layout: {
+        // component: 'Hero',
+        // props: {size: 'isFullheight'},
+        // children: [{
+        //   component: 'HeroBody',
+        //   props: {},
+        //   children: [{
+        component: 'Container',
+        props: { style: { marginTop: '60' } },
+        children: [{
+          component: 'ResponsiveTable',
+          props: {}
+        }, {
+          component: 'ResponsiveCard',
+          props: { cardTitle: 'Application Overview' },
+          children: []
+        }, {
+          component: 'ResponsiveCard',
+          props: { cardTitle: 'Applicant Detail' },
+          children: []
+        }, {
+          component: 'ResponsiveCard',
+          props: { cardTitle: 'Customer Detail' },
+          children: []
+        }]
+        //   }]
+        // }]
+      },
+      resources: {},
+      onFinish:'render'
+    },    
     '/documentation': {
       layout: {
         component: 'Hero',
@@ -49,7 +81,7 @@ module.exports = {
                 component: 'Title',
                 // props: {
                 // },
-                  children: 'Documentation Page',
+                children: 'Documentation Page',
               }]
           }]
         }]

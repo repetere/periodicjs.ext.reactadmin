@@ -1,7 +1,10 @@
 {
   "extends": "eslint:recommended",
-  "plugins": [],
+  "plugins": [
+    "react"
+    ],
   "parserOptions": {
+    "sourceType": "module",
     "ecmaFeatures": {
       "ecmaVersion": 6,
       "jsx": true
@@ -12,6 +15,7 @@
   },
   "rules": {
     "jsx-quotes": ["error", "prefer-double"],
+    "react/jsx-uses-vars": [2],
     "indent": ["error", 2],
     "quotes": ["error", "single"],
     "semi": ["warn", "always"],
