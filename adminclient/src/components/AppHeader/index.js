@@ -5,7 +5,7 @@ import 'font-awesome/css/font-awesome.css';
 import styles from '../../styles';
 //https://github.com/lolJS/react-animate.css/blob/master/src/app.js
 class AppHeader extends Component {
-  constructor(props, context) {
+  constructor(props /*, context*/) {
     super(props);
     // console.log({ props, context });
     this.state = {
@@ -29,7 +29,8 @@ class AppHeader extends Component {
     //   console.log('The link was clicked.');
     // }
     return (
-      <Nav style={Object.assign(styles.fixedTop, styles.navContainer)}>
+      <Nav style={Object.assign(styles.fixedTop, styles.navContainer)}
+        className={(this.props.settings.ui.initialization.show_header || this.props.user.isLoggedIn) ? 'animated fadeInDown Header-Speed' : 'animated slideOutDown Header-Speed'}>
         <Container>
           <NavGroup align="left">
             <NavItem>

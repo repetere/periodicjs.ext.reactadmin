@@ -1,96 +1,12 @@
-import React, { Component } from 'react';
-import { Columns, ControlLabel, Label, Input, Button, Card, CardContent,  CardFooter, CardFooterItem, Checkbox, Notification } from 're-bulma'; 
-import FormItem from '../FormItem';
-
-function getPropertyAttribute(options) {
-  let { property, element, } = options;
-  let attribute = element.name;
-  let selector = element.idSelector;
-  // console.log({ options });
-  let returnVal; 
-  if (attribute.indexOf('.') === -1) {
-    returnVal = property[ attribute ];
-  } else {
-    let attrArray = attribute.split('.');
-    returnVal = (property[ attrArray[ 0 ] ])? property[ attrArray[ 0 ] ][ attrArray[ 1 ] ]:undefined;
-  }
-  
-  if (selector && !options.skipSelector) {
-    return returnVal[ selector ]; 
-  } else {
-    return returnVal;
-  }
-}
-
-function getFormTextInputArea(options) {
-  let { formElement, i, /*formgroup, width,*/ onChange, } = options;
-  let initialValue = formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
-
-  if (typeof initialValue !== 'string') {
-    initialValue = JSON.stringify(initialValue, null, 2);
-  }
-  if (!onChange) {
-    onChange = (event) => {
-      let text = event.target.value;
-      let updatedStateProp = {};
-      updatedStateProp[ formElement.name ] = text;
-      this.setState(updatedStateProp);
-    };
-  }
-  return (<FormItem key={i} {...formElement.layoutProps} >
-    {(formElement.layoutProps.horizontalform) ? (<ControlLabel>{formElement.label}</ControlLabel>) : (<Label>{formElement.label}</Label>)}  
-    <Input {...formElement.passProps}
-      onChange={onChange}
-      placeholder={formElement.placeholder||formElement.label}
-      value={initialValue} />
-  </FormItem>);
-}
-
-function getFormCheckbox(options) {
-  let { formElement, i, onValueChange, } = options;
-  if (!onValueChange) {
-    onValueChange = (event) => {
-      let value = event.target.value;
-      let updatedStateProp = {};
-      updatedStateProp[ formElement.name ] = value;
-      this.setState(updatedStateProp);
-    };
-  }
-  return (<FormItem key={i} {...formElement.layoutProps} >
-    {(formElement.layoutProps.horizontalform) ? (<ControlLabel>{formElement.label}</ControlLabel>) : (<Label>{formElement.label}</Label>)}  
-    <Checkbox {...formElement.passProps}
-      onChange={onValueChange.bind(this)} >
-        {formElement.placeholder}
-    </Checkbox>
-  </FormItem>);
-}
-
-
-function getFormSubmit(options) {
-  let { formElement, i, } = options;
-  return (<FormItem key={i} {...formElement.layoutProps} >
-    <Button {...formElement.passProps}
-      onClick={this.submitForm.bind(this)}>
-      {formElement.value}
-    </Button>
-  </FormItem>);
-}
-
-function getCardFooterItem(options) {
-  let { formElement, i, } = options;
-  formElement.layoutProps = Object.assign({
-    style: { cursor: 'pointer', textAlign:'center', }
-  }, formElement.layoutProps);
-  return (<CardFooterItem key={i} {...formElement.layoutProps} onClick={this.submitForm.bind(this)}>
-    <Label {...formElement.passProps}>
-      {formElement.value}
-    </Label>
-  </CardFooterItem>);
-}
+import React, { Component, } from 'react';
+import { Columns, Card, CardContent,  CardFooter, CardFooterItem, Notification, } from 're-bulma'; 
+import utilities from '../../util';
+import { getFormTextInputArea, getFormCheckbox, getFormSubmit, getCardFooterItem, } from './FormElements';
 
 class ResponsiveForm extends Component{
   constructor(props) {
     super(props);
+    console.log('this.props for ResponsiveForm', this.props);
     this.state = Object.assign({
       formDataError: null,
       formDataStatusDate: new Date(),
@@ -120,7 +36,24 @@ class ResponsiveForm extends Component{
     delete formdata.formDataLists;
     delete formdata.formDataStatusDate;
     delete formdata.formDataTables;
-    this.props.onSubmit(formdata);
+    if (typeof this.props.onSubmit !== 'function') {
+      let fetchOptions = this.props.onSubmit;
+      fetch(fetchOptions.url,
+        Object.assign({}, fetchOptions.options, { body: JSON.stringify(formdata), })
+      )
+        .then(utilities.checkStatus)
+        .then(res => res.json())
+        .catch(e => {
+          if (typeof this.props.onError !== 'function') {
+            console.error(e);
+          } else {
+            this.props.onError(e);
+          }
+        });
+      
+    } else {
+      this.props.onSubmit(formdata);
+    }
   }
   componentWillUpdate(prevProps, prevState) {
     if (this.props.onChange) {
@@ -205,7 +138,7 @@ class ResponsiveForm extends Component{
         } else {
           return <div key={j} />;
         }
-      }      
+      };      
       return (<Columns {...gridProps}>
         {formgroup.formElements.map(getFormElements)}
       </Columns>);
@@ -223,7 +156,7 @@ class ResponsiveForm extends Component{
             <div key={j} />
           </CardFooterItem>;
         }
-      }      
+      };      
       return (<CardFooter {...gridProps}>
         {formgroup.formElements.map(getFormElements)}
       </CardFooter>);
@@ -236,13 +169,11 @@ class ResponsiveForm extends Component{
         </CardContent>
         {footerGroupData}
       </Card>);
-    }
-    else if(this.props.notificationForm){
+    } else if(this.props.notificationForm){
       return(<div>
       <Notification>{formGroupData}</Notification>
       </div>);
-    }
-    else {
+    } else {
       return (<div>{ formGroupData }</div>);
     }
   }

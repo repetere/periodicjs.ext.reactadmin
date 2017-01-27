@@ -6,6 +6,15 @@
   "application":{
     "environment":"development"
   },
+  "ui":{
+    "initialization":{
+      "show_header":false,
+      "show_footer":false
+    }
+  },
+  "auth":{
+    "logged_in_homepage":"/home"
+  },
   "login":{
     "url":"https://pas-dev.promisefinancial.net:8784/api/jwt/token",
     "devurl":"https://pas-dev.promisefinancial.net:8784/api/jwt/token",

@@ -2,6 +2,7 @@ import constants from '../constants';
 import { push, /* replace, go, goForward, goBack */ } from 'react-router-redux';
 import { AsyncStorage, } from 'react-native';
 import pageActions from './pages';
+import uiActions from './ui';
 import qs from 'querystring';
 import utilities from '../util';
 import manifest from './manifest';
@@ -166,11 +167,13 @@ const user = {
           // console.log('logout user results', results);
           dispatch(this.logoutUserSuccess());
           dispatch(pageActions.initialAppLoaded());
+          dispatch(uiActions.closeUISidebar());
           dispatch(push('/'));
         })
         .catch(error => { 
           dispatch(this.failedLogoutRequest(error));
           dispatch(pageActions.initialAppLoaded());
+          dispatch(uiActions.closeUISidebar());
           dispatch(push('/'));
         });
     };
@@ -312,6 +315,8 @@ const user = {
           // console.log({ returnUrl, queryStrings, });
           if (getState().user.isLoggedIn && returnUrl) {
             dispatch(push(returnUrl));
+          } else {
+            dispatch(push(getState().settings.auth.logged_in_homepage));
           }
         })
         .catch((error) => {

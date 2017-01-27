@@ -6,130 +6,130 @@ import AppSectionLoading from '../components/AppSectionLoading';
 
 
 function getLoginLayout(options) {
-  let {loginfunction} =  options ;
+  let { loginfunction, } =  options ;
   // console.log({loginfunction})
   let loginLayout = {
-  component: 'Hero',
-  props: {
-    size: 'isFullheight',
-    // children: 'hero body text',
-  },
-  children: [ {
-    component: 'HeroBody',
+    component: 'Hero',
     props: {
-      // children: 'hero body text'
+      size: 'isFullheight',
+    // children: 'hero body text',
     },
     children: [ {
-      component: 'Container',
+      component: 'HeroBody',
       props: {
-        // children: 'container text'
+      // children: 'hero body text'
       },
-      children: [
-        {
-          component: 'Columns',
-          children: [ {
-            component: 'Column',
-            props: {
-              size:'is3',
-            },
-          },{
-            component: 'Column',
-            props: {},
-            children:[
-        {
-        component: 'Title',
-        // props: {
-        // },
-        children: 'Login',
-          }, {
-            component: 'Subtitle',
-            children: 'Subtitle Login',
-            //   props: {
-            // },  
-            }, 
-            {
-              component: 'ResponsiveForm',
-              // children:'hello',
+      children: [ {
+        component: 'Container',
+        props: {
+        // children: 'container text'
+        },
+        children: [
+          {
+            component: 'Columns',
+            children: [ {
+              component: 'Column',
               props: {
-                cardForm: true,
-                cardFormProps: {
-                  isFullwidth:true,
-                },
+                size:'is3',
+              },
+            }, {
+              component: 'Column',
+              props: {},
+              children:[
+                {
+                  component: 'Title',
+          // props: {
+          // },
+                  children: 'Login',
+                }, {
+                  component: 'Subtitle',
+                  children: 'Subtitle Login',
+              //   props: {
+              // },  
+                }, 
+                {
+                  component: 'ResponsiveForm',
+                // children:'hello',
+                  props: {
+                    cardForm: true,
+                    cardFormProps: {
+                      isFullwidth:true,
+                    },
                 // notificationForm: true,
                 // notificationProps: {},
-                onSubmit: loginfunction,// (data) => { console.log('formsubmit', data); },
-                footergroups: [{
-                  gridProps: {},
-                  formElements: [ {
-                    type: 'submit',
-                    value: 'Login',
-                    name:'login',
-                    passProps: {
-                      style:styles.isPrimary,
+                    onSubmit: loginfunction, // (data) => { console.log('formsubmit', data); },
+                    footergroups: [{
+                      gridProps: {},
+                      formElements: [ {
+                        type: 'submit',
+                        value: 'Login',
+                        name:'login',
+                        passProps: {
+                          style:styles.isPrimary,
+                        },
+                        layoutProps: {
+                          // style:{textAlign:'center'}
+                        },
+                      }, {
+                        type: 'submit',
+                        value: 'Forgot Password',
+                        name:'forgot',
+                        passProps: {
+                          style:styles.isLink,
+                        },
+                        layoutProps: {
+                          // style:{textAlign:'center'}
+                        },
+                      }, {
+                        type: 'submit',
+                        value: 'New User',
+                        name:'register',
+                        passProps: {
+                          style:styles.isLink,
+                        },
+                        layoutProps: {
+                          // style:{textAlign:'center'}
+                        },
+                      }, ],
+                    }, ],
+                    formgroups: [ {
+                      gridProps: {},
+                      formElements: [ {
+                        type: 'text',
+                        label: 'Username',
+                        name:'username',
+                        layoutProps: {
+                          horizontalform:true,
+                        },
+                      }, ],
+                    }, {
+                      gridProps: {},
+                      formElements: [{
+                        type: 'text',
+                        label: 'Password',
+                        name: 'password',
+                        passProps: {
+                          type:'password',
+                        },
+                        layoutProps: {
+                          horizontalform:true,
+                        },
+                      }, ],
+                    }, {
+                      gridProps: {},
+                      formElements: [{
+                        type: 'checkbox',
+                        label: '',
+                        placeholder: 'Remember Me',
+                        name: 'rememberme',
+                        passProps: {
+                          type:'rememberme',
+                        },
+                        layoutProps: {
+                          horizontalform:true,
+                        },
+                      }, ],
                     },
-                    layoutProps: {
-                      // style:{textAlign:'center'}
-                    },
-                  },{
-                    type: 'submit',
-                    value: 'Forgot Password',
-                    name:'forgot',
-                    passProps: {
-                      style:styles.isLink,
-                    },
-                    layoutProps: {
-                      // style:{textAlign:'center'}
-                    },
-                  },{
-                    type: 'submit',
-                    value: 'New User',
-                    name:'register',
-                    passProps: {
-                      style:styles.isLink,
-                    },
-                    layoutProps: {
-                      // style:{textAlign:'center'}
-                    },
-                  }]
-                }],
-                formgroups: [ {
-                  gridProps: {},
-                  formElements: [ {
-                    type: 'text',
-                    label: 'Username',
-                    name:'username',
-                    layoutProps: {
-                      horizontalform:true,
-                    },
-                  }]
-                }, {
-                  gridProps: {},
-                  formElements: [{
-                    type: 'text',
-                    label: 'Password',
-                    name: 'password',
-                    passProps: {
-                      type:'password'
-                    },
-                    layoutProps: {
-                      horizontalform:true,
-                    },
-                  }]
-                  },{
-                  gridProps: {},
-                  formElements: [{
-                    type: 'checkbox',
-                    label: '',
-                    placeholder: 'Remember Me',
-                    name: 'rememberme',
-                    passProps: {
-                      type:'rememberme'
-                    },
-                    layoutProps: {
-                      horizontalform:true,
-                    },
-                  }]
-                  },
                 /*  {
                   gridProps: {},
                   formElements: [ {
@@ -167,19 +167,19 @@ function getLoginLayout(options) {
                 }
                 
                 */
-                ]
+                ],
+                  },
+                }, ],
+            }, {
+              component: 'Column',
+              props: {
+                size:'is3',
               },
-            }]
-          },{
-            component: 'Column',
-            props: {
-              size:'is3',
-            },
-          }]
-        },
-      ]
-    }]
-  }]
+            }, ],
+          },
+        ],
+      }, ],
+    }, ],
   };
   return loginLayout;  
 }
@@ -187,7 +187,7 @@ function getLoginLayout(options) {
 class Login extends Component {
   constructor() {
     super(...arguments);
-    this.state = { componentIsLoaded: false };
+    this.state = { componentIsLoaded: false, };
   }
   componentDidMount() {
     let queryStrings = qs.parse((window.location.search.charAt(0) === '?') ? window.location.search.substr(1, window.location.search.length) : window.location.search);
@@ -197,30 +197,33 @@ class Login extends Component {
     }
     this.props.fetchLoginComponent()
       .then(() => {
-        this.setState({ componentIsLoaded: true });
+        this.setState({ componentIsLoaded: true, });
       }, e => {
-        this.setState({ componentIsLoaded: true });
+        this.setState({ componentIsLoaded: true, });
       });
   }
   componentWillReceiveProps(nextProps) {
     // console.log('Login componentWillReceiveProps nextProps', nextProps);
-    // this.setState(nextProps);
+    this.setState(nextProps);
   }
+  // submitLogin(formdata) {
+    
+  // }
+  // component
   render() {
-    // console.log(this.props)
+    this.getRenderedComponent = getRenderedComponent.bind(this);
     if (!this.state.componentIsLoaded) return (<AppSectionLoading />);
     let ui = this.props.getState().ui;
     let user = this.props.getState().user;
+    // console.log({ user });
     if (user.isLoggedIn) {
-      return <div><h1>USER IS LOGGED IN</h1><h2>{user.email}</h2></div>
-    }
-    else {
+      return <div><h1>USER IS LOGGED IN</h1><h2>{user.email}</h2></div>;
+    } else {
       if (typeof ui.containers.login.status === 'undefined' || ui.containers.login.status === 'undefined' || ui.containers.login.status === 'uninitialized') {
-        return getRenderedComponent(getLoginLayout({
+        return this.getRenderedComponent( getLoginLayout({
           loginfunction:this.props.loginUser,
         }));
-      }
-      else return getRenderedComponent(ui.containers.login);
+      } else return this.getRenderedComponent( ui.containers.login);
     }
   }
 }
