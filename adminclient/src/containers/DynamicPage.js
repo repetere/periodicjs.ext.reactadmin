@@ -13,8 +13,6 @@ const setAppManifest = (props) => {
   }
 };
 
-
-
 class DynamicPage extends Component {
   constructor(props) {
     const Props = Object.assign({}, props, props.getState());
@@ -26,20 +24,21 @@ class DynamicPage extends Component {
       async_data_is_loaded: false,
     };
     this.uiLayout = {};
+    this.getRenderedComponent = getRenderedComponent.bind(this);
   }
   fetchDynamicPageContent (pathname) {
     let layout = Object.assign({}, AppManifest.containers[pathname].layout);
     if (AppManifest.containers[pathname].resources && typeof AppManifest.containers[pathname].resources === 'object') {
       return utilities.fetchPaths(this.props.getState().settings.basename, AppManifest.containers[pathname].resources)
         .then(resources => {
-          this.uiLayout = getRenderedComponent(layout, resources);
+          this.uiLayout = this.getRenderedComponent(layout, resources);
           this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
         })
         .catch(e => {
           this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
         });
     } else {
-      this.uiLayout = getRenderedComponent(AppManifest.containers[pathname].layout);
+      this.uiLayout = this.getRenderedComponent(AppManifest.containers[pathname].layout);
       this.setState({ ui_is_loaded: true, });
     }
   }
@@ -54,16 +53,16 @@ class DynamicPage extends Component {
         if (componentData.settings.resources && Object.keys(componentData.settings.resources).length) {
           return utilities.fetchPaths(this.props.getState().settings.basename, componentData.settings.resources)
             .then(resources => {
-              this.uiLayout = getRenderedComponent(componentData.settings.layout, resources);
+              this.uiLayout = this.getRenderedComponent(componentData.settings.layout, resources);
               this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
             })
             .catch(e => {
               this.uiLayout = <AppError404/>;
               this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
             });
-        } else custom404Error = getRenderedComponent(componentData.settings.layout);
+        } else custom404Error = this.getRenderedComponent(componentData.settings.layout);
       }
-      custom404Error = (typeof componentData.status === 'undefined' || componentData.status === 'undefined' || componentData.status === 'uninitialized') ? false : getRenderedComponent(componentData.settings);
+      custom404Error = (typeof componentData.status === 'undefined' || componentData.status === 'undefined' || componentData.status === 'uninitialized') ? false : this.getRenderedComponent(componentData.settings);
     }
     this.uiLayout = (custom404Error) ? custom404Error : <AppError404/>;
     this.setState({ ui_is_loaded: true, });

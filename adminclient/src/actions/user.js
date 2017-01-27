@@ -315,6 +315,8 @@ const user = {
           // console.log({ returnUrl, queryStrings, });
           if (getState().user.isLoggedIn && returnUrl) {
             dispatch(push(returnUrl));
+          } else {
+            dispatch(push(getState().settings.auth.logged_in_homepage));
           }
         })
         .catch((error) => {
