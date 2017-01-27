@@ -31,20 +31,6 @@ class MainApp extends Component{
     this.state = props;
     // this.previousRoute = {};
   }
-  // componentWillMount() {
-  //   let urls = ['http://localhost:8786/load/settings', 'http://localhost:8786/load/components/login', 'http://localhost:8786/load/components/main'];
-  //   let resolved = urls.map(url => fetchJSON(url));
-  //   Promise.all(resolved)
-  //     .then(result => {
-  //       let [settings, login_component, main_component] = result;
-  //       if (settings.result === 'success') window.__padmin = Object.assign({}, settings.data.settings);
-  //       console.log({ login_component, main_component });
-  //       if (login_component.result === 'success' || main_component.result === 'success') {
-  //         window.__component_config = Object.assign({}, (login_component.success) ? { login: login_component.data.settings } : { login: {} }, (main_component.success) ? { main: main_component.data.settings } : { main: {} });
-  //         console.log('will mount', window.__component_config);
-  //       }
-  //     }, console.error.bind(console, 'pre mount error'));
-  // }
   componentWillReceiveProps(nextProps) {
     // console.log('componentWillReceiveProps nextProps', nextProps);
     this.setState(nextProps);
@@ -58,6 +44,7 @@ class MainApp extends Component{
       AsyncStorage.getItem(constants.jwt_token.TOKEN_DATA),
       AsyncStorage.getItem(constants.jwt_token.PROFILE_JSON),
       this.props.fetchMainComponent(),
+      this.props.fetchErrorComponents()
       // AsyncStorage.getItem(constants.async_token.TABBAR_TOKEN),
     ])
       .then((results) => {

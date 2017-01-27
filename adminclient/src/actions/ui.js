@@ -49,20 +49,26 @@ const ui = {
   fetchComponent: function (type) {
     let component;
     switch (type) {
-    case constants.ui.LOGIN_COMPONENT:
-      component = constants.ui.LOGIN_COMPONENT;
-      if (!COMPONENTS[component]) COMPONENTS[component] = function (basename) {
-        return fetchComponent(`${ basename }/load/components/login`);
-      };
-      break;
-    case constants.ui.MAIN_COMPONENT:
-      component = constants.ui.MAIN_COMPONENT;
-      if (!COMPONENTS[component]) COMPONENTS[component] = function (basename) {
-        return fetchComponent(`${ basename }/load/components/main`);
-      };
-      break;
-    default:
-      component = false;
+      case constants.ui.LOGIN_COMPONENT:
+        component = constants.ui.LOGIN_COMPONENT;
+        if (!COMPONENTS[component]) COMPONENTS[component] = function (basename) {
+          return fetchComponent(`${ basename }/load/components/login`);
+        }
+        break;
+      case constants.ui.MAIN_COMPONENT:
+        component = constants.ui.MAIN_COMPONENT;
+        if (!COMPONENTS[component]) COMPONENTS[component] = function (basename) {
+          return fetchComponent(`${ basename }/load/components/main`);
+        }
+        break;
+      case constants.ui.ERROR_COMPONENTS:
+        component = constants.ui.ERROR_COMPONENTS;
+        if (!COMPONENTS[component]) COMPONENTS[component] = function (basename) {
+          return fetchComponent(`${ basename }/load/components/error`);
+        }
+        break;
+      default:
+        component = false;
     }
     if (!component) throw new Error(`Can't fetch component - ${ component }`);
     return function (dispatch, getState) {

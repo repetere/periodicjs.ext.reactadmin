@@ -55,6 +55,7 @@ const reduxActions = {
   logoutUser: () => store.dispatch(actions.user.logoutUser()),
   fetchLoginComponent: () => store.dispatch(actions.ui.fetchComponent(CONSTANTS.ui.LOGIN_COMPONENT)),
   fetchMainComponent: () => store.dispatch(actions.ui.fetchComponent(CONSTANTS.ui.MAIN_COMPONENT)),
+  fetchErrorComponents: () => store.dispatch(actions.ui.fetchComponent(CONSTANTS.ui.ERROR_COMPONENTS)),
   reduxRouter: {
     push: (location) => store.dispatch(push(location)),
     replace: (location) => store.dispatch(replace(location)),
