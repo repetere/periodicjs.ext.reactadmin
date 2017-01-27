@@ -1,5 +1,5 @@
 import React, { Component, } from 'react'; 
-import { Nav, NavGroup, NavItem, Button, Icon, Container, Input, } from 're-bulma'; // FormHorizontal, NavToggle, ControlLabel, Group,
+import { Nav, NavGroup, NavItem, Button, Container, Input, } from 're-bulma'; // FormHorizontal, NavToggle, ControlLabel, Group,
 import { Link, } from 'react-router';
 import 'font-awesome/css/font-awesome.css';
 import styles from '../../styles';
@@ -50,17 +50,14 @@ class AppHeader extends Component {
             {(this.state.user.isLoggedIn) ?
               (<NavItem>
                 <Link to="/documentation" style={styles.noUnderline}>
-                  <Button buttonStyle="isOutlined" color="isWhite">
-                    <Icon style={styles.noMarginLeftRight} icon="fa fa-user" size="isSmall" />&nbsp;
-                      {this.state.user.email}
-                    </Button>
+                  <Button buttonStyle="isOutlined" color="isWhite" style={styles.noMarginLeftRight} icon="fa fa-user">
+                    {this.state.user.email}
+                  </Button>
                 </Link>
               </NavItem>) : null}
             {(this.state.user.isLoggedIn) ? 
               (<NavItem>
-                <Button buttonStyle="isOutlined" onClick={this.props.logoutUser} color="isWhite">
-                  <Icon style={styles.noMarginLeftRight} icon="fa fa-sign-out" size="isSmall" />
-                </Button>
+                <Button buttonStyle="isOutlined" onClick={this.props.logoutUser} color="isWhite" icon="fa fa-sign-out"  style={Object.assign({paddingRight:0}, styles.noMarginLeftRight)} />
               </NavItem>)
               :
                 (<NavItem>
