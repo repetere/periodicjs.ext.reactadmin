@@ -25,7 +25,7 @@ const notification = {
         type: 'error',
         text: error.toString(),
         meta: error,
-        timeout: timeout || errorTimeout,
+        timeout: (typeof timeout === 'boolean' && timeout ===false)? false : errorTimeout,
       };
       dispatch(this.createNotification(options));
     };
@@ -41,7 +41,31 @@ const notification = {
       }
       dispatch(this.showNotification(Object.assign({}, options, { id: ID, })));
     };
-  }
+  },
+  hideModal(id) {
+    return {
+      type: constants.notification.HIDE_MODAL,
+      payload: { id, },
+    };
+  },
+  showModal(options) {
+    return {
+      type: constants.notification.SHOW_MODAL,
+      payload: options,
+    };
+  },
+  createModal(options = {}) {
+    const ID = generateNotificationID();
+    return (dispatch/*, getState*/) => {
+      if (options.timeout) {
+        let t = setTimeout(() => {
+          dispatch(this.hideModal(ID));
+          clearTimeout(t);
+        }, options.timeout);
+      }
+      dispatch(this.showModal(Object.assign({}, options, { id: ID, })));
+    };
+  },
 };
 
 export default notification;

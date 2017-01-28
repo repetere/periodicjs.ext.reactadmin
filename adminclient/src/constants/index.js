@@ -54,7 +54,9 @@ export default {
     SHOW_TIMED_NOTIFICATION:'show timed notification',
     SHOW_STATIC_NOTIFICATION:'show static notification',
     HIDE_NOTIFICATION:'hide notification',
-    FAILED_NOTIFICATION_CREATION:'failed to create notification',
+    FAILED_NOTIFICATION_CREATION: 'failed to create notification',
+    SHOW_MODAL: 'show modal',
+    HIDE_MODAL: 'hide modal',
   },
   ui: {
     TOGGLE_SIDEBAR:'toggle side menu',
