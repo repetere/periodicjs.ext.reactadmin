@@ -11,10 +11,23 @@ const notification = {
       payload: { id, },
     };
   },
-  showNotification (options) {
+  showNotification(options) {
+    // options.text = options.text + '+' + options.id;
     return {
       type: (options.timeout) ? constants.notification.SHOW_TIMED_NOTIFICATION : constants.notification.SHOW_STATIC_NOTIFICATION,
       payload: options,
+    };
+  },
+  errorNotification(error, timeout) {
+    return (dispatch, getState) => {
+      let errorTimeout = getState().settings.ui.notifications.error_timeout;
+      let options = {
+        type: 'error',
+        text: error.toString(),
+        meta: error,
+        timeout: timeout || errorTimeout,
+      };
+      dispatch(this.createNotification(options));
     };
   },
   createNotification(options = {}) {

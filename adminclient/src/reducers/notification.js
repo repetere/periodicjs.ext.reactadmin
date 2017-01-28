@@ -16,6 +16,7 @@ const notificationReducer = (state, action) => {
     };  
   case constants.notification.HIDE_NOTIFICATION:
     var removeId = action.payload.id;
+    console.log(state.notifications.filter(notification => notification.id !== removeId));  
     return {
       notifications: state.notifications.filter(notification => notification.id !== removeId),
     };  

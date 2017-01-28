@@ -11,6 +11,7 @@ class Loading extends Component {
             <Button color="isWhite" state="isLoading">Loading</Button> 
           </Container>
         </HeroBody>
+        {this.props.children}
       </Hero>
     );
   }

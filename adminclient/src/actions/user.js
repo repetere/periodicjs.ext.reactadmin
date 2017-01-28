@@ -172,12 +172,7 @@ const user = {
           dispatch(push('/'));
         })
         .catch(error => { 
-          console.info('THIS IS AN ERROR');
-          dispatch(notification.createNotification({
-            text: error.message,
-            type: 'error',
-            timeout: 3000,
-          }));
+          dispatch(notification.errorNotification(error));
           dispatch(this.failedLogoutRequest(error));
           dispatch(pageActions.initialAppLoaded());
           dispatch(uiActions.closeUISidebar());
@@ -245,6 +240,7 @@ const user = {
           dispatch(this.saveUserProfile(url, fetchResponse, responseData));
         })
         .catch((error) => {
+          dispatch(notification.errorNotification(error));
           dispatch(this.failedUserRequest(url, error));
         });
     };
@@ -333,11 +329,7 @@ const user = {
           }
         })
         .catch((error) => {
-          dispatch(notification.createNotification({
-            text: error.message,
-            type: 'error',
-            timeout: 3000,
-          }));
+          dispatch(notification.errorNotification(error));
           dispatch(this.failedUserRequest(url, error));
         });
     };

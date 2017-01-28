@@ -8,6 +8,7 @@ import AppHeader from '../AppHeader';
 import AppFooter from '../AppFooter';
 import AppSidebar from '../AppSidebar';
 import AppSectionLoading from '../AppSectionLoading';
+import AppOverlay from '../AppOverlay';
 
 // let testNavigation = () => {
 //   // setTimeout(() => {
@@ -44,7 +45,7 @@ class MainApp extends Component{
       AsyncStorage.getItem(constants.jwt_token.TOKEN_DATA),
       AsyncStorage.getItem(constants.jwt_token.PROFILE_JSON),
       this.props.fetchMainComponent(),
-      this.props.fetchErrorComponents()
+      this.props.fetchErrorComponents(),
       // AsyncStorage.getItem(constants.async_token.TABBAR_TOKEN),
     ])
       .then((results) => {
@@ -54,7 +55,7 @@ class MainApp extends Component{
           let jwt_user_profile = JSON.parse(results[ 2 ]);
           // console.log({ jwt_token, jwt_token_data, jwt_user_profile });
           if (jwt_token_data && jwt_user_profile) {
-            let url = '/api/jwt/token';//AppLoginSettings[this.props.page.runtime.environment].login.url;
+            let url = '/api/jwt/token'; //AppLoginSettings[this.props.page.runtime.environment].login.url;
             let response = {};
             let json = {
               token: jwt_token_data.token,
@@ -88,12 +89,14 @@ class MainApp extends Component{
           }
           this.props.setUILoadedState(true);  
         } catch (e) {
-          console.log(e);
+          this.props.errorNotification(e);
+          // console.log(e);
         }
         
       })
       .catch((error) => {
-        console.error('MAIN componentDidMount: JWT USER Login Error.', error);
+        this.props.errorNotification(error);
+        // console.error('MAIN componentDidMount: JWT USER Login Error.', error);
         this.props.logoutUser();
         this.props.setUILoadedState(true);
       });
@@ -105,6 +108,7 @@ class MainApp extends Component{
   //   // console.log('COMPONENT WILL UPDATE',{refs:this.refs}, { nextProps }, { nextState })
   //   // this.loadExtensionRoute(nextProps.location.pathname);
   //   // perform any preparations for an upcoming update
+
   // }
   render() {
     // console.log('this.state', this.state);
@@ -123,7 +127,7 @@ class MainApp extends Component{
     // return (<AppSectionLoading/>);
     return (
       (this.state.ui.ui_is_loaded === false)
-        ? <AppSectionLoading />
+        ? (<AppSectionLoading><AppOverlay {...this.state}/></AppSectionLoading>)
         : (<div>
           {/*<div style={styles.redBkgrd}>*/}
           {headerNav}
@@ -137,6 +141,7 @@ class MainApp extends Component{
             </Columns>
           </main>
           {footerNav}
+          <AppOverlay {...this.state}/>
         </div>)
     );
   }
