@@ -67,15 +67,16 @@ class MainApp extends Component{
             
             if (moment(jwt_token_data.expires).isBefore(currentTime)) {
               let expiredTokenError = new Error(`Access Token Expired ${moment(jwt_token_data.expires).format('LLLL')}`);
-              let task = setTimeout(() => {
-                this.handleErrorNotification({ message: 'Access Token Expired' + expiredTokenError, }, expiredTokenError);
-                clearTimeout(task);
-              }, 1000);
+              // let task = setTimeout(() => {
+              //   this.handleErrorNotification({ message: 'Access Token Expired' + expiredTokenError, }, expiredTokenError);
+              //   clearTimeout(task);
+              // }, 1000);
               throw expiredTokenError;
             } else {
               // console.log('saving logged in user', { json, });
               this.props.saveUserProfile(url, response, json);
               this.props.initializeAuthenticatedUser(json.token);
+              this.props.createNotification({ text: 'welcome back', timeout:4000, });
               // if (appTabs) {
               //   this.props.setTabExtensions(appTabs);
               // }
@@ -83,6 +84,7 @@ class MainApp extends Component{
           } else if (jwt_token) {
             this.props.getUserProfile(jwt_token);
             this.props.initializeAuthenticatedUser(jwt_token);
+            this.props.createNotification({ text: 'welcome back', timeout:4000,  });
           }
           else {
             console.log('MAIN componentDidMount USER IS NOT LOGGED IN');
@@ -130,6 +132,7 @@ class MainApp extends Component{
         ? (<AppSectionLoading><AppOverlay {...this.state}/></AppSectionLoading>)
         : (<div>
           {/*<div style={styles.redBkgrd}>*/}
+          <AppOverlay {...this.state}/>
           {headerNav}
           <main style={styles.fullHeight}>
             {/*DEBUG HERE */}
@@ -141,7 +144,6 @@ class MainApp extends Component{
             </Columns>
           </main>
           {footerNav}
-          <AppOverlay {...this.state}/>
         </div>)
     );
   }
