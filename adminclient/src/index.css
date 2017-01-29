@@ -11,6 +11,9 @@ body {
 .Medium-Speed{
   animation-duration: .25s;
 }
+.Slow-Speed{
+  animation-duration: .5s;
+}
 .Header-Speed{
   animation-duration: .25s;
 }
@@ -24,4 +27,7 @@ body {
 }
 div[data-reactroot]{
   height:100%;
+}
+.__re-bulma_modal.__re-bulma_is-active .__re-bulma_modal-background{
+  display: none;
 }

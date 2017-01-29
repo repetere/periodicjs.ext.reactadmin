@@ -16,10 +16,22 @@ const notificationReducer = (state, action) => {
       notifications: newArrayOfNotices,
     });  
   case constants.notification.HIDE_NOTIFICATION:
-    var removeId = action.payload.id;
-    // console.log(state.notifications.filter(notification => notification.id !== removeId));  
+    var removeNotificationId = action.payload.id;
+    // console.log(state.notifications.filter(notification => notification.id !== removeNotificationId));  
     return Object.assign({}, state, {
-      notifications: state.notifications.filter(notification => notification.id !== removeId),
+      notifications: state.notifications.filter(notification => notification.id !== removeNotificationId),
+    });  
+  case constants.notification.SHOW_MODAL:
+    var newModal = action.payload;
+    var newArrayOfModals = Object.assign([], state.modals);
+    newArrayOfModals.push(newModal);  
+    return Object.assign({}, state, {
+      modals: newArrayOfModals,
+    });    
+  case constants.notification.HIDE_MODAL:
+    var removeModalId = action.payload.id;
+    return Object.assign({}, state, {
+      modals: state.modals.filter(modal => modal.id !== removeModalId),
     });    
   default:
     return Object.assign(initialState, state);
