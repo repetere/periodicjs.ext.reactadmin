@@ -4,6 +4,7 @@ import { combineReducers, } from 'redux';
 // import messageBarReducer from './messageBar';
 // import clientCacheDataReducer from './pages';
 import manifestReducer from './manifest';
+import notificationReducer from './notification';
 import userReducer from './user';
 import uiReducer from './ui';
 import settingsReducer from './settings';
@@ -20,6 +21,7 @@ const NativeCMSReducer = combineReducers({
   ui: uiReducer,
   user: userReducer,
   manifest: manifestReducer,
+  notification: notificationReducer,
 });
 
 export default NativeCMSReducer;

@@ -6,6 +6,7 @@ import uiActions from './ui';
 import qs from 'querystring';
 import utilities from '../util';
 import manifest from './manifest';
+import notification from './notification';
 // import { Platform, } from 'react-web';
 // import Immutable from 'immutable';
 
@@ -171,6 +172,7 @@ const user = {
           dispatch(push('/'));
         })
         .catch(error => { 
+          dispatch(notification.errorNotification(error));
           dispatch(this.failedLogoutRequest(error));
           dispatch(pageActions.initialAppLoaded());
           dispatch(uiActions.closeUISidebar());
@@ -238,6 +240,7 @@ const user = {
           dispatch(this.saveUserProfile(url, fetchResponse, responseData));
         })
         .catch((error) => {
+          dispatch(notification.errorNotification(error));
           dispatch(this.failedUserRequest(url, error));
         });
     };
@@ -326,6 +329,7 @@ const user = {
           }
         })
         .catch((error) => {
+          dispatch(notification.errorNotification(error));
           dispatch(this.failedUserRequest(url, error));
         });
     };

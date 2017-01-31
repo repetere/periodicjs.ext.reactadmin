@@ -26,6 +26,11 @@ export function getPropertyAttribute(options) {
 export function getFormTextInputArea(options) {
   let { formElement, i, /*formgroup, width,*/ onChange, } = options;
   let initialValue = formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
+  let keyPress = (e) => {
+    if (formElement.submitOnEnter && (e.key === 'Enter' || e.which === 13)) {
+      this.submitForm();
+    }
+  };
 
   if (typeof initialValue !== 'string') {
     initialValue = JSON.stringify(initialValue, null, 2);
@@ -38,12 +43,14 @@ export function getFormTextInputArea(options) {
       this.setState(updatedStateProp);
     };
   }
+
   return (<FormItem key={i} {...formElement.layoutProps} >
     {(formElement.layoutProps.horizontalform) ? (<ControlLabel>{formElement.label}</ControlLabel>) : (<Label>{formElement.label}</Label>)}  
     <Input {...formElement.passProps}
       onChange={onChange}
+      onKeyPress={keyPress}
       placeholder={formElement.placeholder||formElement.label}
-      value={initialValue} />
+      value={this.state[ formElement.name ]} />
   </FormItem>);
 }
 
