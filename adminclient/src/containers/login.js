@@ -108,6 +108,7 @@ function getLoginLayout(options) {
                         type: 'text',
                         label: 'Password',
                         name: 'password',
+                        submitOnEnter: true,
                         passProps: {
                           type:'password',
                         },

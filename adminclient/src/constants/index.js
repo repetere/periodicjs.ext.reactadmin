@@ -50,6 +50,14 @@ export default {
     MANIFEST_DATA_FAILURE:'manifest data failed',
     MANIFEST_DATA_SUCCESS:'manifest data succeeded',
   },
+  notification: {
+    SHOW_TIMED_NOTIFICATION:'show timed notification',
+    SHOW_STATIC_NOTIFICATION:'show static notification',
+    HIDE_NOTIFICATION:'hide notification',
+    FAILED_NOTIFICATION_CREATION: 'failed to create notification',
+    SHOW_MODAL: 'show modal',
+    HIDE_MODAL: 'hide modal',
+  },
   ui: {
     TOGGLE_SIDEBAR:'toggle side menu',
     OPEN_SIDEBAR:'open side menu',

@@ -46,6 +46,11 @@ class ResponsiveForm extends Component{
         .catch(e => {
           if (typeof this.props.onError !== 'function') {
             console.error(e);
+            this.props.createNotification({
+              text: e.message,
+              type: 'error',
+              timeout:3000,
+            });
           } else {
             this.props.onError(e);
           }

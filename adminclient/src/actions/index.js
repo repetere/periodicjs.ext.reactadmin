@@ -1,17 +1,13 @@
-// import pages from './pages';
 import ui from './ui';
 import user from './user';
 import manifest from './manifest';
-// import fetchData from './fetchData';
-// import tabBarExtension from './tabBarExtension';
+import notification from './notification';
 
 const actionCreators = {
-  // pages,
-  // fetchData,
+  notification,
   manifest,
   ui,
   user,
-  // tabBarExtension,
 };
 
 export default actionCreators;
