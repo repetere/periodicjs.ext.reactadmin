@@ -1,6 +1,5 @@
 import constants from '../constants';
 // import Immutable from 'immutable';
-import styles from '../styles';
 const initialState = {
   isFetching: false,
   hasLoaded: false,
@@ -33,38 +32,6 @@ const initialState = {
         healthcheckStatus: '/healthcheck'
       },
       onFinish: 'render'
-    },
-    '/applications': {
-      layout: {
-        // component: 'Hero',
-        // props: {size: 'isFullheight'},
-        // children: [{
-        //   component: 'HeroBody',
-        //   props: {},
-        //   children: [{
-        component: 'Container',
-        props: { style: styles.mainContainer },
-        children: [{
-            component: 'ResponsiveTable',
-            props: {}
-          }, {
-              component: 'ResponsiveCard',
-              props: { cardTitle: 'Application Overview' },
-              children: []
-          }, {
-              component: 'ResponsiveCard',
-              props: { cardTitle: 'Applicant Detail' },
-              children: []
-          }, {
-              component: 'ResponsiveCard',
-              props: { cardTitle: 'Customer Detail' },
-              children: []
-          }]
-        //   }]
-        // }]
-      },
-      resources: {},
-      onFinish:'render'
     },
     '/documentation': {
       layout: {

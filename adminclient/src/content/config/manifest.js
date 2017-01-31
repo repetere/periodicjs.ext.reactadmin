@@ -4,13 +4,13 @@ module.exports = {
       layout: {
         component: 'Hero',
         props: { size: 'isFullheight', },
-        children: [ {
+        children: [{
           component: 'HeroBody',
-          props:{},
-          children: [ {
+          props: {},
+          children: [{
             component: 'Container',
-            props:{},
-            children:[
+            props: {},
+            children: [
               {
                 component: 'RawOutput',
                 asyncProps: ['healthcheckStatus']
@@ -23,41 +23,9 @@ module.exports = {
         }]
       },
       resources: {
-        healthcheckStatus:'/healthcheck'
+        healthcheckStatus: '/healthcheck'
       },
-      onFinish:'render'
-    },
-    '/applications': {
-      layout: {
-        // component: 'Hero',
-        // props: {size: 'isFullheight'},
-        // children: [{
-        //   component: 'HeroBody',
-        //   props: {},
-        //   children: [{
-        component: 'Container',
-        props: { style: { marginTop: '60' } },
-        children: [{
-          component: 'ResponsiveTable',
-          props: {}
-        }, {
-          component: 'ResponsiveCard',
-          props: { cardTitle: 'Application Overview' },
-          children: []
-        }, {
-          component: 'ResponsiveCard',
-          props: { cardTitle: 'Applicant Detail' },
-          children: []
-        }, {
-          component: 'ResponsiveCard',
-          props: { cardTitle: 'Customer Detail' },
-          children: []
-        }]
-        //   }]
-        // }]
-      },
-      resources: {},
-      onFinish:'render'
+      onFinish: 'render'
     },    
     '/documentation': {
       layout: {
