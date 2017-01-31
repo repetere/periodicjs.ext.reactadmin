@@ -27,6 +27,7 @@ class ResponsiveTable extends Component {
 
   constructor(props) {
     super(props);
+
     this.state = {
       headers: [],
       rows: [],

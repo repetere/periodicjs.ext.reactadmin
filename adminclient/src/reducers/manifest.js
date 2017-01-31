@@ -1,6 +1,6 @@
 import constants from '../constants';
 // import Immutable from 'immutable';
-import styles from '../styles'
+import styles from '../styles';
 const initialState = {
   isFetching: false,
   hasLoaded: false,
