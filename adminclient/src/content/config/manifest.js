@@ -4,13 +4,13 @@ module.exports = {
       layout: {
         component: 'Hero',
         props: { size: 'isFullheight', },
-        children: [ {
+        children: [{
           component: 'HeroBody',
-          props:{},
-          children: [ {
+          props: {},
+          children: [{
             component: 'Container',
-            props:{},
-            children:[
+            props: {},
+            children: [
               {
                 component: 'RawOutput',
                 asyncProps: ['healthcheckStatus']
@@ -23,10 +23,10 @@ module.exports = {
         }]
       },
       resources: {
-        healthcheckStatus:'/healthcheck'
+        healthcheckStatus: '/healthcheck'
       },
-      onFinish:'render'
-    },
+      onFinish: 'render'
+    },    
     '/documentation': {
       layout: {
         component: 'Hero',
@@ -51,7 +51,7 @@ module.exports = {
                 component: 'Title',
                 // props: {
                 // },
-                  children: 'Documentation Page',
+                children: 'Documentation Page',
               }]
           }]
         }]

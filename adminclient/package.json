@@ -4,6 +4,7 @@
   "private": true,
   "devDependencies": {
     "animate.css": "^3.5.2",
+    "eslint": "^3.14.1",
     "font-awesome": "^4.7.0",
     "moment": "^2.17.1",
     "re-bulma": "^0.2.3",
@@ -20,6 +21,8 @@
     "redux-thunk": "^2.1.0"
   },
   "dependencies": {
+    "eslint": "^3.14.1",
+    "eslint-plugin-react": "^6.9.0",
     "react": "15.3.2",
     "react-dom": "15.3.2"
   },

@@ -2,6 +2,15 @@ const colorStyles = {
   isPrimary: {
     color:'#1fc8db',
   },
+  isPrimaryBackground: {
+    backgroundColor: '#0C6FC0'
+  },
+  isSecondary: {
+    color: '#BCD6ED'
+  },  
+  isSecondaryBackground: {
+    backgroundColor: '#BCD6ED'
+  },
   isInfo: {
     color:'#42afe3',
   },

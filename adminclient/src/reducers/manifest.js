@@ -1,6 +1,5 @@
 import constants from '../constants';
 // import Immutable from 'immutable';
-
 const initialState = {
   isFetching: false,
   hasLoaded: false,
@@ -11,13 +10,13 @@ const initialState = {
       layout: {
         component: 'Hero',
         props: { size: 'isFullheight', },
-        children: [ {
+        children: [{
           component: 'HeroBody',
-          props:{},
-          children: [ {
+          props: {},
+          children: [{
             component: 'Container',
-            props:{},
-            children:[
+            props: {},
+            children: [
               {
                 component: 'RawOutput',
                 asyncProps: ['healthcheckStatus']
@@ -30,9 +29,9 @@ const initialState = {
         }]
       },
       resources: {
-        healthcheckStatus:'/healthcheck'
+        healthcheckStatus: '/healthcheck'
       },
-      onFinish:'render'
+      onFinish: 'render'
     },
     '/documentation': {
       layout: {
