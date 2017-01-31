@@ -11,7 +11,6 @@ const initialState = {
   header_ui_is_loaded: false,
   footer_ui_is_loaded: false,
   error_ui_is_loaded: false,
-  nav_data: Object.assign({}, navigationSettings, windowState),
   app_data: {},
 };
 

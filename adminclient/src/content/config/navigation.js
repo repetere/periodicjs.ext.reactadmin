@@ -54,6 +54,7 @@ module.exports = {
           },
         }, {
           component: 'MenuAppLink',
+          privileges: ['100'],
           props: {
             href: '/whatever',
             label: 'Add a member',
