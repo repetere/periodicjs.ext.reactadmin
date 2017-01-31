@@ -34,7 +34,6 @@ module.exports = {
       component: 'MenuList',
       children: [ {
         component: 'MenuAppLink',
-        permissions: ['100'],
         props: {
           href: '/dne/randomw',
           label: 'Team Settings',
@@ -55,6 +54,7 @@ module.exports = {
           },
         }, {
           component: 'MenuAppLink',
+          permissions: ['100'],
           props: {
             href: '/whatever',
             label: 'Add a member',

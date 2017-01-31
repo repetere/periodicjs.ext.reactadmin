@@ -42,6 +42,13 @@ var determineAccess = function (permissions, layout) {
   return hasAccess;
 };
 
+var removeNullIndexes = function (data) {
+  for (let i = 0; i < data.length; i++) {
+    if (!data[i]) data.splice(i, 1);
+  }
+  return data;
+};
+
 var recursivePermissionsFilter = function (permissions, config = {}, isRoot = false) {
   permissions = (Array.isArray(permissions)) ? permissions : [];
   return Object.keys(config).reduce((result, key) => {
@@ -51,7 +58,7 @@ var recursivePermissionsFilter = function (permissions, config = {}, isRoot = fa
       result[key] = config[key];
       if (Array.isArray(layout.children) && layout.children.length) result[key].children = recursivePermissionsFilter(permissions, result[key].children);
     }
-    return result;
+    return (Array.isArray(result)) ? removeNullIndexes(result) : result;
   }, (Array.isArray(config)) ? [] : {});
 };
 
