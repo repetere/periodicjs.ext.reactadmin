@@ -19,12 +19,12 @@ const defaultProps = {
   hasFooter: false,
   maxRows: 50,
   currentPage: 1,
+  numPages: 1,
   itemCount: 100,
   numButtons: 3,
 };
 
 class ResponsiveTable extends Component {
-
   constructor(props) {
     super(props);
 
@@ -37,7 +37,7 @@ class ResponsiveTable extends Component {
       maxRows: props.maxRows,
       currentPage: props.currentPage,
       numItems: props.itemCount,
-      numPages: 20,
+      numPages: (props.itemCount / props.maxRows),
       numButtons: props.numButtons,
     };
   }
