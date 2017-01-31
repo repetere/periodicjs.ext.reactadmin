@@ -27,6 +27,34 @@ var appSettings;
 var appenvironment;
 var CoreUtilities;
 
+var determineAccess = function (permissions, layout) {
+  if (!permissions.length && (!layout.permissions || !layout.permissions.length)) return true;
+  let hasAccess = false;
+  if (!layout.permissions) hasAccess = true;
+  else {
+    if (permissions.length) {
+      for (let i = 0; i < permissions.length; i++) {
+        hasAccess = (layout.permissions.indexOf(permissions[i]) !== -1);
+        if (hasAccess) break;
+      }
+    }
+  }
+  return hasAccess;
+};
+
+var recursivePermissionsFilter = function (permissions, config = {}, isRoot = false) {
+  permissions = (Array.isArray(permissions)) ? permissions : [];
+  return Object.keys(config).reduce((result, key) => {
+    let layout = (isRoot) ? config[key].layout : config[key];
+    let hasAccess = determineAccess(permissions, layout);
+    if (hasAccess) {
+      result[key] = config[key];
+      if (Array.isArray(layout.children) && layout.children.length) result[key].children = recursivePermissionsFilter(permissions, result[key].children);
+    }
+    return result;
+  }, (Array.isArray(config)) ? [] : {});
+};
+
 /**
  * index page for react admin, that serves admin app
  * @param  {object}   req  express request
@@ -52,11 +80,13 @@ var admin_index = function(req, res){
 };
 
 var loadManifest = function (req, res) {
+  let manifest = MANIFEST;
+  manifest.containers = recursivePermissionsFilter(Object.keys(req.session.userprivilegesdata), manifest.containers, true);
   res.status(200).send({
     result: 'success',
     status: 200,
     data: {
-      settings: MANIFEST,
+      settings: manifest,
     },
   });
 };
@@ -83,6 +113,8 @@ var loadUserPreferences = function (req, res) {
 };
 
 var loadNavigation = function (req, res) {
+  let navigation = NAVIGATION;
+  navigation.layout = recursivePermissionsFilter(Object.keys(req.session.userprivilegesdata), [navigation.layout])[0];
   res.status(200).send({
     result: 'success',
     status: 200,
