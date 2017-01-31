@@ -27,14 +27,14 @@ var appSettings;
 var appenvironment;
 var CoreUtilities;
 
-var determineAccess = function (permissions, layout) {
-  if (!permissions.length && (!layout.permissions || !layout.permissions.length)) return true;
+var determineAccess = function (privileges, layout) {
+  if (!privileges.length && (!layout.privileges || !layout.privileges.length)) return true;
   let hasAccess = false;
-  if (!layout.permissions) hasAccess = true;
+  if (!layout.privileges) hasAccess = true;
   else {
-    if (permissions.length) {
-      for (let i = 0; i < permissions.length; i++) {
-        hasAccess = (layout.permissions.indexOf(permissions[i]) !== -1);
+    if (privileges.length) {
+      for (let i = 0; i < privileges.length; i++) {
+        hasAccess = (layout.privileges.indexOf(privileges[i]) !== -1);
         if (hasAccess) break;
       }
     }
@@ -49,14 +49,14 @@ var removeNullIndexes = function (data) {
   return data;
 };
 
-var recursivePermissionsFilter = function (permissions, config = {}, isRoot = false) {
-  permissions = (Array.isArray(permissions)) ? permissions : [];
+var recursivePrivilegesFilter = function (privileges, config = {}, isRoot = false) {
+  privileges = (Array.isArray(privileges)) ? privileges : [];
   return Object.keys(config).reduce((result, key) => {
     let layout = (isRoot) ? config[key].layout : config[key];
-    let hasAccess = determineAccess(permissions, layout);
+    let hasAccess = determineAccess(privileges, layout);
     if (hasAccess) {
       result[key] = config[key];
-      if (Array.isArray(layout.children) && layout.children.length) result[key].children = recursivePermissionsFilter(permissions, result[key].children);
+      if (Array.isArray(layout.children) && layout.children.length) result[key].children = recursivePrivilegesFilter(privileges, result[key].children);
     }
     return (Array.isArray(result)) ? removeNullIndexes(result) : result;
   }, (Array.isArray(config)) ? [] : {});
@@ -88,7 +88,7 @@ var admin_index = function(req, res){
 
 var loadManifest = function (req, res) {
   let manifest = MANIFEST;
-  manifest.containers = recursivePermissionsFilter(Object.keys(req.session.userprivilegesdata), manifest.containers, true);
+  manifest.containers = recursivePrivilegesFilter(Object.keys(req.session.userprivilegesdata), manifest.containers, true);
   res.status(200).send({
     result: 'success',
     status: 200,
@@ -121,7 +121,7 @@ var loadUserPreferences = function (req, res) {
 
 var loadNavigation = function (req, res) {
   let navigation = NAVIGATION;
-  navigation.layout = recursivePermissionsFilter(Object.keys(req.session.userprivilegesdata), [navigation.layout])[0];
+  navigation.layout = recursivePrivilegesFilter(Object.keys(req.session.userprivilegesdata), [navigation.layout])[0];
   res.status(200).send({
     result: 'success',
     status: 200,
