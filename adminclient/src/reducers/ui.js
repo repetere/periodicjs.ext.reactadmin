@@ -1,7 +1,7 @@
 import constants from '../constants';
-import navigationSettings from '../content/config/navigation';
-let windowState = (window && window.__padmin && window.__padmin.navigation) ? window.__padmin.navigation : {};
-
+// import navigationSettings from '../content/config/navigation';
+// let windowState = (window && window.__padmin && window.__padmin.navigation) ? window.__padmin.navigation : {};
+//TODO - if we want to use default navigation move to navigation reducer
 const initialState = {
   sidebar_is_open: false,
   ui_is_loaded: false,

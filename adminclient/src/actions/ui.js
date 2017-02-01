@@ -1,10 +1,11 @@
 import constants from '../constants';
 import utilities from '../util';
+import notification from './notification';
 // import { AsyncStorage, } from 'react-web';
 // import customSettings from '../content/config/settings.json';
 // import Immutable from 'immutable';
 
-const fetchComponent = utilities.fetchComponent;
+const fetchComponentUtil = utilities.fetchComponent;
 
 const COMPONENTS = {};
 
@@ -49,38 +50,48 @@ const ui = {
     };
   },
   fetchComponent: function (type) {
-    let component;
+    let component, componentLoadError;
     switch (type) {
-      case constants.ui.LOGIN_COMPONENT:
-        component = constants.ui.LOGIN_COMPONENT;
-        if (!COMPONENTS[component]) COMPONENTS[component] = function (basename) {
-          return fetchComponent(`${ basename }/load/components/login`);
-        }
-        break;
-      case constants.ui.MAIN_COMPONENT:
-        component = constants.ui.MAIN_COMPONENT;
-        if (!COMPONENTS[component]) COMPONENTS[component] = function (basename) {
-          return fetchComponent(`${ basename }/load/components/main`);
-        }
-        break;
-      case constants.ui.ERROR_COMPONENTS:
-        component = constants.ui.ERROR_COMPONENTS;
-        if (!COMPONENTS[component]) COMPONENTS[component] = function (basename) {
-          return fetchComponent(`${ basename }/load/components/error`);
-        }
-        break;
-      default:
-        component = false;
+    case constants.ui.LOGIN_COMPONENT:
+      component = constants.ui.LOGIN_COMPONENT;
+      if (!COMPONENTS[ component ]) COMPONENTS[ component ] = function (basename) {
+        return fetchComponentUtil(`${basename}/load/components/login`);
+      };
+      break;
+    case constants.ui.MAIN_COMPONENT:
+      component = constants.ui.MAIN_COMPONENT;
+      if (!COMPONENTS[ component ]) COMPONENTS[ component ] = function (basename) {
+        return fetchComponentUtil(`${basename}/load/components/main`);
+      };
+      break;
+    case constants.ui.ERROR_COMPONENTS:
+      component = constants.ui.ERROR_COMPONENTS;
+      if (!COMPONENTS[ component ]) COMPONENTS[ component ] = function (basename) {
+        return fetchComponentUtil(`${basename}/load/components/error`);
+      };
+      break;
+    default:
+      component = false;
     }
-    if (!component) throw new Error(`Can't fetch component - ${ component }`);
     return function (dispatch, getState) {
+      if (!component) {
+        componentLoadError = new Error(`Can't fetch component - ${component}`);
+          // console.log({ componentLoadError });
+        dispatch(notification.errorNotification(componentLoadError));
+        throw componentLoadError;
+      }
       let state = getState();
       let basename = state.settings.basename;
       dispatch({ type: `INIT_${ component }`, });
       return COMPONENTS[component](basename)()
         .then(response => {
           dispatch(this.handleFetchedComponent(component, response));
-        }, e => dispatch(this.handleFailedFetchComponent(component, e)));
+        }, e => {
+          dispatch(this.handleFailedFetchComponent(component, e));
+          e.message = e.message += '. Cannot load ' + component;
+          dispatch(notification.errorNotification(e, 10000));
+
+        });
     }.bind(this);
   },
 };
