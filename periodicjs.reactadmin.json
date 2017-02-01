@@ -1,11 +1,9 @@
 {
 	"periodicjs.ext.reactadmin": {
-		"manifests":[
-      "/content/themes/periodicjs.theme.default/views/crm",
-      "/content/themes/periodicjs.theme.default/views/worklists",
-      "/content/themes/periodicjs.theme.default/views/admin"
+    "manifests":[
+      "node_modules/periodicjs.ext.reactadmin/adminclient/src/content/config/manifest.js"
     ],
-    "navigation":"/content/themes/periodicjs.theme.default/views/shared/navigation.manifest.js",
+    "navigation":"node_modules/periodicjs.ext.reactadmin/adminclient/src/content/config/navigation.js",
     "components":{
       "login":"/content/themes/periodicjs.theme.default/views/auth/login.manifest.json",
       "main":{
