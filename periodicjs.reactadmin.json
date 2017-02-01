@@ -1,0 +1,20 @@
+{
+	"periodicjs.ext.reactadmin": {
+		"manifests":[
+      "/content/themes/periodicjs.theme.default/views/crm",
+      "/content/themes/periodicjs.theme.default/views/worklists",
+      "/content/themes/periodicjs.theme.default/views/admin"
+    ],
+    "navigation":"/content/themes/periodicjs.theme.default/views/shared/navigation.manifest.js",
+    "components":{
+      "login":"/content/themes/periodicjs.theme.default/views/auth/login.manifest.json",
+      "main":{
+        "header":"/content/themes/periodicjs.theme.default/views/shared/header.manifest.json",
+        "footer":"/content/themes/periodicjs.theme.default/views/shared/footer.manifest.json"
+      },
+      "error":{
+        "404":"/content/themes/periodicjs.theme.default/views/error/404.manifest.json"
+      }
+    }
+	}
+}

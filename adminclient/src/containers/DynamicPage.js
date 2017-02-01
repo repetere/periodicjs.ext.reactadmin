@@ -42,9 +42,10 @@ class DynamicPage extends Component {
       this.setState({ ui_is_loaded: true, });
     }
   }
-  fetchDynamicErrorContent (pathname) {
+  fetchDynamicErrorContent (/*pathname*/) {
     let custom404Error;
     let state = this.props.getState();
+    // console.log({ state });
     if (state.ui && state.ui.components && state.ui.components.error && state.ui.components.error['404']) {
       let componentData = state.ui.components.error['404'];
       if (typeof componentData.status === 'undefined' || componentData.status === 'undefined' || componentData.status === 'uninitialized') {
@@ -69,8 +70,13 @@ class DynamicPage extends Component {
   }
   fetchData (/*options = {}*/) {
     const pathname = (window.location.pathname) ? window.location.pathname : this.props.location.pathname;
+    const state = this.props.getState();
     if (AppManifest.containers[pathname]) {
       return this.fetchDynamicPageContent(pathname);
+    } else if (AppManifest.containers[ pathname.replace(state.settings.auth.admin_path, '') ]) {
+      let adminPathname = pathname.replace(state.settings.auth.admin_path, ''); 
+      // console.log({ adminPathname, pathname, });
+      return this.fetchDynamicPageContent(adminPathname, pathname);
     } else {
       return this.fetchDynamicErrorContent(pathname);
     }

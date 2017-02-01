@@ -22,11 +22,12 @@ export function getRenderedComponent(componentObject, resources) {
   // console.log('this.props', this);
   renderIndex++;
   let asyncprops = (componentObject.asyncprops && typeof componentObject.asyncprops === 'object') ? utilities.traverse(componentObject.asyncprops, resources) : {};
+  let windowprops = (componentObject.windowprops && typeof componentObject.windowprops === 'object') ? utilities.traverse(componentObject.windowprops, window) : {};
   let thisprops = (!React.DOM[ componentObject.component ] && !rebulma[ componentObject.component ]) ? this.props : null;
   // if(!React.DOM[ componentObject.component ] && !rebulma[ componentObject.component ]){
   //   console.log(componentObject.component,'is not in bulma or reactdom')
   // }
-  let renderedCompProps = Object.assign({ key: renderIndex, }, thisprops, componentObject.props, asyncprops);
+  let renderedCompProps = Object.assign({ key: renderIndex, }, thisprops, componentObject.props, asyncprops, windowprops);
   return createElement(
     (React.DOM[componentObject.component]) ? componentObject.component : AppLayoutMap[componentObject.component],
     renderedCompProps,
