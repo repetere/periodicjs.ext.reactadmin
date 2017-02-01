@@ -3,8 +3,7 @@ const Promisie = require('promisie');
 const fs = Promisie.promisifyAll(require('fs-extra'));
 const path = require('path');
 const ERROR404 = require(path.join(__dirname, '../adminclient/src/content/config/dynamic404'));
-
-var components = {
+const DEFAULT_COMPONENTS = {
   login: {
     status: 'uninitialized',
   },
@@ -20,6 +19,7 @@ var components = {
   }
 };
 
+var components;
 var CoreController;
 var logger;
 var appSettings;
@@ -83,13 +83,12 @@ var readAndStoreConfigurations = function (paths) {
   let reads = paths.map(_path => {
     if (typeof _path === 'string') return readConfigurations.bind(null, _path);
     return () => {
-      console.log({ _path });
+  
       return Promisie.reject(new Error('No path specified'));
     };
   });
   return Promisie.settle(reads)
     .then(result => {
-      //if (result.rejected && result.rejected.length) console.log(result.rejected[0].value);
       let { fulfilled } = result;
       return fulfilled.reduce((result, data) => {
         if (Array.isArray(data)) return result.concat(data.value);
@@ -163,7 +162,7 @@ var handleNavigationCompilation = function (navigation) {
     result.wrapper = Object.assign(result.wrapper || {}, nav.wrapper);
     result.container = Object.assign(result.container || {}, nav.container);
     result.layout = result.layout || { children: [] };
-    result.layout.children = result.layout.children.concat(nav.layout.children);
+    result.layout = Object.assign(result.layout, nav.layout, { children: result.layout.children.concat(nav.layout.children) });
     return result;
   }, {});
 };
@@ -205,7 +204,7 @@ var finalizeSettingsWithTheme = function (data) {
     .catch(e => {
       console.error(`There is not a reactadmin config for ${ appSettings.theme || appSettings.themename }`, e);
       let manifest = { containers: Object.assign({}, data.default_manifests.containers, data.manifests.containers) };
-      let navigationChildren = (data.default_navigation.layout && Array.isArray(data.default_navigation.layout.children)) ? data.default_navigation.layout : [];
+      let navigationChildren = (data.default_navigation.layout && Array.isArray(data.default_navigation.layout.children)) ? data.default_navigation.layout.children : [];
       let navigation = {
         wrapper: Object.assign({}, data.default_navigation.wrapper, data.navigation.wrapper),
         container: Object.assign({}, data.default_navigation.container, data.navigation.container),
@@ -245,6 +244,7 @@ var pullConfigurationSettings = function () {
       let { manifest, navigation } = result;
       manifestSettings = manifest;
       navigationSettings = navigation;
+  
       return result;
     })
     .catch(e => Promisie.reject(e));
@@ -266,15 +266,57 @@ var loadManifest = function (req, res, next) {
     .catch(next);
 };
 
-var loadComponent = function (req, res) {
-  let component = components[req.params.component] || { status: 'undefined', };
-  res.status(200).send({
-    result: 'success',
-    status: 200,
-    data: {
-      settings: component,
-    },
-  });
+var generateComponentOperations = function (data) {
+  return Object.keys(data).reduce((result, key) => {
+    if (data[key]) {
+      if (typeof data[key] === 'string') {
+        result[key] = function () {
+          return readAndStoreConfigurations([data[key]])
+            .then(result => {
+              if (result.length) return result[0];
+            });
+        };
+      }
+      else if (typeof data[key] === 'object') result[key] = Promisie.parallel.bind(Promisie, generateComponentOperations(data[key]));
+    }
+    return result;
+  }, {});
+};
+
+var pullComponentSettings = function () {
+  if (components) return Promisie.resolve(components);
+  return readAndStoreConfigurations([path.join(__dirname, '../periodicjs.reactadmin.json'), path.join(__dirname, '../../../content/themes', appSettings.theme || appSettings.themename, 'periodicsjs.reactadmin.json')])
+    .then(results => {
+      switch (results.length.toString()) {
+        case '1':
+          return Object.assign({}, (results[0]['periodicjs.ext.reactadmin']) ? results[0]['periodicjs.ext.reactadmin'].components : {});
+        case '2':
+          return Object.assign({}, (results[0]['periodicjs.ext.reactadmin']) ? results[0]['periodicjs.ext.reactadmin'].components : {}, (results[0]['periodicjs.ext.reactadmin']) ? results[1]['periodicjs.ext.reactadmin'].components : {});
+        default:
+          return {};
+      }
+    })
+    .then(results => Promisie.parallel(generateComponentOperations(results)))
+    .then(results => {
+      components = Object.assign({}, DEFAULT_COMPONENTS, results);
+      return components;
+    })
+    .catch(e => Promisie.reject(e));
+};
+
+var loadComponent = function (req, res, next) {
+  pullComponentSettings()
+    .then(() => {
+      let component = components[req.params.component] || { status: 'undefined', };
+      res.status(200).send({
+        result: 'success',
+        status: 200,
+        data: {
+          settings: component,
+        },
+      });
+    })
+    .catch(next);
 };
 
 var loadUserPreferences = function (req, res) {
@@ -311,7 +353,7 @@ module.exports = function (resources) {
   CoreController = resources.core.controller;
   CoreUtilities = resources.core.utilities;
   logger = resources.logger;
-  pullConfigurationSettings()
+  Promisie.all(pullConfigurationSettings(), pullComponentSettings())
     .then(logger.silly.bind(logger, 'successfully loaded configurations in reactadmin'))
     .catch(logger.warn.bind(logger, 'there was an error loading configurations in reactadmin'));
 
