@@ -3,7 +3,7 @@ import HomePage from './home';
 import LoginPage from './login';
 // import BlogIndex from './blogindex';
 // import BlogItem from './blogitem';
-import DocumentationPage from './documentation';
+// import DocumentationPage from './documentation';
 import Error404 from './Error404';
 import DynamicPage from './DynamicPage';
 
@@ -13,7 +13,7 @@ exports.PageComponents = {
   // BlogPage,
   // BlogIndex,
   // BlogItem,
-  DocumentationPage,
+  // DocumentationPage,
   Error404,
   DynamicPage,
 };

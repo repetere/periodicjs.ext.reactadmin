@@ -4,7 +4,6 @@ import { getRenderedComponent, } from '../components/AppLayoutMap';
 import qs from 'querystring';
 import AppSectionLoading from '../components/AppSectionLoading';
 
-
 function getLoginLayout(options) {
   let { loginfunction, } =  options ;
   // console.log({loginfunction})
@@ -38,15 +37,19 @@ function getLoginLayout(options) {
               children:[
                 {
                   component: 'Title',
-          // props: {
-          // },
-                  children: 'Login',
-                }, {
-                  component: 'Subtitle',
-                  children: 'Subtitle Login',
-              //   props: {
-              // },  
-                }, 
+                  props: {
+                    style: {
+                      textAlign:'center',
+                    },
+                  },
+                  children: 'Please Sign in',
+                },
+              //   {
+              //     component: 'Subtitle',
+              //     children: 'Subtitle Login',
+              // //   props: {
+              // // },  
+              //   }, 
                 {
                   component: 'ResponsiveForm',
                 // children:'hello',
@@ -185,6 +188,8 @@ function getLoginLayout(options) {
   return loginLayout;  
 }
 
+
+
 class Login extends Component {
   constructor() {
     super(...arguments);
@@ -220,6 +225,7 @@ class Login extends Component {
     if (user.isLoggedIn) {
       return <div><h1>USER IS LOGGED IN</h1><h2>{user.email}</h2></div>;
     } else {
+      // return <SimpleLineChart/>;
       if (typeof ui.containers.login.status === 'undefined' || ui.containers.login.status === 'undefined' || ui.containers.login.status === 'uninitialized') {
         return this.getRenderedComponent( getLoginLayout({
           loginfunction:this.props.loginUser,

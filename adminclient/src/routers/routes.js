@@ -2,7 +2,6 @@ import containers from '../containers';
 import utilities from '../util';
 
 function getRoutes(appContainer) {
-  console.log('appContainer',appContainer);
   let sharedChildRoutes = [{
     path: 'login**',
     component: containers.PageComponents.LoginPage,
