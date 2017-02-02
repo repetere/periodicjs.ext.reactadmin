@@ -225,9 +225,7 @@ class Login extends Component {
         return this.getRenderedComponent( getLoginLayout({
           loginfunction:this.props.loginUser,
         }));
-      } else {
-        return this.getRenderedComponent(ui.containers.login)
-      }
+      } else return this.getRenderedComponent(ui.containers.login.layout);
     }
   }
 }

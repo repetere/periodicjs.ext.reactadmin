@@ -20,10 +20,10 @@ module.exports = {
             component: 'h1',
             children: 'PAGE NOT FOUND',
           },
-          // {
-          // 	component: 'div',
-          // 	children: 'Some dynamic content'
-          //   },
+          {
+          	component: 'div',
+          	children: 'Some dynamic content'
+          },
           {
             component: 'RawOutput',
             props: {
