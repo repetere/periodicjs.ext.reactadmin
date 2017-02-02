@@ -17,7 +17,8 @@
     }
   },
   "auth":{
-    "logged_in_homepage":"/home"
+    "logged_in_homepage":"/home",
+    "admin_path":"/p-admin"
   },
   "login":{
     "url":"https://pas-dev.promisefinancial.net:8784/api/jwt/token",

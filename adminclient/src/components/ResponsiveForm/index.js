@@ -36,7 +36,10 @@ class ResponsiveForm extends Component{
     delete formdata.formDataLists;
     delete formdata.formDataStatusDate;
     delete formdata.formDataTables;
-    if (typeof this.props.onSubmit !== 'function') {
+    // console.log({ formdata });
+    if (typeof this.props.onSubmit === 'string' && this.props.onSubmit.indexOf('func:this.props') !== -1) {
+      this.props[this.props.onSubmit.replace('func:this.props.', '')](formdata);
+    } else if (typeof this.props.onSubmit !== 'function') {
       let fetchOptions = this.props.onSubmit;
       fetch(fetchOptions.url,
         Object.assign({}, fetchOptions.options, { body: JSON.stringify(formdata), })
@@ -46,16 +49,11 @@ class ResponsiveForm extends Component{
         .catch(e => {
           if (typeof this.props.onError !== 'function') {
             console.error(e);
-            this.props.createNotification({
-              text: e.message,
-              type: 'error',
-              timeout:3000,
-            });
+            this.props.errorNotification(e);
           } else {
             this.props.onError(e);
           }
         });
-      
     } else {
       this.props.onSubmit(formdata);
     }

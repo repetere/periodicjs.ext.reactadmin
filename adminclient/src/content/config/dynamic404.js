@@ -1,34 +1,46 @@
 'use strict';
 
 module.exports = {
-	layout: {
+  layout: {
     component: 'Hero',
     props: { size: 'isFullheight', },
     children: [ {
       component: 'HeroBody',
       props:{},
       asyncprops: {
-      	healthcheck: ['healthcheckStatus']
+        healthcheck: ['healthcheckStatus',],
       },
       children: [ {
         component: 'Container',
         props:{},
         children:[{
-        	component: 'Content',
-        	props: {},
-        	children: [{
-        		component: 'h1',
-        		children: 'Some Error Message'
-        	}, {
-        		component: 'div',
-        		children: 'Some dynamic content'
-        	}]
-        }]
-      }]
-    }]
+          component: 'Content',
+          props: {},
+          children: [{
+            component: 'h1',
+            children: 'PAGE NOT FOUND',
+          },
+          // {
+          // 	component: 'div',
+          // 	children: 'Some dynamic content'
+          //   },
+          {
+            component: 'RawOutput',
+            props: {
+              select: 'locationdata',  
+              type: 'block',
+              display: true,
+            },  
+            windowprops: {
+              locationdata:['location', 'href',],
+            },  
+          }, ],
+        }, ],
+      }, ],
+    }, ],
   },
   resources: {
-    healthcheckStatus:'/load/healthcheck'
+    healthcheckStatus:'/load/healthcheck',
   },
-  onFinish:'render'
+  onFinish:'render',
 };
