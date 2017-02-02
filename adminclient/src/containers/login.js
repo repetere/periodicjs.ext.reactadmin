@@ -209,13 +209,8 @@ class Login extends Component {
       });
   }
   componentWillReceiveProps(nextProps) {
-    // console.log('Login componentWillReceiveProps nextProps', nextProps);
     this.setState(nextProps);
   }
-  // submitLogin(formdata) {
-    
-  // }
-  // component
   render() {
     this.getRenderedComponent = getRenderedComponent.bind(this);
     if (!this.state.componentIsLoaded) return (<AppSectionLoading />);
@@ -230,7 +225,9 @@ class Login extends Component {
         return this.getRenderedComponent( getLoginLayout({
           loginfunction:this.props.loginUser,
         }));
-      } else return this.getRenderedComponent( ui.containers.login);
+      } else {
+        return this.getRenderedComponent(ui.containers.login)
+      }
     }
   }
 }

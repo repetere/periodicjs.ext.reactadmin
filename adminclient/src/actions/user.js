@@ -304,6 +304,7 @@ const user = {
           }
         })
         .then((responseData) => {
+          console.log({responseData})
           cachedResponseData = responseData;
           return Promise.all([
             AsyncStorage.setItem(constants.jwt_token.TOKEN_NAME, responseData.token),
@@ -317,6 +318,15 @@ const user = {
           ]);
         })
         .then(() => {
+          console.log('DOES NOT GET HERE')
+          console.log('DOES NOT GET HERE')
+          console.log('DOES NOT GET HERE')
+          console.log('DOES NOT GET HERE')
+          console.log('DOES NOT GET HERE')
+          console.log('DOES NOT GET HERE')
+          console.log('DOES NOT GET HERE')
+          console.log('DOES NOT GET HERE')
+          console.log('DOES NOT GET HERE')
           dispatch(this.recievedLoginUser(url, fetchResponse, cachedResponseData));
           //move to new page
           let queryStrings = qs.parse((window.location.search.charAt(0) === '?') ? window.location.search.substr(1, window.location.search.length) : window.location.search);
