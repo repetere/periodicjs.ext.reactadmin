@@ -194,7 +194,7 @@ var finalizeSettingsWithTheme = function (data) {
       let navigationChildren = (data.default_navigation.layout && Array.isArray(data.default_navigation.layout.children)) ? data.default_navigation.layout.children : [];
       navigation.wrapper = Object.assign({}, data.default_navigation.wrapper, data.navigation.wrapper, navigation.wrapper);
       navigation.container = Object.assign({}, data.default_navigation.container, data.navigation.container, navigation.container);
-      navigation.layout = navigation.layout || { children: [] };
+      navigation.layout = navigation.layout || Object.assign({ children: [] }, (data.default_navigation) ? data.default_navigation.layout : {}, (data.navigation) ? data.navigation.layout : {});
       navigation.layout.children = (!navigation.layout.children.length) ? navigationChildren.concat((data.navigation.layout && Array.isArray(data.navigation.layout.children)) ? data.navigation.layout.children : []) : navigation.layout.children;
       return { manifest: manifests, navigation };
     })
@@ -332,6 +332,7 @@ var loadNavigation = function (req, res, next) {
     .then(settings => {
       let navigation = settings.navigation;
       navigation.layout = recursivePrivilegesFilter(Object.keys(req.session.userprivilegesdata), [navigation.layout])[0];
+      logger.silly({ navigation });
       res.status(200).send({
         result: 'success',
         status: 200,
