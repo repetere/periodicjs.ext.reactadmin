@@ -1,12 +1,12 @@
 import React, { Component, } from 'react';
-import { Columns, Card, CardContent,  CardFooter, CardFooterItem, Notification, } from 're-bulma'; 
+import { Columns, Card, CardContent, CardFooter, CardFooterItem, Notification, Container, Column, } from 're-bulma'; 
+import ResponsiveCard from '../ResponsiveCard';
 import utilities from '../../util';
 import { getFormTextInputArea, getFormCheckbox, getFormSubmit, getCardFooterItem, } from './FormElements';
 
 class ResponsiveForm extends Component{
   constructor(props) {
     super(props);
-    console.log('this.props for ResponsiveForm', this.props);
     this.state = Object.assign({
       formDataError: null,
       formDataStatusDate: new Date(),
@@ -115,6 +115,7 @@ class ResponsiveForm extends Component{
   }
   render() {
     // console.log('Form this.props', this.props);
+    let keyValue = 0;
     let formGroupData = this.props.formgroups.map((formgroup, i) => {
       let gridProps = Object.assign({
         isMultiline: true,
@@ -125,25 +126,49 @@ class ResponsiveForm extends Component{
           return getFormTextInputArea.call(this, { formElement,  i:j, formgroup, });
         } else if (formElement.type === 'checkbox') {
           return getFormCheckbox.call(this, { formElement,  i:j, formgroup, });
-        // } else if (formElement.type === 'select') {
-        //   return getFormSelect.call(this, { formElement,  i:j, formgroup, });
-        // } else if (formElement.type === 'button') {
-        //   return getFormButton.call(this, { formElement,  i:j, formgroup, });
         } else if (formElement.type === 'submit') {
-          return getFormSubmit.call(this, { formElement,  i:j, formgroup, });
-        // } else if (formElement.type === 'datalist') {
-        //   return getFormDatalist.call(this, { formElement,  i:j, formgroup, });
-        // } else if (formElement.type === 'datatable') {
-        //   return getFormDataTable.call(this, { formElement,  i:j, formgroup, });
-        // } else if (formElement.type === 'divider') {
-        //   return (<HR key={j}/>);
-        // } else if (formElement.type === 'textblock') {
-        //   return (<Text key={j} style={{ marginTop:10, marginBottom:10, }}>{formElement.value}</Text>);
-          
+          return getFormSubmit.call(this, { formElement,  i:j, formgroup, }); 
         } else {
           return <div key={j} />;
         }
-      };      
+      };
+      if (formgroup.card && formgroup.card.twoColumns) {
+        return (
+          <ResponsiveCard cardTitle="Blue Card" key={keyValue++}>
+          <Columns>
+            <Column size="isHalf">
+            {formgroup.formElements[0].formGroupElementsLeft.map(getFormElements)}
+            </Column>
+            <Column size="isHalf">
+              {formgroup.formElements[0].formGroupElementsRight.map(getFormElements)}
+            </Column>  
+          </Columns>
+        </ResponsiveCard>)
+      }
+      if (formgroup.card && formgroup.card.doubleCard) {
+        return (
+          <Columns>
+            <Column size="isHalf">
+              <ResponsiveCard cardTitle="One Card" key={keyValue++}>
+                {formgroup.formElements[0].formGroupCardLeft.map(getFormElements)}
+              </ResponsiveCard>
+            </Column>
+            <Column size="isHalf">
+              <ResponsiveCard cardTitle="Two Card" key={keyValue++}>
+                {formgroup.formElements[0].formGroupCardRight.map(getFormElements)}
+              </ResponsiveCard>
+            </Column>
+          </Columns>);
+      }
+      if (formgroup.card && !formgroup.card.twoColumns) {
+        return (<Columns {...gridProps}>
+        <Column size="isHalf">  
+          <ResponsiveCard cardTitle="Red Card" headerColor={{ backgroundColor: '#900'}} key={keyValue++}>
+            {formgroup.formElements.map(getFormElements)}
+            </ResponsiveCard>
+          </Column>  
+        </Columns>);
+      }
       return (<Columns {...gridProps}>
         {formgroup.formElements.map(getFormElements)}
       </Columns>);

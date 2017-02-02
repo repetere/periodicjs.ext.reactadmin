@@ -49,9 +49,7 @@ class ResponsiveCard extends Component {
           <CardHeaderIcon icon={this.state.icon} onClick={() => this.expandCard()}/>
         </CardHeader>
         <CardContent style={{ display: this.state.display, }}>
-          <Content>
             { this.props.children }
-          </Content>
         </CardContent>
       </Card>);
     return fullCard;
