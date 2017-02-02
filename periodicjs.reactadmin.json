@@ -11,7 +11,7 @@
         "footer":"/content/themes/periodicjs.theme.default/views/shared/footer.manifest.json"
       },
       "error":{
-        "404":"node_modules/periodicjs.ext.reactadminilove/views/error/404.manifest.json"
+        "404":"node_modules/periodicjs.ext.reactadmin/adminclient/src/content/config/dynamic404.js"
       }
     }
 	}

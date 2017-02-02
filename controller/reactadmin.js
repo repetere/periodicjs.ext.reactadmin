@@ -82,10 +82,7 @@ var readAndStoreConfigurations = function (paths) {
   paths = (Array.isArray(paths)) ? paths : [paths];
   let reads = paths.map(_path => {
     if (typeof _path === 'string') return readConfigurations.bind(null, _path);
-    return () => {
-  
-      return Promisie.reject(new Error('No path specified'));
-    };
+    return () => Promisie.reject(new Error('No path specified'));
   });
   return Promisie.settle(reads)
     .then(result => {
@@ -244,7 +241,6 @@ var pullConfigurationSettings = function () {
       let { manifest, navigation } = result;
       manifestSettings = manifest;
       navigationSettings = navigation;
-  
       return result;
     })
     .catch(e => Promisie.reject(e));
@@ -266,26 +262,27 @@ var loadManifest = function (req, res, next) {
     .catch(next);
 };
 
-var generateComponentOperations = function (data) {
+var generateComponentOperations = function (data, defaults) {
   return Object.keys(data).reduce((result, key) => {
-    if (data[key]) {
-      if (typeof data[key] === 'string') {
-        result[key] = function () {
-          return readAndStoreConfigurations([data[key]])
-            .then(result => {
-              if (result.length) return result[0];
-            });
-        };
-      }
-      else if (typeof data[key] === 'object') result[key] = Promisie.parallel.bind(Promisie, generateComponentOperations(data[key]));
+    if (typeof data[key] === 'string') {
+      result[key] = function () {
+        return readAndStoreConfigurations([data[key]])
+          .then(result => {
+            if (result.length) return result[0];
+            return Promisie.reject('unable to read property resetting to default value');
+          })
+          .catch(() => (defaults && defaults[key]) ? defaults[key] : undefined);
+      };
     }
+    else if (typeof data[key] === 'object') result[key] = Promisie.parallel.bind(Promisie, generateComponentOperations(data[key], (defaults) ? defaults[key] : undefined));
+    else result[key] = () => Promisie.resolve(data[key]);
     return result;
   }, {});
 };
 
 var pullComponentSettings = function () {
   if (components) return Promisie.resolve(components);
-  return readAndStoreConfigurations([path.join(__dirname, '../periodicjs.reactadmin.json'), path.join(__dirname, '../../../content/themes', appSettings.theme || appSettings.themename, 'periodicsjs.reactadmin.json')])
+  return readAndStoreConfigurations(['node_modules/periodicjs.ext.reactadmin/periodicjs.reactadmin.json', `content/themes/${ appSettings.theme || appSettings.themename }/periodicjs.reactadmin.json`])
     .then(results => {
       switch (results.length.toString()) {
         case '1':
@@ -296,7 +293,7 @@ var pullComponentSettings = function () {
           return {};
       }
     })
-    .then(results => Promisie.parallel(generateComponentOperations(results)))
+    .then(results => Promisie.parallel(generateComponentOperations(results, DEFAULT_COMPONENTS)))
     .then(results => {
       components = Object.assign({}, DEFAULT_COMPONENTS, results);
       return components;
@@ -308,6 +305,7 @@ var loadComponent = function (req, res, next) {
   pullComponentSettings()
     .then(() => {
       let component = components[req.params.component] || { status: 'undefined', };
+      if (typeof component.status === 'undefined' || (component.status !== 'undefined' && component.status !== 'uninitialized')) component.status = 'active';
       res.status(200).send({
         result: 'success',
         status: 200,
