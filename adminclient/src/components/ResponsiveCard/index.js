@@ -7,7 +7,7 @@ const propTypes = {
   headerColor: PropTypes.object,
   headerTextColor: PropTypes.object,
   cardTitle: PropTypes.string,
-  display: PropTypes.string,
+  display: PropTypes.bool,
   icon: PropTypes.string,
 };
 
@@ -15,7 +15,7 @@ const defaultProps = {
   headerColor: styles.isSecondaryBackground,
   headerTextColor: styles.isWhite,
   cardTitle: 'Not Set',
-  display: 'block',
+  display: true,
   icon: 'fa fa-angle-down',
 };
 
@@ -34,7 +34,7 @@ class ResponsiveCard extends Component {
 
   expandCard() {
     this.setState({
-      display: (this.state.display === 'none') ? 'block' : 'none',
+      display: (this.state.display === true) ? false : true,
       icon: (this.state.icon === 'fa fa-angle-down') ? 'fa fa-angle-right' : 'fa fa-angle-down',
     });
   }
@@ -48,8 +48,8 @@ class ResponsiveCard extends Component {
           </CardHeaderTitle>
           <CardHeaderIcon icon={this.state.icon} onClick={() => this.expandCard()}/>
         </CardHeader>
-        <CardContent style={{ display: this.state.display, }}>
-            { this.props.children }
+        <CardContent>
+            {(this.state.display) ? this.props.children : null }
         </CardContent>
       </Card>);
     return fullCard;

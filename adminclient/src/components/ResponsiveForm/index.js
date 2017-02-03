@@ -28,6 +28,11 @@ class ResponsiveForm extends Component{
     //     }
     //   });
     // });
+
+    this.getFormSubmit = getFormSubmit.bind(this);
+    this.getFormTextInputArea = getFormTextInputArea.bind(this);
+    this.getFormCheckbox = getFormCheckbox.bind(this);
+    this.getCardFooterItem = getCardFooterItem.bind(this);
   }
   submitForm() {
     // console.log('submitting Form', this);
@@ -121,11 +126,11 @@ class ResponsiveForm extends Component{
       }, formgroup.gridProps);
       let getFormElements = (formElement, j) => {
         if (formElement.type === 'text' || formElement.type === 'textarea') {
-          return getFormTextInputArea.call(this, { formElement,  i:j, formgroup, });
+          return this.getFormTextInputArea({ formElement,  i:j, formgroup, });
         } else if (formElement.type === 'checkbox') {
-          return getFormCheckbox.call(this, { formElement,  i:j, formgroup, });
+          return this.getFormCheckbox({ formElement,  i:j, formgroup, });
         } else if (formElement.type === 'submit') {
-          return getFormSubmit.call(this, { formElement,  i:j, formgroup, }); 
+          return this.getFormSubmit({ formElement,  i:j, formgroup, }); 
         } else {
           return <div key={j} />;
         }
@@ -141,7 +146,7 @@ class ResponsiveForm extends Component{
               {formgroup.formElements[0].formGroupElementsRight.map(getFormElements)}
             </Column>  
           </Columns>
-        </ResponsiveCard>)
+        </ResponsiveCard>);
       }
       if (formgroup.card && formgroup.card.doubleCard) {
         return (
@@ -178,7 +183,7 @@ class ResponsiveForm extends Component{
       }, formgroup.gridProps);
       let getFormElements = (formElement, j) => {
         if (formElement.type === 'submit') {
-          return getCardFooterItem.call(this, { formElement,  i:j, formgroup, });
+          return this.getCardFooterItem({ formElement,  i:j, formgroup, });
         } else {
           return <CardFooterItem>
             <div key={j} />
