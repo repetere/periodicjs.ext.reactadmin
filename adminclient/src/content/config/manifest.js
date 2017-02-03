@@ -44,7 +44,7 @@ module.exports = {
               {
                 component: 'div',
                 props: {
-                  dangerouslySetInnerHTML: {__html:'<h1>Hello World</h1>'}
+                  dangerouslySetInnerHTML: {__html:'<h1>FooBar: the most used line in code</h1>'}
                 }
               },
               {

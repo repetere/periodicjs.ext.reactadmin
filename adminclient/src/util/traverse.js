@@ -11,7 +11,7 @@ export const traverse = function (paths, data) {
 				let prop = _path.shift();
 				value = value[prop];
 			}
-			result[key] = value;
+			result[key] = (_path.length) ? undefined : value;
 		}
 		else throw new TypeError('asyncprop paths must be a string or an array of strings or numeric indexes');
 		return result;
