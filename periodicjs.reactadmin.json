@@ -1,9 +1,9 @@
 {
 	"periodicjs.ext.reactadmin": {
     "manifests":[
-      "node_modules/periodicjs.ext.reactadmin/adminclient/src/content/config/manifest.js"
+      "node_modules/periodicjs.ext.reactadmin/adminclient/src/content/config/manifest.json"
     ],
-    "navigation":"node_modules/periodicjs.ext.reactadmin/adminclient/src/content/config/navigation.js",
+    "navigation":"node_modules/periodicjs.ext.reactadmin/adminclient/src/content/config/navigation.json",
     "components":{
       "login":"/content/themes/periodicjs.theme.default/views/auth/login.manifest.json",
       "main":{
@@ -11,7 +11,7 @@
         "footer":"/content/themes/periodicjs.theme.default/views/shared/footer.manifest.json"
       },
       "error":{
-        "404":"node_modules/periodicjs.ext.reactadmin/adminclient/src/content/config/dynamic404.js"
+        "404":"node_modules/periodicjs.ext.reactadmin/adminclient/src/content/config/dynamic404.json"
       }
     }
 	}
