@@ -30,6 +30,13 @@ var navigationSettings;
 var periodic;
 var themeSettings;
 
+/**
+ * Determines if user privileges array contains privilege code(s) that exist in defined privileges for a view
+ * @param  {string[]} privileges An array of privilege codes for a user
+ * @param  {Object} layout     The layout configuration object for a view or navigation link
+ * @param {string[]} layout.privileges The necessary privileges for a given view or navigation link
+ * @return {boolean} Returns true if user privileges exist in view privilege array. Additionally returns true if view privileges is not defined           
+ */
 var determineAccess = function (privileges, layout) {
   if (!privileges.length && (!layout.privileges || !layout.privileges.length)) return true;
   let hasAccess = false;
@@ -45,6 +52,11 @@ var determineAccess = function (privileges, layout) {
   return hasAccess;
 };
 
+/**
+ * Removes null values from an Array
+ * @param  {Object[]} data An array of child components that may contain null values
+ * @return {Object[]}      Returns the original array with null values removed
+ */
 var removeNullIndexes = function (data) {
   let index = data.indexOf(null);
   while (index > -1) {
@@ -54,8 +66,13 @@ var removeNullIndexes = function (data) {
   return data;
 };
 
+/**
+ * Reads a react admin configuration from a specified file path or from files that exist in a directory path
+ * @param  {string} filePath A file or directory path
+ * @return {Object|Object[]}          Either a single react admin configuration or an array of configurations
+ */
 var readConfigurations = function (filePath) {
-  filePath = path.join(process.cwd(), filePath);
+  filePath = path.join(__dirname, '../../../', filePath);
   let _import = function (_path) {
     if (path.extname(_path) === '.js') return Promisie.resolve(require(_path));
     else return fs.readJsonAsync(_path);
@@ -78,6 +95,11 @@ var readConfigurations = function (filePath) {
     .catch(e => Promisie.reject(e));
 };
 
+/**
+ * Accepts a single file/directory path or any array of file/directory paths and returns an array of configuration data for all configurations that are successfully read from these paths
+ * @param  {string|string[]} paths A single file/directory path or an array of file/directory paths
+ * @return {Object[]}       An array of configuration objects for any successfully resolved file reads
+ */
 var readAndStoreConfigurations = function (paths) {
   paths = (Array.isArray(paths)) ? paths : [paths];
   let reads = paths.map(_path => {
@@ -96,6 +118,13 @@ var readAndStoreConfigurations = function (paths) {
     .catch(e => Promisie.reject(e));
 };
 
+/**
+ * Recursively iterates through a view/navigation configuration object and and removes non-permissioned values
+ * @param  {string[]}  privileges An array of user privileges
+ * @param  {Object}  [config={}]  The configuration object that should be filtered
+ * @param  {boolean} [isRoot=false]   If true assumes that the configuration object is contained within the "layout" property of the provided object
+ * @return {Object|Object[]}             Filtered configuration object
+ */
 var recursivePrivilegesFilter = function (privileges, config = {}, isRoot = false) {
   privileges = (Array.isArray(privileges)) ? privileges : [];
   return Object.keys(config).reduce((result, key) => {
@@ -133,6 +162,11 @@ var admin_index = function(req, res){
   CoreController.renderView(req, res, viewtemplate, viewdata);
 };
 
+/**
+ * Merges the "containers" property of an array of manifest configuration objects
+ * @param  {Object[]} manifests An array of manifest configuration objects
+ * @return {Object}           Fully merged manifest object
+ */
 var handleManifestCompilation = function (manifests) {
   return manifests.reduce((result, manifest) => {
     result.containers = Object.assign(result.containers || {}, manifest.containers);
@@ -140,10 +174,16 @@ var handleManifestCompilation = function (manifests) {
   }, {});
 };
 
+/**
+ * Gets manifest configuration file/directory paths from the periodic extensions list
+ * @param  {Object} configuration The periodic extensions configuration object
+ * @param {Object[]} configuration.extensions An array of extension configuration objects for periodic
+ * @return {Object}               Aggregated manifest configurations specified by periodic extensions configuration
+ */
 var pullManifestSettings = function (configuration) {
   let extensions = configuration.extensions || [];
   let filePaths = extensions.reduce((result, config) => {
-    if (config.periodicConfig && config.periodicConfig.manifests) {
+    if (config.enabled && config.periodicConfig && config.periodicConfig.manifests) {
       if (Array.isArray(config.periodicConfig.manifests)) return result.concat(config.periodicConfig.manifests);
       result.push(config.periodicConfig.manifests);
     }
@@ -154,6 +194,11 @@ var pullManifestSettings = function (configuration) {
     .catch(e => Promisie.reject(e));
 };
 
+/**
+ * Merges navigation wrapper, container, layout and concats navigation links specified by periodic extensions configuration
+ * @param  {Object[]} navigation An array of navigation configuration objects
+ * @return {Object}            Fully merged navigation object
+ */
 var handleNavigationCompilation = function (navigation) {
   return navigation.reduce((result, nav) => {
     result.wrapper = Object.assign(result.wrapper || {}, nav.wrapper);
@@ -164,10 +209,16 @@ var handleNavigationCompilation = function (navigation) {
   }, {});
 };
 
+/**
+ * Gets navigation configuration from file/directory paths from the periodic extensions list
+ * @param  {Object} configuration The periodic extensions configuration object
+ * @param {Object[]} configuration.extensions An array of extension configuration objects for periodic
+ * @return {Object}               Aggregated navigation configurations specified by periodic extensions configuration
+ */
 var pullNavigationSettings = function (configuration) {
   let extensions = configuration.extensions || [];
   let filePaths = extensions.reduce((result, config) => {
-    if (config.periodicConfig && config.periodicConfig.navigation) result.push(config.periodicConfig.navigation);
+    if (config.enabled && config.periodicConfig && config.periodicConfig.navigation) result.push(config.periodicConfig.navigation);
     return result;
   }, []);
   return readAndStoreConfigurations(filePaths || [])
@@ -175,6 +226,15 @@ var pullNavigationSettings = function (configuration) {
     .catch(e => Promisie.reject(e));
 };
 
+/**
+ * Finalizes view/navigation configurations by aggregating theme configurations, extension configurations and react admin default configurations
+ * @param  {Object} data Loaded view/navigation configurations from periodic extensions and the default react admin configuration
+ * @param {Object} data.default_manifests Default manifest configurations derived from files specified by react admin extension
+ * @param {Object} data.manifests Manifest configurations derived from files/directories specified in periodic extensions list
+ * @param {Object} data.default_navigation Default navigation configuration derived from file specified by react admin extension
+ * @param {Object} data.navigation Navigation configuration derived from files/directories specified in periodic extensions list
+ * @return {Object}      Aggregated manifest and navigation configuration
+ */
 var finalizeSettingsWithTheme = function (data) {
   let filePath = path.join(__dirname, '../../../content/themes', appSettings.theme || appSettings.themename, 'periodicjs.reactadmin.json');
   return fs.accessAsync(filePath)
@@ -213,6 +273,14 @@ var finalizeSettingsWithTheme = function (data) {
     });
 };
 
+/**
+ * Sanitizes the default manifest and navigation configurations provided by default configuration paths. Conforms format to format outputed by extensions list
+ * @param {Object} data.default_manifests Default manifest configurations derived from files specified by react admin extension
+ * @param {Object} data.manifests Manifest configurations derived from files/directories specified in periodic extensions list
+ * @param {Object} data.default_navigation Default navigation configuration derived from file specified by react admin extension
+ * @param {Object} data.navigation Navigation configuration derived from files/directories specified in periodic extensions list
+ * @return {Object}      Returns sanitized default navigation/manifest configurations
+ */
 var sanitizeConfigurations = function (data) {
   return Object.keys(data).reduce((result, key) => {
     if (key === 'default_manifests') result[key] = handleManifestCompilation(data[key]);
@@ -222,6 +290,10 @@ var sanitizeConfigurations = function (data) {
   }, {});
 };
 
+/**
+ * Gets manifest/navigation configurations from all possible sources and aggregates data with top priority to theme configurations followed by extensions and finally the default values provided by react admin. Also defines the in-scope manifestSettings and navigationSettings variables
+ * @return {Object} Returns the fully aggregated configurations for manifests and and navigation
+ */
 var pullConfigurationSettings = function () {
   if (manifestSettings && navigationSettings) return Promisie.resolve({ manifest: manifestSettings, navigation: navigationSettings });
   return Promisie.all(fs.readJsonAsync(path.join(__dirname, '../../../content/config/extensions.json')), fs.readJsonAsync(path.join(__dirname, '../periodicjs.reactadmin.json')))
@@ -246,6 +318,12 @@ var pullConfigurationSettings = function () {
     .catch(e => Promisie.reject(e));
 };
 
+/**
+ * Loads manifest configuration data and sends response with settings
+ * @param  {Object}   req  express request
+ * @param  {Object}   res  express reponse
+ * @param {Function} next express next function
+ */
 var loadManifest = function (req, res, next) {
   pullConfigurationSettings()
     .then(settings => {
@@ -262,6 +340,12 @@ var loadManifest = function (req, res, next) {
     .catch(next);
 };
 
+/**
+ * Recursively assigns an async function to all component configuration file paths that will read configuration data and assign value to original key or assigns default value
+ * @param  {Object} data     Component configuration object with key value pairs that represent an eventual key value and a file path that should resolve with configuration data
+ * @param  {Object} defaults Default component configurations provided by react admin
+ * @return {Object}          Returns an object that has async read operations assigned to keys for configuration resolution
+ */
 var generateComponentOperations = function (data, defaults) {
   return Object.keys(data).reduce((result, key) => {
     if (typeof data[key] === 'string') {
@@ -280,6 +364,10 @@ var generateComponentOperations = function (data, defaults) {
   }, {});
 };
 
+/**
+ * Reads component configuration file paths from react admin and theme configurations and resolves actual configurations from specified paths
+ * @return {Object} Component configuration objects indexed by component type
+ */
 var pullComponentSettings = function () {
   if (components) return Promisie.resolve(components);
   return readAndStoreConfigurations(['node_modules/periodicjs.ext.reactadmin/periodicjs.reactadmin.json', `content/themes/${ appSettings.theme || appSettings.themename }/periodicjs.reactadmin.json`])
@@ -301,6 +389,12 @@ var pullComponentSettings = function () {
     .catch(e => Promisie.reject(e));
 };
 
+/**
+ * Loads component configuration data and sends response with settings
+ * @param  {object}   req  express request
+ * @param  {object}   res  express reponse
+ * @param {Function} next express next function
+ */
 var loadComponent = function (req, res, next) {
   pullComponentSettings()
     .then(() => {
@@ -317,6 +411,11 @@ var loadComponent = function (req, res, next) {
     .catch(next);
 };
 
+/**
+ * Loads user preference data and sends response with settings
+ * @param  {object}   req  express request
+ * @param  {object}   res  express reponse
+ */
 var loadUserPreferences = function (req, res) {
   res.status(200).send({
     result: 'success',
@@ -327,6 +426,12 @@ var loadUserPreferences = function (req, res) {
   });
 };
 
+/**
+ * Loads navigation configuration data and sends response with settings
+ * @param  {object}   req  express request
+ * @param  {object}   res  express reponse
+ * @param {Function} next express next function
+ */
 var loadNavigation = function (req, res, next) {
   pullConfigurationSettings()
     .then(settings => {
