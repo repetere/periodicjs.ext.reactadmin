@@ -4,8 +4,8 @@ import 'font-awesome/css/font-awesome.css';
 import styles from '../../styles';
 
 const propTypes = {
-  headerColor: PropTypes.string,
-  headerTextColor: PropTypes.string,
+  headerColor: PropTypes.object,
+  headerTextColor: PropTypes.object,
   cardTitle: PropTypes.string,
   display: PropTypes.string,
   icon: PropTypes.string,

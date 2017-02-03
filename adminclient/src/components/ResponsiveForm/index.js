@@ -132,7 +132,7 @@ class ResponsiveForm extends Component{
       };
       if (formgroup.card && formgroup.card.twoColumns) {
         return (
-          <ResponsiveCard cardTitle="Blue Card" key={keyValue++}>
+          <ResponsiveCard {...formgroup.card.props} key={keyValue++}>
           <Columns>
             <Column size="isHalf">
             {formgroup.formElements[0].formGroupElementsLeft.map(getFormElements)}
@@ -147,12 +147,12 @@ class ResponsiveForm extends Component{
         return (
           <Columns>
             <Column size="isHalf">
-              <ResponsiveCard cardTitle="One Card" key={keyValue++}>
+              <ResponsiveCard {...formgroup.card.leftCardProps} key={keyValue++}>
                 {formgroup.formElements[0].formGroupCardLeft.map(getFormElements)}
               </ResponsiveCard>
             </Column>
             <Column size="isHalf">
-              <ResponsiveCard cardTitle="Two Card" key={keyValue++}>
+              <ResponsiveCard {...formgroup.card.rightCardProps} key={keyValue++}>
                 {formgroup.formElements[0].formGroupCardRight.map(getFormElements)}
               </ResponsiveCard>
             </Column>
@@ -161,7 +161,7 @@ class ResponsiveForm extends Component{
       if (formgroup.card && !formgroup.card.twoColumns) {
         return (<Columns {...gridProps}>
         <Column size="isHalf">  
-          <ResponsiveCard cardTitle="Red Card" headerColor={{ backgroundColor: '#900'}} key={keyValue++}>
+          <ResponsiveCard {...formgroup.card.props} key={keyValue++}>
             {formgroup.formElements.map(getFormElements)}
             </ResponsiveCard>
           </Column>  
