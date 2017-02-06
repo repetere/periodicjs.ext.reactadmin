@@ -102,23 +102,17 @@ var readConfigurations = function (filePath) {
  */
 var readAndStoreConfigurations = function (paths) {
   paths = (Array.isArray(paths)) ? paths : [paths];
-  let reads = paths.reduce((result, _path, index) => {
-    if (typeof _path === 'string') {
-      result[index] = function () {
-        return readConfigurations(_path)
-          .then(result => result)
-          .catch(() => false);
-      };
-    }
-    else result[index] = () => false;
-    return result;
-  }, {});
-  return Promisie.parallel(reads)
+  let reads = paths.map(_path => {
+    if (typeof _path === 'string') return readConfigurations.bind(null, _path);
+    return () => Promisie.reject(new Error('No path specified'));
+  });
+  return Promisie.settle(reads)
     .then(result => {
-      return Object.keys(result).reduce((final, key) => {
-        if (Array.isArray(result[key])) return final.concat(result[key]);
-        else if (result[key]) final.push(result[key]);
-        return final;
+      let { fulfilled } = result;
+      return fulfilled.reduce((result, data) => {
+        if (Array.isArray(data)) return result.concat(data.value);
+        result.push(data.value);
+        return result;
       }, []);
     })
     .catch(e => Promisie.reject(e));

@@ -49,6 +49,15 @@ const ui = {
       },
     };
   },
+  setActiveNavItem: function (id) {
+    return {
+      type: constants.ui.SET_SELECTED_NAV_STATE,
+      payload: {
+        success: true,
+        id
+      }
+    }
+  },
   fetchComponent: function (type) {
     let component, componentLoadError;
     //add ?refresh=true to below component loading routes to individually reload configurations for a given component
