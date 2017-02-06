@@ -135,6 +135,7 @@ class ResponsiveForm extends Component{
           return <div key={j} />;
         }
       };
+      /** If the formgroup is a card and has two columns, it will create a single card with two inputs split into two columns based on which ones are set in each column */
       if (formgroup.card && formgroup.card.twoColumns) {
         return (
           <ResponsiveCard {...formgroup.card.props} key={keyValue++}>
@@ -148,6 +149,8 @@ class ResponsiveForm extends Component{
           </Columns>
         </ResponsiveCard>);
       }
+
+      /** If a formgroup is a card and doubleCard is true, it will create two columns, each with a card. The cards will be independant of each other but will share the same horizontal space */
       if (formgroup.card && formgroup.card.doubleCard) {
         return (
           <Columns>
@@ -163,7 +166,9 @@ class ResponsiveForm extends Component{
             </Column>
           </Columns>);
       }
-      if (formgroup.card && !formgroup.card.twoColumns) {
+
+      /** If a formgroup is a card, and is not a doubleCard or twoColumns, it will be a single card in a horizontal space in a half size column  */
+      if (formgroup.card && !formgroup.card.twoColumns && !formgroup.card.doubleCard) {
         return (<Columns {...gridProps}>
         <Column size="isHalf">  
           <ResponsiveCard {...formgroup.card.props} key={keyValue++}>
