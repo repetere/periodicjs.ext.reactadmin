@@ -12,12 +12,9 @@ class AppSidebar extends Component {
   // componentWillReceiveProps (props) {
   //   this.setState(props);
   // }
-  // componentDidMount() {
-  //   // let state = this.props.getState();
-  //   // if (state.settings && state.settings.user && state.settings.user.navigation && Array.isArray(state.settings.user.navigation.children)) {
-  //   //   this.setState(Object.assign({}, this.state, { navigation: state.settings.user.navigation, }));
-  //   // }
-  // }
+  componentDidMount () {
+    if (this.props.ui && !this.props.ui.selected_nav) this.props.setActiveNavLink(this.props.location.pathname);
+  }
   render() {
     // console.log('this.props',this.props)
     let navigationLayout = {};
