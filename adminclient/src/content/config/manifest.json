@@ -21,9 +21,9 @@
                 "children":[
                   {
                     "component":"RawOutput",
-                    "asyncProps":[
-                      "healthcheckStatus"
-                    ]
+                    "asyncprops": {
+                      "healthcheck": ["healthcheckStatus"]
+                    }
                   },
                   {
                     "component":"Title",
@@ -36,7 +36,7 @@
         ]
       },
       "resources":{
-        "healthcheckStatus":"/healthcheck"
+        "healthcheckStatus":"/load/healthcheck"
       },
       "onFinish":"render"
     },
