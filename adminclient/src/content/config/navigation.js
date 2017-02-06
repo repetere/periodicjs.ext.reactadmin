@@ -23,6 +23,12 @@ module.exports = {
       }, {
         component: 'MenuAppLink',
         props: {
+          href: '/playground',
+          label: 'Playground',
+        },
+      }, {
+        component: 'MenuAppLink',
+        props: {
           href: '/documentation',
           label: 'Documentation',
         },
