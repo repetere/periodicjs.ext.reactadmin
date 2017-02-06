@@ -29,7 +29,7 @@ const manifest = {
       delete headers.clientid_default;
       options.headers = Object.assign({}, options.headers, headers);
       //add ?refresh=true to below route to reload manifest configuration
-      return utilities.fetchComponent(`${ basename }/load/manifest`, options)()
+      return utilities.fetchComponent(`${ basename }/load/manifest?refresh=true`, options)()
         .then(response => {
           dispatch(this.receivedManifestData(response.data.settings));
         }, e => dispatch(this.failedManifestRetrival(e)))

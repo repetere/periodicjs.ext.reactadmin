@@ -21,9 +21,9 @@
                 "children":[
                   {
                     "component":"RawOutput",
-                    "asyncProps":[
-                      "healthcheckStatus"
-                    ]
+                    "asyncprops":{
+                      "healthcheckstatus" : ["healthcheckStatus"]
+                    }
                   },
                   {
                     "component":"Title",
@@ -36,7 +36,45 @@
         ]
       },
       "resources":{
-        "healthcheckStatus":"/healthcheck"
+        "healthcheckStatus":"/load/healthcheck"
+      },
+      "onFinish":"render"
+    },
+    "/playground": {
+      "layout":{
+        "component":"Hero",
+        "props":{
+          "size":"isFullheight"
+        },
+        "children":[
+          {
+            "component":"HeroBody",
+            "props":{
+
+            },
+            "asyncprops":{
+              "healthcheck":[
+                "healthcheckStatus"
+              ]
+            },
+            "children":[
+              {
+                "component":"Container",
+                "props":{
+                },
+                "children":[
+                  {
+                    "component": "ResponsiveChart",
+                    "props": {}
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "resources":{
+        "healthcheckStatus":"/load/healthcheck"
       },
       "onFinish":"render"
     },
