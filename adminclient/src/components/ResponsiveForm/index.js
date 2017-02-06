@@ -1,12 +1,12 @@
 import React, { Component, } from 'react';
-import { Columns, Card, CardContent,  CardFooter, CardFooterItem, Notification, } from 're-bulma'; 
+import { Columns, Card, CardContent, CardFooter, CardFooterItem, Notification, Container, Column, } from 're-bulma'; 
+import ResponsiveCard from '../ResponsiveCard';
 import utilities from '../../util';
 import { getFormTextInputArea, getFormCheckbox, getFormSubmit, getCardFooterItem, } from './FormElements';
 
 class ResponsiveForm extends Component{
   constructor(props) {
     super(props);
-    console.log('this.props for ResponsiveForm', this.props);
     this.state = Object.assign({
       formDataError: null,
       formDataStatusDate: new Date(),
@@ -28,6 +28,11 @@ class ResponsiveForm extends Component{
     //     }
     //   });
     // });
+
+    this.getFormSubmit = getFormSubmit.bind(this);
+    this.getFormTextInputArea = getFormTextInputArea.bind(this);
+    this.getFormCheckbox = getFormCheckbox.bind(this);
+    this.getCardFooterItem = getCardFooterItem.bind(this);
   }
   submitForm() {
     // console.log('submitting Form', this);
@@ -113,6 +118,7 @@ class ResponsiveForm extends Component{
   }
   render() {
     // console.log('Form this.props', this.props);
+    let keyValue = 0;
     let formGroupData = this.props.formgroups.map((formgroup, i) => {
       let gridProps = Object.assign({
         isMultiline: true,
@@ -120,28 +126,57 @@ class ResponsiveForm extends Component{
       }, formgroup.gridProps);
       let getFormElements = (formElement, j) => {
         if (formElement.type === 'text' || formElement.type === 'textarea') {
-          return getFormTextInputArea.call(this, { formElement,  i:j, formgroup, });
+          return this.getFormTextInputArea({ formElement,  i:j, formgroup, });
         } else if (formElement.type === 'checkbox') {
-          return getFormCheckbox.call(this, { formElement,  i:j, formgroup, });
-        // } else if (formElement.type === 'select') {
-        //   return getFormSelect.call(this, { formElement,  i:j, formgroup, });
-        // } else if (formElement.type === 'button') {
-        //   return getFormButton.call(this, { formElement,  i:j, formgroup, });
+          return this.getFormCheckbox({ formElement,  i:j, formgroup, });
         } else if (formElement.type === 'submit') {
-          return getFormSubmit.call(this, { formElement,  i:j, formgroup, });
-        // } else if (formElement.type === 'datalist') {
-        //   return getFormDatalist.call(this, { formElement,  i:j, formgroup, });
-        // } else if (formElement.type === 'datatable') {
-        //   return getFormDataTable.call(this, { formElement,  i:j, formgroup, });
-        // } else if (formElement.type === 'divider') {
-        //   return (<HR key={j}/>);
-        // } else if (formElement.type === 'textblock') {
-        //   return (<Text key={j} style={{ marginTop:10, marginBottom:10, }}>{formElement.value}</Text>);
-          
+          return this.getFormSubmit({ formElement,  i:j, formgroup, }); 
         } else {
           return <div key={j} />;
         }
-      };      
+      };
+      /** If the formgroup is a card and has two columns, it will create a single card with two inputs split into two columns based on which ones are set in each column */
+      if (formgroup.card && formgroup.card.twoColumns) {
+        return (
+          <ResponsiveCard {...formgroup.card.props} key={keyValue++}>
+          <Columns>
+            <Column size="isHalf">
+            {formgroup.formElements[0].formGroupElementsLeft.map(getFormElements)}
+            </Column>
+            <Column size="isHalf">
+              {formgroup.formElements[0].formGroupElementsRight.map(getFormElements)}
+            </Column>  
+          </Columns>
+        </ResponsiveCard>);
+      }
+
+      /** If a formgroup is a card and doubleCard is true, it will create two columns, each with a card. The cards will be independant of each other but will share the same horizontal space */
+      if (formgroup.card && formgroup.card.doubleCard) {
+        return (
+          <Columns>
+            <Column size="isHalf">
+              <ResponsiveCard {...formgroup.card.leftCardProps} key={keyValue++}>
+                {formgroup.formElements[0].formGroupCardLeft.map(getFormElements)}
+              </ResponsiveCard>
+            </Column>
+            <Column size="isHalf">
+              <ResponsiveCard {...formgroup.card.rightCardProps} key={keyValue++}>
+                {formgroup.formElements[0].formGroupCardRight.map(getFormElements)}
+              </ResponsiveCard>
+            </Column>
+          </Columns>);
+      }
+
+      /** If a formgroup is a card, and is not a doubleCard or twoColumns, it will be a single card in a horizontal space in a half size column  */
+      if (formgroup.card && !formgroup.card.twoColumns && !formgroup.card.doubleCard) {
+        return (<Columns {...gridProps}>
+        <Column size="isHalf">  
+          <ResponsiveCard {...formgroup.card.props} key={keyValue++}>
+            {formgroup.formElements.map(getFormElements)}
+            </ResponsiveCard>
+          </Column>  
+        </Columns>);
+      }
       return (<Columns {...gridProps}>
         {formgroup.formElements.map(getFormElements)}
       </Columns>);
@@ -153,7 +188,7 @@ class ResponsiveForm extends Component{
       }, formgroup.gridProps);
       let getFormElements = (formElement, j) => {
         if (formElement.type === 'submit') {
-          return getCardFooterItem.call(this, { formElement,  i:j, formgroup, });
+          return this.getCardFooterItem({ formElement,  i:j, formgroup, });
         } else {
           return <CardFooterItem>
             <div key={j} />
