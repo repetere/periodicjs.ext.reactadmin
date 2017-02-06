@@ -11,6 +11,10 @@ const colorStyles = {
   isSecondaryBackground: {
     backgroundColor: '#BCD6ED'
   },
+  activeButton: {
+    backgroundColor: '#0C6FC0',
+    color: 'white'
+  },
   isInfo: {
     color:'#42afe3',
   },
