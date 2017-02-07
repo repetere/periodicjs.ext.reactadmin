@@ -3,6 +3,8 @@ import React, { Component, } from 'react';
 import AppSectionLoading from '../components/AppSectionLoading';
 import AppError404 from '../components/AppError404';
 import { getRenderedComponent, } from '../components/AppLayoutMap';
+import constants from '../constants';
+import { AsyncStorage, } from 'react-native';
 import utilities from '../util';
 
 let AppManifest = {};
@@ -10,6 +12,28 @@ let AppManifest = {};
 const setAppManifest = (props) => {
   if (props.containers && props.updatedAt !== AppManifest.updatedAt) {
     AppManifest = props;
+  }
+};
+
+const _handleComponentLifecycle = function () {
+  this.setState({ ui_is_loaded: false, });
+  let parentState = this.props.getState();
+  let pathname = (this.props.location.pathname) ? this.props.location.pathname : window.location.pathname;
+  if (parentState.manifest && parentState.manifest.hasLoaded) {
+    if (pathname === '/mfa' && window.location.pathname === '/mfa') this.fetchData();
+    else {
+      this.props.enforceMFA(true)
+        .then(isValid => {
+          if (isValid) this.fetchData();
+        }, e => this.fetchDynamicErrorContent(pathname));
+    }
+  } else {
+    AsyncStorage.getItem(constants.jwt_token.TOKEN_NAME)
+      .then(token => this.props.initializeAuthenticatedUser(token, false))
+      .then(() => this.props.enforceMFA(true))
+      .then(isValid => {
+        if (isValid) this.fetchData();
+      }, e => this.fetchDynamicErrorContent(pathname));
   }
 };
 
@@ -25,6 +49,7 @@ class DynamicPage extends Component {
     };
     this.uiLayout = {};
     this.getRenderedComponent = getRenderedComponent.bind(this);
+    this.handleComponentLifecycle = _handleComponentLifecycle.bind(this);
   }
   fetchDynamicPageContent (pathname) {
     let layout = Object.assign({}, AppManifest.containers[pathname].layout);
@@ -80,13 +105,11 @@ class DynamicPage extends Component {
       return this.fetchDynamicErrorContent(pathname);
     }
   }
-  componentDidMount() { // console.log('component DId Mount', this.props);
-    this.setState({ ui_is_loaded: false, });
-    this.fetchData();
+  componentDidMount () { // console.log('component DId Mount', this.props);
+    this.handleComponentLifecycle();
   }
-  componentWillReceiveProps(/*nextProps*/) { // console.log('DynamicPage componentWillReceiveProps nextProps', nextProps);
-    this.setState({ ui_is_loaded: false, });
-    this.fetchData();
+  componentWillReceiveProps (/*nextProps*/) { // console.log('DynamicPage componentWillReceiveProps nextProps', nextProps);
+    this.handleComponentLifecycle();
   }
   render() {
     // const Props = Object.assign({}, this.props, this.props.getState());

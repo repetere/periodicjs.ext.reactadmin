@@ -246,7 +246,63 @@ const user = {
         });
     };
   },
-  initializeAuthenticatedUser (token) {
+  enforceMFA (noRedirect) {
+    return (dispatch, getState) => {
+      let state = getState();
+      let extensionattributes = (state.user.userdata) ? state.user.userdata.extensionattributes : false;
+      let queryparams = qs.parse((window.location.search.charAt(0) === '?') ? window.location.search.substr(1, window.location.search.length) : window.location.search);
+      let returnUrl = (queryparams.return_url) ? queryparams.return_url : false;
+      if (state.settings.auth.enforce_mfa || (extensionattributes && extensionattributes.login_mfa)) {
+        return AsyncStorage.getItem(constants.user.MFA_AUTHENTICATED)
+          .then(result => {
+            console.log('result from mfa authenticate status', { result });
+            if (result && result.isAuthenticated === true) {
+              if (!noRedirect) {
+                if (state.user.isLoggedIn && returnUrl) dispatch(push(returnUrl));
+                else dispatch(push(state.settings.auth.logged_in_homepage));
+              }
+              return true;
+            } else {
+              dispatch(push('/mfa'));
+              return false;
+            }
+          })
+          .catch(e => Promise.reject(e));
+      } else {
+        if (!noRedirect) {
+          if (state.user.isLoggedIn && returnUrl) dispatch(push(returnUrl));
+          else dispatch(push(state.settings.auth.logged_in_homepage));
+        }
+        return true;
+      }
+    };
+  },
+  validateMFA () {
+    let requestOptions = {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'x-access-token': undefined,
+      },
+    };
+    return (dispatch, getState) => {
+      let state = getState();
+      let basename = state.settings.basename;
+      let headers = state.settings.userprofile.options.headers;
+      delete headers.clientid_default;
+      let options = Object.assign({}, requestOptions);
+      AsyncStorage.getItem(constants.jwt_token.TOKEN_NAME)
+        .then(token => {
+          options.headers = Object.assign({}, options.headers, { 'x-access-token': token });
+          console.log(options);
+          return utilities.fetchComponent(`${ basename }/auth/login-otp`, options)()
+        })
+        .then(console.log.bind(console, 'validate mfa response'))
+        .catch(console.error.bind(console, 'validate mfa error'));
+    };
+  },
+  initializeAuthenticatedUser (token, ensureMFA) {
     return (dispatch, getState) => {
       let requestOptions = {
         method: 'POST',
@@ -260,7 +316,9 @@ const user = {
         manifest.fetchManifest(requestOptions)(dispatch, getState),
         this.fetchPreferences(requestOptions)(dispatch, getState),
         this.fetchNavigation(requestOptions)(dispatch, getState),
-      ]);
+      ])
+        .then(() => (ensureMFA !== false) ? this.enforceMFA()(dispatch, getState) : undefined)
+        .catch(e => Promise.reject(e));
     };
   },
   /**
@@ -302,7 +360,7 @@ const user = {
             }
           } else {
             return response.json();
-          }
+          } 
         })
         .then((responseData) => {
           cachedResponseData = responseData;
@@ -314,20 +372,12 @@ const user = {
               token: responseData.token,
             })),
             AsyncStorage.setItem(constants.jwt_token.PROFILE_JSON, JSON.stringify(responseData.user)),
-            this.initializeAuthenticatedUser(responseData.token)(dispatch, getState),
+            this.initializeAuthenticatedUser(responseData.token, false)(dispatch, getState),
           ]);
         })
         .then(() => {
           dispatch(this.recievedLoginUser(url, fetchResponse, cachedResponseData));
-          //move to new page
-          let queryStrings = qs.parse((window.location.search.charAt(0) === '?') ? window.location.search.substr(1, window.location.search.length) : window.location.search);
-          let returnUrl = (queryStrings.return_url) ? queryStrings.return_url : false;
-          // console.log({ returnUrl, queryStrings, });
-          if (getState().user.isLoggedIn && returnUrl) {
-            dispatch(push(returnUrl));
-          } else {
-            dispatch(push(getState().settings.auth.logged_in_homepage));
-          }
+          return this.enforceMFA()(dispatch, getState);
         })
         .catch((error) => {
           dispatch(notification.errorNotification(error));

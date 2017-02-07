@@ -11,6 +11,7 @@ module.exports = function(resources) {
     ReactAdminRouter.post('/manifest', ensureApiAuthenticated, uacController.loadUserRoles, reactadminController.loadManifest);
     ReactAdminRouter.post('/preferences', ensureApiAuthenticated, uacController.loadUserRoles, reactadminController.loadUserPreferences);
     ReactAdminRouter.post('/navigation', ensureApiAuthenticated, uacController.loadUserRoles, reactadminController.loadNavigation);
+    ReactAdminRouter.post('/mfa', ensureApiAuthenticated, reactadminController.validateMFAToken);
     ReactAdminRouter.get('/components/:component', reactadminController.loadComponent);
     ReactAdminRouter.get('/healthcheck', function (req, res) {
     	res.status(200).send({ status: 'ok' });

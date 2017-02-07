@@ -110,7 +110,7 @@ var readAndStoreConfigurations = function (paths) {
     .then(result => {
       let { fulfilled } = result;
       return fulfilled.reduce((result, data) => {
-        if (Array.isArray(data)) return result.concat(data.value);
+        if (Array.isArray(data.value)) return result.concat(data.value);
         result.push(data.value);
         return result;
       }, []);
@@ -480,6 +480,16 @@ var loadNavigation = function (req, res, next) {
     .catch(next);
 };
 
+var validateMFAToken = function (req, res, next) {
+  res.status(200).send({
+    result: 'success',
+    status: 200,
+    data: {
+      isAuthenticated: true,
+    },
+  });
+};
+
 module.exports = function (resources) {
   periodic = resources;
   appSettings = resources.settings;
@@ -498,5 +508,6 @@ module.exports = function (resources) {
     loadComponent,
     loadUserPreferences,
     loadNavigation,
+    validateMFAToken
   };
 };

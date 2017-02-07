@@ -29,6 +29,7 @@ export default {
     NAVIGATION_LOAD_SUCCESS: 'navigation loaded',
     NAVIGATION_LOAD_ERROR: 'navigation failed',
     NAVIGATION_REQUEST: 'navigation request',
+    MFA_AUTHENTICATED: 'mfa authenticated',
     // CURRENT_USER_STATUS:'get current login status',    
   },
   clientCacheData:{
