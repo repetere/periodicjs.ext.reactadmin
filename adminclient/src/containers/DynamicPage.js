@@ -45,25 +45,24 @@ class DynamicPage extends Component {
   fetchDynamicErrorContent (/*pathname*/) {
     let custom404Error;
     let state = this.props.getState();
-    // console.log({ state });
     if (state.ui && state.ui.components && state.ui.components.error && state.ui.components.error['404']) {
       let componentData = state.ui.components.error['404'];
       if (typeof componentData.status === 'undefined' || componentData.status === 'undefined' || componentData.status === 'uninitialized') {
         custom404Error = false;
       } else {
-        if (componentData.settings.resources && Object.keys(componentData.settings.resources).length) {
-          return utilities.fetchPaths(this.props.getState().settings.basename, componentData.settings.resources)
+        if (componentData.resources && Object.keys(componentData.resources).length) {
+          return utilities.fetchPaths(this.props.getState().settings.basename, componentData.resources)
             .then(resources => {
-              this.uiLayout = this.getRenderedComponent(componentData.settings.layout, resources);
+              this.uiLayout = this.getRenderedComponent(componentData.layout, resources);
               this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
             })
             .catch(e => {
               this.uiLayout = <AppError404/>;
               this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
             });
-        } else custom404Error = this.getRenderedComponent(componentData.settings.layout);
+        } else custom404Error = this.getRenderedComponent(componentData.layout);
       }
-      custom404Error = (typeof componentData.status === 'undefined' || componentData.status === 'undefined' || componentData.status === 'uninitialized') ? false : this.getRenderedComponent(componentData.settings);
+      custom404Error = (typeof componentData.status === 'undefined' || componentData.status === 'undefined' || componentData.status === 'uninitialized') ? false : this.getRenderedComponent(componentData.layout);
     }
     this.uiLayout = (custom404Error) ? custom404Error : <AppError404/>;
     this.setState({ ui_is_loaded: true, });

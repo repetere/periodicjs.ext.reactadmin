@@ -54,6 +54,7 @@ const reduxActions = {
   fetchLoginComponent: () => store.dispatch(actions.ui.fetchComponent(CONSTANTS.ui.LOGIN_COMPONENT)),
   fetchMainComponent: () => store.dispatch(actions.ui.fetchComponent(CONSTANTS.ui.MAIN_COMPONENT)),
   fetchErrorComponents: () => store.dispatch(actions.ui.fetchComponent(CONSTANTS.ui.ERROR_COMPONENTS)),
+  setActiveNavLink: (id) => store.dispatch(actions.ui.setActiveNavItem(id)),
   reduxRouter: {
     push: (location) => store.dispatch(push(location)),
     replace: (location) => store.dispatch(replace(location)),

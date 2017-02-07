@@ -202,6 +202,7 @@ const user = {
       let headers = state.settings.userprofile.options.headers;
       delete headers.clientid_default;
       options.headers = Object.assign({}, options.headers, headers);
+      //add ?refresh=true to fetch route below to reload navigtion configuration
       return utilities.fetchComponent(`${ basename }/load/navigation`, options)()
         .then(response => {
           dispatch(this.navigationSuccessResponse(response));
@@ -304,7 +305,6 @@ const user = {
           }
         })
         .then((responseData) => {
-          console.log({responseData})
           cachedResponseData = responseData;
           return Promise.all([
             AsyncStorage.setItem(constants.jwt_token.TOKEN_NAME, responseData.token),

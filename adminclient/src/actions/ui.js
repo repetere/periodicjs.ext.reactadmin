@@ -49,28 +49,38 @@ const ui = {
       },
     };
   },
+  setActiveNavItem: function (id) {
+    return {
+      type: constants.ui.SET_SELECTED_NAV_STATE,
+      payload: {
+        success: true,
+        id
+      }
+    }
+  },
   fetchComponent: function (type) {
     let component, componentLoadError;
+    //add ?refresh=true to below component loading routes to individually reload configurations for a given component
     switch (type) {
-    case constants.ui.LOGIN_COMPONENT:
-      component = constants.ui.LOGIN_COMPONENT;
-      if (!COMPONENTS[ component ]) COMPONENTS[ component ] = function (basename) {
-        return fetchComponentUtil(`${basename}/load/components/login`);
-      };
-      break;
-    case constants.ui.MAIN_COMPONENT:
-      component = constants.ui.MAIN_COMPONENT;
-      if (!COMPONENTS[ component ]) COMPONENTS[ component ] = function (basename) {
-        return fetchComponentUtil(`${basename}/load/components/main`);
-      };
-      break;
-    case constants.ui.ERROR_COMPONENTS:
-      component = constants.ui.ERROR_COMPONENTS;
-      if (!COMPONENTS[ component ]) COMPONENTS[ component ] = function (basename) {
-        return fetchComponentUtil(`${basename}/load/components/error`);
-      };
-      break;
-    default:
+      case constants.ui.LOGIN_COMPONENT:
+        component = constants.ui.LOGIN_COMPONENT;
+        if (!COMPONENTS[ component ]) COMPONENTS[ component ] = function (basename) {
+          return fetchComponentUtil(`${basename}/load/components/login`);
+        };
+        break;
+      case constants.ui.MAIN_COMPONENT:
+        component = constants.ui.MAIN_COMPONENT;
+        if (!COMPONENTS[ component ]) COMPONENTS[ component ] = function (basename) {
+          return fetchComponentUtil(`${basename}/load/components/main`);
+        };
+        break;
+      case constants.ui.ERROR_COMPONENTS:
+        component = constants.ui.ERROR_COMPONENTS;
+        if (!COMPONENTS[ component ]) COMPONENTS[ component ] = function (basename) {
+          return fetchComponentUtil(`${basename}/load/components/error`);
+        };
+        break;
+      default:
       component = false;
     }
     return function (dispatch, getState) {

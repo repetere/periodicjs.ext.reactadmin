@@ -28,6 +28,7 @@ const manifest = {
       let headers = state.settings.userprofile.options.headers;
       delete headers.clientid_default;
       options.headers = Object.assign({}, options.headers, headers);
+      //add ?refresh=true to below route to reload manifest configuration
       return utilities.fetchComponent(`${ basename }/load/manifest`, options)()
         .then(response => {
           dispatch(this.receivedManifestData(response.data.settings));

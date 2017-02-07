@@ -12,6 +12,7 @@ const initialState = {
   footer_ui_is_loaded: false,
   error_ui_is_loaded: false,
   app_data: {},
+  selected_nav: undefined
 };
 
 var containers;
@@ -75,6 +76,8 @@ const uiReducer = (state, action) => {
       components = Object.assign({}, state.components, { error: action.payload.settings });
       return Object.assign({}, state, { components, error_ui_is_loaded: true });
     }
+  case constants.ui.SET_SELECTED_NAV_STATE:
+    return Object.assign({}, state, { selected_nav: action.payload.id });
   default:
     return Object.assign(initialState, state);
   }

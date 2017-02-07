@@ -67,6 +67,7 @@ export default {
     LOGIN_COMPONENT: 'fetchLoginComponent',
     MAIN_COMPONENT: 'fetchMainComponent',
     ERROR_COMPONENTS: 'fetchErrorComponents',
+    SET_SELECTED_NAV_STATE: 'making nav item active',
     // GET_APP_STATE:'get current app state',
   },
   settings: {

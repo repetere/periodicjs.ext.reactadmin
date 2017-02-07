@@ -30,6 +30,13 @@ var navigationSettings;
 var periodic;
 var themeSettings;
 
+/**
+ * Determines if user privileges array contains privilege code(s) that exist in defined privileges for a view
+ * @param  {string[]} privileges An array of privilege codes for a user
+ * @param  {Object} layout     The layout configuration object for a view or navigation link
+ * @param {string[]} layout.privileges The necessary privileges for a given view or navigation link
+ * @return {boolean} Returns true if user privileges exist in view privilege array. Additionally returns true if view privileges is not defined           
+ */
 var determineAccess = function (privileges, layout) {
   if (!privileges.length && (!layout.privileges || !layout.privileges.length)) return true;
   let hasAccess = false;
@@ -45,6 +52,11 @@ var determineAccess = function (privileges, layout) {
   return hasAccess;
 };
 
+/**
+ * Removes null values from an Array
+ * @param  {Object[]} data An array of child components that may contain null values
+ * @return {Object[]}      Returns the original array with null values removed
+ */
 var removeNullIndexes = function (data) {
   let index = data.indexOf(null);
   while (index > -1) {
@@ -54,8 +66,13 @@ var removeNullIndexes = function (data) {
   return data;
 };
 
+/**
+ * Reads a react admin configuration from a specified file path or from files that exist in a directory path (although this can read .js modules it is recommended you use json files as js files are cached and can not be reloaded)
+ * @param  {string} filePath A file or directory path
+ * @return {Object|Object[]}          Either a single react admin configuration or an array of configurations
+ */
 var readConfigurations = function (filePath) {
-  filePath = path.join(process.cwd(), filePath);
+  filePath = path.join(__dirname, '../../../', filePath);
   let _import = function (_path) {
     if (path.extname(_path) === '.js') return Promisie.resolve(require(_path));
     else return fs.readJsonAsync(_path);
@@ -78,6 +95,11 @@ var readConfigurations = function (filePath) {
     .catch(e => Promisie.reject(e));
 };
 
+/**
+ * Accepts a single file/directory path or any array of file/directory paths and returns an array of configuration data for all configurations that are successfully read from these paths
+ * @param  {string|string[]} paths A single file/directory path or an array of file/directory paths
+ * @return {Object[]}       An array of configuration objects for any successfully resolved file reads
+ */
 var readAndStoreConfigurations = function (paths) {
   paths = (Array.isArray(paths)) ? paths : [paths];
   let reads = paths.map(_path => {
@@ -96,6 +118,13 @@ var readAndStoreConfigurations = function (paths) {
     .catch(e => Promisie.reject(e));
 };
 
+/**
+ * Recursively iterates through a view/navigation configuration object and and removes non-permissioned values
+ * @param  {string[]}  privileges An array of user privileges
+ * @param  {Object}  [config={}]  The configuration object that should be filtered
+ * @param  {boolean} [isRoot=false]   If true assumes that the configuration object is contained within the "layout" property of the provided object
+ * @return {Object|Object[]}             Filtered configuration object
+ */
 var recursivePrivilegesFilter = function (privileges, config = {}, isRoot = false) {
   privileges = (Array.isArray(privileges)) ? privileges : [];
   return Object.keys(config).reduce((result, key) => {
@@ -133,6 +162,11 @@ var admin_index = function(req, res){
   CoreController.renderView(req, res, viewtemplate, viewdata);
 };
 
+/**
+ * Merges the "containers" property of an array of manifest configuration objects
+ * @param  {Object[]} manifests An array of manifest configuration objects
+ * @return {Object}           Fully merged manifest object
+ */
 var handleManifestCompilation = function (manifests) {
   return manifests.reduce((result, manifest) => {
     result.containers = Object.assign(result.containers || {}, manifest.containers);
@@ -140,10 +174,16 @@ var handleManifestCompilation = function (manifests) {
   }, {});
 };
 
+/**
+ * Gets manifest configuration file/directory paths from the periodic extensions list
+ * @param  {Object} configuration The periodic extensions configuration object
+ * @param {Object[]} configuration.extensions An array of extension configuration objects for periodic
+ * @return {Object}               Aggregated manifest configurations specified by periodic extensions configuration
+ */
 var pullManifestSettings = function (configuration) {
   let extensions = configuration.extensions || [];
   let filePaths = extensions.reduce((result, config) => {
-    if (config.periodicConfig && config.periodicConfig.manifests) {
+    if (config.enabled && config.periodicConfig && config.periodicConfig.manifests) {
       if (Array.isArray(config.periodicConfig.manifests)) return result.concat(config.periodicConfig.manifests);
       result.push(config.periodicConfig.manifests);
     }
@@ -154,6 +194,11 @@ var pullManifestSettings = function (configuration) {
     .catch(e => Promisie.reject(e));
 };
 
+/**
+ * Merges navigation wrapper, container, layout and concats navigation links specified by periodic extensions configuration
+ * @param  {Object[]} navigation An array of navigation configuration objects
+ * @return {Object}            Fully merged navigation object
+ */
 var handleNavigationCompilation = function (navigation) {
   return navigation.reduce((result, nav) => {
     result.wrapper = Object.assign(result.wrapper || {}, nav.wrapper);
@@ -164,10 +209,16 @@ var handleNavigationCompilation = function (navigation) {
   }, {});
 };
 
+/**
+ * Gets navigation configuration from file/directory paths from the periodic extensions list
+ * @param  {Object} configuration The periodic extensions configuration object
+ * @param {Object[]} configuration.extensions An array of extension configuration objects for periodic
+ * @return {Object}               Aggregated navigation configurations specified by periodic extensions configuration
+ */
 var pullNavigationSettings = function (configuration) {
   let extensions = configuration.extensions || [];
   let filePaths = extensions.reduce((result, config) => {
-    if (config.periodicConfig && config.periodicConfig.navigation) result.push(config.periodicConfig.navigation);
+    if (config.enabled && config.periodicConfig && config.periodicConfig.navigation) result.push(config.periodicConfig.navigation);
     return result;
   }, []);
   return readAndStoreConfigurations(filePaths || [])
@@ -175,6 +226,15 @@ var pullNavigationSettings = function (configuration) {
     .catch(e => Promisie.reject(e));
 };
 
+/**
+ * Finalizes view/navigation configurations by aggregating theme configurations, extension configurations and react admin default configurations
+ * @param  {Object} data Loaded view/navigation configurations from periodic extensions and the default react admin configuration
+ * @param {Object} data.default_manifests Default manifest configurations derived from files specified by react admin extension
+ * @param {Object} data.manifests Manifest configurations derived from files/directories specified in periodic extensions list
+ * @param {Object} data.default_navigation Default navigation configuration derived from file specified by react admin extension
+ * @param {Object} data.navigation Navigation configuration derived from files/directories specified in periodic extensions list
+ * @return {Object}      Aggregated manifest and navigation configuration
+ */
 var finalizeSettingsWithTheme = function (data) {
   let filePath = path.join(__dirname, '../../../content/themes', appSettings.theme || appSettings.themename, 'periodicjs.reactadmin.json');
   return fs.accessAsync(filePath)
@@ -189,30 +249,38 @@ var finalizeSettingsWithTheme = function (data) {
     .then(result => {
       let { manifests, navigation } = result;
       manifests = handleManifestCompilation(manifests);
-      manifests.containers = Object.assign({}, data.default_manifests.containers, data.manifests.containers, manifests.containers);
+      manifests.containers = Object.assign({}, (data.default_manifests) ? data.default_manifests.containers : {}, (data.manifests) ? data.manifests.containers : {}, manifests.containers);
       navigation = handleNavigationCompilation(navigation);
-      let navigationChildren = (data.default_navigation.layout && Array.isArray(data.default_navigation.layout.children)) ? data.default_navigation.layout.children : [];
-      navigation.wrapper = Object.assign({}, data.default_navigation.wrapper, data.navigation.wrapper, navigation.wrapper);
-      navigation.container = Object.assign({}, data.default_navigation.container, data.navigation.container, navigation.container);
+      let navigationChildren = (data.default_navigation && data.default_navigation.layout && Array.isArray(data.default_navigation.layout.children)) ? data.default_navigation.layout.children : [];
+      navigation.wrapper = Object.assign({}, (data.default_navigation) ? data.default_navigation.wrapper : {}, (data.navigation) ? data.navigation.wrapper : {}, navigation.wrapper);
+      navigation.container = Object.assign({}, (data.default_navigation) ? data.default_navigation.container : {}, (data.navigation) ? data.navigation.container : {}, navigation.container);
       navigation.layout = navigation.layout || Object.assign({ children: [] }, (data.default_navigation) ? data.default_navigation.layout : {}, (data.navigation) ? data.navigation.layout : {});
-      navigation.layout.children = (!navigation.layout.children.length) ? navigationChildren.concat((data.navigation.layout && Array.isArray(data.navigation.layout.children)) ? data.navigation.layout.children : []) : navigation.layout.children;
+      navigation.layout.children = (!navigation.layout.children.length) ? navigationChildren.concat((data.navigation && data.navigation.layout && Array.isArray(data.navigation.layout.children)) ? data.navigation.layout.children : []) : navigation.layout.children;
       return { manifest: manifests, navigation };
     })
     .catch(e => {
       console.error(`There is not a reactadmin config for ${ appSettings.theme || appSettings.themename }`, e);
-      let manifest = { containers: Object.assign({}, data.default_manifests.containers, data.manifests.containers) };
-      let navigationChildren = (data.default_navigation.layout && Array.isArray(data.default_navigation.layout.children)) ? data.default_navigation.layout.children : [];
+      let manifest = { containers: Object.assign({}, (data.default_manifests) ? data.default_manifests.containers : {}, (data.manifests) ? data.manifests.containers : {}) };
+      let navigationChildren = (data.default_navigation && data.default_navigation.layout && Array.isArray(data.default_navigation.layout.children)) ? data.default_navigation.layout.children : [];
       let navigation = {
-        wrapper: Object.assign({}, data.default_navigation.wrapper, data.navigation.wrapper),
-        container: Object.assign({}, data.default_navigation.container, data.navigation.container),
-        layout: Object.assign({}, data.default_navigation.layout, data.navigation.layout, { 
-          children: navigationChildren.concat((data.navigation.layout && Array.isArray(data.navigation.layout.children)) ? data.navigation.layout.children : []) 
+        wrapper: Object.assign({}, (data.default_navigation) ? data.default_navigation.wrapper : {}, (data.navigation) ? data.navigation.wrapper : {}),
+        container: Object.assign({}, (data.default_navigation) ? data.default_navigation.container : {}, (data.navigation) ? data.navigation.container : {}),
+        layout: Object.assign({}, (data.default_navigation) ? data.default_navigation.layout : {}, (data.navigation) ? data.navigation.layout : {}, { 
+          children: navigationChildren.concat((data.navigation && data.navigation.layout && Array.isArray(data.navigation.layout.children)) ? data.navigation.layout.children : []) 
         })
       };
       return { manifest, navigation };
     });
 };
 
+/**
+ * Sanitizes the default manifest and navigation configurations provided by default configuration paths. Conforms format to format outputed by extensions list
+ * @param {Object} data.default_manifests Default manifest configurations derived from files specified by react admin extension
+ * @param {Object} data.manifests Manifest configurations derived from files/directories specified in periodic extensions list
+ * @param {Object} data.default_navigation Default navigation configuration derived from file specified by react admin extension
+ * @param {Object} data.navigation Navigation configuration derived from files/directories specified in periodic extensions list
+ * @return {Object}      Returns sanitized default navigation/manifest configurations
+ */
 var sanitizeConfigurations = function (data) {
   return Object.keys(data).reduce((result, key) => {
     if (key === 'default_manifests') result[key] = handleManifestCompilation(data[key]);
@@ -222,34 +290,53 @@ var sanitizeConfigurations = function (data) {
   }, {});
 };
 
-var pullConfigurationSettings = function () {
-  if (manifestSettings && navigationSettings) return Promisie.resolve({ manifest: manifestSettings, navigation: navigationSettings });
+/**
+ * Gets manifest/navigation configurations from all possible sources and aggregates data with top priority to theme configurations followed by extensions and finally the default values provided by react admin. Also defines the in-scope manifestSettings and navigationSettings variables
+ * @return {Object} Returns the fully aggregated configurations for manifests and and navigation
+ */
+var pullConfigurationSettings = function (reload) {
+  if (manifestSettings && navigationSettings && !reload) return Promisie.resolve({ manifest: manifestSettings, navigation: navigationSettings });
   return Promisie.all(fs.readJsonAsync(path.join(__dirname, '../../../content/config/extensions.json')), fs.readJsonAsync(path.join(__dirname, '../periodicjs.reactadmin.json')))
     .then(configurationData => {
       let [configuration, adminExtSettings] = configurationData;
       adminExtSettings = adminExtSettings['periodicjs.ext.reactadmin'];
-      return Promisie.parallel({
-        manifests: pullManifestSettings.bind(null, configuration),
-        navigation: pullNavigationSettings.bind(null, configuration),
-        default_manifests: readAndStoreConfigurations.bind(null, adminExtSettings.manifests || []),
-        default_navigation: readAndStoreConfigurations.bind(null, adminExtSettings.navigation || [])
-      });
+      let operations = {};
+      if (reload === 'manifest' || reload === true || !manifestSettings) {
+        operations = Object.assign(operations, { 
+          manifests: pullManifestSettings.bind(null, configuration), 
+          default_manifests: readAndStoreConfigurations.bind(null, adminExtSettings.manifests || []) 
+        });
+      }
+      if (reload === 'navigation' || reload === true || !navigationSettings) {
+        operations = Object.assign(operations, { 
+          navigation: pullNavigationSettings.bind(null, configuration), 
+          default_navigation: readAndStoreConfigurations.bind(null, adminExtSettings.navigation || []) 
+        });
+      }
+      return Promisie.parallel(operations);
     })
     .then(sanitizeConfigurations)
     .then(finalizeSettingsWithTheme)
     .then(result => {
       let { manifest, navigation } = result;
-      manifestSettings = manifest;
-      navigationSettings = navigation;
+      manifestSettings = (reload === 'manifest' || reload === true || !manifestSettings) ? manifest : manifestSettings;
+      navigationSettings = (reload === 'navigation' || reload === true || !navigationSettings) ? navigation : navigationSettings;
       return result;
     })
     .catch(e => Promisie.reject(e));
 };
 
+/**
+ * Loads manifest configuration data and sends response with settings
+ * @param  {Object}   req  express request
+ * @param  {Object}   res  express reponse
+ * @param {Function} next express next function
+ */
 var loadManifest = function (req, res, next) {
-  pullConfigurationSettings()
-    .then(settings => {
-      let manifest = settings.manifest;
+  pullConfigurationSettings((req.query && req.query.refresh) ? 'manifest' : false)
+    .then(() => {
+      let manifest = Object.assign({}, manifestSettings);
+      if (req.query && req.query.refresh_log && req.query.refresh_log !== 'false') logger.silly('reloaded manifest', { manifest }); 
       manifest.containers = recursivePrivilegesFilter(Object.keys(req.session.userprivilegesdata), manifest.containers, true);
       res.status(200).send({
         result: 'success',
@@ -262,6 +349,12 @@ var loadManifest = function (req, res, next) {
     .catch(next);
 };
 
+/**
+ * Recursively assigns an async function to all component configuration file paths that will read configuration data and assign value to original key or assigns default value
+ * @param  {Object} data     Component configuration object with key value pairs that represent an eventual key value and a file path that should resolve with configuration data
+ * @param  {Object} defaults Default component configurations provided by react admin
+ * @return {Object}          Returns an object that has async read operations assigned to keys for configuration resolution
+ */
 var generateComponentOperations = function (data, defaults) {
   return Object.keys(data).reduce((result, key) => {
     if (typeof data[key] === 'string') {
@@ -280,43 +373,80 @@ var generateComponentOperations = function (data, defaults) {
   }, {});
 };
 
-var pullComponentSettings = function () {
-  if (components) return Promisie.resolve(components);
+/**
+ * Assigns an active status flag to nested component configuration objects
+ * @param  {Object} component Component configuration object
+ * @return {Object}           Original object with active status flag assigned where applicable
+ */
+var assignComponentStatus = function (component) {
+  if (component && component.layout) {
+    if (typeof component.status === 'undefined' || (component.status !== 'undefined' && component.status !== 'uninitialized')) component.status = 'active';
+  }
+  else if (component && typeof component === 'object') {
+    component = Object.keys(component).reduce((result, key) => {
+      result[key] = assignComponentStatus(component[key]);
+      return result;
+    }, {});
+  }
+  return component;
+};
+
+/**
+ * Reads component configuration file paths from react admin and theme configurations and resolves actual configurations from specified paths
+ * @return {Object} Component configuration objects indexed by component type
+ */
+var pullComponentSettings = function (refresh) {
+  if (components && !refresh) return Promisie.resolve(components);
   return readAndStoreConfigurations(['node_modules/periodicjs.ext.reactadmin/periodicjs.reactadmin.json', `content/themes/${ appSettings.theme || appSettings.themename }/periodicjs.reactadmin.json`])
     .then(results => {
-      switch (results.length.toString()) {
+      switch (Object.keys(results).length.toString()) {
         case '1':
           return Object.assign({}, (results[0]['periodicjs.ext.reactadmin']) ? results[0]['periodicjs.ext.reactadmin'].components : {});
         case '2':
-          return Object.assign({}, (results[0]['periodicjs.ext.reactadmin']) ? results[0]['periodicjs.ext.reactadmin'].components : {}, (results[0]['periodicjs.ext.reactadmin']) ? results[1]['periodicjs.ext.reactadmin'].components : {});
+          return Object.assign({}, (results[0]['periodicjs.ext.reactadmin']) ? results[0]['periodicjs.ext.reactadmin'].components : {}, (results[1]['periodicjs.ext.reactadmin']) ? results[1]['periodicjs.ext.reactadmin'].components : {});
         default:
           return {};
       }
     })
-    .then(results => Promisie.parallel(generateComponentOperations(results, DEFAULT_COMPONENTS)))
     .then(results => {
-      components = Object.assign({}, DEFAULT_COMPONENTS, results);
-      return components;
+      if (!components || typeof refresh !== 'string') return results;
+      else if (typeof refresh === 'string') return { [refresh]: results[refresh] };
+    })
+    .then(results => Promisie.parallel(generateComponentOperations(results, (!components) ? DEFAULT_COMPONENTS : components)))
+    .then(results => {
+      components = Object.assign({}, (!components) ? DEFAULT_COMPONENTS : components, results);
+      return assignComponentStatus(components);
     })
     .catch(e => Promisie.reject(e));
 };
 
+/**
+ * Loads component configuration data and sends response with settings
+ * @param  {object}   req  express request
+ * @param  {object}   res  express reponse
+ * @param {Function} next express next function
+ */
 var loadComponent = function (req, res, next) {
-  pullComponentSettings()
+  pullComponentSettings((req.query && req.query.refresh) ? req.params.component : false)
     .then(() => {
       let component = components[req.params.component] || { status: 'undefined', };
-      if (typeof component.status === 'undefined' || (component.status !== 'undefined' && component.status !== 'uninitialized')) component.status = 'active';
+      if (req.query && req.query.refresh_log && req.query.refresh_log !== 'false') logger.silly(`reloaded component ${ req.params.component }`, { component });
       res.status(200).send({
         result: 'success',
         status: 200,
         data: {
-          settings: component,
+          settings: assignComponentStatus(component),
         },
       });
     })
     .catch(next);
 };
 
+/**
+ * Loads user preference data and sends response with settings
+ * @param  {object}   req  express request
+ * @param  {object}   res  express reponse
+ */
 var loadUserPreferences = function (req, res) {
   res.status(200).send({
     result: 'success',
@@ -327,12 +457,18 @@ var loadUserPreferences = function (req, res) {
   });
 };
 
+/**
+ * Loads navigation configuration data and sends response with settings
+ * @param  {object}   req  express request
+ * @param  {object}   res  express reponse
+ * @param {Function} next express next function
+ */
 var loadNavigation = function (req, res, next) {
-  pullConfigurationSettings()
-    .then(settings => {
-      let navigation = settings.navigation;
+  pullConfigurationSettings((req.query && req.query.refresh) ? 'navigation' : false)
+    .then(() => {
+      let navigation = Object.assign({}, navigationSettings);
+      if (req.query && req.query.refresh_log && req.query.refresh_log !== 'false') logger.silly('reloaded navigation', { navigation }); 
       navigation.layout = recursivePrivilegesFilter(Object.keys(req.session.userprivilegesdata), [navigation.layout])[0];
-      logger.silly({ navigation });
       res.status(200).send({
         result: 'success',
         status: 200,
