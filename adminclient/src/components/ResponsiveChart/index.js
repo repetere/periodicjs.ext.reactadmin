@@ -11,6 +11,7 @@ const propTypes = {
     width: PropTypes.number,
     height: PropTypes.number,
     data: PropTypes.object,
+    chartTitle: PropTypes.string,
     margin: PropTypes.shape({
       top: PropTypes.number,
       right: PropTypes.number,
@@ -21,71 +22,31 @@ const propTypes = {
 };
 
 const defaultProps = {
-  chartType: 'PieChart',
+  chartType: 'BarChart',
   chartProps: {
     layout: 'horizontal',
     width: 800,
     height: 300,
   },
+  chartTitle: 'No Title Set',
   xAxis: {
     dataKey: 'name'
   },
   yAxis: {},
-
+  data: [],
+  points: []
 };
 
 class ResponsiveChart extends Component {
   constructor(props) {
     super(props);
 
-    const data = [
-      { name: 'Page A', uv: 4000, pv: 2400, amt: 2400 },
-      { name: 'Page B', uv: 3000, pv: 1398, amt: 2210 },
-      { name: 'Page C', uv: 2000, pv: 9800, amt: 2290 },
-      { name: 'Page D', uv: 2780, pv: 3908, amt: 2000 },
-      { name: 'Page E', uv: 1890, pv: 4800, amt: 2181 },
-      { name: 'Page F', uv: 2390, pv: 3800, amt: 2500 },
-      { name: 'Page G', uv: 3490, pv: 4300, amt: 2100 },
-    ];
-
-    // const points = [
-    //   { dataKey: 'uv', fill: '#8884d8' },
-    //   { dataKey: 'pv', fill: '#82ca9d' },
-    // ];
-
-    //Pie Chart
-    const points = [
-      { name: 'Group A', value: 400 },
-      { name: 'Group B', value: 300 },
-      { name: 'Group C', value: 300 },
-      { name: 'Group D', value: 200 }
-    ];
-
-    // ComposedChart
-    // const points = {
-    //   area: {
-    //     type: 'monotone',
-    //     dataKey: 'amt',
-    //     fill: '#8884d8',
-    //     stroke: '#8884d8'
-    //   },
-    //   bar: {
-    //     dataKey: 'pv',
-    //     barSize: 20,
-    //     fill: '#413ea0'
-    //   },
-    //   line: {
-    //     type: 'monotone',
-    //     dataKey: 'uv',
-    //     stroke: '#ff7300'
-    //   }
-    // };
-
     this.state = {
       chartType: props.chartType,
-      chartProps: Object.assign({}, props.chartProps, { margin: { top: 5, right: 30, left: 20, bottom: 5 } }),
-      data,
-      points
+      chartProps: Object.assign({}, props.chartProps),
+      chartTitle: props.chartTitle,
+      data: props.data,
+      points: props.points
     };
   }
 
@@ -93,18 +54,18 @@ class ResponsiveChart extends Component {
     
     if (this.state.chartType === 'BarChart') {
       return (
-        <recharts.BarChart {...this.state.chartProps} data={this.state.data}>
-          <recharts.XAxis dataKey="name" />
-          <recharts.YAxis />
-          <recharts.CartesianGrid strokeDasharray="0 0" />
-          <recharts.Tooltip />
-          <recharts.Legend />
-          {this.state.points.map((bar, idx) => {
-            return (
-              <recharts.Bar {...bar} key={idx} />
-            );
-          })}
-        </recharts.BarChart>);
+          <recharts.BarChart {...this.state.chartProps} data={this.state.data}>
+            <recharts.XAxis dataKey="name" />
+            <recharts.YAxis />
+            <recharts.CartesianGrid strokeDasharray="0 0" />
+            <recharts.Tooltip />
+            <recharts.Legend />
+            {this.state.points.map((bar, idx) => {
+              return (
+                <recharts.Bar {...bar} key={idx} />
+              );
+            })}
+          </recharts.BarChart>);
     }
 
     if (this.state.chartType === 'LineChart') {
@@ -120,8 +81,7 @@ class ResponsiveChart extends Component {
               <recharts.Line {...line} key={idx} />
             );
           })}          
-        </recharts.LineChart>        
-      );
+        </recharts.LineChart>);
     }
 
     if (this.state.chartType === 'ComposedChart') {
