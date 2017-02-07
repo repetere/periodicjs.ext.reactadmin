@@ -162,6 +162,7 @@ const user = {
         AsyncStorage.removeItem(constants.jwt_token.TOKEN_NAME),
         AsyncStorage.removeItem(constants.jwt_token.TOKEN_DATA),
         AsyncStorage.removeItem(constants.jwt_token.PROFILE_JSON),
+        AsyncStorage.removeItem(constants.user.MFA_AUTHENTICATED),
         // AsyncStorage.removeItem(constants.pages.ASYNCSTORAGE_KEY),
       ])
         .then((/*results*/) => {
@@ -255,8 +256,7 @@ const user = {
       if (state.settings.auth.enforce_mfa || (extensionattributes && extensionattributes.login_mfa)) {
         return AsyncStorage.getItem(constants.user.MFA_AUTHENTICATED)
           .then(result => {
-            console.log('result from mfa authenticate status', { result });
-            if (result && result.isAuthenticated === true) {
+            if (result === 'true') {
               if (!noRedirect) {
                 if (state.user.isLoggedIn && returnUrl) dispatch(push(returnUrl));
                 else dispatch(push(state.settings.auth.logged_in_homepage));
@@ -295,10 +295,12 @@ const user = {
       AsyncStorage.getItem(constants.jwt_token.TOKEN_NAME)
         .then(token => {
           options.headers = Object.assign({}, options.headers, { 'x-access-token': token });
-          console.log(options);
-          return utilities.fetchComponent(`${ basename }/auth/login-otp`, options)()
+          return utilities.fetchComponent(`${ basename }/load/mfa`, options)()
         })
-        .then(console.log.bind(console, 'validate mfa response'))
+        .then(response => {
+          if (response && response.data && response.data.isAuthenticated) return AsyncStorage.setItem(constants.user.MFA_AUTHENTICATED, true);
+        })
+        .then(() => this.enforceMFA()(dispatch, getState))
         .catch(console.error.bind(console, 'validate mfa error'));
     };
   },
