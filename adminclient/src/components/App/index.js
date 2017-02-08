@@ -57,6 +57,7 @@ const reduxActions = {
   setActiveNavLink: (id) => store.dispatch(actions.ui.setActiveNavItem(id)),
   enforceMFA: (noRedirect) => store.dispatch(actions.user.enforceMFA(noRedirect)),
   validateMFA: (jwt_token) => store.dispatch(actions.user.validateMFA(jwt_token)),
+  authenticatedMFA: () => store.dispatch(actions.user.authenticatedMFA()),
   reduxRouter: {
     push: (location) => store.dispatch(push(location)),
     replace: (location) => store.dispatch(replace(location)),

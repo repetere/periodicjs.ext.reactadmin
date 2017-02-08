@@ -22,14 +22,11 @@ const _handleComponentLifecycle = function () {
   if (parentState.manifest && parentState.manifest.hasLoaded) {
     if (pathname === '/mfa' && window.location.pathname === '/mfa') this.fetchData();
     else {
-      this.props.enforceMFA(true)
-        .then(isValid => {
-          if (isValid) this.fetchData();
-        }, e => this.fetchDynamicErrorContent(pathname));
+      let isValid = this.props.enforceMFA(true);
+      if (isValid) this.fetchData();
     }
   } else {
-    AsyncStorage.getItem(constants.jwt_token.TOKEN_NAME)
-      .then(token => this.props.initializeAuthenticatedUser(token, false))
+    this.props.initializeAuthenticatedUser(parentState.user.jwt_token, false)
       .then(() => this.props.enforceMFA(true))
       .then(isValid => {
         if (isValid) this.fetchData();

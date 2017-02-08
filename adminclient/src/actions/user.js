@@ -155,6 +155,16 @@ const user = {
       payload: {},
     };
   },
+  authenticatedMFA (isAuthenticated = true) {
+    return {
+      type: constants.user.MFA_AUTHENTICATED,
+      payload: {
+        updatedAt: new Date(),
+        timestamp: Date.now(),
+        isMFAAuthenticated: isAuthenticated
+      }
+    }
+  },
   logoutUser() {
     return (dispatch) => {
       dispatch(pageActions.resetAppLoadedState());
@@ -170,6 +180,7 @@ const user = {
           dispatch(this.logoutUserSuccess());
           dispatch(pageActions.initialAppLoaded());
           dispatch(uiActions.closeUISidebar());
+          dispatch(this.authenticatedMFA(false));
           dispatch(push('/'));
         })
         .catch(error => { 
@@ -254,20 +265,16 @@ const user = {
       let queryparams = qs.parse((window.location.search.charAt(0) === '?') ? window.location.search.substr(1, window.location.search.length) : window.location.search);
       let returnUrl = (queryparams.return_url) ? queryparams.return_url : false;
       if (state.settings.auth.enforce_mfa || (extensionattributes && extensionattributes.login_mfa)) {
-        return AsyncStorage.getItem(constants.user.MFA_AUTHENTICATED)
-          .then(result => {
-            if (result === 'true') {
-              if (!noRedirect) {
-                if (state.user.isLoggedIn && returnUrl) dispatch(push(returnUrl));
-                else dispatch(push(state.settings.auth.logged_in_homepage));
-              }
-              return true;
-            } else {
-              dispatch(push('/mfa'));
-              return false;
-            }
-          })
-          .catch(e => Promise.reject(e));
+        if (state.user.isMFAAuthenticated) {
+          if (!noRedirect) {
+            if (state.user.isLoggedIn && returnUrl) dispatch(push(returnUrl));
+            else dispatch(push(state.settings.auth.logged_in_homepage));
+          }
+          return true;
+        } else {
+          dispatch(push('/mfa'));
+          return false;
+        }
       } else {
         if (!noRedirect) {
           if (state.user.isLoggedIn && returnUrl) dispatch(push(returnUrl));
@@ -292,13 +299,13 @@ const user = {
       let headers = state.settings.userprofile.options.headers;
       delete headers.clientid_default;
       let options = Object.assign({}, requestOptions);
-      AsyncStorage.getItem(constants.jwt_token.TOKEN_NAME)
-        .then(token => {
-          options.headers = Object.assign({}, options.headers, { 'x-access-token': token });
-          return utilities.fetchComponent(`${ basename }/load/mfa`, options)()
-        })
+      options.headers = Object.assign({}, options.headers, { 'x-access-token': state.user.jwt_token });
+      return utilities.fetchComponent(`${ basename }/load/mfa`, options)()
         .then(response => {
-          if (response && response.data && response.data.isAuthenticated) return AsyncStorage.setItem(constants.user.MFA_AUTHENTICATED, true);
+          if (response && response.data && response.data.isAuthenticated) {
+            dispatch(this.authenticatedMFA());
+            return AsyncStorage.setItem(constants.user.MFA_AUTHENTICATED, true);
+          }
         })
         .then(() => this.enforceMFA()(dispatch, getState))
         .catch(console.error.bind(console, 'validate mfa error'));
