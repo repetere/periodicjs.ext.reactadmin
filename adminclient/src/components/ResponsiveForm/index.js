@@ -7,6 +7,7 @@ import { getFormTextInputArea, getFormCheckbox, getFormSubmit, getCardFooterItem
 class ResponsiveForm extends Component{
   constructor(props) {
     super(props);
+    console.log('Responsive Form Props: ', props);
     this.state = Object.assign({
       formDataError: null,
       formDataStatusDate: new Date(),
@@ -117,7 +118,6 @@ class ResponsiveForm extends Component{
     }
   }
   render() {
-    // console.log('Form this.props', this.props);
     let keyValue = 0;
     let formGroupData = this.props.formgroups.map((formgroup, i) => {
       let gridProps = Object.assign({

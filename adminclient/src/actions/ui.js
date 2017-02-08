@@ -65,19 +65,19 @@ const ui = {
       case constants.ui.LOGIN_COMPONENT:
         component = constants.ui.LOGIN_COMPONENT;
         if (!COMPONENTS[ component ]) COMPONENTS[ component ] = function (basename) {
-          return fetchComponentUtil(`${basename}/load/components/login`);
+          return fetchComponentUtil(`${basename}/load/components/login?refresh=true`);
         };
         break;
       case constants.ui.MAIN_COMPONENT:
         component = constants.ui.MAIN_COMPONENT;
         if (!COMPONENTS[ component ]) COMPONENTS[ component ] = function (basename) {
-          return fetchComponentUtil(`${basename}/load/components/main`);
+          return fetchComponentUtil(`${basename}/load/components/main?refresh=true`);
         };
         break;
       case constants.ui.ERROR_COMPONENTS:
         component = constants.ui.ERROR_COMPONENTS;
         if (!COMPONENTS[ component ]) COMPONENTS[ component ] = function (basename) {
-          return fetchComponentUtil(`${basename}/load/components/error`);
+          return fetchComponentUtil(`${basename}/load/components/error?refresh=true`);
         };
         break;
       default:

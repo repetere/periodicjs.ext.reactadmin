@@ -29,6 +29,14 @@
           {
             "component":"MenuAppLink",
             "props":{
+              "href":"/playground",
+              "label":"Playground",
+              "id": "playground"
+            }
+          },          
+          {
+            "component":"MenuAppLink",
+            "props":{
               "href":"/documentation",
               "label":"Documentation",
               "id": "documentation"

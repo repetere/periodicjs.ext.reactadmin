@@ -4,66 +4,55 @@ import styles from '../../styles';
 import { getRenderedComponent, } from '../AppLayoutMap';
 
 const propTypes = {
-  tabStyle: PropTypes.oneOf(['isToggle', 'isBoxed', ]),
-  alignment: PropTypes.oneOf(['isLeft', 'isCenter', 'isRight', ]),
-  size: PropTypes.oneOf(['isSmall', 'isMedium', 'isLarge', ]),
+  tabsType: PropTypes.string,
   isFullwidth: PropTypes.bool.isRequired,
   isButton: PropTypes.bool,
+  tabgroupProps: PropTypes.object,
+  tabsProps: PropTypes.shape({
+    tabStyle: PropTypes.oneOf(['isToggle', 'isBoxed', ]),
+    alignment: PropTypes.oneOf(['isLeft', 'isCenter', 'isRight', ]),
+    size: PropTypes.oneOf(['isSmall', 'isMedium', 'isLarge', ]),
+  }),  
 };
 
 const defaultProps = {
-  tabStyle: 'isToggle',
-  alignment: 'isCenter',
-  size: 'isMedium',
+  tabsType: 'pageToggle',
   isFullwidth: true,
   isButton: true,
+  tabgroupProps: {},
+  tabsProps: {
+    alignment: 'isCentered',
+    size: 'isMedium',
+  },  
 };
 
 class ResponsiveTabs extends Component {
   constructor(props) {
     super(props);
-    let tabs = [{
-      name: 'Overview',
-      layout: {
-        component: 'Container',
-        props: {},
-        children: [{
-          component: 'div',
-          children: 'This is the overview',
-        }, ],
-      },
-    }, {
-      name: 'Loan Offers',
-      layout: {
-        component: 'Container',
-        props: {},
-        children: [{
-          component: 'div',
-          children: 'This is the loan offers page',
-        }, ],
-      },
-    }, ];
     
     this.state = {
-      tabs,
+      tabsType: props.tabsType,
+      tabs: props.tabs,
       isButton: props.isButton,
-      currentTab: '' || tabs[0],
+      currentTab: '' || props.tabs[0],
       currentLayout: '',
+      tabgroupProps: props.tabgroupProps,
+      tabsProps: props.tabsProps,
     };
 
     this.getRenderedComponent = getRenderedComponent.bind(this);
   }
 
   changeTab(tab) {
-    let currentLayout = this.getRenderedComponent(tab.layout);
+    let currentLayout = (tab.layout && (Object.keys(tab.layout).length >= 1)) ? this.getRenderedComponent(tab.layout) : '';
     this.setState({
       currentTab: tab,
       currentLayout,
     });
   }
   
-  componentWillMount () {
-    let defaultLayout = this.getRenderedComponent(this.state.currentTab.layout);
+  componentWillMount() {
+    let defaultLayout = (this.state.currentTab.layout && (Object.keys(this.state.currentTab.layout).length >= 1)) ? this.getRenderedComponent(this.state.currentTab.layout) : '';
     this.setState({
       currentLayout: defaultLayout,
     });
@@ -71,25 +60,42 @@ class ResponsiveTabs extends Component {
   
 
   render() {
-    return (
-    <Container>
-      <Tabs>
-        <TabGroup alignment="isCenter">
-            {this.state.tabs.map((tab) => {
-              let active = (tab.name === this.state.currentTab.name) ? true : false;
-              let buttonStyle = (tab.name === this.state.currentTab.name) ? styles.activeButton : {};
-              if (this.state.isButton) return (
-                <Tab isActive={active} onClick={() => this.changeTab(tab)}><Button style={buttonStyle}>{tab.name}</Button></Tab>
-              );
-              return (
-                <Tab isActive={active} onClick={() => this.changeTab(tab)}>{tab.name}</Tab>
-              );
-            })}
-        </TabGroup>
-      </Tabs>
-      {this.state.currentLayout}  
-    </Container>  
-    );
+    if (this.state.tabsType === 'pageToggle') {
+      return (
+      <Container>
+          <Tabs { ...this.state.tabsProps }>
+            <TabGroup { ...this.state.tabgroupProps }>
+              {this.state.tabs.map((tab) => {
+                let active = (tab.name === this.state.currentTab.name) ? true : false;
+                let buttonStyle = (tab.name === this.state.currentTab.name) ? styles.activeButton : {};
+                if (this.state.isButton) return (
+                  <Tab {...tab.tabProps} isActive={active} onClick={() => this.changeTab(tab)}><Button style={buttonStyle}>{tab.name}</Button></Tab>
+                );
+                return (
+                  <Tab {...tab.tabProps} isActive={active} onClick={() => this.changeTab(tab)}>{tab.name}</Tab>
+                );
+              })}
+          </TabGroup>
+        </Tabs>
+        {this.state.currentLayout}  
+      </Container>  
+      );
+    }
+    
+    if (this.state.tabsType === 'navBar') {
+      return (
+          <Tabs { ...this.state.tabsProps }>
+            <TabGroup { ...this.state.tabgroupProps }>
+              {this.state.tabs.map((tab) => {
+                let active = (tab.name === this.state.currentTab.name) ? true : false;
+                return (
+                  <Tab {...tab.tabProps} isActive={active} onClick={() => this.changeTab(tab)}>{tab.name}</Tab>
+                );
+              })}
+          </TabGroup>
+        </Tabs>        
+      );
+    }
   }
 }
 

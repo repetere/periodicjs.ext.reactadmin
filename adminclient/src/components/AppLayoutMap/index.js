@@ -25,18 +25,19 @@ export function getRenderedComponent(componentObject, resources) {
   renderIndex++;
   let asyncprops = (componentObject.asyncprops && typeof componentObject.asyncprops === 'object') ? utilities.traverse(componentObject.asyncprops, resources) : {};
   let windowprops = (componentObject.windowprops && typeof componentObject.windowprops === 'object') ? utilities.traverse(componentObject.windowprops, window) : {};
-  let thisprops = (!React.DOM[ componentObject.component ] && !rebulma[ componentObject.component ]) ? this.props : null;
+  let thisprops = (!React.DOM[componentObject.component] && !rebulma[componentObject.component]) ? this.props : null;
   // if(!React.DOM[ componentObject.component ] && !rebulma[ componentObject.component ]){
   //   console.log(componentObject.component,'is not in bulma or reactdom')
   // }
   let renderedCompProps = Object.assign({ key: renderIndex, }, thisprops, componentObject.props, asyncprops, windowprops);
+  console.log('componentObject.props: ', componentObject.props);
   return createElement(
     //element component
-    (React.DOM[ componentObject.component ])
+    (React.DOM[componentObject.component])
       ? componentObject.component
-      : (recharts[ componentObject.component.replace('recharts.', '') ])
-        ? recharts[ componentObject.component.replace('recharts.', '') ]
-        : AppLayoutMap[ componentObject.component ],
+      : (recharts[componentObject.component.replace('recharts.', '')])
+        ? recharts[componentObject.component.replace('recharts.', '')]
+        : AppLayoutMap[componentObject.component],
     //element props
     renderedCompProps,
     //props children
