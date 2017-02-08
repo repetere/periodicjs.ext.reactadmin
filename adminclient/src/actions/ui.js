@@ -65,7 +65,7 @@ const ui = {
       case constants.ui.LOGIN_COMPONENT:
         component = constants.ui.LOGIN_COMPONENT;
         if (!COMPONENTS[ component ]) COMPONENTS[ component ] = function (basename) {
-          return fetchComponentUtil(`${basename}/load/components/login`);
+          return fetchComponentUtil(`${basename}/load/components/login`); 
         };
         break;
       case constants.ui.MAIN_COMPONENT:
