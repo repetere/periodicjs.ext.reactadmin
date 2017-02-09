@@ -1,7 +1,7 @@
 import React, { Component, } from 'react';
 import { getRenderedComponent, } from '../AppLayoutMap';
 import styles from '../../styles';
-import navigation from '../../content/config/default_navigation';
+// import navigation from '../../content/config/default_navigation';
 // import { Menu, MenuLabel, MenuLink, MenuList, } from 're-bulma'; //Icon
 
 class AppSidebar extends Component {
@@ -31,7 +31,7 @@ class AppSidebar extends Component {
         <div style={Object.assign({
           position: 'fixed',
         }, navigationWrapper.style)}>
-          {getRenderedComponent.call(this, (navigationLayout && typeof navigationLayout === 'object') ? navigationLayout : navigation.layout)}
+          {getRenderedComponent.call(this, (navigationLayout && typeof navigationLayout === 'object') ? navigationLayout : {})}
         </div>
       </div>
     );

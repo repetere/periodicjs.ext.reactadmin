@@ -1,5 +1,5 @@
 import React, { Component, } from 'react';
-import { Columns, Card, CardContent, CardFooter, CardFooterItem, Notification, Container, Column, } from 're-bulma'; 
+import { Columns, Card, CardContent, CardFooter, CardFooterItem, Notification, Column, } from 're-bulma'; 
 import ResponsiveCard from '../ResponsiveCard';
 import utilities from '../../util';
 import { getFormTextInputArea, getFormCheckbox, getFormSubmit, getCardFooterItem, } from './FormElements';

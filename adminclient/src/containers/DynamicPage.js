@@ -57,6 +57,7 @@ class DynamicPage extends Component {
           this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
         })
         .catch(e => {
+          this.props.errorNotification(e);
           this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
         });
     } else {
@@ -79,7 +80,7 @@ class DynamicPage extends Component {
               this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
             })
             .catch(e => {
-              this.uiLayout = <AppError404/>;
+              this.uiLayout = <AppError404 error={e}/>;
               this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
             });
         } else custom404Error = this.getRenderedComponent(componentData.layout);

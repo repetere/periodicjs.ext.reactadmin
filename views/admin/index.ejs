@@ -6,12 +6,12 @@
     <link rel="shortcut icon" href="/favicon.png">
     <title>React Async Admin</title>
     <link href="/extensions/periodicjs.ext.reactadmin/static/css/main.0e98e187.css" rel="stylesheet">
-    <script>
-      var __padmin = JSON.parse(<% JSON.stringify(<%-locals.extension.reactadmin.settings%>) %>);
+    <script type="text/javascript">
+      <%- locals.viewhelper.passObjToClient(locals.extension.reactadmin.settings,"__padmin") %>
     </script>
   </head>
   <body>
     <div id="root"></div>
-    <script type="text/javascript" src="/extensions/periodicjs.ext.reactadmin/static/js/main.ac7d536b.js"></script>
+    <script type="text/javascript" src="/extensions/periodicjs.ext.reactadmin/static/js/main.d1f7226f.js"></script>
   </body>
 </html>

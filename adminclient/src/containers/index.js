@@ -1,4 +1,4 @@
-import HomePage from './home';
+// import HomePage from './home';
 // import BlogPage from './blog';
 import LoginPage from './login';
 // import BlogIndex from './blogindex';
@@ -8,7 +8,7 @@ import Error404 from './Error404';
 import DynamicPage from './DynamicPage';
 
 exports.PageComponents = {
-  HomePage,
+  // HomePage,
   LoginPage,
   // BlogPage,
   // BlogIndex,
