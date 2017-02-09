@@ -86,9 +86,8 @@
         "healthcheckStatus":"/r-admin/load/healthcheck"
       },
       "onFinish":"render"
-    }
-  },
-    "/documentation":{
+    },
+      "/documentation":{
       "layout":{
         "component":"Hero",
         "props":{
