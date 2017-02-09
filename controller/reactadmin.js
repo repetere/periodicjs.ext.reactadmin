@@ -72,20 +72,21 @@ var removeNullIndexes = function (data) {
  * @return {Object|Object[]}          Either a single react admin configuration or an array of configurations
  */
 var readConfigurations = function (filePath) {
-  let resolvedFilePath = path.join(__dirname, '../../../', filePath);
+  filePath = path.join(__dirname, '../../../', filePath);
   let _import = function (_path) {
+    if (path.extname(_path) !== '.js' && path.extname(_path) !== '.json') return undefined;
     if (path.extname(_path) === '.js') return Promisie.resolve(require(_path));
     else return fs.readJsonAsync(_path);
   };
-  return fs.statAsync(resolvedFilePath)
+  return fs.statAsync(filePath)
     .then(stats => {
-      if (stats.isFile()) return _import(resolvedFilePath);
+      if (stats.isFile()) return _import(filePath);
       else if (stats.isDirectory()) {
-        return fs.readdirAsync(resolvedFilePath)
+        return fs.readdirAsync(filePath)
           .then(files => {
             return Promisie.map(files, file => {
               let fullPath = path.join(filePath, file);
-              return readConfigurations(fullPath);
+              return _import(fullPath);
             });
           })
           .catch(e => Promisie.reject(e));
@@ -112,7 +113,7 @@ var readAndStoreConfigurations = function (paths) {
       fulfilled = fulfilled.map(data => data.value);
       let flatten = function (result, data) {
         if (Array.isArray(data)) return result.concat(data.reduce(flatten, []));
-        result.push(data);
+        if (data) result.push(data);
         return result;
       };
       return fulfilled.reduce(flatten, []);
