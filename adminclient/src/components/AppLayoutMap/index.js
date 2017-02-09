@@ -30,7 +30,8 @@ export function getRenderedComponent(componentObject, resources) {
   //   console.log(componentObject.component,'is not in bulma or reactdom')
   // }
   let renderedCompProps = Object.assign({ key: renderIndex, }, thisprops, componentObject.props, asyncprops, windowprops);
-  console.log('componentObject.props: ', componentObject.props);
+  this.getRenderedComponent = getRenderedComponent.bind(this);
+
   return createElement(
     //element component
     (React.DOM[componentObject.component])
@@ -42,7 +43,7 @@ export function getRenderedComponent(componentObject, resources) {
     renderedCompProps,
     //props children
     (Array.isArray(componentObject.children) && typeof componentObject.children !== 'string')
-      ? componentObject.children.map(childComponentObject => getRenderedComponent.call(this, childComponentObject, resources))
+      ? componentObject.children.map(childComponentObject => this.getRenderedComponent(childComponentObject, resources))
       : componentObject.children
   );
 }

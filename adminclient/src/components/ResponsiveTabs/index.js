@@ -77,23 +77,26 @@ class ResponsiveTabs extends Component {
               })}
           </TabGroup>
         </Tabs>
-        {this.state.currentLayout}  
+        {this.state.currentLayout}
       </Container>  
       );
     }
     
     if (this.state.tabsType === 'navBar') {
       return (
+        <Container>
           <Tabs { ...this.state.tabsProps }>
             <TabGroup { ...this.state.tabgroupProps }>
-              {this.state.tabs.map((tab) => {
+              {this.state.tabs.map((tab, idx) => {
                 let active = (tab.name === this.state.currentTab.name) ? true : false;
                 return (
-                  <Tab {...tab.tabProps} isActive={active} onClick={() => this.changeTab(tab)}>{tab.name}</Tab>
+                  <Tab {...tab.tabProps} key={idx} isActive={active} onClick={() => this.changeTab(tab)}>{tab.name}</Tab>
                 );
               })}
           </TabGroup>
-        </Tabs>        
+          </Tabs>
+        {this.state.currentLayout}
+        </Container>  
       );
     }
   }

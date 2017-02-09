@@ -7,7 +7,6 @@ import { getFormTextInputArea, getFormCheckbox, getFormSubmit, getCardFooterItem
 class ResponsiveForm extends Component{
   constructor(props) {
     super(props);
-    console.log('Responsive Form Props: ', props);
     this.state = Object.assign({
       formDataError: null,
       formDataStatusDate: new Date(),

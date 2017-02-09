@@ -29,6 +29,7 @@ class ResponsiveCard extends Component {
       display: props.display,
       icon: props.icon,
       cardTitle: props.cardTitle,
+      cardProps: props.cardProps,
     };
   }
 
@@ -41,7 +42,7 @@ class ResponsiveCard extends Component {
 
   render() {
     const fullCard = (
-      <Card isFullwidth>
+      <Card isFullwidth {...this.state.cardProps}>
         <CardHeader>
           <CardHeaderTitle style={this.state.headerColor}>
             {this.state.cardTitle}
@@ -49,7 +50,7 @@ class ResponsiveCard extends Component {
           <CardHeaderIcon icon={this.state.icon} onClick={() => this.expandCard()}/>
         </CardHeader>
         <CardContent>
-            {(this.state.display) ? this.props.children : null }
+            {(this.state.display) ? this.props.children : null}
         </CardContent>
       </Card>);
     return fullCard;
