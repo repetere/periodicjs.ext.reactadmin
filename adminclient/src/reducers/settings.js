@@ -1,9 +1,13 @@
 import constants from '../constants';
 import appDefaultSettings from '../content/config/settings.json';
+import defaultUserNavigation from '../content/config/navigation.json';
 import packageJSON from '../../package.json';
 let windowState = (window && window.__padmin) ? window.__padmin : {};
 
-const initialState = Object.assign({ version:packageJSON.version, }, appDefaultSettings, windowState);
+const initialState = Object.assign({ version: packageJSON.version, }, appDefaultSettings, windowState);
+initialState.user = Object.assign({
+  navigation: defaultUserNavigation,
+}, initialState.user);
 
 // console.log({ initialState });
 const settingsReducer = (state, action) => {

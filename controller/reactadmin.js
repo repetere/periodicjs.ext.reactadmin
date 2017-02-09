@@ -491,9 +491,9 @@ module.exports = function (resources) {
   CoreController = resources.core.controller;
   CoreUtilities = resources.core.utilities;
   logger = resources.logger;
-  Promisie.all(pullConfigurationSettings(), pullComponentSettings())
-    .then(logger.silly.bind(logger, 'successfully loaded configurations in reactadmin'))
-    .catch(logger.warn.bind(logger, 'there was an error loading configurations in reactadmin'));
+  Promisie.all(pullConfigurationSettings(), pullComponentSettings());
+    // .then(logger.silly.bind(logger, 'successfully loaded configurations in reactadmin'))
+    // .catch(logger.warn.bind(logger, 'there was an error loading configurations in reactadmin'));
 
   return { 
     index: admin_index,

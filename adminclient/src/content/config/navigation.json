@@ -13,7 +13,7 @@
     "children":[
       {
         "component":"MenuLabel",
-        "children":"General"
+        "children":"Generals"
       },
       {
         "component":"MenuList",

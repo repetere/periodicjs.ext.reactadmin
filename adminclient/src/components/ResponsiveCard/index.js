@@ -1,5 +1,5 @@
 import React, { Component, PropTypes, } from 'react';
-import { Card, CardHeader, CardHeaderIcon, CardContent, CardHeaderTitle, Content, } from 're-bulma';
+import { Card, CardHeader, CardHeaderIcon, CardContent, CardHeaderTitle, } from 're-bulma';
 import 'font-awesome/css/font-awesome.css';
 import styles from '../../styles';
 

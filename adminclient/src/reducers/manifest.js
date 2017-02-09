@@ -52,13 +52,13 @@ const initialState = {
                 component: 'Title',
                 // props: {
                 // },
-                  children: 'Documentation Page',
+                  children: 'Documentation Pages',
               }]
           }]
         }]
       },
       resources: {},
-      onFinish:'render'
+      onFinish:'render',
     }
   }
 };

@@ -27,7 +27,7 @@
                   },
                   {
                     "component":"Title",
-                    "children":"Documentation Page"
+                    "children":"Documentation Page Healthcheck"
                   }
                 ]
               }
@@ -36,10 +36,58 @@
         ]
       },
       "resources":{
-        "healthcheckStatus":"/load/healthcheck"
+        "healthcheckStatus":"/r-admin/load/healthcheck"
       },
       "onFinish":"render"
     },
+    "/r-admin/documentation":{
+      "layout":{
+        "component":"Hero",
+        "props":{
+          "size":"isFullheight"
+        },
+        "children":[
+          {
+            "component":"HeroBody",
+            "props":{
+
+            },
+            "asyncprops":{
+              "healthcheck":[
+                "healthcheckStatus"
+              ]
+            },
+            "children":[
+              {
+                "component":"Container",
+                "props":{
+
+                },
+                "children":[
+                  {
+                    "component":"div",
+                    "props":{
+                      "dangerouslySetInnerHTML":{
+                        "__html":"<h1>FooBar: the most used line in code</h1>"
+                      }
+                    }
+                  },
+                  {
+                    "component":"Title",
+                    "children":"Admin Documentation Page"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "resources":{
+        "healthcheckStatus":"/r-admin/load/healthcheck"
+      },
+      "onFinish":"render"
+    }
+  },
     "/documentation":{
       "layout":{
         "component":"Hero",
@@ -74,7 +122,7 @@
                   },
                   {
                     "component":"Title",
-                    "children":"Documentation Page"
+                    "children":"Standard Documentation Page"
                   }
                 ]
               }
@@ -83,7 +131,7 @@
         ]
       },
       "resources":{
-        "healthcheckStatus":"/load/healthcheck"
+        "healthcheckStatus":"/r-admin/load/healthcheck"
       },
       "onFinish":"render"
     }

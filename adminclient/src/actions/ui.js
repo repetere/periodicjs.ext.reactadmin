@@ -2,7 +2,6 @@ import constants from '../constants';
 import utilities from '../util';
 import notification from './notification';
 // import { AsyncStorage, } from 'react-web';
-// import customSettings from '../content/config/settings.json';
 // import Immutable from 'immutable';
 
 const fetchComponentUtil = utilities.fetchComponent;
@@ -91,7 +90,7 @@ const ui = {
         throw componentLoadError;
       }
       let state = getState();
-      let basename = state.settings.basename;
+      let basename = (typeof state.settings.adminPath ==='string') ? state.settings.basename+state.settings.adminPath : state.settings.basename;
       dispatch({ type: `INIT_${ component }`, });
       return COMPONENTS[component](basename)()
         .then(response => {
