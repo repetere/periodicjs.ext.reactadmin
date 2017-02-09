@@ -2,6 +2,10 @@
 	"basename": "http://localhost:8786",
 	"adminPath":"p-admin",
 	"name":"reactadmin",
+	"includeCoreData": {
+    "manifest": true,
+    "navigation": true
+  },
 	"routerHistory":"browserHistory",
 	"allHistoryOptions":"browserHistory|hashHistory|createMemoryHistory",
 	"application":{

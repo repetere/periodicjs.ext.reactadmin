@@ -3,6 +3,8 @@ const Promisie = require('promisie');
 const fs = Promisie.promisifyAll(require('fs-extra'));
 const path = require('path');
 const ERROR404 = require(path.join(__dirname, '../adminclient/src/content/config/dynamic404'));
+const mongoose = require('mongoose');
+const capitalize = require('capitalize');
 const DEFAULT_COMPONENTS = {
   login: {
     status: 'uninitialized',
@@ -18,6 +20,10 @@ const DEFAULT_COMPONENTS = {
     }
   }
 };
+const CORE_DATA_CONFIGURATIONS = {
+  manifest: null,
+  navigation: null
+};
 
 var components;
 var CoreController;
@@ -29,6 +35,39 @@ var manifestSettings;
 var navigationSettings;
 var periodic;
 var themeSettings;
+var extsettings;
+var utility;
+
+var setCoreDataConfigurations = function () {
+  if (!CORE_DATA_CONFIGURATIONS.manifest || !CORE_DATA_CONFIGURATIONS.navigation) {
+    if (CORE_DATA_CONFIGURATIONS.manifest === null) {
+      let generated = utility.generateDetailManifests(mongoose, { prefix: 'content' });
+      CORE_DATA_CONFIGURATIONS.manifest = generated;
+    }
+    if (CORE_DATA_CONFIGURATIONS.navigation === null && CORE_DATA_CONFIGURATIONS.manifest) {
+      CORE_DATA_CONFIGURATIONS.navigation = Object.keys(CORE_DATA_CONFIGURATIONS.manifest).reduce((result, key) => {
+        result.layout = result.layout || {};
+        result.layout.children = result.layout.children || [{
+          component: 'MenuLabel',
+          children: 'Content'
+        }, {
+          component: 'MenuList',
+          children: []
+        }];
+        result.layout.children[1].children.push({
+          component: 'MenuAppLink',
+          props: {
+            href: key,
+            label: capitalize(path.basename(key)),
+            id: path.basename(key)
+          }
+        });
+        return result;
+      }, {});
+    }
+  }
+  logger.silly(CORE_DATA_CONFIGURATIONS);
+};
 
 /**
  * Determines if user privileges array contains privilege code(s) that exist in defined privileges for a view
@@ -340,6 +379,10 @@ var loadManifest = function (req, res, next) {
     .then(() => {
       let manifest = Object.assign({}, manifestSettings);
       if (req.query && req.query.refresh_log && req.query.refresh_log !== 'false') logger.silly('reloaded manifest', { manifest }); 
+      if (extsettings && extsettings.includeCoreData && extsettings.includeCoreData.manifest) {
+        setCoreDataConfigurations();
+        if (CORE_DATA_CONFIGURATIONS.manifest) manifest.containers = Object.assign({}, CORE_DATA_CONFIGURATIONS.manifest, manifest.containers);
+      }
       manifest.containers = recursivePrivilegesFilter(Object.keys(req.session.userprivilegesdata), manifest.containers, true);
       res.status(200).send({
         result: 'success',
@@ -470,7 +513,11 @@ var loadNavigation = function (req, res, next) {
   pullConfigurationSettings((req.query && req.query.refresh) ? 'navigation' : false)
     .then(() => {
       let navigation = Object.assign({}, navigationSettings);
-      if (req.query && req.query.refresh_log && req.query.refresh_log !== 'false') logger.silly('reloaded navigation', { navigation }); 
+      if (req.query && req.query.refresh_log && req.query.refresh_log !== 'false') logger.silly('reloaded navigation', { navigation });
+      if (extsettings && extsettings.includeCoreData && extsettings.includeCoreData.navigation) {
+        setCoreDataConfigurations();
+        if (CORE_DATA_CONFIGURATIONS.navigation && CORE_DATA_CONFIGURATIONS.navigation.layout) navigation.layout.children = navigation.layout.children.concat(CORE_DATA_CONFIGURATIONS.navigation.layout.children || []);
+      }
       navigation.layout = recursivePrivilegesFilter(Object.keys(req.session.userprivilegesdata), [navigation.layout])[0];
       res.status(200).send({
         result: 'success',
@@ -484,7 +531,6 @@ var loadNavigation = function (req, res, next) {
 };
 
 var validateMFAToken = function (req, res, next) {
-  console.log(req.user);
   res.status(200).send({
     result: 'success',
     status: 200,
@@ -492,10 +538,6 @@ var validateMFAToken = function (req, res, next) {
       isAuthenticated: true,
     },
   });
-};
-
-var deliverQRCode = function (req, res) {
-
 };
 
 module.exports = function (resources) {
@@ -506,6 +548,9 @@ module.exports = function (resources) {
   CoreController = resources.core.controller;
   CoreUtilities = resources.core.utilities;
   logger = resources.logger;
+  extsettings = resources.app.locals.extension.reactadmin.settings;
+  utility = require(path.join(__dirname, '../utility/index'))(resources);
+  if (extsettings && extsettings.includeCoreData && extsettings.includeCoreData.manifest) setCoreDataConfigurations();
   Promisie.all(pullConfigurationSettings(), pullComponentSettings())
     .then(logger.silly.bind(logger, 'successfully loaded configurations in reactadmin'))
     .catch(logger.warn.bind(logger, 'there was an error loading configurations in reactadmin'));

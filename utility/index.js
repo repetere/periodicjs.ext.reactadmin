@@ -1,11 +1,9 @@
 'use strict';
 
 module.exports = function (resources){
-  // const error = require('./error')(resources);
+  const generateDetailManifests = require('./detail_views/index').generateManifest;
   // const geolocation = require('./geolocation')(resources);
-
   return {
-    // error,
-    // geolocation,
+    generateDetailManifests
   };
 };
