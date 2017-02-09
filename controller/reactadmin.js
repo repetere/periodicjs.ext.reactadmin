@@ -481,6 +481,7 @@ var loadNavigation = function (req, res, next) {
 };
 
 var validateMFAToken = function (req, res, next) {
+  console.log(req.user);
   res.status(200).send({
     result: 'success',
     status: 200,
@@ -488,6 +489,10 @@ var validateMFAToken = function (req, res, next) {
       isAuthenticated: true,
     },
   });
+};
+
+var deliverQRCode = function (req, res) {
+
 };
 
 module.exports = function (resources) {
