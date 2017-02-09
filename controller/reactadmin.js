@@ -2,7 +2,7 @@
 const Promisie = require('promisie');
 const fs = Promisie.promisifyAll(require('fs-extra'));
 const path = require('path');
-const ERROR404 = require(path.join(__dirname, '../adminclient/src/content/config/dynamic404'));
+const ERROR404 = require(path.join(__dirname, '../adminclient/src/content/config/manifests/dynamic404'));
 const DEFAULT_COMPONENTS = {
   login: {
     status: 'uninitialized',

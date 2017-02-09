@@ -49,7 +49,7 @@
               {
                 "component":"MenuAppLink",
                 "props":{
-                  "href":"/blog",
+                  "href":"/r-admin/documentation",
                   "label":"Members",
                   "id": "members"
                 }

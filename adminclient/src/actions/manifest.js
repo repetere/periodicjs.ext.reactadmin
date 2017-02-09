@@ -24,7 +24,7 @@ const manifest = {
     return (dispatch, getState) => {
       dispatch(this.manifestRequest());
       let state = getState();
-      let basename = (typeof state.settings.adminPath ==='string') ? state.settings.basename+state.settings.adminPath : state.settings.basename;
+      let basename = (typeof state.settings.adminPath ==='string' && state.settings.adminPath !=='/') ? state.settings.basename+state.settings.adminPath : state.settings.basename;
       let headers = state.settings.userprofile.options.headers;
       delete headers.clientid_default;
       options.headers = Object.assign({}, options.headers, headers);

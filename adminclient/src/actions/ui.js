@@ -90,7 +90,7 @@ const ui = {
         throw componentLoadError;
       }
       let state = getState();
-      let basename = (typeof state.settings.adminPath ==='string') ? state.settings.basename+state.settings.adminPath : state.settings.basename;
+      let basename = (typeof state.settings.adminPath ==='string' && state.settings.adminPath !=='/') ? state.settings.basename+state.settings.adminPath : state.settings.basename;
       dispatch({ type: `INIT_${ component }`, });
       return COMPONENTS[component](basename)()
         .then(response => {
