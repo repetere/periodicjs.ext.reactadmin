@@ -74,6 +74,7 @@ var removeNullIndexes = function (data) {
 var readConfigurations = function (filePath) {
   filePath = path.join(__dirname, '../../../', filePath);
   let _import = function (_path) {
+    if (path.extname(_path) !== '.js' && path.extname(_path) !== '.json') return undefined;
     if (path.extname(_path) === '.js') return Promisie.resolve(require(_path));
     else return fs.readJsonAsync(_path);
   };
@@ -109,11 +110,13 @@ var readAndStoreConfigurations = function (paths) {
   return Promisie.settle(reads)
     .then(result => {
       let { fulfilled } = result;
-      return fulfilled.reduce((result, data) => {
-        if (Array.isArray(data.value)) return result.concat(data.value);
-        result.push(data.value);
+      fulfilled = fulfilled.map(data => data.value);
+      let flatten = function (result, data) {
+        if (Array.isArray(data)) return result.concat(data.reduce(flatten, []));
+        if (data) result.push(data);
         return result;
-      }, []);
+      };
+      return fulfilled.reduce(flatten, []);
     })
     .catch(e => Promisie.reject(e));
 };
