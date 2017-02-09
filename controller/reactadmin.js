@@ -549,7 +549,12 @@ module.exports = function (resources) {
   logger = resources.logger;
   extsettings = resources.app.locals.extension.reactadmin.settings;
   utility = require(path.join(__dirname, '../utility/index'))(resources);
-  if (extsettings && extsettings.includeCoreData && extsettings.includeCoreData.manifest) setCoreDataConfigurations();
+  if (extsettings && extsettings.includeCoreData && extsettings.includeCoreData.manifest) {
+    let task = setImmediate(() => {
+      setCoreDataConfigurations();
+      clearImmediate(task);
+    });
+  }
   Promisie.all(pullConfigurationSettings(), pullComponentSettings());
 
   return { 

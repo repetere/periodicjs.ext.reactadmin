@@ -295,7 +295,7 @@ const user = {
     };
     return (dispatch, getState) => {
       let state = getState();
-      let basename = state.settings.basename;
+      let basename = (typeof state.settings.adminPath ==='string' && state.settings.adminPath !=='/') ? state.settings.basename+state.settings.adminPath : state.settings.basename;
       let headers = state.settings.userprofile.options.headers;
       delete headers.clientid_default;
       let options = Object.assign({}, requestOptions);
