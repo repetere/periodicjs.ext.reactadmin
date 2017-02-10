@@ -290,7 +290,7 @@ const user = {
       } 
     };
   },
-  validateMFA () {
+  validateMFA (formdata = {}) {
     let requestOptions = {
       method: 'POST',
       headers: {
@@ -298,23 +298,31 @@ const user = {
         'Content-Type': 'application/json',
         'x-access-token': undefined,
       },
+      body: JSON.stringify(formdata)
     };
     return (dispatch, getState) => {
       let state = getState();
-      let basename = (typeof state.settings.adminPath ==='string' && state.settings.adminPath !=='/') ? state.settings.basename+state.settings.adminPath : state.settings.basename;
+      let basename = (typeof state.settings.adminPath === 'string' && state.settings.adminPath !== '/') ? state.settings.basename + state.settings.adminPath : state.settings.basename;
       let headers = state.settings.userprofile.options.headers;
       delete headers.clientid_default;
       let options = Object.assign({}, requestOptions);
       options.headers = Object.assign({}, options.headers, { 'x-access-token': state.user.jwt_token });
       return utilities.fetchComponent(`${ basename }/load/mfa`, options)()
         .then(response => {
-          if (response && response.data && response.data.isAuthenticated) {
+          if (response && response.data && response.data.authenticated) {
             dispatch(this.authenticatedMFA());
-            return AsyncStorage.setItem(constants.user.MFA_AUTHENTICATED, true);
+            return AsyncStorage.setItem(constants.user.MFA_AUTHENTICATED, true)
+              .then(() => response, e => Promise.reject(e));
           }
+          return response
         })
-        .then(() => this.enforceMFA()(dispatch, getState))
-        .catch(console.error.bind(console, 'validate mfa error'));
+        .then(response => {
+          if (response.result === 'error') dispatch(notification.errorNotification(new Error(response.data.error)));
+          return this.enforceMFA()(dispatch, getState)
+        })
+        .catch(e => {
+          dispatch(notification.errorNotification(e));
+        });
     };
   },
   fetchConfigurations (options = {}) {

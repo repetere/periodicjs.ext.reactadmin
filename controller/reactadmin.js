@@ -541,16 +541,6 @@ var loadNavigation = function (req, res, next) {
     .catch(e => (typeof next === 'function') ? next(e) : Promisie.reject(e));
 };
 
-var validateMFAToken = function (req, res, next) {
-  res.status(200).send({
-    result: 'success',
-    status: 200,
-    data: {
-      isAuthenticated: true,
-    },
-  });
-};
-
 var loadConfigurations = function (req, res) {
   return pullConfigurationSettings((req.query && req.query.refresh) ? true : false)
     .then(() => {
@@ -603,7 +593,6 @@ module.exports = function (resources) {
     loadComponent,
     loadUserPreferences,
     loadNavigation,
-    validateMFAToken,
     loadConfigurations
   };
 };
