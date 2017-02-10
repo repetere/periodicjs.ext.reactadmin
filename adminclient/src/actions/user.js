@@ -20,6 +20,9 @@ const checkStatus = function (response) {
   }
 };
 
+var initializationThrottle;
+var initializationTimeout;
+
 const user = {
   getUserStatus() {
     return {
@@ -264,15 +267,6 @@ const user = {
       let extensionattributes = (state.user.userdata) ? state.user.userdata.extensionattributes : false;
       let queryparams = qs.parse((window.location.search.charAt(0) === '?') ? window.location.search.substr(1, window.location.search.length) : window.location.search);
       let returnUrl = (queryparams.return_url) ? queryparams.return_url : false;
- 
- 
-      // disabled mfa
-      // if (!noRedirect) {
-      //   if (state.user.isLoggedIn && returnUrl) dispatch(push(returnUrl));
-      //   else dispatch(push(state.settings.auth.logged_in_homepage));
-      // }
-      // return true;
- ///*
       if (state.settings.auth.enforce_mfa || (extensionattributes && extensionattributes.login_mfa)) {
         if (state.user.isMFAAuthenticated) {
           if (!noRedirect) {
@@ -281,7 +275,10 @@ const user = {
           }
           return true;
         } else {
-          dispatch(push('/mfa'));
+          if (!state.manifest.containers || (state.manifest.containers && !state.manifest.containers['/mfa'])) {
+            dispatch(notification.errorNotification(new Error('Multi-Factor Authentication not Properly Configured')));
+            this.logoutUser()(dispatch);
+          } else dispatch(push('/mfa'));
           return false;
         }
       } else {
@@ -290,11 +287,10 @@ const user = {
           else dispatch(push(state.settings.auth.logged_in_homepage));
         }
         return true;
-      }
-  //*/  
+      } 
     };
   },
-  validateMFA () {
+  validateMFA (formdata = {}) {
     let requestOptions = {
       method: 'POST',
       headers: {
@@ -302,23 +298,75 @@ const user = {
         'Content-Type': 'application/json',
         'x-access-token': undefined,
       },
+      body: JSON.stringify(formdata)
     };
     return (dispatch, getState) => {
       let state = getState();
-      let basename = (typeof state.settings.adminPath ==='string' && state.settings.adminPath !=='/') ? state.settings.basename+state.settings.adminPath : state.settings.basename;
+      let basename = (typeof state.settings.adminPath === 'string' && state.settings.adminPath !== '/') ? state.settings.basename + state.settings.adminPath : state.settings.basename;
       let headers = state.settings.userprofile.options.headers;
       delete headers.clientid_default;
       let options = Object.assign({}, requestOptions);
       options.headers = Object.assign({}, options.headers, { 'x-access-token': state.user.jwt_token });
       return utilities.fetchComponent(`${ basename }/load/mfa`, options)()
         .then(response => {
-          if (response && response.data && response.data.isAuthenticated) {
+          if (response && response.data && response.data.authenticated) {
             dispatch(this.authenticatedMFA());
-            return AsyncStorage.setItem(constants.user.MFA_AUTHENTICATED, true);
+            return AsyncStorage.setItem(constants.user.MFA_AUTHENTICATED, true)
+              .then(() => response, e => Promise.reject(e));
           }
+          return response
         })
-        .then(() => this.enforceMFA()(dispatch, getState))
-        .catch(console.error.bind(console, 'validate mfa error'));
+        .then(response => {
+          if (response.result === 'error') dispatch(notification.errorNotification(new Error(response.data.error)));
+          return this.enforceMFA()(dispatch, getState)
+        })
+        .catch(e => {
+          dispatch(notification.errorNotification(e));
+        });
+    };
+  },
+  fetchConfigurations (options = {}) {
+    return (dispatch, getState) => {
+      let state = getState();
+      if ((state.manifest && state.manifest.hasLoaded) || (state.settings.user && state.settings.user.navigation && state.settings.user.navigation.hasLoaded) || (state.settings.user && state.settings.user.preferences && state.settings.user.preferences.hasLoaded)) {
+        let operations = [];
+        if (!state.manifest || (state.manifest && !state.manifest.hasLoaded)) operations.push(manifest.fetchManifest(options)(dispatch, getState));
+        if (!state.settings || (state.settings && !state.settings.user)) {
+          operations.push(this.fetchNavigation(options)(dispatch, getState));
+          operations.push(this.fetchPreferences(options)(dispatch, getState));
+        } else {
+          if (!state.settings.user.navigation || (state.settings.user.navigation && !state.settings.user.navigation.hasLoaded)) operations.push(this.fetchNavigation(options)(dispatch, getState));
+          if (!state.settings.user.preferences || (state.settings.user.preferences && !state.settings.user.preferences.hasLoaded)) operations.push(this.fetchPreferences(options)(dispatch, getState));
+        }
+        return Promise.all(operations);
+      } else {
+        dispatch(this.navigationRequest());
+        dispatch(this.preferenceRequest());
+        dispatch(manifest.manifestRequest());
+        let basename = (typeof state.settings.adminPath === 'string' && state.settings.adminPath !== '/') ? state.settings.basename + state.settings.adminPath : state.settings.basename;
+        let headers = state.settings.userprofile.options.headers;
+        delete headers.clientid_default;
+        options.headers = Object.assign({}, options.headers, headers);
+        //add ?refresh=true to fetch route below to reload configurations
+        return utilities.fetchComponent(`${basename}/load/configurations`, options)()
+          .then(response => {
+            if (response.result === 'error') return Promise.reject(new Error(response.data.error));
+            let responses = Object.keys(response.data.settings).reduce((result, key) => {
+              let data = Object.assign({}, response.data);
+              data.settings = response.data.settings[key];
+              result[key] = { data };
+              return result;
+            }, {});
+            dispatch(this.navigationSuccessResponse(responses.navigation));
+            dispatch(this.preferenceSuccessResponse(responses.preferences));
+            dispatch(manifest.receivedManifestData(responses.manifest.data.settings));
+          })
+          .catch(e => {
+            dispatch(this.navigationErrorResponse(e));
+            dispatch(this.preferenceErrorResponse(e));
+            dispatch(manifest.failedManifestRetrival(e));
+          });
+      }
     };
   },
   initializeAuthenticatedUser (token, ensureMFA) {
@@ -331,13 +379,39 @@ const user = {
           'x-access-token': token,
         },
       };
-      return Promise.all([
-        manifest.fetchManifest(requestOptions)(dispatch, getState),
-        this.fetchPreferences(requestOptions)(dispatch, getState),
-        this.fetchNavigation(requestOptions)(dispatch, getState),
-      ])
-        .then(() => (ensureMFA !== false) ? this.enforceMFA()(dispatch, getState) : undefined)
-        .catch(e => Promise.reject(e));
+      let state = getState();
+      if (state.manifest && state.manifest.hasLoaded && state.settings && state.settings.user && state.settings.user.navigation && state.settings.user.navigation.hasLoaded && state.settings.user.preferences && state.settings.user.preferences.hasLoaded) {
+        if (initializationTimeout) {
+          clearTimeout(initializationTimeout);
+          initializationThrottle.destroyInactiveThrottle();
+        }
+        return (ensureMFA !== false) ? this.enforceMFA()(dispatch, getState) : undefined;
+      } else {
+        let assignThrottle = (resolve, reject) => {
+          let throttle = () => {
+            initializationTimeout = setTimeout(() => {
+              clearTimeout(initializationTimeout);
+              this.fetchConfigurations(requestOptions)(dispatch, getState)
+                .then(() => (ensureMFA !== false) ? this.enforceMFA()(dispatch, getState) : undefined)
+                .then(resolve)
+                .catch(reject);
+            }, 10);
+          };
+          throttle.destroyInactiveThrottle = resolve;
+          return throttle;
+        };
+        return new Promise((resolve, reject) => {
+          if (!initializationTimeout) {
+            initializationThrottle = assignThrottle(resolve, reject);
+            initializationThrottle();
+          } else {
+            clearTimeout(initializationTimeout);
+            initializationThrottle.destroyInactiveThrottle();
+            initializationThrottle = assignThrottle(resolve, reject);
+            initializationThrottle();
+          }
+        });
+      }
     };
   },
   /**

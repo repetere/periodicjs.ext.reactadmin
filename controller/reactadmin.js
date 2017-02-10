@@ -378,7 +378,7 @@ var pullConfigurationSettings = function (reload) {
  * @param {Function} next express next function
  */
 var loadManifest = function (req, res, next) {
-  pullConfigurationSettings((req.query && req.query.refresh) ? 'manifest' : false)
+  return pullConfigurationSettings((req.query && req.query.refresh) ? 'manifest' : false)
     .then(() => {
       let manifest = Object.assign({}, manifestSettings);
       if (req.query && req.query.refresh_log && req.query.refresh_log !== 'false') logger.silly('reloaded manifest', { manifest }); 
@@ -387,15 +387,17 @@ var loadManifest = function (req, res, next) {
         if (CORE_DATA_CONFIGURATIONS.manifest) manifest.containers = Object.assign({}, CORE_DATA_CONFIGURATIONS.manifest, manifest.containers);
       }
       manifest.containers = recursivePrivilegesFilter(Object.keys(req.session.userprivilegesdata), manifest.containers, true);
-      res.status(200).send({
-        result: 'success',
-        status: 200,
-        data: {
-          settings: manifest,
-        },
-      });
+      if (res && typeof res.send === 'function') {
+        res.status(200).send({
+          result: 'success',
+          status: 200,
+          data: {
+            settings: manifest,
+          },
+        });
+      } else return manifest;
     })
-    .catch(next);
+    .catch(e => (typeof next === 'function') ? next(e) : Promisie.reject(e));
 };
 
 /**
@@ -495,13 +497,15 @@ var loadComponent = function (req, res, next) {
  * @param  {object}   res  express reponse
  */
 var loadUserPreferences = function (req, res) {
-  res.status(200).send({
-    result: 'success',
-    status: 200,
-    data: {
-      settings: (req.user && req.user.extensionattributes && req.user.extensionattributes.preferences) ? req.user.extensionattributes.preferences : {},
-    },
-  });
+  if (res && typeof res.send === 'function') {
+    res.status(200).send({
+      result: 'success',
+      status: 200,
+      data: {
+        settings: (req.user && req.user.extensionattributes && req.user.extensionattributes.preferences) ? req.user.extensionattributes.preferences : {},
+      },
+    });
+  } else return (req.user && req.user.extensionattributes && req.user.extensionattributes.preferences) ? req.user.extensionattributes.preferences : {}; 
 };
 
 /**
@@ -511,34 +515,58 @@ var loadUserPreferences = function (req, res) {
  * @param {Function} next express next function
  */
 var loadNavigation = function (req, res, next) {
-  pullConfigurationSettings((req.query && req.query.refresh) ? 'navigation' : false)
+  return pullConfigurationSettings((req.query && req.query.refresh) ? 'navigation' : false)
     .then(() => {
       let navigation = Object.assign({}, navigationSettings);
       if (req.query && req.query.refresh_log && req.query.refresh_log !== 'false') logger.silly('reloaded navigation', { navigation });
       if (extsettings && extsettings.includeCoreData && extsettings.includeCoreData.navigation) {
         setCoreDataConfigurations();
-        if (CORE_DATA_CONFIGURATIONS.navigation && CORE_DATA_CONFIGURATIONS.navigation.layout) navigation.layout.children = navigation.layout.children.concat(CORE_DATA_CONFIGURATIONS.navigation.layout.children || []);
+        if (CORE_DATA_CONFIGURATIONS.navigation && CORE_DATA_CONFIGURATIONS.navigation.layout) {
+          navigation.layout = Object.assign({}, navigation.layout);
+          navigation.layout.children = Object.assign([], navigation.layout.children);
+          navigation.layout.children = navigation.layout.children.concat(CORE_DATA_CONFIGURATIONS.navigation.layout.children || []);
+        }
       }
       navigation.layout = recursivePrivilegesFilter(Object.keys(req.session.userprivilegesdata), [navigation.layout])[0];
+      if (res && typeof res.send === 'function') {
+        res.status(200).send({
+          result: 'success',
+          status: 200,
+          data: {
+            settings: navigation,
+          },
+        });
+      } else return navigation;
+    })
+    .catch(e => (typeof next === 'function') ? next(e) : Promisie.reject(e));
+};
+
+var loadConfigurations = function (req, res) {
+  return pullConfigurationSettings((req.query && req.query.refresh) ? true : false)
+    .then(() => {
+      if (req.query) delete req.query.refresh;
+      return Promisie.parallel({
+        navigation: loadNavigation.bind(null, req),
+        manifest: loadManifest.bind(null, req),
+        preferences: loadUserPreferences.bind(null, req)
+      });
+    })
+    .then(settings => {
       res.status(200).send({
         result: 'success',
         status: 200,
-        data: {
-          settings: navigation,
-        },
+        data: { settings }
       });
     })
-    .catch(next);
-};
-
-var validateMFAToken = function (req, res, next) {
-  res.status(200).send({
-    result: 'success',
-    status: 200,
-    data: {
-      isAuthenticated: true,
-    },
-  });
+    .catch(e => {
+      res.status(500).send({
+        result: 'error',
+        status: 500,
+        data: {
+          error: e.message
+        }
+      });
+    });
 };
 
 module.exports = function (resources) {
@@ -565,6 +593,6 @@ module.exports = function (resources) {
     loadComponent,
     loadUserPreferences,
     loadNavigation,
-    validateMFAToken
+    loadConfigurations
   };
 };

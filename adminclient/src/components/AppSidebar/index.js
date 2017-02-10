@@ -31,7 +31,7 @@ class AppSidebar extends Component {
         <div style={Object.assign({
           position: 'fixed',
           height: '100%',
-          
+          overflowY:'auto'
         }, navigationWrapper.style)}>
           {getRenderedComponent.call(this, (navigationLayout && typeof navigationLayout === 'object') ? navigationLayout : {})}
         </div>
