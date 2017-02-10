@@ -46,10 +46,12 @@ class MainApp extends Component{
       AsyncStorage.getItem(constants.jwt_token.PROFILE_JSON),
       this.props.fetchMainComponent(),
       this.props.fetchErrorComponents(),
-      // AsyncStorage.getItem(constants.async_token.TABBAR_TOKEN),
+      AsyncStorage.getItem(constants.user.MFA_AUTHENTICATED)
+      //AsyncStorage.getItem(constants.async_token.TABBAR_TOKEN),
     ])
       .then((results) => {
         try {
+          if (results[results.length - 1] === 'true') this.props.authenticatedMFA();
           let jwt_token = results[ 0 ];
           let jwt_token_data = JSON.parse(results[ 1 ]);
           let jwt_user_profile = JSON.parse(results[ 2 ]);
@@ -75,7 +77,7 @@ class MainApp extends Component{
             } else {
               // console.log('saving logged in user', { json, });
               this.props.saveUserProfile(url, response, json);
-              this.props.initializeAuthenticatedUser(json.token);
+              this.props.initializeAuthenticatedUser(json.token, false);
               this.props.createNotification({ text: 'welcome back', timeout:4000, });
               // if (appTabs) {
               //   this.props.setTabExtensions(appTabs);
@@ -83,7 +85,7 @@ class MainApp extends Component{
             }
           } else if (jwt_token) {
             this.props.getUserProfile(jwt_token);
-            this.props.initializeAuthenticatedUser(jwt_token);
+            this.props.initializeAuthenticatedUser(jwt_token, false);
             this.props.createNotification({ text: 'welcome back', timeout:4000,  });
           }
           else {

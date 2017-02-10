@@ -41,7 +41,7 @@ const reduxActions = {
   getState: () => store.getState(), //.dispatch(actions.user.getUserStatus()),
   getUserProfile: (jwt_token) => store.dispatch(actions.user.getUserProfile(jwt_token)),
   saveUserProfile: (url, response, json) => store.dispatch(actions.user.saveUserProfile(url, response, json)),
-  initializeAuthenticatedUser: (jwt_token) => store.dispatch(actions.user.initializeAuthenticatedUser(jwt_token)),
+  initializeAuthenticatedUser: (jwt_token, enforceMFA = true) => store.dispatch(actions.user.initializeAuthenticatedUser(jwt_token, enforceMFA)),
   loginUser: (formdata) => store.dispatch(actions.user.loginUser(formdata)),
   createModal: (options) => store.dispatch(actions.notification.createModal(options)),
   hideModal: (options) => store.dispatch(actions.notification.hideModal(options)),
@@ -55,6 +55,9 @@ const reduxActions = {
   fetchMainComponent: () => store.dispatch(actions.ui.fetchComponent(CONSTANTS.ui.MAIN_COMPONENT)),
   fetchErrorComponents: () => store.dispatch(actions.ui.fetchComponent(CONSTANTS.ui.ERROR_COMPONENTS)),
   setActiveNavLink: (id) => store.dispatch(actions.ui.setActiveNavItem(id)),
+  enforceMFA: (noRedirect) => store.dispatch(actions.user.enforceMFA(noRedirect)),
+  validateMFA: (jwt_token) => store.dispatch(actions.user.validateMFA(jwt_token)),
+  authenticatedMFA: () => store.dispatch(actions.user.authenticatedMFA()),
   reduxRouter: {
     push: (location) => store.dispatch(push(location)),
     replace: (location) => store.dispatch(replace(location)),

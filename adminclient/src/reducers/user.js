@@ -16,6 +16,7 @@ const initialState = {
   jwt_token_expires:null,
   jwt_token_timeout:null,
   error: null,
+  isMFAAuthenticated: false
 };
 
 const userReducer = (state, action) => {
@@ -85,6 +86,7 @@ const userReducer = (state, action) => {
       jwt_token_timeout: successPayload.json.timeout,
       userdata: successPayload.json.user,
       updatedAt: successPayload.updatedAt,
+      isMFAAuthenticated: (typeof successPayload.json.isMFAAuthenticated === 'boolean') ? successPayload.json.isMFAAuthenticated : state.isMFAAuthenticated
     };
   case constants.user.USER_DATA_FAILURE:
     var failurePayload = action.payload;
@@ -94,6 +96,8 @@ const userReducer = (state, action) => {
       error: failurePayload.error,
       updatedAt: new Date(),
     });
+  case constants.user.MFA_AUTHENTICATED:
+    return Object.assign({}, state, action.payload);
   default:
     return Object.assign(initialState, state);
   }

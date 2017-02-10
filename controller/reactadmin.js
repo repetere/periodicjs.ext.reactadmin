@@ -1,7 +1,9 @@
-
+'use strict';
 const Promisie = require('promisie');
 const fs = Promisie.promisifyAll(require('fs-extra'));
 const path = require('path');
+const mongoose = require('mongoose');
+const capitalize = require('capitalize');
 const ERROR404 = require(path.join(__dirname, '../adminclient/src/content/config/manifests/dynamic404'));
 const DEFAULT_COMPONENTS = {
   login: {
@@ -18,6 +20,10 @@ const DEFAULT_COMPONENTS = {
     },
   },
 };
+const CORE_DATA_CONFIGURATIONS = {
+  manifest: null,
+  navigation: null
+};
 
 var components;
 var CoreController;
@@ -29,6 +35,41 @@ var manifestSettings;
 var navigationSettings;
 var periodic;
 var themeSettings;
+var extsettings;
+var utility;
+
+/**
+ * Loads core data model detail views as manifest and navigation configurations
+ */
+var setCoreDataConfigurations = function () {
+  if (!CORE_DATA_CONFIGURATIONS.manifest || !CORE_DATA_CONFIGURATIONS.navigation) {
+    if (CORE_DATA_CONFIGURATIONS.manifest === null) {
+      let generated = utility.generateDetailManifests(mongoose, { prefix: 'content' });
+      CORE_DATA_CONFIGURATIONS.manifest = generated;
+    }
+    if (CORE_DATA_CONFIGURATIONS.navigation === null && CORE_DATA_CONFIGURATIONS.manifest) {
+      CORE_DATA_CONFIGURATIONS.navigation = Object.keys(CORE_DATA_CONFIGURATIONS.manifest).reduce((result, key) => {
+        result.layout = result.layout || {};
+        result.layout.children = result.layout.children || [{
+          component: 'MenuLabel',
+          children: 'Content'
+        }, {
+          component: 'MenuList',
+          children: []
+        }];
+        result.layout.children[1].children.push({
+          component: 'MenuAppLink',
+          props: {
+            href: key,
+            label: capitalize(path.basename(key)),
+            id: path.basename(key)
+          }
+        });
+        return result;
+      }, {});
+    }
+  }
+};
 
 /**
  * Determines if user privileges array contains privilege code(s) that exist in defined privileges for a view
@@ -90,7 +131,7 @@ var readConfigurations = function (filePath) {
             });
           })
           .catch(e => Promisie.reject(e));
-      }      else return Promisie.reject(new TypeError('Configuration path is not a file or directory'));
+      } else return Promisie.reject(new TypeError('Configuration path is not a file or directory'));
     })
     .catch(e => Promisie.reject(e));
 };
@@ -101,7 +142,7 @@ var readConfigurations = function (filePath) {
  * @return {Object[]}       An array of configuration objects for any successfully resolved file reads
  */
 var readAndStoreConfigurations = function (paths) {
-  paths = (Array.isArray(paths)) ? paths : [paths, ];
+  paths = (Array.isArray(paths)) ? paths : [paths];
   let reads = paths.map(_path => {
     if (typeof _path === 'string') return readConfigurations.bind(null, _path);
     return () => Promisie.reject(new Error('No path specified'));
@@ -338,7 +379,11 @@ var loadManifest = function (req, res, next) {
   pullConfigurationSettings((req.query && req.query.refresh) ? 'manifest' : false)
     .then(() => {
       let manifest = Object.assign({}, manifestSettings);
-      if (req.query && req.query.refresh_log && req.query.refresh_log !== 'false') logger.silly('reloaded manifest', { manifest, }); 
+      if (req.query && req.query.refresh_log && req.query.refresh_log !== 'false') logger.silly('reloaded manifest', { manifest }); 
+      if (extsettings && extsettings.includeCoreData && extsettings.includeCoreData.manifest) {
+        setCoreDataConfigurations();
+        if (CORE_DATA_CONFIGURATIONS.manifest) manifest.containers = Object.assign({}, CORE_DATA_CONFIGURATIONS.manifest, manifest.containers);
+      }
       manifest.containers = recursivePrivilegesFilter(Object.keys(req.session.userprivilegesdata), manifest.containers, true);
       res.status(200).send({
         result: 'success',
@@ -467,8 +512,12 @@ var loadNavigation = function (req, res, next) {
   pullConfigurationSettings((req.query && req.query.refresh) ? 'navigation' : false)
     .then(() => {
       let navigation = Object.assign({}, navigationSettings);
-      if (req.query && req.query.refresh_log && req.query.refresh_log !== 'false') logger.silly('reloaded navigation', { navigation, }); 
-      navigation.layout = recursivePrivilegesFilter(Object.keys(req.session.userprivilegesdata), [navigation.layout,])[0];
+      if (req.query && req.query.refresh_log && req.query.refresh_log !== 'false') logger.silly('reloaded navigation', { navigation });
+      if (extsettings && extsettings.includeCoreData && extsettings.includeCoreData.navigation) {
+        setCoreDataConfigurations();
+        if (CORE_DATA_CONFIGURATIONS.navigation && CORE_DATA_CONFIGURATIONS.navigation.layout) navigation.layout.children = navigation.layout.children.concat(CORE_DATA_CONFIGURATIONS.navigation.layout.children || []);
+      }
+      navigation.layout = recursivePrivilegesFilter(Object.keys(req.session.userprivilegesdata), [navigation.layout])[0];
       res.status(200).send({
         result: 'success',
         status: 200,
@@ -480,6 +529,16 @@ var loadNavigation = function (req, res, next) {
     .catch(next);
 };
 
+var validateMFAToken = function (req, res, next) {
+  res.status(200).send({
+    result: 'success',
+    status: 200,
+    data: {
+      isAuthenticated: true,
+    },
+  });
+};
+
 module.exports = function (resources) {
   periodic = resources;
   appSettings = resources.settings;
@@ -488,9 +547,15 @@ module.exports = function (resources) {
   CoreController = resources.core.controller;
   CoreUtilities = resources.core.utilities;
   logger = resources.logger;
+  extsettings = resources.app.locals.extension.reactadmin.settings;
+  utility = require(path.join(__dirname, '../utility/index'))(resources);
+  if (extsettings && extsettings.includeCoreData && extsettings.includeCoreData.manifest) {
+    let task = setImmediate(() => {
+      setCoreDataConfigurations();
+      clearImmediate(task);
+    });
+  }
   Promisie.all(pullConfigurationSettings(), pullComponentSettings());
-    // .then(logger.silly.bind(logger, 'successfully loaded configurations in reactadmin'))
-    // .catch(logger.warn.bind(logger, 'there was an error loading configurations in reactadmin'));
 
   return { 
     index: admin_index,
@@ -498,5 +563,6 @@ module.exports = function (resources) {
     loadComponent,
     loadUserPreferences,
     loadNavigation,
+    validateMFAToken
   };
 };
