@@ -264,6 +264,15 @@ const user = {
       let extensionattributes = (state.user.userdata) ? state.user.userdata.extensionattributes : false;
       let queryparams = qs.parse((window.location.search.charAt(0) === '?') ? window.location.search.substr(1, window.location.search.length) : window.location.search);
       let returnUrl = (queryparams.return_url) ? queryparams.return_url : false;
+ 
+ 
+      // disabled mfa
+      // if (!noRedirect) {
+      //   if (state.user.isLoggedIn && returnUrl) dispatch(push(returnUrl));
+      //   else dispatch(push(state.settings.auth.logged_in_homepage));
+      // }
+      // return true;
+ ///*
       if (state.settings.auth.enforce_mfa || (extensionattributes && extensionattributes.login_mfa)) {
         if (state.user.isMFAAuthenticated) {
           if (!noRedirect) {
@@ -282,6 +291,7 @@ const user = {
         }
         return true;
       }
+  //*/  
     };
   },
   validateMFA () {

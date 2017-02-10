@@ -30,6 +30,8 @@ class AppSidebar extends Component {
         className={(this.props.ui.sidebar_is_open) ? 'animated fadeInLeft Nav-Sidebar-Speed' : 'animated slideOutLeft Nav-Sidebar-Speed'}>
         <div style={Object.assign({
           position: 'fixed',
+          height: '100%',
+          
         }, navigationWrapper.style)}>
           {getRenderedComponent.call(this, (navigationLayout && typeof navigationLayout === 'object') ? navigationLayout : {})}
         </div>

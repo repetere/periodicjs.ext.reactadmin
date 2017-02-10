@@ -39,20 +39,20 @@ const pages = {
   /**
    * once initial check of user login status, then set app state to loaded
    */
-  // initialAppLoaded(location) {
-  //   // let initialLocation = (customSettings.defaultExtensionRoute) ? customSettings.defaultExtensionRoute : location;
-  //   return (dispatch) => {
-  //     // AsyncStorage.getItem(constants.pages.ASYNCSTORAGE_KEY)
-  //     //   .then((page_location) => {
-  //     //     dispatch(this.initialAppLoad(page_location));
-  //     //   })
-  //     //   .catch((error) => {
-  //     //     dispatch(this.initialAppLoad(initialLocation));
-  //     //   });
-  //     // dispatch(this.initialAppLoad(initialLocation));
+  initialAppLoaded(location) {
+    // let initialLocation = (customSettings.defaultExtensionRoute) ? customSettings.defaultExtensionRoute : location;
+    return (dispatch) => {
+      // AsyncStorage.getItem(constants.pages.ASYNCSTORAGE_KEY)
+      //   .then((page_location) => {
+      //     dispatch(this.initialAppLoad(page_location));
+      //   })
+      //   .catch((error) => {
+      //     dispatch(this.initialAppLoad(initialLocation));
+      //   });
+      // dispatch(this.initialAppLoad(initialLocation));
 
-  //   };
-  // },
+    };
+  },
   /**
    * once initial check of user login status, then set app state to loaded
    */
