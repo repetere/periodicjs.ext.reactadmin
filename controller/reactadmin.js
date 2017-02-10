@@ -226,9 +226,9 @@ var handleManifestCompilation = function (manifests) {
 var pullManifestSettings = function (configuration) {
   let extensions = configuration.extensions || [];
   let filePaths = extensions.reduce((result, config) => {
-    if (config.enabled && config.periodicConfig && config.periodicConfig.manifests) {
-      if (Array.isArray(config.periodicConfig.manifests)) return result.concat(config.periodicConfig.manifests);
-      result.push(config.periodicConfig.manifests);
+    if (config.enabled && config.periodicConfig && config.periodicConfig['periodicjs.ext.reactadmin'] && config.periodicConfig['periodicjs.ext.reactadmin'].manifests) {
+      if (Array.isArray(config.periodicConfig['periodicjs.ext.reactadmin'].manifests)) return result.concat(config.periodicConfig['periodicjs.ext.reactadmin'].manifests);
+      result.push(config.periodicConfig['periodicjs.ext.reactadmin'].manifests);
     }
     return result;
   }, []);
@@ -261,7 +261,7 @@ var handleNavigationCompilation = function (navigation) {
 var pullNavigationSettings = function (configuration) {
   let extensions = configuration.extensions || [];
   let filePaths = extensions.reduce((result, config) => {
-    if (config.enabled && config.periodicConfig && config.periodicConfig.navigation) result.push(config.periodicConfig.navigation);
+    if (config.enabled && config.periodicConfig && config.periodicConfig['periodicjs.ext.reactadmin'] && config.periodicConfig['periodicjs.ext.reactadmin'].navigation) result.push(config.periodicConfig['periodicjs.ext.reactadmin'].navigation);
     return result;
   }, []);
   return readAndStoreConfigurations(filePaths || [])
