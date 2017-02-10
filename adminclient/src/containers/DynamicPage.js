@@ -3,8 +3,8 @@ import React, { Component, } from 'react';
 import AppSectionLoading from '../components/AppSectionLoading';
 import AppError404 from '../components/AppError404';
 import { getRenderedComponent, } from '../components/AppLayoutMap';
-import constants from '../constants';
-import { AsyncStorage, } from 'react-native';
+// import constants from '../constants';
+// import { AsyncStorage, } from 'react-native';
 import utilities from '../util';
 
 let AppManifest = {};
