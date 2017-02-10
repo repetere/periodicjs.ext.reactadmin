@@ -18,7 +18,6 @@ const setAppManifest = (props) => {
 const _handleComponentLifecycle = function () {
   this.setState({ ui_is_loaded: false, });
   let parentState = this.props.getState();
-  console.log('this.props.location', this.props.location);
   let pathname = (this.props.location.pathname) ? this.props.location.pathname : window.location.pathname;
   if (parentState.manifest && parentState.manifest.hasLoaded) {
     if (pathname === '/mfa' && window.location.pathname === '/mfa') this.fetchData();
@@ -27,6 +26,7 @@ const _handleComponentLifecycle = function () {
       if (isValid) this.fetchData();
     }
   } else {
+    console.log('handling component lifecycle', parentState);
     this.props.initializeAuthenticatedUser(parentState.user.jwt_token, false)
       .then(() => this.props.enforceMFA(true))
       .then(isValid => {

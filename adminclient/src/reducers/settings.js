@@ -34,6 +34,7 @@ const settingsReducer = (state, action) => {
       isFetching: false,
       updatedAt: action.payload.updatedAt,
       timestamp: action.payload.timestamp,
+      hasLoaded: true,
       error: undefined,
     }, action.payload.preferences);
     return Object.assign({}, state, { user, });
@@ -55,6 +56,7 @@ const settingsReducer = (state, action) => {
       isFetching: false,
       updatedAt: action.payload.updatedAt,
       timestamp: action.payload.timestamp,
+      hasLoaded: true,
       error: undefined,
     }, action.payload.navigation);
     return Object.assign({}, state, { user, });
