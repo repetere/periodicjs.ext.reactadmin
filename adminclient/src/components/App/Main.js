@@ -116,8 +116,9 @@ class MainApp extends Component{
   // }
   render() {
     // console.log('this.state', this.state);
+    let fixedSider = (this.state.settings.ui.fixedSidebar) ? { position: 'fixed', zIndex:1000, } : {};
     let sidebarColumn = (this.state.ui.sidebar_is_open)
-      ? (<Column size="isNarrow" style={Object.assign({}, styles.fullMinHeight, styles.fullHeight)}>
+      ? (<Column size="isNarrow" style={Object.assign({}, fixedSider, styles.fullMinHeight, styles.fullHeight)}>
         <AppSidebar {...this.state} />
       </Column>)
       : null;

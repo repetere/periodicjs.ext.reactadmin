@@ -18,7 +18,9 @@
     "notifications":{
       "error_timeout":10000,
       "timed_timeout":10000
-    }
+    },
+    "fixedSidebar":true,
+    "sidebarBG":"#ffffff"
   },
   "auth":{
     "logged_in_homepage":"/home",
