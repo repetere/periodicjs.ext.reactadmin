@@ -87,6 +87,68 @@
       },
       "onFinish":"render"
     },
+      "/crm": {
+      "layout":{
+        "component":"Hero",
+        "props":{
+          "size":"isFullheight"
+        },
+        "children":[
+          {
+            "component":"Container",
+            "props":{
+              "style": {
+                "marginTop": "120",
+                "marginBottom": "120"
+              }
+            },
+            "children":[
+              {
+                "component": "Title",
+                "props": {
+                  "size": "is3"
+                },
+                "children": "User, welcome to the Promise Platform"
+              },
+              {
+                "component": "ResponsiveBar",
+                "props": {
+                  "columnsProps": {
+                    "style": {
+                      "responsive": "isDesktop"
+                    }
+                  },
+                  "boxProps": {
+                    "style": {
+                      "minHeight": "320px",
+                      "fontSize": "24px",
+                      "textAlign": "center", 
+                      "borderRadius": "4",
+                      "boxShadow": "0 0 15px grey" 
+                      }
+                  },
+                  "features": [
+                    { "title": "Customer Management", "image": "https://pds.promisefinancial.net/pds/api/v3/secure-files/download/589f922a0789f5cb21de991c/2017-02-11_17-37-29___CM-Large.svg?client_id=047a5b0e70f0ac527762a409de7a5cf6&client_secret=d1d2f25568d171c1378a49ae6f3fa53c" },
+                    { "title": "Verification Worklists", "image": "https://pds.promisefinancial.net/pds/api/v3/secure-files/download/589f9131429c624b1fa40782/2017-02-11_17-33-20___R-Small.svg?client_id=047a5b0e70f0ac527762a409de7a5cf6&client_secret=d1d2f25568d171c1378a49ae6f3fa53c"},
+                    { "title": "Reporting", "image": "https://pds.promisefinancial.net/pds/api/v3/secure-files/download/589f91312e8402451fb03c34/2017-02-11_17-33-20___R-Large.svg?client_id=047a5b0e70f0ac527762a409de7a5cf6&client_secret=d1d2f25568d171c1378a49ae6f3fa53c" },
+                    { "title": "Risk Management", "image": "https://pds.promisefinancial.net/pds/api/v3/secure-files/download/589f91312e8402451fb03c38/2017-02-11_17-33-20___RM-Large.svg?client_id=047a5b0e70f0ac527762a409de7a5cf6&client_secret=d1d2f25568d171c1378a49ae6f3fa53c" },
+                    { "title": "Affiliate Management", "image": "https://pds.promisefinancial.net/pds/api/v3/secure-files/download/589f922a0789f5cb21de991c/2017-02-11_17-37-29___CM-Large.svg?client_id=047a5b0e70f0ac527762a409de7a5cf6&client_secret=d1d2f25568d171c1378a49ae6f3fa53c" },
+                    { "title": "My Account", "image": "https://pds.promisefinancial.net/pds/api/v3/secure-files/download/589f9131429c624b1fa4077e/2017-02-11_17-33-20___MA-Large.svg?client_id=047a5b0e70f0ac527762a409de7a5cf6&client_secret=d1d2f25568d171c1378a49ae6f3fa53c"},
+                    { "title": "Settings", "image": "https://pds.promisefinancial.net/pds/api/v3/secure-files/download/589f922a981021c5216c173b/2017-02-11_17-37-29___S-Large.svg?client_id=047a5b0e70f0ac527762a409de7a5cf6&client_secret=d1d2f25568d171c1378a49ae6f3fa53c" },
+                    { "title": "Development Tools", "image": "https://pds.promisefinancial.net/pds/api/v3/secure-files/download/589f922a981021c5216c173d/2017-02-11_17-37-29___DT-Large.svg?client_id=047a5b0e70f0ac527762a409de7a5cf6&client_secret=d1d2f25568d171c1378a49ae6f3fa53c" }
+                  ]
+                },
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      "resources":{
+        "healthcheckStatus":"/r-admin/load/healthcheck"
+      },
+      "onFinish":"render"
+      },
       "/documentation":{
       "layout":{
         "component":"Hero",

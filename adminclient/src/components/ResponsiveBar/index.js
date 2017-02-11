@@ -1,0 +1,42 @@
+import React, { Component, PropTypes, } from 'react';
+import { Box, Columns, Column, } from 're-bulma';
+import 'font-awesome/css/font-awesome.css';
+import styles from '../../styles';
+
+const propTypes = {
+};
+
+const defaultProps = {
+};
+
+class ResponsiveBars extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      boxProps: props.boxProps,
+      columnsProps: props.columnsProps,
+      features: props.features,
+    };
+  }
+
+  render() {
+    return (
+      <Columns {...this.state.columnsProps} isMultiline>
+        {this.state.features.map((feature, idx) => {
+          return (
+            <Column size="is3">
+              <Box {...this.state.boxProps}>
+                <img src={feature.image} />
+                {feature.title}
+              </Box>
+            </Column>
+          )
+        })}
+      </Columns>);
+  }
+}
+
+ResponsiveBars.propTypes = propTypes;
+ResponsiveBars.defaultProps = defaultProps;
+
+export default ResponsiveBars;
