@@ -1,6 +1,6 @@
 {
   "containers":{
-    "/healthcheck":{
+    "/healthcheck/:id/:name":{
       "layout":{
         "component":"Hero",
         "props":{
@@ -36,7 +36,7 @@
         ]
       },
       "resources":{
-        "healthcheckStatus":"/r-admin/load/healthcheck"
+        "healthcheckStatus":"/r-admin/load/healthcheck/:id/:name"
       },
       "onFinish":"render"
     },

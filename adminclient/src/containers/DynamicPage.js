@@ -26,7 +26,6 @@ const _handleComponentLifecycle = function () {
       if (isValid) this.fetchData();
     }
   } else {
-    console.log('handling component lifecycle', parentState);
     this.props.initializeAuthenticatedUser(parentState.user.jwt_token, false)
       .then(() => this.props.enforceMFA(true))
       .then(isValid => {
@@ -49,10 +48,24 @@ class DynamicPage extends Component {
     this.getRenderedComponent = getRenderedComponent.bind(this);
     this.handleComponentLifecycle = _handleComponentLifecycle.bind(this);
   }
-  fetchDynamicPageContent (pathname) {
+  fetchDynamicPageContent (pathname, hasParams) {
     let layout = Object.assign({}, AppManifest.containers[pathname].layout);
     if (AppManifest.containers[pathname].resources && typeof AppManifest.containers[pathname].resources === 'object') {
-      return utilities.fetchPaths(this.props.getState().settings.basename, AppManifest.containers[pathname].resources)
+      let resources = AppManifest.containers[pathname].resources
+      if (hasParams) {
+        let currentPathname = (window.location.pathname) ? window.location.pathname : this.props.location.pathname;
+        resources = Object.keys(resources).reduce((result, key) => {
+          let updatedPath = utilities.setParameters({
+            route: pathname,
+            location: currentPathname,
+            query: (/\?[^\s]+$/.test(currentPathname)) ? currentPathname.replace(/\?([^\s]+)$/g, '$1') : undefined,
+            resource: resources[key]
+          });
+          result[key] = updatedPath;
+          return result;
+        }, {});
+      }
+      return utilities.fetchPaths(this.props.getState().settings.basename, resources)
         .then(resources => {
           this.uiLayout = this.getRenderedComponent(layout, resources);
           this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
@@ -96,12 +109,14 @@ class DynamicPage extends Component {
     const state = this.props.getState();
     if (AppManifest.containers[pathname]) {
       return this.fetchDynamicPageContent(pathname);
-    } else if (AppManifest.containers[ pathname.replace(state.settings.auth.admin_path, '') ]) {
+    } else if (AppManifest.containers[pathname.replace(state.settings.auth.admin_path, '')]) {
       let adminPathname = pathname.replace(state.settings.auth.admin_path, ''); 
-      // console.log({ adminPathname, pathname, });
-      return this.fetchDynamicPageContent(adminPathname, pathname);
+      return this.fetchDynamicPageContent(adminPathname);
     } else {
-      return this.fetchDynamicErrorContent(pathname);
+      let dynamicPathname = utilities.findMatchingRoute(state.manifest.containers, pathname.replace(state.settings.auth.admin_path, ''));
+      console.log({ dynamicPathname });
+      if (!dynamicPathname) return this.fetchDynamicErrorContent(pathname);
+      return this.fetchDynamicPageContent(dynamicPathname, true);
     }
   }
   componentDidMount () { // console.log('component DId Mount', this.props);
