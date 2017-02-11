@@ -18,6 +18,10 @@ module.exports = function (resources) {
   ReactAdminRouter.get('/healthcheck', function (req, res) {
     res.status(200).send({ status: 'ok', });
   });
+  ReactAdminRouter.get('/healthcheck/:id/:name', function (req, res) {
+    console.log(req.params);
+    res.status(200).send({ status: 'ok', params: req.params });
+  });
 
   return ReactAdminRouter;
 };
