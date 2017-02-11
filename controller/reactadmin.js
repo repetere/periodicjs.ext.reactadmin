@@ -385,6 +385,7 @@ var loadManifest = function (req, res, next) {
       if (extsettings && extsettings.includeCoreData && extsettings.includeCoreData.manifest) {
         setCoreDataConfigurations();
         if (CORE_DATA_CONFIGURATIONS.manifest) manifest.containers = Object.assign({}, CORE_DATA_CONFIGURATIONS.manifest, manifest.containers);
+        logger.silly(manifest.containers);
       }
       manifest.containers = recursivePrivilegesFilter(Object.keys(req.session.userprivilegesdata), manifest.containers, true);
       if (res && typeof res.send === 'function') {

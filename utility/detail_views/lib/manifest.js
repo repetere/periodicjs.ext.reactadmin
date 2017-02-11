@@ -64,20 +64,20 @@ var buildFormGroup = function (label, data, isRoot = false) {
 			props: {
 				cardTitle: `${ capitalize.words(label) }`
 			},
-			formElements: (isRoot) ? Object.keys(data).reduce((result, key, index) => {
-				result[0] = result[0] || {
-					formGroupElementsLeft: [],
-					formGroupElementsRight: []
-				};
-				let elem = handleFormElements(`${ label } ${ key }`, data[key]);
-				result[0][(index % 2 === 0) ? 'formGroupElementsLeft' : 'formGroupElementsRight'].push(elem);
-				return result;
-			}, []) : Object.keys(data).reduce((result, key) => {
-				let elem = handleFormElements(`${ label } ${ key }`, data[key]);
-				result.push(elem);
-				return result;
-			}, [])
-		}
+		},
+		formElements: (isRoot) ? Object.keys(data).reduce((result, key, index) => {
+			result[0] = result[0] || {
+				formGroupElementsLeft: [],
+				formGroupElementsRight: []
+			};
+			let elem = handleFormElements(`${ label } ${ key }`, data[key]);
+			result[0][(index % 2 === 0) ? 'formGroupElementsLeft' : 'formGroupElementsRight'].push(elem);
+			return result;
+		}, []) : Object.keys(data).reduce((result, key) => {
+			let elem = handleFormElements(`${ label } ${ key }`, data[key]);
+			result.push(elem);
+			return result;
+		}, [])
 	};
 };
 
