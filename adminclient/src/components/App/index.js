@@ -44,6 +44,7 @@ const reduxActions = {
   saveUserProfile: (url, response, json) => store.dispatch(actions.user.saveUserProfile(url, response, json)),
   initializeAuthenticatedUser: (jwt_token, enforceMFA = true) => store.dispatch(actions.user.initializeAuthenticatedUser(jwt_token, enforceMFA)),
   loginUser: (formdata) => store.dispatch(actions.user.loginUser(formdata)),
+  // ajaxModal: (options) => store.dispatch(actions.notification.ajaxModal(options)),
   createModal: (options) => store.dispatch(actions.notification.createModal(options)),
   hideModal: (options) => store.dispatch(actions.notification.hideModal(options)),
   createNotification: (options) => store.dispatch(actions.notification.createNotification(options)),

@@ -31,7 +31,7 @@ class AppHeader extends Component {
         </NavItem>
       </NavGroup>) : null;
     let navLabelTitle = (!this.props.settings.ui.header.useGlobalSearch && this.props.ui.nav_label) ? (
-      <NavItem  style={Object.assign({
+      <NavItem style={Object.assign({
         justifyContent: "flex-start",
       },styles.fullWidth)}>
         <span style={{fontSize:"24px"}}>{this.props.ui.nav_label}</span>
@@ -44,7 +44,9 @@ class AppHeader extends Component {
             <Nav style={{boxShadow:'none'}}>
               <NavGroup align="left">
                 <NavItem>
-                  <Button onClick={this.props.toggleUISidebar} buttonStyle="isOutlined" color={buttonColor} icon="fa fa-bars" style={styles.iconButton} /> 
+                  {(this.props.settings.ui.header.customButton) 
+                    ? this.getRenderedComponent(this.props.settings.ui.header.customButton) 
+                    : (<Button onClick={this.props.toggleUISidebar} buttonStyle="isOutlined" color={buttonColor} icon="fa fa-bars" style={styles.iconButton} /> )}
                 </NavItem>
                 {navLabelTitle}
               </NavGroup>
