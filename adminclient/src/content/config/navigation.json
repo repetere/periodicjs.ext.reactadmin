@@ -21,14 +21,6 @@
           {
             "component":"MenuAppLink",
             "props":{
-              "href":"/crm",
-              "label":"CRM",
-              "id": "crm"
-            }
-          },
-          {
-            "component":"MenuAppLink",
-            "props":{
               "href":"/home",
               "label":"Dashboard",
               "id": "home"

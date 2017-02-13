@@ -1,31 +1,33 @@
 {
-  "containers": {
-    "/healthcheck/:id/:name": {
-      "layout": {
-        "component": "Hero",
-        "props": {
-          "size": "isFullheight"
+  "containers":{
+    "/healthcheck/:id/:name":{
+      "layout":{
+        "component":"Hero",
+        "props":{
+          "size":"isFullheight"
         },
-        "children": [
+        "children":[
           {
-            "component": "HeroBody",
-            "props": {},
-            "children": [
+            "component":"HeroBody",
+            "props":{
+
+            },
+            "children":[
               {
-                "component": "Container",
-                "props": {},
-                "children": [
+                "component":"Container",
+                "props":{
+
+                },
+                "children":[
                   {
-                    "component": "RawOutput",
+                    "component":"RawOutput",
                     "asyncprops": {
-                      "healthcheck": [
-                        "healthcheckStatus"
-                      ]
+                      "healthcheck": ["healthcheckStatus"]
                     }
                   },
                   {
-                    "component": "Title",
-                    "children": "Documentation Page Healthcheck"
+                    "component":"Title",
+                    "children":"Documentation Page Healthcheck"
                   }
                 ]
               }
@@ -33,46 +35,50 @@
           }
         ]
       },
-      "resources": {
-        "healthcheckStatus": "/r-admin/load/healthcheck/:id/:name"
+      "resources":{
+        "healthcheckStatus":"/r-admin/load/healthcheck/:id/:name"
       },
-      "onFinish": "render",
-      "pageData": {
-        "title": "Healthcheck",
-        "navLabel": "Healthcheck"
+      "onFinish":"render",
+      "pageData":{
+        "title":"Healthcheck",
+        "navLabel":"Healthcheck"
       }
     },
-    "/r-admin/documentation": {
-      "layout": {
-        "component": "Hero",
-        "props": {
-          "size": "isFullheight"
+    "/r-admin/documentation":{
+      "layout":{
+        "component":"Hero",
+        "props":{
+          "size":"isFullheight"
         },
-        "children": [
+        "children":[
           {
-            "component": "HeroBody",
-            "props": {},
-            "asyncprops": {
-              "healthcheck": [
+            "component":"HeroBody",
+            "props":{
+
+            },
+            "asyncprops":{
+              "healthcheck":[
                 "healthcheckStatus"
               ]
             },
-            "children": [
+            "children":[
               {
-                "component": "Container",
-                "props": {},
-                "children": [
+                "component":"Container",
+                "props":{
+
+                },
+                "children":[
                   {
-                    "component": "div",
-                    "props": {
-                      "dangerouslySetInnerHTML": {
-                        "__html": "<h1>FooBar: the most used line in code</h1>"
+                    "component":"div",
+                    "props":{
+                      "dangerouslySetInnerHTML":{
+                        "__html":"<h1>FooBar: the most used line in code</h1>"
                       }
                     }
                   },
                   {
-                    "component": "Title",
-                    "children": "Admin Documentation Page"
+                    "component":"Title",
+                    "children":"Admin Documentation Page"
                   }
                 ]
               }
@@ -80,46 +86,50 @@
           }
         ]
       },
-      "resources": {
-        "healthcheckStatus": "/r-admin/load/healthcheck"
+      "resources":{
+        "healthcheckStatus":"/r-admin/load/healthcheck"
       },
-      "onFinish": "render",
-      "pageData": {
-        "title": "Admin Documentation",
-        "navLabel": "Admin Documentation"
+      "onFinish":"render",
+      "pageData":{
+        "title":"Admin Documentation",
+        "navLabel":"Admin Documentation"
       }
     },
-    "/documentation": {
-      "layout": {
-        "component": "Hero",
-        "props": {
-          "size": "isFullheight"
+      "/documentation":{
+      "layout":{
+        "component":"Hero",
+        "props":{
+          "size":"isFullheight"
         },
-        "children": [
+        "children":[
           {
-            "component": "HeroBody",
-            "props": {},
-            "asyncprops": {
-              "healthcheck": [
+            "component":"HeroBody",
+            "props":{
+
+            },
+            "asyncprops":{
+              "healthcheck":[
                 "healthcheckStatus"
               ]
             },
-            "children": [
+            "children":[
               {
-                "component": "Container",
-                "props": {},
-                "children": [
+                "component":"Container",
+                "props":{
+
+                },
+                "children":[
                   {
-                    "component": "div",
-                    "props": {
-                      "dangerouslySetInnerHTML": {
-                        "__html": "<h1>FooBar: the most used line in code</h1>"
+                    "component":"div",
+                    "props":{
+                      "dangerouslySetInnerHTML":{
+                        "__html":"<h1>FooBar: the most used line in code</h1>"
                       }
                     }
                   },
                   {
-                    "component": "Title",
-                    "children": "Standard Documentation Page"
+                    "component":"Title",
+                    "children":"Standard Documentation Page"
                   }
                 ]
               }
@@ -127,13 +137,13 @@
           }
         ]
       },
-      "resources": {
-        "healthcheckStatus": "/r-admin/load/healthcheck"
+      "resources":{
+        "healthcheckStatus":"/r-admin/load/healthcheck"
       },
-      "onFinish": "render",
-      "pageData": {
-        "title": "Documentation",
-        "navLabel": "Documentation"
+      "onFinish":"render",
+      "pageData":{
+        "title":"Documentation",
+        "navLabel":"Documentation"
       }
     }
   }
