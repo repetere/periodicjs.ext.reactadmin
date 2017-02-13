@@ -19,6 +19,11 @@ const navStyles = {
     zIndex: 1000,
     backgroundColor: '#fff',
   },
+  floatingSidebarContainer: {
+    // boxShadow:'0 2px 3px rgba(17,17,17,.3)',
+    zIndex: 1000,
+    marginTop: 78,
+  },
   sidebarOverlay:{
     position: 'fixed',
     height: '100%',

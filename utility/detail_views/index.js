@@ -5,12 +5,12 @@ const gather = require('./lib/gather');
 const manifest = require('./lib/manifest');
 
 var generateManifest = function generateManifest (connection, options = {}) {
-	let schemas = gather(connection);
-	let generated = manifest(schemas, options);
-	if (typeof options.filePath === 'string') return fs.writeJsonAsync(options.filePath, generated);
-	return generated;
+  let schemas = gather(connection);
+  let generated = manifest(schemas, options);
+  if (typeof options.filePath === 'string') return fs.writeJsonAsync(options.filePath, generated);
+  return generated;
 };
 
 module.exports = {
-	generateManifest
+  generateManifest,
 };

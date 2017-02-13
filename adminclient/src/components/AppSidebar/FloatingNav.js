@@ -2,9 +2,9 @@ import React, { Component, } from 'react';
 import { getRenderedComponent, } from '../AppLayoutMap';
 import styles from '../../styles';
 // import navigation from '../../content/config/default_navigation';
-// import { Menu, MenuLabel, MenuLink, MenuList, } from 're-bulma'; //Icon
+import { Container, Section } from 're-bulma'; //Icon
 
-class AppSidebar extends Component {
+class FloatingNav extends Component {
   constructor(props) {
     super(props);
     this.getRenderedComponent = getRenderedComponent.bind(this);
@@ -26,24 +26,29 @@ class AppSidebar extends Component {
       navigationContainer = this.props.settings.user.navigation.container || {};
     }
     return (
-      // {(this.props.ui.components.footer && typeof this.props.ui.components.footer==='object' && this.props.ui.components.footer.layout) 
-      //   ? this.getRenderedComponent(this.props.ui.components.footer.layout)
-      //   : ()
-      // }
-
-
-      <div style={Object.assign({ padding: '1rem', borderRight:'1px solid black', }, styles.fullHeight, styles.mainContainer, styles.sidebarContainer, navigationContainer.style)}
-        className={(this.props.ui.sidebar_is_open) ? 'animated fadeInLeft Nav-Sidebar-Speed' : 'animated slideOutLeft Nav-Sidebar-Speed'}>
-        <div style={Object.assign({
-          position: 'fixed',
-          height: '100%',
-          overflowY:'auto',
-        }, navigationWrapper.style)}>
-          {this.getRenderedComponent((navigationLayout && typeof navigationLayout === 'object') ? navigationLayout : {})}
-        </div>
+      <div style={Object.assign({
+        padding: '1rem',
+        paddingTop:'0',
+        height: 'auto',
+        position: 'fixed',
+        width:'100%',
+      }, styles.mainContainer, styles.floatingSidebarContainer, navigationContainer.style)}
+        className={(this.props.ui.sidebar_is_open) ? 'animated fadeInDown Nav-Sidebar-Speed' : 'animated slideOutUp Nav-Sidebar-Speed'}>
+        <Container>
+          <div style={Object.assign({
+            overflow: 'hidden',
+            overflowY: 'auto',
+            backgroundColor: 'white',
+            maxHeight: '20rem',
+            width: '20rem',
+          },
+          navigationWrapper.style)}>
+            {this.getRenderedComponent((navigationLayout && typeof navigationLayout === 'object') ? navigationLayout : {})}
+          </div>
+        </Container>
       </div>
     );
   }
 }
 
-export default AppSidebar;
+export default FloatingNav;

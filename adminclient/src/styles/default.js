@@ -1,6 +1,6 @@
 const defaultStyles = {
   mainContainer: {
-    marginTop:52,
+    marginTop:68,
     marginBottom:52,
   },
   fixedTop: {
