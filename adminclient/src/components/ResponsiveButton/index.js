@@ -20,7 +20,6 @@ class ResponsiveButton extends Component {
   // }
   
   render() {
-    // console.log('this.props', this.props);
     let onclickFunction = (data) => {console.log('ResponsiveButton',{ data, }) };
     if (typeof this.props.onClick === 'string' && this.props.onClick.indexOf('func:this.props') !== -1) { 
       onclickFunction = this.props[ this.props.onClick.replace('func:this.props.', '') ];

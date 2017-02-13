@@ -56,7 +56,7 @@ class AppHeader extends Component {
               <NavGroup align="right" isMenu>
                 <NavItem>
                   <Link to="/account/profile" style={Object.assign({fontSize:'20px'},styles.noUnderline,this.props.settings.ui.header.userNameStyle)}>
-                    {`${capitalize(this.state.user.firstname)} ${capitalize(this.state.user.lastname)}`}
+                    {`${capitalize(this.state.user.firstname || '')} ${capitalize(this.state.user.lastname || '')}`}
                   </Link>
                 </NavItem> 
                 <NavItem>
@@ -69,11 +69,11 @@ class AppHeader extends Component {
                         width: '48px',
                         height: '48px',
                         display:'block',
-                        // backgroundColor: 'red',
+                        backgroundColor: 'white',
                         borderRadius: '24px',
                         backgroundSize: 'cover',
                         backgroundRepeat:'no-repeat',
-                        backgroundImage:'url('+this.props.user.profile_image_preview+')',
+                        backgroundImage:'url('+(this.props.user.profile_image_preview || '/favicon.png' )+')',
                       }
                     }
                   })} 
