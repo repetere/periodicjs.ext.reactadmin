@@ -1,33 +1,21 @@
 import React, { Component, } from 'react';
-// import styles from '../styles';
 import AppSectionLoading from '../components/AppSectionLoading';
 import AppError404 from '../components/AppError404';
 import { getRenderedComponent, } from '../components/AppLayoutMap';
-// import constants from '../constants';
-// import { AsyncStorage, } from 'react-native';
 import utilities from '../util';
-
-let AppManifest = {};
-
-const setAppManifest = (props) => {
-  // console.log('setAppManifest props',props)
-  if (props.containers && props.updatedAt !== AppManifest.updatedAt) {
-    AppManifest = props;
-  }
-};
 
 const _handleComponentLifecycle = function () {
   this.setState({ ui_is_loaded: false, });
   let parentState = this.props.getState();
   let pathname = (this.props.location.pathname) ? this.props.location.pathname : window.location.pathname;
   if (parentState.manifest && parentState.manifest.hasLoaded) {
-    if (pathname === '/mfa' && window.location.pathname === '/mfa') this.fetchData();
+    if (pathname === '/mfa' && window.location.pathname === '/mfa') return this.fetchData();
     else {
       let isValid = this.props.enforceMFA(true);
       if (isValid) this.fetchData();
     }
   } else {
-    this.props.initializeAuthenticatedUser(parentState.user.jwt_token, false)
+    return this.props.initializeAuthenticatedUser(parentState.user.jwt_token, false)
       .then(() => this.props.enforceMFA(true))
       .then(isValid => {
         if (isValid) this.fetchData();
@@ -36,11 +24,8 @@ const _handleComponentLifecycle = function () {
 };
 
 class DynamicPage extends Component {
-  constructor(props) {
-    const Props = Object.assign({}, props, props.getState());
-    // console.log({ Props });
-    super(props);
-    setAppManifest(Props.manifest);
+  constructor () {
+    super(...arguments);
     this.state = {
       ui_is_loaded: false,
       async_data_is_loaded: false,
@@ -50,43 +35,50 @@ class DynamicPage extends Component {
     this.handleComponentLifecycle = _handleComponentLifecycle.bind(this);
   }
   fetchDynamicPageContent (pathname, hasParams) {
-    let layout = Object.assign({}, AppManifest.containers[pathname].layout);
-    if (AppManifest.containers[pathname].resources && typeof AppManifest.containers[pathname].resources === 'object') {
-      let resources = AppManifest.containers[pathname].resources;
-      if (hasParams) {
-        let currentPathname = (window.location.pathname) ? window.location.pathname : this.props.location.pathname;
-        resources = Object.keys(resources).reduce((result, key) => {
-          let updatedPath = utilities.setParameters({
-            route: pathname,
-            location: currentPathname,
-            query: (/\?[^\s]+$/.test(currentPathname)) ? currentPathname.replace(/\?([^\s]+)$/g, '$1') : undefined,
-            resource: resources[key],
+    try {
+      let state = this.props.getState();
+      let containers = state.manifest.containers;
+      let layout = Object.assign({}, containers[pathname].layout);
+      if (containers[pathname].resources && typeof containers[pathname].resources === 'object') {
+        let resources = containers[pathname].resources;
+        if (hasParams) {
+          let currentPathname = (window.location.pathname) ? window.location.pathname : this.props.location.pathname;
+          resources = Object.keys(resources).reduce((result, key) => {
+            let updatedPath = utilities.setParameters({
+              route: pathname,
+              location: currentPathname,
+              query: (/\?[^\s]+$/.test(currentPathname)) ? currentPathname.replace(/\?([^\s]+)$/g, '$1') : undefined,
+              resource: resources[key],
+            });
+            result[key] = updatedPath;
+            return result;
+          }, {});
+        }
+        // console.log('containers[pathname]',containers[pathname]);
+        if (containers[pathname].pageData && containers[pathname].pageData.title) {
+          window.document.title = containers[pathname].pageData.title;
+        }
+        if (containers[pathname].pageData && containers[pathname].pageData.navLabel) {
+          this.props.setNavLabel(containers[pathname].pageData.navLabel);
+        } else {
+          this.props.setNavLabel('');
+        }
+        return utilities.fetchPaths(this.props.getState().settings.basename, resources)
+          .then(resources => {
+            this.uiLayout = this.getRenderedComponent(layout, resources);
+            this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
+          })
+          .catch(e => {
+            this.props.errorNotification(e);
+            this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
           });
-          result[key] = updatedPath;
-          return result;
-        }, {});
+      } else {
+        this.uiLayout = this.getRenderedComponent(containers[pathname].layout);
+        this.setState({ ui_is_loaded: true, });
       }
-      // console.log('AppManifest.containers[pathname]',AppManifest.containers[pathname]);
-      if(AppManifest.containers[pathname].pageData && AppManifest.containers[pathname].pageData.title){
-        window.document.title = AppManifest.containers[pathname].pageData.title;
-      }
-      if(AppManifest.containers[pathname].pageData && AppManifest.containers[pathname].pageData.navLabel){
-        this.props.setNavLabel(AppManifest.containers[pathname].pageData.navLabel);
-      } else{
-        this.props.setNavLabel('');
-      }
-      return utilities.fetchPaths(this.props.getState().settings.basename, resources)
-        .then(resources => {
-          this.uiLayout = this.getRenderedComponent(layout, resources);
-          this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
-        })
-        .catch(e => {
-          this.props.errorNotification(e);
-          this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
-        });
-    } else {
-      this.uiLayout = this.getRenderedComponent(AppManifest.containers[pathname].layout);
-      this.setState({ ui_is_loaded: true, });
+    } catch (e) {
+      this.props.errorNotification(e);
+      this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
     }
   }
   fetchDynamicErrorContent (/*pathname*/) {
@@ -112,40 +104,32 @@ class DynamicPage extends Component {
       custom404Error = (typeof componentData.status === 'undefined' || componentData.status === 'undefined' || componentData.status === 'uninitialized') ? false : this.getRenderedComponent(componentData.layout);
     }
     this.uiLayout = (custom404Error) ? custom404Error : <AppError404/>;
-    window.document.title='Page Not Found';
+    window.document.title = 'Page Not Found';
     this.props.setNavLabel('Error');
-
     this.setState({ ui_is_loaded: true, });
   }
   fetchData (/*options = {}*/) {
     const pathname = (window.location.pathname) ? window.location.pathname : this.props.location.pathname;
     const state = this.props.getState();
-    if (AppManifest.containers[pathname]) {
+    if (state.manifest.containers[pathname]) {
       return this.fetchDynamicPageContent(pathname);
-    } else if (AppManifest.containers[pathname.replace(state.settings.auth.admin_path, '')]) {
+    } else if (state.manifest.containers[pathname.replace(state.settings.auth.admin_path, '')]) {
       let adminPathname = pathname.replace(state.settings.auth.admin_path, ''); 
       return this.fetchDynamicPageContent(adminPathname);
     } else {
       let dynamicPathname = utilities.findMatchingRoute(state.manifest.containers, pathname.replace(state.settings.auth.admin_path, ''));
-      // console.log({ dynamicPathname, });
       if (!dynamicPathname) return this.fetchDynamicErrorContent(pathname);
       return this.fetchDynamicPageContent(dynamicPathname, true);
     }
   }
   componentDidMount () { 
-    // console.log('component DId Mount', this.props);
     this.handleComponentLifecycle();
-    setAppManifest(this.props.getState().manifest);
   }
-  componentWillReceiveProps (nextProps) { 
-    // console.log('DynamicPage componentWillReceiveProps nextProps', nextProps, nextProps.getState());
+  componentWillReceiveProps () { 
     this.handleComponentLifecycle();
-    setAppManifest(nextProps.getState().manifest);
   }
-  render() {
-    // const Props = Object.assign({}, this.props, this.props.getState());
-    // console.log({ Props, });
-    return (this.state.ui_is_loaded ===false)? <AppSectionLoading/> : this.uiLayout;
+  render () {
+    return (this.state.ui_is_loaded === false) ? <AppSectionLoading/> : this.uiLayout;
   }
 }
 
