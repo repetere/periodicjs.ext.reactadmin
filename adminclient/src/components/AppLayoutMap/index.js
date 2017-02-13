@@ -8,6 +8,7 @@ import MenuAppLink from '../AppSidebar/MenuAppLink';
 import SubMenuLinks from '../AppSidebar/SubMenuLinks'; 
 import ResponsiveTable from '../ResponsiveTable';
 import ResponsiveCard from '../ResponsiveCard';
+import ResponsiveBar from '../ResponsiveBar';
 import ResponsiveLink from '../ResponsiveLink';
 import ResponsiveButton from '../ResponsiveButton';
 import FormItem from '../FormItem';
@@ -16,7 +17,7 @@ import utilities from '../../util';
 let renderIndex = 0;
 
 export let AppLayoutMap = Object.assign({}, {
-  recharts, ResponsiveForm, RawOutput, FormItem, MenuAppLink, SubMenuLinks, ResponsiveTable, ResponsiveCard,
+  recharts, ResponsiveForm, RawOutput, FormItem, MenuAppLink, SubMenuLinks, ResponsiveTable, ResponsiveCard, ResponsiveBar,
 }, React.DOM, rebulma, { Link, });
 
 // console.log({ AppLayoutMap });
