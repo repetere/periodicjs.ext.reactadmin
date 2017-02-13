@@ -80,7 +80,7 @@ class Overlay extends Component {
       } }  
       dynamicRenderComponent={this.getRenderedComponent} /> : null;
     return (
-      <div style={{ position: 'fixed', bottom: 0, width: 'auto', zIndex:10000, }}>
+      <div style={{ position: 'fixed', bottom: 0, width: 'auto', zIndex:100000, }}>
         {modal}
         {notices}
       </div>

@@ -41,6 +41,13 @@
               "label":"Documentation",
               "id": "documentation"
             }
+          },{
+            "component":"MenuAppLink",
+            "props":{
+              "href":"/#logout",
+              "label":"Logout",
+              "onClick": "func:this.props.logoutUser"
+            }
           }
         ]
       },

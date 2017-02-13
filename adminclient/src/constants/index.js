@@ -64,6 +64,7 @@ export default {
     OPEN_SIDEBAR:'open side menu',
     CLOSE_SIDEBAR: 'close side menu',
     SET_UI_LOADED:'set ui loaded state',
+    SET_NAV_LABEL:'set navigation label',
     LOAD_NAV_DATA_SUCCESS:'set nav ui loaded state',
     LOGIN_COMPONENT: 'fetchLoginComponent',
     MAIN_COMPONENT: 'fetchMainComponent',

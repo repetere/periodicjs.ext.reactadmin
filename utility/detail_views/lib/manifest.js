@@ -116,6 +116,12 @@ var buildChildren = function (schema, label, options = {}) {
 
 var construct = function (schema, label, options = {}) {
 	return {
+		resources:{},
+		onFinish:'render',
+		pageData:{
+			title:capitalize(label),
+			navLabel:capitalize(label),
+		},
 		layout: {
 			component: 'Container',
 			props: {},

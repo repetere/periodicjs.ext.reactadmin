@@ -1,7 +1,8 @@
 {
 	"periodicjs.ext.reactadmin": {
     "manifests":[
-      "node_modules/periodicjs.ext.reactadmin/adminclient/src/content/config/manifest.json"
+      "node_modules/periodicjs.ext.reactadmin/adminclient/src/content/config/manifest.json",
+      "node_modules/periodicjs.ext.reactadmin/views/home/index.manifest.json"
     ],
     "navigation":"node_modules/periodicjs.ext.reactadmin/adminclient/src/content/config/navigation.json",
     "components":{

@@ -57,6 +57,14 @@ const ui = {
       },
     };
   },
+  setNavLabel: function (label) {
+    return {
+      type: constants.ui.SET_NAV_LABEL,
+      payload: {
+        label,
+      },
+    };
+  },
   fetchComponent: function (type) {
     let component, componentLoadError;
     //add ?refresh=true to below component loading routes to individually reload configurations for a given component

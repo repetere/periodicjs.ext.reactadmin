@@ -66,6 +66,15 @@ const notification = {
       dispatch(this.showModal(Object.assign({}, options, { id: ID, })));
     };
   },
+  // ajaxModal(options = {}) {
+  //   return (dispatch, getState) => {
+  //     options.title = 'pagedata.title'
+  //     options.text = 'layout'
+  //     let AppManifest = getState().manifest;
+  //     console.log({AppManifest});
+  //     // dispatch(this.showModal(Object.assign({}, options, { id: ID, })));
+  //   };
+  // },
 };
 
 export default notification;

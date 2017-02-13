@@ -11,6 +11,7 @@ const initialState = {
   header_ui_is_loaded: false,
   footer_ui_is_loaded: false,
   error_ui_is_loaded: false,
+  nav_label: "",
   app_data: {},
   selected_nav: undefined
 };
@@ -25,6 +26,11 @@ const uiReducer = (state, action) => {
     return Object.assign({}, state, {
       ui_is_loaded: uiStatePayload,
     });  
+  case constants.ui.SET_NAV_LABEL:
+    var navLabelPaylod = action.payload;
+    return Object.assign({}, state, {
+      nav_label: navLabelPaylod.label,
+    });
   case constants.ui.TOGGLE_SIDEBAR:
       // var logoutFailurePayload = action.payload;
     return Object.assign({}, state, {
@@ -77,7 +83,10 @@ const uiReducer = (state, action) => {
       return Object.assign({}, state, { components, error_ui_is_loaded: true });
     }
   case constants.ui.SET_SELECTED_NAV_STATE:
-    return Object.assign({}, state, { selected_nav: action.payload.id });
+    return Object.assign({}, state, { 
+      // sidebar_is_open: false,
+      selected_nav: action.payload.id
+     });
   default:
     return Object.assign(initialState, state);
   }

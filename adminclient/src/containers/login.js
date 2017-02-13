@@ -194,6 +194,7 @@ class Login extends Component {
   constructor() {
     super(...arguments);
     this.state = { componentIsLoaded: false, };
+    this.getRenderedComponent = getRenderedComponent.bind(this);
   }
   componentDidMount() {
     let queryStrings = qs.parse((window.location.search.charAt(0) === '?') ? window.location.search.substr(1, window.location.search.length) : window.location.search);
@@ -212,7 +213,6 @@ class Login extends Component {
     this.setState(nextProps);
   }
   render() {
-    this.getRenderedComponent = getRenderedComponent.bind(this);
     if (!this.state.componentIsLoaded) return (<AppSectionLoading />);
     let ui = this.props.getState().ui;
     let user = this.props.getState().user;

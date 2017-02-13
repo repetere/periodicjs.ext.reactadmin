@@ -9,7 +9,14 @@ class MenuAppLink extends Component {
   render () {
     return (
     	<li>
-	      <Link to={this.props.href} onClick={this.props.setActiveNavLink.bind(this, this.props.id || this.props.href)}>
+				<Link to={this.props.href} onClick={() => {
+					if (typeof this.props.onClick === 'string' && this.props.onClick.indexOf('func:this.props') !== -1) { 
+						this.props[ this.props.onClick.replace('func:this.props.', '') ](this.props.onClickProps);
+					}
+					this.props.setActiveNavLink.bind(this, this.props.id || this.props.href
+					);
+					this.props.toggleUISidebar();
+				}}>
 	        <MenuLink isActive={this.state.isActive}>{ this.props.label }</MenuLink>
 	      </Link>  
     	</li>

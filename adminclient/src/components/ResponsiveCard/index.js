@@ -1,7 +1,7 @@
 import React, { Component, PropTypes, } from 'react';
 import { Card, CardHeader, CardHeaderIcon, CardContent, CardHeaderTitle, } from 're-bulma';
 import 'font-awesome/css/font-awesome.css';
-import styles from '../../styles';
+// import styles from '../../styles';
 
 const propTypes = {
   headerColor: PropTypes.object,
@@ -12,8 +12,11 @@ const propTypes = {
 };
 
 const defaultProps = {
-  headerColor: styles.isSecondaryBackground,
-  headerTextColor: styles.isWhite,
+  // headerColor: styles.isSecondaryBackground,
+  // headerTextColor: styles.isWhite,
+  cardStyle: {
+    marginBottom: '20px',
+  },
   cardTitle: 'Not Set',
   display: true,
   icon: 'fa fa-angle-down',
@@ -41,16 +44,16 @@ class ResponsiveCard extends Component {
 
   render() {
     const fullCard = (
-      <Card isFullwidth>
+      <Card isFullwidth style={this.props.cardStyle}>
         <CardHeader>
           <CardHeaderTitle style={this.state.headerColor}>
             {this.state.cardTitle}
           </CardHeaderTitle>
           <CardHeaderIcon icon={this.state.icon} onClick={() => this.expandCard()}/>
         </CardHeader>
-        <CardContent>
-            {(this.state.display) ? this.props.children : null }
-        </CardContent>
+        {(this.state.display) ? (
+          <CardContent>{this.props.children}</CardContent>
+        ) : null}
       </Card>);
     return fullCard;
   }

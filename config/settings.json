@@ -6,6 +6,14 @@
     "manifest": true,
     "navigation": true
   },
+	"navigationLayout":{
+		"wrapper":{
+			"style":{}
+		},
+		"container":{
+			"style":{}
+		}
+	},
 	"routerHistory":"browserHistory",
 	"allHistoryOptions":"browserHistory|hashHistory|createMemoryHistory",
 	"application":{
