@@ -2,7 +2,7 @@ import React, { Component, } from 'react';
 import { getRenderedComponent, } from '../AppLayoutMap';
 import styles from '../../styles';
 // import navigation from '../../content/config/default_navigation';
-import { Container, Section } from 're-bulma'; //Icon
+import { Container, } from 're-bulma'; //Icon
 
 class FloatingNav extends Component {
   constructor(props) {

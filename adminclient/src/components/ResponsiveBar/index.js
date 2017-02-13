@@ -1,9 +1,10 @@
 import React, { Component, PropTypes, } from 'react';
 import { Box, Columns, Column, } from 're-bulma';
 import 'font-awesome/css/font-awesome.css';
-import styles from '../../styles';
+// import styles from '../../styles';
 
 const propTypes = {
+  boxProps: PropTypes.any,
 };
 
 const defaultProps = {
@@ -26,13 +27,15 @@ class ResponsiveBars extends Component {
           return (
             <Column size="is3">
               <Box {...this.state.boxProps}>
-                <span onClick={() => {this.props.reduxRouter.push(feature.location)}} >
-                    <img src={feature.image} />
+                <span onClick={() => {
+                  this.props.reduxRouter.push(feature.location);
+                }} >
+                    <img src={feature.image} alt={feature.title} />
                     {feature.title}
                   </span>
                 </Box>
             </Column>
-          )
+          );
         })}
       </Columns>);
   }
