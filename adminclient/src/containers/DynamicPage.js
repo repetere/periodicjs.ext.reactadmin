@@ -10,6 +10,7 @@ import utilities from '../util';
 let AppManifest = {};
 
 const setAppManifest = (props) => {
+  // console.log('setAppManifest props',props)
   if (props.containers && props.updatedAt !== AppManifest.updatedAt) {
     AppManifest = props;
   }
@@ -112,6 +113,8 @@ class DynamicPage extends Component {
     }
     this.uiLayout = (custom404Error) ? custom404Error : <AppError404/>;
     window.document.title="Page Not Found";
+    this.props.setNavLabel("Error");
+
     this.setState({ ui_is_loaded: true, });
   }
   fetchData (/*options = {}*/) {
@@ -129,11 +132,15 @@ class DynamicPage extends Component {
       return this.fetchDynamicPageContent(dynamicPathname, true);
     }
   }
-  componentDidMount () { // console.log('component DId Mount', this.props);
+  componentDidMount () { 
+    // console.log('component DId Mount', this.props);
     this.handleComponentLifecycle();
+    setAppManifest(this.props.getState().manifest);
   }
-  componentWillReceiveProps (/*nextProps*/) { // console.log('DynamicPage componentWillReceiveProps nextProps', nextProps);
+  componentWillReceiveProps (nextProps) { 
+    // console.log('DynamicPage componentWillReceiveProps nextProps', nextProps, nextProps.getState());
     this.handleComponentLifecycle();
+    setAppManifest(nextProps.getState().manifest);
   }
   render() {
     // const Props = Object.assign({}, this.props, this.props.getState());
