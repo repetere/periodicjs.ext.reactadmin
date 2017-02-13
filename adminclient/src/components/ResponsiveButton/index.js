@@ -31,19 +31,23 @@ class ResponsiveButton extends Component {
     if (this.props.buttonProps) {
       return <Button
         {...this.props.buttonProps}
-        style={Object.assign({ cursor: "pointer" }, this.props.style)}
-        onClick={() => { onclickFunction(this.props.onclickProps);}}
+        style={Object.assign({ cursor: 'pointer', }, this.props.style)}
+        onClick={() => {
+          onclickFunction(this.props.onclickProps);
+        }}
         >
         {this.props.children}
-      </Button>
+      </Button>;
     } else {
       return <span
         {...this.props.spanProps}
-        style={Object.assign({ cursor: "pointer" }, this.props.style)}
-        onClick={() => { onclickFunction(this.props.onclickProps);}}
+        style={Object.assign({ cursor: 'pointer', }, this.props.style)}
+        onClick={() => {
+          onclickFunction(this.props.onclickProps);
+        }}
         >
         {this.props.children}
-      </span>
+      </span>;
     }
   }
 }

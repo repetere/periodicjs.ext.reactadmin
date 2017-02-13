@@ -33,7 +33,9 @@ class FloatingNav extends Component {
         position: 'fixed',
         width:'100%',
       }, styles.mainContainer, styles.floatingSidebarContainer, navigationContainer.style)}
-        className={(this.props.ui.sidebar_is_open) ? 'animated fadeInDown Nav-Sidebar-Speed' : 'animated slideOutUp Nav-Sidebar-Speed'}>
+        className={(this.props.ui.sidebar_is_open) ? 'animated fadeInDown Nav-Sidebar-Speed' : 'animated slideOutUp Nav-Sidebar-Speed'}
+      onClick={this.props.toggleUISidebar}
+      >
         <Container>
           <div style={Object.assign({
             overflow: 'hidden',
