@@ -32,18 +32,18 @@ class AppHeader extends Component {
       </NavGroup>) : null;
     let navLabelTitle = (!this.props.settings.ui.header.useGlobalSearch && this.props.ui.nav_label) ? (
       <NavItem style={Object.assign({
-        justifyContent: "flex-start",
-      },styles.fullWidth)}>
-        <span style={Object.assign({fontSize:"20px"},this.props.settings.ui.header.navLabelStyle)}>{this.props.ui.nav_label}</span>
+        justifyContent: 'flex-start',
+      }, styles.fullWidth)}>
+        <span style={Object.assign({ fontSize:'20px' ,}, this.props.settings.ui.header.navLabelStyle)}>{this.props.ui.nav_label}</span>
       </NavItem>) : null;
     return (
-      <Hero color={this.props.settings.ui.header.color} isBold={this.props.settings.ui.header.isBold} style={Object.assign(styles.fixedTop, styles.navContainer,this.props.settings.ui.header.containerStyle)}
+      <Hero color={this.props.settings.ui.header.color} isBold={this.props.settings.ui.header.isBold} style={Object.assign(styles.fixedTop, styles.navContainer, this.props.settings.ui.header.containerStyle)}
       className={(this.props.settings.ui.initialization.show_header || this.props.user.isLoggedIn) ? 'animated fadeInDown Header-Speed' : 'animated slideOutDown Header-Speed'}>
         {(this.props.ui.components.header && typeof this.props.ui.components.header==='object' && this.props.ui.components.header.layout) 
         ? this.getRenderedComponent(this.props.ui.components.header.layout)
         : (<HeroHead>
           <Container>
-            <Nav style={{boxShadow:'none'}}>
+            <Nav style={{ boxShadow:'none', }}>
               <NavGroup align="left">
                 <NavItem>
                   {(this.props.settings.ui.header.customButton && typeof this.props.settings.ui.header.customButton==='object') 
@@ -55,32 +55,32 @@ class AppHeader extends Component {
               {globalSearch}
               <NavGroup align="right" isMenu>
                 <NavItem>
-                  <Link to="/account/profile" style={Object.assign({fontSize:'20px'},styles.noUnderline,this.props.settings.ui.header.userNameStyle)}>
-                    {`${capitalize(this.state.user.firstname)} ${capitalize(this.state.user.lastname)}`}
+                  <Link to="/account/profile" style={Object.assign({ fontSize:'20px', }, styles.noUnderline, this.props.settings.ui.header.userNameStyle)}>
+                    {`${capitalize(this.state.user.firstname || '')} ${capitalize(this.state.user.lastname || '')}`}
                   </Link>
                 </NavItem> 
                 <NavItem>
                   {
                     this.getRenderedComponent({
-                    component: 'ResponsiveLink',
-                    props: {
-                      location: "/account/profile",
+                      component: 'ResponsiveLink',
+                      props: {
+                      location: '/account/profile',
                       style: {
                         width: '48px',
                         height: '48px',
                         display:'block',
-                        // backgroundColor: 'red',
+                        backgroundColor: 'white',
                         borderRadius: '24px',
                         backgroundSize: 'cover',
                         backgroundRepeat:'no-repeat',
-                        backgroundImage:'url('+this.props.user.profile_image_preview+')',
-                      }
-                    }
-                  })} 
+                        backgroundImage:'url('+(this.props.user.profile_image_preview || '/favicon.png' )+')',
+                      },
+                    },
+                    })} 
                 </NavItem>
                 {(this.state.user.isLoggedIn && this.props.settings.ui.header.useHeaderLogout) ? 
                   (<NavItem>
-                    <Button buttonStyle="isOutlined" onClick={this.props.logoutUser} color={buttonColor} icon="fa fa-sign-out"  style={Object.assign({paddingRight:0}, styles.noMarginLeftRight)} />
+                    <Button buttonStyle="isOutlined" onClick={this.props.logoutUser} color={buttonColor} icon="fa fa-sign-out"  style={Object.assign({ paddingRight:0, }, styles.noMarginLeftRight)} />
                   </NavItem>)
                   : null
                 } 
