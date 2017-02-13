@@ -65,6 +65,15 @@ class DynamicPage extends Component {
           return result;
         }, {});
       }
+      // console.log('AppManifest.containers[pathname]',AppManifest.containers[pathname]);
+      if(AppManifest.containers[pathname].pageData && AppManifest.containers[pathname].pageData.title){
+        window.document.title = AppManifest.containers[pathname].pageData.title;
+      }
+      if(AppManifest.containers[pathname].pageData && AppManifest.containers[pathname].pageData.navLabel){
+        this.props.setNavLabel(AppManifest.containers[pathname].pageData.navLabel);
+      } else{
+        this.props.setNavLabel("");
+      }
       return utilities.fetchPaths(this.props.getState().settings.basename, resources)
         .then(resources => {
           this.uiLayout = this.getRenderedComponent(layout, resources);
@@ -102,6 +111,7 @@ class DynamicPage extends Component {
       custom404Error = (typeof componentData.status === 'undefined' || componentData.status === 'undefined' || componentData.status === 'uninitialized') ? false : this.getRenderedComponent(componentData.layout);
     }
     this.uiLayout = (custom404Error) ? custom404Error : <AppError404/>;
+    window.document.title="Page Not Found";
     this.setState({ ui_is_loaded: true, });
   }
   fetchData (/*options = {}*/) {

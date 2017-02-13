@@ -129,7 +129,9 @@ class MainApp extends Component{
     let footerNav = (this.state.settings.ui.initialization.show_footer || this.state.user.isLoggedIn)
       ? (<AppFooter {...this.state} />)
     : null;  
-    // return (<AppSectionLoading/>);
+
+    let overlay = (this.props.ui.sidebar_is_open && this.state.settings.ui.initialization.show_sidebar_overlay)?(<div style={styles.sidebarOverlay} onClick={this.props.toggleUISidebar} ></div>):null;
+
     return (
       (this.state.ui.ui_is_loaded === false)
         ? (<AppSectionLoading><AppOverlay {...this.state}/></AppSectionLoading>)
@@ -140,7 +142,7 @@ class MainApp extends Component{
           <main style={styles.fullHeight}>
             {/*DEBUG HERE */}
             <Columns style={Object.assign({}, styles.fullMinHeight, styles.fullHeight)}>
-              {sidebarColumn}
+              {sidebarColumn}{overlay}
               <Column style={styles.fullMinHeight}>
                 {this.props.children}
               </Column>

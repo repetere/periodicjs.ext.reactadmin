@@ -38,7 +38,11 @@
       "resources":{
         "healthcheckStatus":"/r-admin/load/healthcheck/:id/:name"
       },
-      "onFinish":"render"
+      "onFinish":"render",
+      "pageData":{
+        "title":"Healthcheck",
+        "navLabel":"Healthcheck"
+      }
     },
     "/r-admin/documentation":{
       "layout":{
@@ -85,7 +89,11 @@
       "resources":{
         "healthcheckStatus":"/r-admin/load/healthcheck"
       },
-      "onFinish":"render"
+      "onFinish":"render",
+      "pageData":{
+        "title":"Admin Documentation",
+        "navLabel":"Admin Documentation"
+      }
     },
       "/documentation":{
       "layout":{
@@ -132,7 +140,11 @@
       "resources":{
         "healthcheckStatus":"/r-admin/load/healthcheck"
       },
-      "onFinish":"render"
+      "onFinish":"render",
+      "pageData":{
+        "title":"Documentation",
+        "navLabel":"Documentation"
+      }
     }
   }
 }

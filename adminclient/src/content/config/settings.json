@@ -13,14 +13,22 @@
   "ui":{
     "initialization":{
       "show_header":false,
-      "show_footer":false
+      "show_footer":false,
+      "show_sidebar_overlay":true
     },
     "notifications":{
       "error_timeout":10000,
       "timed_timeout":10000
     },
     "fixedSidebar":true,
-    "sidebarBG":"#ffffff"
+    "sidebarBG":"#ffffff",
+    "header":{
+      "isBold":true,
+      "color":"isDark",
+      "buttonColor":"isWhite",
+      "useGlobalSearch":false,
+      "useHeaderLogout":false
+    }
   },
   "auth":{
     "logged_in_homepage":"/home",

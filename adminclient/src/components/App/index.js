@@ -40,6 +40,7 @@ const reduxActions = {
   isLoggedIn: () => store.getState().user.isLoggedIn,
   getState: () => store.getState(), //.dispatch(actions.user.getUserStatus()),
   getUserProfile: (jwt_token) => store.dispatch(actions.user.getUserProfile(jwt_token)),
+  setNavLabel: (label) => store.dispatch(actions.ui.setNavLabel(label)),
   saveUserProfile: (url, response, json) => store.dispatch(actions.user.saveUserProfile(url, response, json)),
   initializeAuthenticatedUser: (jwt_token, enforceMFA = true) => store.dispatch(actions.user.initializeAuthenticatedUser(jwt_token, enforceMFA)),
   loginUser: (formdata) => store.dispatch(actions.user.loginUser(formdata)),

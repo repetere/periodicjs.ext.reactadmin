@@ -1,76 +1,90 @@
 import React, { Component, } from 'react'; 
-import { Nav, NavGroup, NavItem, Button, Container, Input, } from 're-bulma'; // FormHorizontal, NavToggle, ControlLabel, Group,
+import { Nav, NavGroup, NavItem, Button, Container, Input, Hero, HeroHead, } from 're-bulma'; // FormHorizontal, NavToggle, ControlLabel, Group,
 import { Link, } from 'react-router';
+// import ResponsiveLink from '../ResponsiveLink';
 import 'font-awesome/css/font-awesome.css';
 import styles from '../../styles';
-//https://github.com/lolJS/react-animate.css/blob/master/src/app.js
+import capitalize from 'capitalize';
+import { getRenderedComponent, } from '../AppLayoutMap';
+
 class AppHeader extends Component {
   constructor(props /*, context*/) {
     super(props);
-    // console.log({ props, context });
     this.state = {
-      // page: props.page,
       ui: props.ui,
       user: props.user,
     };
-    // this.previousRoute = {};
+    this.getRenderedComponent = getRenderedComponent.bind(this);
   }
   componentWillReceiveProps(nextProps) {
     this.setState({
-      // page: nextProps.page,
       ui: nextProps.ui,
       user: nextProps.user,
     });
-    // console.log('AppHeader componentWillReceiveProps nextProps', nextProps);
   }
   render() {
-    // function handleClick(e) {
-    //   e.preventDefault();
-    //   console.log('The link was clicked.');
-    // }
+    let buttonColor = this.props.settings.ui.header.buttonColor;
+    let globalSearch = (this.props.settings.ui.header.useGlobalSearch) ? (
+      <NavGroup align="center" style={{ flex:3, }}>
+        <NavItem  style={styles.fullWidth}>
+          <Input type="text" placeholder="Search" isExpanded style={styles.fullWidth}/>
+        </NavItem>
+      </NavGroup>) : null;
+    let navLabelTitle = (!this.props.settings.ui.header.useGlobalSearch && this.props.ui.nav_label) ? (
+      <NavItem  style={Object.assign({
+        justifyContent: "flex-start",
+      },styles.fullWidth)}>
+        <span style={{fontSize:"24px"}}>{this.props.ui.nav_label}</span>
+      </NavItem>) : null;
     return (
-      <Nav style={Object.assign(styles.fixedTop, styles.navContainer)}
-        className={(this.props.settings.ui.initialization.show_header || this.props.user.isLoggedIn) ? 'animated fadeInDown Header-Speed' : 'animated slideOutDown Header-Speed'}>
-        <Container>
-          <NavGroup align="left">
-            <NavItem>
-              <Button onClick={this.props.toggleUISidebar} buttonStyle="isOutlined" color="isWhite" icon="fa fa-bars" style={styles.iconButton} /> 
-            </NavItem>
-            <NavItem> 
-              <Link to="/home"  style={styles.noUnderline}>
-                <Button style={{ border: 'none', }} color="isWhite" buttonStyle="isOutlined">Admin</Button> 
-              </Link>  
-            </NavItem>
-          </NavGroup>
-          <NavGroup align="center" style={{ flex:3, }}>
-            <NavItem  style={styles.fullWidth}>
-              <Input type="text" placeholder="Search" isExpanded style={styles.fullWidth}/>
-            </NavItem>
-          </NavGroup>
-          <NavGroup align="right" isMenu>
-            {(this.state.user.isLoggedIn) ?
-              (<NavItem>
-                <Link to="/documentation" style={styles.noUnderline}>
-                  <Button buttonStyle="isOutlined" color="isWhite" style={styles.noMarginLeftRight} icon="fa fa-user">
-                    {this.state.user.email}
-                  </Button>
-                </Link>
-              </NavItem>) : null}
-            {(this.state.user.isLoggedIn) ? 
-              (<NavItem>
-                <Button buttonStyle="isOutlined" onClick={this.props.logoutUser} color="isWhite" icon="fa fa-sign-out"  style={Object.assign({paddingRight:0}, styles.noMarginLeftRight)} />
-              </NavItem>)
-              :
-                (<NavItem>
-                  <Link to="/login"  style={styles.noUnderline}>
-                  <Button buttonStyle="isOutlined" color="isWhite" style={Object.assign({}, styles.noMarginLeftRight)} icon="fa fa-sign-in" />
+      <Hero color={this.props.settings.ui.header.color} isBold={this.props.settings.ui.header.isBold} style={Object.assign(styles.fixedTop, styles.navContainer)}
+      className={(this.props.settings.ui.initialization.show_header || this.props.user.isLoggedIn) ? 'animated fadeInDown Header-Speed' : 'animated slideOutDown Header-Speed'}>
+        <HeroHead>
+          <Container>
+            <Nav style={{boxShadow:'none'}}>
+              <NavGroup align="left">
+                <NavItem>
+                  <Button onClick={this.props.toggleUISidebar} buttonStyle="isOutlined" color={buttonColor} icon="fa fa-bars" style={styles.iconButton} /> 
+                </NavItem>
+                {navLabelTitle}
+              </NavGroup>
+              {globalSearch}
+              <NavGroup align="right" isMenu>
+                <NavItem>
+                  <Link to="/account/profile" style={Object.assign({fontSize:'20px'},styles.noUnderline)}>
+                    {`${capitalize(this.state.user.firstname)} ${capitalize(this.state.user.lastname)}`}
                   </Link>
-                </NavItem>)
-             } 
-            
-          </NavGroup>
-        </Container>
-      </Nav>
+                </NavItem> 
+                <NavItem>
+                  {
+                    this.getRenderedComponent({
+                    component: 'ResponsiveLink',
+                    props: {
+                      location: "/account/profile",
+                      style: {
+                        width: '48px',
+                        height: '48px',
+                        display:'block',
+                        // backgroundColor: 'red',
+                        borderRadius: '24px',
+                        backgroundSize: 'cover',
+                        backgroundRepeat:'no-repeat',
+                        backgroundImage:'url('+this.props.user.profile_image_preview+')',
+                      }
+                    }
+                  })} 
+                </NavItem>
+                {(this.state.user.isLoggedIn && this.props.settings.ui.header.useHeaderLogout) ? 
+                  (<NavItem>
+                    <Button buttonStyle="isOutlined" onClick={this.props.logoutUser} color={buttonColor} icon="fa fa-sign-out"  style={Object.assign({paddingRight:0}, styles.noMarginLeftRight)} />
+                  </NavItem>)
+                  : null
+                } 
+              </NavGroup>
+            </Nav>
+          </Container>
+        </HeroHead>
+      </Hero>
     );
   }
 }
