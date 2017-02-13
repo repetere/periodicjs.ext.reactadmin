@@ -56,7 +56,7 @@ export const setParameters = function (options = {}) {
 	let compiled = ROUTE_MAP.get(options.route).re.exec(options.location);
 	compiled = compiled.slice(1);
 	for (let i = 0; i < params.length; i++) {
-		options.resource = options.resource.replace(new RegExp(`\:${ params[i] }`), compiled[i]);
+		options.resource = options.resource.replace(new RegExp(`:${ params[i] }`), compiled[i]);
 	}
 	if (options.query && typeof options.query === 'object') options.resource += `?${ querystring.stringify(options.query) }`;
 	else if (typeof options.query === 'string') options.resource += `${ /^\?/.test(options.query) ? '' : '?' }${ options.query }`;

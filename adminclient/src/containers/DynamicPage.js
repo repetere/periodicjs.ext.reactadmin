@@ -52,7 +52,7 @@ class DynamicPage extends Component {
   fetchDynamicPageContent (pathname, hasParams) {
     let layout = Object.assign({}, AppManifest.containers[pathname].layout);
     if (AppManifest.containers[pathname].resources && typeof AppManifest.containers[pathname].resources === 'object') {
-      let resources = AppManifest.containers[pathname].resources
+      let resources = AppManifest.containers[pathname].resources;
       if (hasParams) {
         let currentPathname = (window.location.pathname) ? window.location.pathname : this.props.location.pathname;
         resources = Object.keys(resources).reduce((result, key) => {
@@ -60,7 +60,7 @@ class DynamicPage extends Component {
             route: pathname,
             location: currentPathname,
             query: (/\?[^\s]+$/.test(currentPathname)) ? currentPathname.replace(/\?([^\s]+)$/g, '$1') : undefined,
-            resource: resources[key]
+            resource: resources[key],
           });
           result[key] = updatedPath;
           return result;
@@ -73,7 +73,7 @@ class DynamicPage extends Component {
       if(AppManifest.containers[pathname].pageData && AppManifest.containers[pathname].pageData.navLabel){
         this.props.setNavLabel(AppManifest.containers[pathname].pageData.navLabel);
       } else{
-        this.props.setNavLabel("");
+        this.props.setNavLabel('');
       }
       return utilities.fetchPaths(this.props.getState().settings.basename, resources)
         .then(resources => {
@@ -112,8 +112,8 @@ class DynamicPage extends Component {
       custom404Error = (typeof componentData.status === 'undefined' || componentData.status === 'undefined' || componentData.status === 'uninitialized') ? false : this.getRenderedComponent(componentData.layout);
     }
     this.uiLayout = (custom404Error) ? custom404Error : <AppError404/>;
-    window.document.title="Page Not Found";
-    this.props.setNavLabel("Error");
+    window.document.title='Page Not Found';
+    this.props.setNavLabel('Error');
 
     this.setState({ ui_is_loaded: true, });
   }
@@ -127,7 +127,7 @@ class DynamicPage extends Component {
       return this.fetchDynamicPageContent(adminPathname);
     } else {
       let dynamicPathname = utilities.findMatchingRoute(state.manifest.containers, pathname.replace(state.settings.auth.admin_path, ''));
-      console.log({ dynamicPathname });
+      // console.log({ dynamicPathname, });
       if (!dynamicPathname) return this.fetchDynamicErrorContent(pathname);
       return this.fetchDynamicPageContent(dynamicPathname, true);
     }
