@@ -26,9 +26,11 @@ class ResponsiveBars extends Component {
           return (
             <Column size="is3">
               <Box {...this.state.boxProps}>
-                <img src={feature.image} />
-                {feature.title}
-              </Box>
+                <span onClick={() => {this.props.reduxRouter.push(feature.location)}} >
+                    <img src={feature.image} />
+                    {feature.title}
+                  </span>
+                </Box>
             </Column>
           )
         })}
