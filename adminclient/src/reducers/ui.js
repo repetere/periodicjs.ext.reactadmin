@@ -83,7 +83,10 @@ const uiReducer = (state, action) => {
       return Object.assign({}, state, { components, error_ui_is_loaded: true });
     }
   case constants.ui.SET_SELECTED_NAV_STATE:
-    return Object.assign({}, state, { selected_nav: action.payload.id });
+    return Object.assign({}, state, { 
+      // sidebar_is_open: false,
+      selected_nav: action.payload.id
+     });
   default:
     return Object.assign(initialState, state);
   }

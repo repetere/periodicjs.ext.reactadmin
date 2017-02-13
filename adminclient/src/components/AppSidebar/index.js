@@ -5,10 +5,10 @@ import styles from '../../styles';
 // import { Menu, MenuLabel, MenuLink, MenuList, } from 're-bulma'; //Icon
 
 class AppSidebar extends Component {
-  // constructor(props) {
-  //   super(props);
-  //   this.state = props;
-  // }
+  constructor(props) {
+    super(props);
+    this.getRenderedComponent = getRenderedComponent.bind(this);
+  }
   // componentWillReceiveProps (props) {
   //   this.setState(props);
   // }
@@ -26,6 +26,12 @@ class AppSidebar extends Component {
       navigationContainer = this.props.settings.user.navigation.container || {};
     }
     return (
+      // {(this.props.ui.components.footer && typeof this.props.ui.components.footer==='object' && this.props.ui.components.footer.layout) 
+      //   ? this.getRenderedComponent(this.props.ui.components.footer.layout)
+      //   : ()
+      // }
+
+
       <div style={Object.assign({ padding: '1rem', borderRight:'1px solid black', }, styles.fullHeight, styles.mainContainer, styles.sidebarContainer, navigationContainer.style)}
         className={(this.props.ui.sidebar_is_open) ? 'animated fadeInLeft Nav-Sidebar-Speed' : 'animated slideOutLeft Nav-Sidebar-Speed'}>
         <div style={Object.assign({
@@ -33,7 +39,7 @@ class AppSidebar extends Component {
           height: '100%',
           overflowY:'auto'
         }, navigationWrapper.style)}>
-          {getRenderedComponent.call(this, (navigationLayout && typeof navigationLayout === 'object') ? navigationLayout : {})}
+          {this.getRenderedComponent((navigationLayout && typeof navigationLayout === 'object') ? navigationLayout : {})}
         </div>
       </div>
     );

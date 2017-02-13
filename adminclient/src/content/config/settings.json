@@ -27,12 +27,21 @@
       "color":"isDark",
       "buttonColor":"isWhite",
       "useGlobalSearch":false,
-      "useHeaderLogout":false
+      "useHeaderLogout":false,
+      "customButton":false,
+      "navLabelStyle":{},
+      "containerStyle":{},
+      "userNameStyle":{}
+    },
+    "footer":{
+      "navStyle":{}
+    },
+    "sidebar":{
+      "containerStyle":{}
     }
   },
   "auth":{
-    "logged_in_homepage":"/home",
-    "admin_path":"/p-admin"
+    "logged_in_homepage":"/home"
   },
   "login":{
     "url":"https://pas-dev.promisefinancial.net:8784/api/jwt/token",

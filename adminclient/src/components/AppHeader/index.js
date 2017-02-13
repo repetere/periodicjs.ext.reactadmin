@@ -34,17 +34,19 @@ class AppHeader extends Component {
       <NavItem style={Object.assign({
         justifyContent: "flex-start",
       },styles.fullWidth)}>
-        <span style={{fontSize:"24px"}}>{this.props.ui.nav_label}</span>
+        <span style={Object.assign({fontSize:"20px"},this.props.settings.ui.header.navLabelStyle)}>{this.props.ui.nav_label}</span>
       </NavItem>) : null;
     return (
-      <Hero color={this.props.settings.ui.header.color} isBold={this.props.settings.ui.header.isBold} style={Object.assign(styles.fixedTop, styles.navContainer)}
+      <Hero color={this.props.settings.ui.header.color} isBold={this.props.settings.ui.header.isBold} style={Object.assign(styles.fixedTop, styles.navContainer,this.props.settings.ui.header.containerStyle)}
       className={(this.props.settings.ui.initialization.show_header || this.props.user.isLoggedIn) ? 'animated fadeInDown Header-Speed' : 'animated slideOutDown Header-Speed'}>
-        <HeroHead>
+        {(this.props.ui.components.header && typeof this.props.ui.components.header==='object' && this.props.ui.components.header.layout) 
+        ? this.getRenderedComponent(this.props.ui.components.header.layout)
+        : (<HeroHead>
           <Container>
             <Nav style={{boxShadow:'none'}}>
               <NavGroup align="left">
                 <NavItem>
-                  {(this.props.settings.ui.header.customButton) 
+                  {(this.props.settings.ui.header.customButton && typeof this.props.settings.ui.header.customButton==='object') 
                     ? this.getRenderedComponent(this.props.settings.ui.header.customButton) 
                     : (<Button onClick={this.props.toggleUISidebar} buttonStyle="isOutlined" color={buttonColor} icon="fa fa-bars" style={styles.iconButton} /> )}
                 </NavItem>
@@ -53,7 +55,7 @@ class AppHeader extends Component {
               {globalSearch}
               <NavGroup align="right" isMenu>
                 <NavItem>
-                  <Link to="/account/profile" style={Object.assign({fontSize:'20px'},styles.noUnderline)}>
+                  <Link to="/account/profile" style={Object.assign({fontSize:'20px'},styles.noUnderline,this.props.settings.ui.header.userNameStyle)}>
                     {`${capitalize(this.state.user.firstname)} ${capitalize(this.state.user.lastname)}`}
                   </Link>
                 </NavItem> 
@@ -85,7 +87,8 @@ class AppHeader extends Component {
               </NavGroup>
             </Nav>
           </Container>
-        </HeroHead>
+        </HeroHead>)
+        }
       </Hero>
     );
   }

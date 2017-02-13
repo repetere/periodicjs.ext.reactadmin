@@ -528,6 +528,8 @@ var loadNavigation = function (req, res, next) {
           navigation.layout.children = navigation.layout.children.concat(CORE_DATA_CONFIGURATIONS.navigation.layout.children || []);
         }
       }
+      navigation.wrapper = extsettings.navigationLayout.wrapper;
+      navigation.container = extsettings.navigationLayout.container;
       navigation.layout = recursivePrivilegesFilter(Object.keys(req.session.userprivilegesdata), [navigation.layout])[0];
       if (res && typeof res.send === 'function') {
         res.status(200).send({

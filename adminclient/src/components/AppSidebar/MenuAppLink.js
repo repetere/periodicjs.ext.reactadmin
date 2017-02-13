@@ -15,6 +15,7 @@ class MenuAppLink extends Component {
 					}
 					this.props.setActiveNavLink.bind(this, this.props.id || this.props.href
 					);
+					this.props.toggleUISidebar();
 				}}>
 	        <MenuLink isActive={this.state.isActive}>{ this.props.label }</MenuLink>
 	      </Link>  
