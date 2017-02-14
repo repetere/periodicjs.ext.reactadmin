@@ -2,10 +2,21 @@ import React from 'react';
 import utilities from './index';
 import AppError404 from '../components/AppError404';
 
+/**
+ * Because these dynamic data fetching functions are used in multiple locations this function standardizes access to the getState function
+ * @return {Function} Returns the getState function that is either on this.props or on this directly
+ */
 var _getState = function () {
 	return (this.props && typeof this.props.getState === 'function') ? this.props.getState : this.getState;
 };
 
+/**
+ * Sets parameterized values derived from window location to their respective resource path counterparts
+ * @param  {string} pathname  The dynamic path that parameters should be set in
+ * @param  {Object} resources Contains resource paths
+ * @param  {string} [current]   The actual current window path. If this argument is not passed the window path will be pulled from the window object or from this.props
+ * @return {Object}           Returns the resource object with populated dynamic routes
+ */
 var _handleDynamicParams = function (pathname, resources, current) {
 	let currentPathname;
 	if (typeof current === 'string') currentPathname = current;
@@ -22,6 +33,14 @@ var _handleDynamicParams = function (pathname, resources, current) {
   }, {});
 };
 
+/**
+ * Handles making fetch requests for resource paths
+ * @param  {Object} layout    Configuration for dynamic page, component or modal
+ * @param  {Object} [resources={}] Dynamically loaded resources stored as resource name and resource path key value pairs
+ * @param  {Object} [options={}]   Configurable options
+ * @param {Function} [options.onSuccess] Optional success function
+ * @param {Function} [options.onError] Optional error function
+ */
 var _handleFetchPaths = function (layout, resources = {}, options = {}) {
 	let state = _getState.call(this)();
 	return utilities.fetchPaths(state.settings.basename, resources)
@@ -36,6 +55,9 @@ var _handleFetchPaths = function (layout, resources = {}, options = {}) {
 		});
 };
 
+/**
+ * Sets a configurable 404 error component or sets a default 404 component
+ */
 export const fetchErrorContent = function _fetchErrorContent () {
 	let getState = _getState.call(this);
 	let state = getState();
@@ -63,6 +85,11 @@ export const fetchErrorContent = function _fetchErrorContent () {
   this.setState({ ui_is_loaded: true, });
 };
 
+/**
+ * Gets a dynamic page element and handles resolving async props if resources exist
+ * @param  {string}  pathname  Dynamic page manifest pathname
+ * @param  {Boolean} hasParams If true will attempt to assign dynamic params to resource path
+ */
 export const fetchSuccessContent = function _fetchSuccessContent (pathname, hasParams) {
 	try {
 		let getState = _getState.call(this);
@@ -88,6 +115,12 @@ export const fetchSuccessContent = function _fetchSuccessContent (pathname, hasP
 	}
 };
 
+/**
+ * Gets dynamic content for a given page, component, modal
+ * @param  {string} [_pathname] The window path that should content is being fetched for. If the argument is not passed it will defaul to window.location.pathname
+ * @param  {Function} [onSuccess] Optional success function override. If this isnt passed resource paths will be fetched for async props
+ * @param  {Function} onError   Optional error function override. If this isnt passed 404 error page will be rendered
+ */
 export const fetchDynamicContent = function _fetchDynamicContent (_pathname, onSuccess, onError) {
 	let pathname;
 	let getState = _getState.call(this);
