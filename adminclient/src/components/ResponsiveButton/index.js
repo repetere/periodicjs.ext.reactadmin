@@ -23,11 +23,11 @@ class ResponsiveButton extends Component {
     let onclickFunction = (data) => {
       console.log('ResponsiveButton', { data, });
     };
-    if (typeof this.props.onClick === 'string' && this.props.onClick.indexOf('func:this.props') !== -1) { 
+    if (typeof this.props.onClick === 'string' && this.props.onClick.indexOf('func:this.props.reduxRouter') !== -1) { 
+      onclickFunction = this.props.reduxRouter[ this.props.onClick.replace('func:this.props.reduxRouter.', '') ];
+    } else if (typeof this.props.onClick === 'string' && this.props.onClick.indexOf('func:this.props') !== -1) { 
       onclickFunction = this.props[ this.props.onClick.replace('func:this.props.', '') ];
-    } else if (typeof this.props.onClick === 'string' && this.props.onClick.indexOf('func:this.props.reduxRouter') !== -1) { 
-      onclickFunction = this.props.reduxRouter[ this.props.onClick.replace('func:this.props.reduxRouter', '') ];
-    }
+    } 
     if (this.props.buttonProps) {
       return <Button
         {...this.props.buttonProps}
