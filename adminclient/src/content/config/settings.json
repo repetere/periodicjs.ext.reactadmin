@@ -37,7 +37,8 @@
       "navStyle":{}
     },
     "sidebar":{
-      "containerStyle":{}
+      "containerStyle":{},
+      "use_floating_nav":true
     }
   },
   "auth":{

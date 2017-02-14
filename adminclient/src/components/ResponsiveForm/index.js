@@ -117,7 +117,6 @@ class ResponsiveForm extends Component{
     }
   }
   render() {
-    // console.log('Form this.props', this.props);
     let keyValue = 0;
     let formGroupData = this.props.formgroups.map((formgroup, i) => {
       let gridProps = Object.assign({
@@ -181,24 +180,26 @@ class ResponsiveForm extends Component{
         {formgroup.formElements.map(getFormElements)}
       </Columns>);
     });
-    let footerGroupData = this.props.footergroups.map((formgroup, i) => { 
-      let gridProps = Object.assign({
-        isMultiline: true,
-        key: i,
-      }, formgroup.gridProps);
-      let getFormElements = (formElement, j) => {
-        if (formElement.type === 'submit') {
-          return this.getCardFooterItem({ formElement,  i:j, formgroup, });
-        } else {
-          return <CardFooterItem>
-            <div key={j} />
-          </CardFooterItem>;
-        }
-      };      
-      return (<CardFooter {...gridProps}>
-        {formgroup.formElements.map(getFormElements)}
-      </CardFooter>);
-    });
+    let footerGroupData = (this.props.footergroups)
+      ? this.props.footergroups.map((formgroup, i) => { 
+        let gridProps = Object.assign({
+          isMultiline: true,
+          key: i,
+        }, formgroup.gridProps);
+        let getFormElements = (formElement, j) => {
+          if (formElement.type === 'submit') {
+            return this.getCardFooterItem({ formElement,  i:j, formgroup, });
+          } else {
+            return <CardFooterItem>
+              <div key={j} />
+            </CardFooterItem>;
+          }
+        };      
+        return (<CardFooter {...gridProps}>
+          {formgroup.formElements.map(getFormElements)}
+        </CardFooter>);
+      })
+      : [];
 
     if (this.props.cardForm) {
       return (<Card {...this.props.cardFormProps}>

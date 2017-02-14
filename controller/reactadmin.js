@@ -381,11 +381,13 @@ var loadManifest = function (req, res, next) {
   return pullConfigurationSettings((req.query && req.query.refresh) ? 'manifest' : false)
     .then(() => {
       let manifest = Object.assign({}, manifestSettings);
-      if (req.query && req.query.refresh_log && req.query.refresh_log !== 'false') logger.silly('reloaded manifest', { manifest }); 
+      if (req.query && req.query.refresh_log && req.query.refresh_log !== 'false') {
+        logger.silly('reloaded manifest', { manifest, });
+      }
       if (extsettings && extsettings.includeCoreData && extsettings.includeCoreData.manifest) {
         setCoreDataConfigurations();
         if (CORE_DATA_CONFIGURATIONS.manifest) manifest.containers = Object.assign({}, CORE_DATA_CONFIGURATIONS.manifest, manifest.containers);
-        logger.silly(manifest.containers);
+        // logger.silly(manifest.containers);
       }
       manifest.containers = recursivePrivilegesFilter(Object.keys(req.session.userprivilegesdata), manifest.containers, true);
       if (res && typeof res.send === 'function') {
@@ -519,7 +521,9 @@ var loadNavigation = function (req, res, next) {
   return pullConfigurationSettings((req.query && req.query.refresh) ? 'navigation' : false)
     .then(() => {
       let navigation = Object.assign({}, navigationSettings);
-      if (req.query && req.query.refresh_log && req.query.refresh_log !== 'false') logger.silly('reloaded navigation', { navigation });
+      if (req.query && req.query.refresh_log && req.query.refresh_log !== 'false') {
+        logger.silly('reloaded navigation', { navigation, });
+      }
       if (extsettings && extsettings.includeCoreData && extsettings.includeCoreData.navigation) {
         setCoreDataConfigurations();
         if (CORE_DATA_CONFIGURATIONS.navigation && CORE_DATA_CONFIGURATIONS.navigation.layout) {

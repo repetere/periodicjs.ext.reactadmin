@@ -7,6 +7,7 @@ import constants from '../../constants';
 import AppHeader from '../AppHeader';
 import AppFooter from '../AppFooter';
 import AppSidebar from '../AppSidebar';
+import FloatingNav from '../AppSidebar/FloatingNav';
 import AppSectionLoading from '../AppSectionLoading';
 import AppOverlay from '../AppOverlay';
 
@@ -117,11 +118,13 @@ class MainApp extends Component{
   render() {
     // console.log('this.state', this.state);
     let fixedSider = (this.state.settings.ui.fixedSidebar) ? { position: 'fixed', zIndex:1000, } : {};
-    let sidebarColumn = (this.state.ui.sidebar_is_open)
-      ? (<Column size="isNarrow" style={Object.assign({}, fixedSider, styles.fullMinHeight, styles.fullHeight)}>
-        <AppSidebar {...this.state} />
-      </Column>)
-      : null;
+    let sidebarColumn = (this.state.settings.ui.sidebar.use_floating_nav && this.state.ui.sidebar_is_open)
+      ? (<FloatingNav {...this.state} />)
+      : (this.state.ui.sidebar_is_open)
+        ? (<Column size="isNarrow" style={Object.assign({}, fixedSider, styles.fullMinHeight, styles.fullHeight)}>
+          <AppSidebar {...this.state} />
+        </Column>)
+        : null;
     
     let headerNav = (this.state.settings.ui.initialization.show_header || this.state.user.isLoggedIn)
       ? (<AppHeader {...this.state} />)
@@ -142,7 +145,8 @@ class MainApp extends Component{
           <main style={styles.fullHeight}>
             {/*DEBUG HERE */}
             <Columns style={Object.assign({}, styles.fullMinHeight, styles.fullHeight)}>
-              {sidebarColumn}{overlay}
+              {sidebarColumn}
+              {overlay}
               <Column style={styles.fullMinHeight}>
                 {this.props.children}
               </Column>
