@@ -70,27 +70,6 @@ const ui = {
     //add ?refresh=true to below component loading routes to individually reload configurations for a given component
 
     switch (type) {
-<<<<<<< HEAD
-      case constants.ui.LOGIN_COMPONENT:
-        component = constants.ui.LOGIN_COMPONENT;
-        if (!COMPONENTS[ component ]) COMPONENTS[ component ] = function (basename) {
-          return fetchComponentUtil(`${basename}/load/components/login?refresh=true`);
-        };
-        break;
-      case constants.ui.MAIN_COMPONENT:
-        component = constants.ui.MAIN_COMPONENT;
-        if (!COMPONENTS[ component ]) COMPONENTS[ component ] = function (basename) {
-          return fetchComponentUtil(`${basename}/load/components/main?refresh=true`);
-        };
-        break;
-      case constants.ui.ERROR_COMPONENTS:
-        component = constants.ui.ERROR_COMPONENTS;
-        if (!COMPONENTS[ component ]) COMPONENTS[ component ] = function (basename) {
-          return fetchComponentUtil(`${basename}/load/components/error?refresh=true`);
-        };
-        break;
-      default:
-=======
     case constants.ui.LOGIN_COMPONENT:
       component = constants.ui.LOGIN_COMPONENT;
       if (!COMPONENTS[ component ]) COMPONENTS[ component ] = function (basename) {
@@ -110,7 +89,6 @@ const ui = {
       };
       break;
     default:
->>>>>>> 333f8ea91ae71b6e21ca857fdb5c1b67e911e59b
       component = false;
     }
     return function (dispatch, getState) {
