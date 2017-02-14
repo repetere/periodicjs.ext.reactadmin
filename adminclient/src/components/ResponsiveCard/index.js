@@ -32,6 +32,7 @@ class ResponsiveCard extends Component {
       display: props.display,
       icon: props.icon,
       cardTitle: props.cardTitle,
+      cardProps: props.cardProps,
     };
   }
 

@@ -2,12 +2,13 @@ import React, { createElement, } from 'react';
 import * as rebulma from 're-bulma';
 import * as recharts from 'recharts';
 import { Link, } from 'react-router';
-import ResponsiveForm from '../ResponsiveForm'; 
-import RawOutput from '../RawOutput'; 
-import MenuAppLink from '../AppSidebar/MenuAppLink'; 
-import SubMenuLinks from '../AppSidebar/SubMenuLinks'; 
+import ResponsiveForm from '../ResponsiveForm';
+import RawOutput from '../RawOutput';
+import MenuAppLink from '../AppSidebar/MenuAppLink';
+import SubMenuLinks from '../AppSidebar/SubMenuLinks';
 import ResponsiveTable from '../ResponsiveTable';
 import ResponsiveCard from '../ResponsiveCard';
+import ResponsiveTabs from '../ResponsiveTabs';
 import ResponsiveBar from '../ResponsiveBar';
 import ResponsiveLink from '../ResponsiveLink';
 import ResponsiveButton from '../ResponsiveButton';
@@ -17,7 +18,7 @@ import utilities from '../../util';
 let renderIndex = 0;
 
 export let AppLayoutMap = Object.assign({}, {
-  recharts, ResponsiveForm, RawOutput, FormItem, MenuAppLink, SubMenuLinks, ResponsiveTable, ResponsiveCard, ResponsiveBar,
+  recharts, ResponsiveForm, RawOutput, FormItem, MenuAppLink, SubMenuLinks, ResponsiveTable, ResponsiveCard, ResponsiveBar, ResponsiveTabs,
 }, React.DOM, rebulma, { Link, });
 
 // console.log({ AppLayoutMap });
@@ -29,6 +30,7 @@ export function getRenderedComponent(componentObject, resources) {
   AppLayoutMap.ResponsiveButton = ResponsiveButton.bind(this);
   // console.log('this.props', this);
   renderIndex++;
+
   try {
     let asyncprops = (componentObject.asyncprops && typeof componentObject.asyncprops === 'object') ? utilities.traverse(componentObject.asyncprops, resources) : {};
     let windowprops = (componentObject.windowprops && typeof componentObject.windowprops === 'object') ? utilities.traverse(componentObject.windowprops, window) : {};
