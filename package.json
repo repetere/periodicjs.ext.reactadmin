@@ -97,7 +97,9 @@
     "url": "git://github.com/typesettin/periodicjs.ext.reactadmin.git"
   },
   "scripts": {
+    "postinstall": "node install.js",
+    "postuninstall": "node uninstall.js",
     "test": "mocha"
   },
-  "version": "0.3.4"
+  "version": "0.3.6"
 }
