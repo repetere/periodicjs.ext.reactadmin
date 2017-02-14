@@ -24,7 +24,7 @@ const manifest = {
     return (dispatch, getState) => {
       dispatch(this.manifestRequest());
       let state = getState();
-      let basename = state.settings.basename;
+      let basename = (typeof state.settings.adminPath ==='string' && state.settings.adminPath !=='/') ? state.settings.basename+state.settings.adminPath : state.settings.basename;
       let headers = state.settings.userprofile.options.headers;
       delete headers.clientid_default;
       options.headers = Object.assign({}, options.headers, headers);
@@ -32,9 +32,9 @@ const manifest = {
       return utilities.fetchComponent(`${ basename }/load/manifest?refresh=true`, options)()
         .then(response => {
           dispatch(this.receivedManifestData(response.data.settings));
-        }, e => dispatch(this.failedManifestRetrival(e)))
+        }, e => dispatch(this.failedManifestRetrival(e)));
     };
-  }
+  },
 };
 
 export default manifest;

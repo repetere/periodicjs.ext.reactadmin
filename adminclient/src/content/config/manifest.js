@@ -17,7 +17,7 @@ module.exports = {
               },
               {
                 component: 'Title',
-                children: 'Documentation Page',
+                children: 'Documentation Page Healthcheck',
               }]
           }]
         }]
@@ -51,7 +51,7 @@ module.exports = {
                 component: 'Title',
                 // props: {
                 // },
-                children: 'Documentation Page',
+                children: 'Documentation Page Default',
               }]
           }]
         }]

@@ -33,7 +33,7 @@ const pages = {
   initialAppLoad(location) {
     return {
       type: constants.pages.INITIAL_APP_LOADED,
-      payload: { location },
+      payload: { location, },
     };
   },
   /**

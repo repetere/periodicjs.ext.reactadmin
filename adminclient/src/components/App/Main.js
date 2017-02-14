@@ -7,6 +7,7 @@ import constants from '../../constants';
 import AppHeader from '../AppHeader';
 import AppFooter from '../AppFooter';
 import AppSidebar from '../AppSidebar';
+import FloatingNav from '../AppSidebar/FloatingNav';
 import AppSectionLoading from '../AppSectionLoading';
 import AppOverlay from '../AppOverlay';
 
@@ -46,10 +47,12 @@ class MainApp extends Component{
       AsyncStorage.getItem(constants.jwt_token.PROFILE_JSON),
       this.props.fetchMainComponent(),
       this.props.fetchErrorComponents(),
-      // AsyncStorage.getItem(constants.async_token.TABBAR_TOKEN),
+      AsyncStorage.getItem(constants.user.MFA_AUTHENTICATED)
+      //AsyncStorage.getItem(constants.async_token.TABBAR_TOKEN),
     ])
       .then((results) => {
         try {
+          if (results[results.length - 1] === 'true') this.props.authenticatedMFA();
           let jwt_token = results[ 0 ];
           let jwt_token_data = JSON.parse(results[ 1 ]);
           let jwt_user_profile = JSON.parse(results[ 2 ]);
@@ -75,7 +78,7 @@ class MainApp extends Component{
             } else {
               // console.log('saving logged in user', { json, });
               this.props.saveUserProfile(url, response, json);
-              this.props.initializeAuthenticatedUser(json.token);
+              this.props.initializeAuthenticatedUser(json.token, false);
               this.props.createNotification({ text: 'welcome back', timeout:4000, });
               // if (appTabs) {
               //   this.props.setTabExtensions(appTabs);
@@ -83,7 +86,7 @@ class MainApp extends Component{
             }
           } else if (jwt_token) {
             this.props.getUserProfile(jwt_token);
-            this.props.initializeAuthenticatedUser(jwt_token);
+            this.props.initializeAuthenticatedUser(jwt_token, false);
             this.props.createNotification({ text: 'welcome back', timeout:4000,  });
           }
           else {
@@ -114,11 +117,14 @@ class MainApp extends Component{
   // }
   render() {
     // console.log('this.state', this.state);
-    let sidebarColumn = (this.state.ui.sidebar_is_open)
-      ? (<Column size="isNarrow" style={Object.assign({}, styles.fullMinHeight, styles.fullHeight)}>
-        <AppSidebar {...this.state} />
-      </Column>)
-      : null;
+    let fixedSider = (this.state.settings.ui.fixedSidebar) ? { position: 'fixed', zIndex:1000, } : {};
+    let sidebarColumn = (this.state.settings.ui.sidebar.use_floating_nav && this.state.ui.sidebar_is_open)
+      ? (<FloatingNav {...this.state} />)
+      : (this.state.ui.sidebar_is_open)
+        ? (<Column size="isNarrow" style={Object.assign({}, fixedSider, styles.fullMinHeight, styles.fullHeight)}>
+          <AppSidebar {...this.state} />
+        </Column>)
+        : null;
     
     let headerNav = (this.state.settings.ui.initialization.show_header || this.state.user.isLoggedIn)
       ? (<AppHeader {...this.state} />)
@@ -126,7 +132,9 @@ class MainApp extends Component{
     let footerNav = (this.state.settings.ui.initialization.show_footer || this.state.user.isLoggedIn)
       ? (<AppFooter {...this.state} />)
     : null;  
-    // return (<AppSectionLoading/>);
+
+    let overlay = (this.props.ui.sidebar_is_open && this.state.settings.ui.initialization.show_sidebar_overlay)?(<div style={styles.sidebarOverlay} onClick={this.props.toggleUISidebar} ></div>):null;
+
     return (
       (this.state.ui.ui_is_loaded === false)
         ? (<AppSectionLoading><AppOverlay {...this.state}/></AppSectionLoading>)
@@ -138,6 +146,7 @@ class MainApp extends Component{
             {/*DEBUG HERE */}
             <Columns style={Object.assign({}, styles.fullMinHeight, styles.fullHeight)}>
               {sidebarColumn}
+              {overlay}
               <Column style={styles.fullMinHeight}>
                 {this.props.children}
               </Column>

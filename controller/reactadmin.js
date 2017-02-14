@@ -2,21 +2,27 @@
 const Promisie = require('promisie');
 const fs = Promisie.promisifyAll(require('fs-extra'));
 const path = require('path');
-const ERROR404 = require(path.join(__dirname, '../adminclient/src/content/config/dynamic404'));
+const mongoose = require('mongoose');
+const capitalize = require('capitalize');
+const ERROR404 = require(path.join(__dirname, '../adminclient/src/content/config/manifests/dynamic404'));
 const DEFAULT_COMPONENTS = {
   login: {
     status: 'uninitialized',
   },
   main: {
-    footer: { status: 'uninitialized' },
-    header: { status: 'uninitialized' }
+    footer: { status: 'uninitialized', },
+    header: { status: 'uninitialized', },
   },
   error: {
     '404': {
       status: 'initialized',
-      settings: ERROR404
-    }
-  }
+      settings: ERROR404,
+    },
+  },
+};
+const CORE_DATA_CONFIGURATIONS = {
+  manifest: null,
+  navigation: null
 };
 
 var components;
@@ -29,6 +35,43 @@ var manifestSettings;
 var navigationSettings;
 var periodic;
 var themeSettings;
+var extsettings;
+var utility;
+
+/**
+ * Loads core data model detail views as manifest and navigation configurations
+ */
+var setCoreDataConfigurations = function () {
+  if (!CORE_DATA_CONFIGURATIONS.manifest || !CORE_DATA_CONFIGURATIONS.navigation) {
+    if (CORE_DATA_CONFIGURATIONS.manifest === null) {
+      let generated = utility.generateDetailManifests(mongoose, {
+        prefix: (typeof periodic.app.locals.adminPath==='string' && periodic.app.locals.adminPath!=='/' && periodic.app.locals.adminPath) ? `${(periodic.app.locals.adminPath.charAt(0)==='/')?periodic.app.locals.adminPath.slice(1):periodic.app.locals.adminPath}/content`:'content'
+      });
+      CORE_DATA_CONFIGURATIONS.manifest = generated;
+    }
+    if (CORE_DATA_CONFIGURATIONS.navigation === null && CORE_DATA_CONFIGURATIONS.manifest) {
+      CORE_DATA_CONFIGURATIONS.navigation = Object.keys(CORE_DATA_CONFIGURATIONS.manifest).reduce((result, key) => {
+        result.layout = result.layout || {};
+        result.layout.children = result.layout.children || [{
+          component: 'MenuLabel',
+          children: 'Content'
+        }, {
+          component: 'MenuList',
+          children: []
+        }];
+        result.layout.children[1].children.push({
+          component: 'MenuAppLink',
+          props: {
+            href: key,
+            label: capitalize(path.basename(key)),
+            id: path.basename(key)
+          }
+        });
+        return result;
+      }, {});
+    }
+  }
+};
 
 /**
  * Determines if user privileges array contains privilege code(s) that exist in defined privileges for a view
@@ -74,6 +117,7 @@ var removeNullIndexes = function (data) {
 var readConfigurations = function (filePath) {
   filePath = path.join(__dirname, '../../../', filePath);
   let _import = function (_path) {
+    if (path.extname(_path) !== '.js' && path.extname(_path) !== '.json') return undefined;
     if (path.extname(_path) === '.js') return Promisie.resolve(require(_path));
     else return fs.readJsonAsync(_path);
   };
@@ -89,8 +133,7 @@ var readConfigurations = function (filePath) {
             });
           })
           .catch(e => Promisie.reject(e));
-      }
-      else return Promisie.reject(new TypeError('Configuration path is not a file or directory'));
+      } else return Promisie.reject(new TypeError('Configuration path is not a file or directory'));
     })
     .catch(e => Promisie.reject(e));
 };
@@ -108,12 +151,14 @@ var readAndStoreConfigurations = function (paths) {
   });
   return Promisie.settle(reads)
     .then(result => {
-      let { fulfilled } = result;
-      return fulfilled.reduce((result, data) => {
-        if (Array.isArray(data)) return result.concat(data.value);
-        result.push(data.value);
+      let { fulfilled, } = result;
+      fulfilled = fulfilled.map(data => data.value);
+      let flatten = function (result, data) {
+        if (Array.isArray(data)) return result.concat(data.reduce(flatten, []));
+        if (data) result.push(data);
         return result;
-      }, []);
+      };
+      return fulfilled.reduce(flatten, []);
     })
     .catch(e => Promisie.reject(e));
 };
@@ -183,9 +228,9 @@ var handleManifestCompilation = function (manifests) {
 var pullManifestSettings = function (configuration) {
   let extensions = configuration.extensions || [];
   let filePaths = extensions.reduce((result, config) => {
-    if (config.enabled && config.periodicConfig && config.periodicConfig.manifests) {
-      if (Array.isArray(config.periodicConfig.manifests)) return result.concat(config.periodicConfig.manifests);
-      result.push(config.periodicConfig.manifests);
+    if (config.enabled && config.periodicConfig && config.periodicConfig['periodicjs.ext.reactadmin'] && config.periodicConfig['periodicjs.ext.reactadmin'].manifests) {
+      if (Array.isArray(config.periodicConfig['periodicjs.ext.reactadmin'].manifests)) return result.concat(config.periodicConfig['periodicjs.ext.reactadmin'].manifests);
+      result.push(config.periodicConfig['periodicjs.ext.reactadmin'].manifests);
     }
     return result;
   }, []);
@@ -203,8 +248,8 @@ var handleNavigationCompilation = function (navigation) {
   return navigation.reduce((result, nav) => {
     result.wrapper = Object.assign(result.wrapper || {}, nav.wrapper);
     result.container = Object.assign(result.container || {}, nav.container);
-    result.layout = result.layout || { children: [] };
-    result.layout = Object.assign(result.layout, nav.layout, { children: result.layout.children.concat(nav.layout.children) });
+    result.layout = result.layout || { children: [], };
+    result.layout = Object.assign(result.layout, nav.layout, { children: result.layout.children.concat(nav.layout.children), });
     return result;
   }, {});
 };
@@ -218,7 +263,7 @@ var handleNavigationCompilation = function (navigation) {
 var pullNavigationSettings = function (configuration) {
   let extensions = configuration.extensions || [];
   let filePaths = extensions.reduce((result, config) => {
-    if (config.enabled && config.periodicConfig && config.periodicConfig.navigation) result.push(config.periodicConfig.navigation);
+    if (config.enabled && config.periodicConfig && config.periodicConfig['periodicjs.ext.reactadmin'] && config.periodicConfig['periodicjs.ext.reactadmin'].navigation) result.push(config.periodicConfig['periodicjs.ext.reactadmin'].navigation);
     return result;
   }, []);
   return readAndStoreConfigurations(filePaths || [])
@@ -243,33 +288,33 @@ var finalizeSettingsWithTheme = function (data) {
       result = result['periodicjs.ext.reactadmin'];
       return Promisie.parallel({
         manifests: readAndStoreConfigurations.bind(null, result.manifests || []),
-        navigation: readAndStoreConfigurations.bind(null, result.navigation || [])
+        navigation: readAndStoreConfigurations.bind(null, result.navigation || []),
       });
     })
     .then(result => {
-      let { manifests, navigation } = result;
+      let { manifests, navigation, } = result;
       manifests = handleManifestCompilation(manifests);
       manifests.containers = Object.assign({}, (data.default_manifests) ? data.default_manifests.containers : {}, (data.manifests) ? data.manifests.containers : {}, manifests.containers);
       navigation = handleNavigationCompilation(navigation);
       let navigationChildren = (data.default_navigation && data.default_navigation.layout && Array.isArray(data.default_navigation.layout.children)) ? data.default_navigation.layout.children : [];
       navigation.wrapper = Object.assign({}, (data.default_navigation) ? data.default_navigation.wrapper : {}, (data.navigation) ? data.navigation.wrapper : {}, navigation.wrapper);
       navigation.container = Object.assign({}, (data.default_navigation) ? data.default_navigation.container : {}, (data.navigation) ? data.navigation.container : {}, navigation.container);
-      navigation.layout = navigation.layout || Object.assign({ children: [] }, (data.default_navigation) ? data.default_navigation.layout : {}, (data.navigation) ? data.navigation.layout : {});
+      navigation.layout = navigation.layout || Object.assign({ children: [], }, (data.default_navigation) ? data.default_navigation.layout : {}, (data.navigation) ? data.navigation.layout : {});
       navigation.layout.children = (!navigation.layout.children.length) ? navigationChildren.concat((data.navigation && data.navigation.layout && Array.isArray(data.navigation.layout.children)) ? data.navigation.layout.children : []) : navigation.layout.children;
-      return { manifest: manifests, navigation };
+      return { manifest: manifests, navigation, };
     })
     .catch(e => {
       console.error(`There is not a reactadmin config for ${ appSettings.theme || appSettings.themename }`, e);
-      let manifest = { containers: Object.assign({}, (data.default_manifests) ? data.default_manifests.containers : {}, (data.manifests) ? data.manifests.containers : {}) };
+      let manifest = { containers: Object.assign({}, (data.default_manifests) ? data.default_manifests.containers : {}, (data.manifests) ? data.manifests.containers : {}), };
       let navigationChildren = (data.default_navigation && data.default_navigation.layout && Array.isArray(data.default_navigation.layout.children)) ? data.default_navigation.layout.children : [];
       let navigation = {
         wrapper: Object.assign({}, (data.default_navigation) ? data.default_navigation.wrapper : {}, (data.navigation) ? data.navigation.wrapper : {}),
         container: Object.assign({}, (data.default_navigation) ? data.default_navigation.container : {}, (data.navigation) ? data.navigation.container : {}),
         layout: Object.assign({}, (data.default_navigation) ? data.default_navigation.layout : {}, (data.navigation) ? data.navigation.layout : {}, { 
-          children: navigationChildren.concat((data.navigation && data.navigation.layout && Array.isArray(data.navigation.layout.children)) ? data.navigation.layout.children : []) 
-        })
+          children: navigationChildren.concat((data.navigation && data.navigation.layout && Array.isArray(data.navigation.layout.children)) ? data.navigation.layout.children : []), 
+        }),
       };
-      return { manifest, navigation };
+      return { manifest, navigation, };
     });
 };
 
@@ -295,22 +340,22 @@ var sanitizeConfigurations = function (data) {
  * @return {Object} Returns the fully aggregated configurations for manifests and and navigation
  */
 var pullConfigurationSettings = function (reload) {
-  if (manifestSettings && navigationSettings && !reload) return Promisie.resolve({ manifest: manifestSettings, navigation: navigationSettings });
+  if (manifestSettings && navigationSettings && !reload) return Promisie.resolve({ manifest: manifestSettings, navigation: navigationSettings, });
   return Promisie.all(fs.readJsonAsync(path.join(__dirname, '../../../content/config/extensions.json')), fs.readJsonAsync(path.join(__dirname, '../periodicjs.reactadmin.json')))
     .then(configurationData => {
-      let [configuration, adminExtSettings] = configurationData;
+      let [configuration, adminExtSettings,] = configurationData;
       adminExtSettings = adminExtSettings['periodicjs.ext.reactadmin'];
       let operations = {};
       if (reload === 'manifest' || reload === true || !manifestSettings) {
         operations = Object.assign(operations, { 
           manifests: pullManifestSettings.bind(null, configuration), 
-          default_manifests: readAndStoreConfigurations.bind(null, adminExtSettings.manifests || []) 
+          default_manifests: readAndStoreConfigurations.bind(null, adminExtSettings.manifests || []), 
         });
       }
       if (reload === 'navigation' || reload === true || !navigationSettings) {
         operations = Object.assign(operations, { 
           navigation: pullNavigationSettings.bind(null, configuration), 
-          default_navigation: readAndStoreConfigurations.bind(null, adminExtSettings.navigation || []) 
+          default_navigation: readAndStoreConfigurations.bind(null, adminExtSettings.navigation || []), 
         });
       }
       return Promisie.parallel(operations);
@@ -318,7 +363,7 @@ var pullConfigurationSettings = function (reload) {
     .then(sanitizeConfigurations)
     .then(finalizeSettingsWithTheme)
     .then(result => {
-      let { manifest, navigation } = result;
+      let { manifest, navigation, } = result;
       manifestSettings = (reload === 'manifest' || reload === true || !manifestSettings) ? manifest : manifestSettings;
       navigationSettings = (reload === 'navigation' || reload === true || !navigationSettings) ? navigation : navigationSettings;
       return result;
@@ -333,20 +378,29 @@ var pullConfigurationSettings = function (reload) {
  * @param {Function} next express next function
  */
 var loadManifest = function (req, res, next) {
-  pullConfigurationSettings((req.query && req.query.refresh) ? 'manifest' : false)
+  return pullConfigurationSettings((req.query && req.query.refresh) ? 'manifest' : false)
     .then(() => {
       let manifest = Object.assign({}, manifestSettings);
-      if (req.query && req.query.refresh_log && req.query.refresh_log !== 'false') logger.silly('reloaded manifest', { manifest }); 
+      if (req.query && req.query.refresh_log && req.query.refresh_log !== 'false') {
+        logger.silly('reloaded manifest', { manifest, });
+      }
+      if (extsettings && extsettings.includeCoreData && extsettings.includeCoreData.manifest) {
+        setCoreDataConfigurations();
+        if (CORE_DATA_CONFIGURATIONS.manifest) manifest.containers = Object.assign({}, CORE_DATA_CONFIGURATIONS.manifest, manifest.containers);
+        // logger.silly(manifest.containers);
+      }
       manifest.containers = recursivePrivilegesFilter(Object.keys(req.session.userprivilegesdata), manifest.containers, true);
-      res.status(200).send({
-        result: 'success',
-        status: 200,
-        data: {
-          settings: manifest,
-        },
-      });
+      if (res && typeof res.send === 'function') {
+        res.status(200).send({
+          result: 'success',
+          status: 200,
+          data: {
+            settings: manifest,
+          },
+        });
+      } else return manifest;
     })
-    .catch(next);
+    .catch(e => (typeof next === 'function') ? next(e) : Promisie.reject(e));
 };
 
 /**
@@ -359,15 +413,14 @@ var generateComponentOperations = function (data, defaults) {
   return Object.keys(data).reduce((result, key) => {
     if (typeof data[key] === 'string') {
       result[key] = function () {
-        return readAndStoreConfigurations([data[key]])
+        return readAndStoreConfigurations([data[key],])
           .then(result => {
             if (result.length) return result[0];
             return Promisie.reject('unable to read property resetting to default value');
           })
           .catch(() => (defaults && defaults[key]) ? defaults[key] : undefined);
       };
-    }
-    else if (typeof data[key] === 'object') result[key] = Promisie.parallel.bind(Promisie, generateComponentOperations(data[key], (defaults) ? defaults[key] : undefined));
+    }    else if (typeof data[key] === 'object') result[key] = Promisie.parallel.bind(Promisie, generateComponentOperations(data[key], (defaults) ? defaults[key] : undefined));
     else result[key] = () => Promisie.resolve(data[key]);
     return result;
   }, {});
@@ -381,8 +434,7 @@ var generateComponentOperations = function (data, defaults) {
 var assignComponentStatus = function (component) {
   if (component && component.layout) {
     if (typeof component.status === 'undefined' || (component.status !== 'undefined' && component.status !== 'uninitialized')) component.status = 'active';
-  }
-  else if (component && typeof component === 'object') {
+  }  else if (component && typeof component === 'object') {
     component = Object.keys(component).reduce((result, key) => {
       result[key] = assignComponentStatus(component[key]);
       return result;
@@ -397,20 +449,20 @@ var assignComponentStatus = function (component) {
  */
 var pullComponentSettings = function (refresh) {
   if (components && !refresh) return Promisie.resolve(components);
-  return readAndStoreConfigurations(['node_modules/periodicjs.ext.reactadmin/periodicjs.reactadmin.json', `content/themes/${ appSettings.theme || appSettings.themename }/periodicjs.reactadmin.json`])
+  return readAndStoreConfigurations(['node_modules/periodicjs.ext.reactadmin/periodicjs.reactadmin.json', `content/themes/${ appSettings.theme || appSettings.themename }/periodicjs.reactadmin.json`,])
     .then(results => {
       switch (Object.keys(results).length.toString()) {
-        case '1':
-          return Object.assign({}, (results[0]['periodicjs.ext.reactadmin']) ? results[0]['periodicjs.ext.reactadmin'].components : {});
-        case '2':
-          return Object.assign({}, (results[0]['periodicjs.ext.reactadmin']) ? results[0]['periodicjs.ext.reactadmin'].components : {}, (results[1]['periodicjs.ext.reactadmin']) ? results[1]['periodicjs.ext.reactadmin'].components : {});
-        default:
-          return {};
+      case '1':
+        return Object.assign({}, (results[0]['periodicjs.ext.reactadmin']) ? results[0]['periodicjs.ext.reactadmin'].components : {});
+      case '2':
+        return Object.assign({}, (results[0]['periodicjs.ext.reactadmin']) ? results[0]['periodicjs.ext.reactadmin'].components : {}, (results[1]['periodicjs.ext.reactadmin']) ? results[1]['periodicjs.ext.reactadmin'].components : {});
+      default:
+        return {};
       }
     })
     .then(results => {
       if (!components || typeof refresh !== 'string') return results;
-      else if (typeof refresh === 'string') return { [refresh]: results[refresh] };
+      else if (typeof refresh === 'string') return { [refresh]: results[refresh], };
     })
     .then(results => Promisie.parallel(generateComponentOperations(results, (!components) ? DEFAULT_COMPONENTS : components)))
     .then(results => {
@@ -430,7 +482,7 @@ var loadComponent = function (req, res, next) {
   pullComponentSettings((req.query && req.query.refresh) ? req.params.component : false)
     .then(() => {
       let component = components[req.params.component] || { status: 'undefined', };
-      if (req.query && req.query.refresh_log && req.query.refresh_log !== 'false') logger.silly(`reloaded component ${ req.params.component }`, { component });
+      if (req.query && req.query.refresh_log && req.query.refresh_log !== 'false') logger.silly(`reloaded component ${ req.params.component }`, { component, });
       res.status(200).send({
         result: 'success',
         status: 200,
@@ -448,13 +500,15 @@ var loadComponent = function (req, res, next) {
  * @param  {object}   res  express reponse
  */
 var loadUserPreferences = function (req, res) {
-  res.status(200).send({
-    result: 'success',
-    status: 200,
-    data: {
-      settings: (req.user && req.user.extensionattributes && req.user.extensionattributes.preferences) ? req.user.extensionattributes.preferences : {},
-    },
-  });
+  if (res && typeof res.send === 'function') {
+    res.status(200).send({
+      result: 'success',
+      status: 200,
+      data: {
+        settings: (req.user && req.user.extensionattributes && req.user.extensionattributes.preferences) ? req.user.extensionattributes.preferences : {},
+      },
+    });
+  } else return (req.user && req.user.extensionattributes && req.user.extensionattributes.preferences) ? req.user.extensionattributes.preferences : {}; 
 };
 
 /**
@@ -464,20 +518,62 @@ var loadUserPreferences = function (req, res) {
  * @param {Function} next express next function
  */
 var loadNavigation = function (req, res, next) {
-  pullConfigurationSettings((req.query && req.query.refresh) ? 'navigation' : false)
+  return pullConfigurationSettings((req.query && req.query.refresh) ? 'navigation' : false)
     .then(() => {
       let navigation = Object.assign({}, navigationSettings);
-      if (req.query && req.query.refresh_log && req.query.refresh_log !== 'false') logger.silly('reloaded navigation', { navigation }); 
+      if (req.query && req.query.refresh_log && req.query.refresh_log !== 'false') {
+        logger.silly('reloaded navigation', { navigation, });
+      }
+      if (extsettings && extsettings.includeCoreData && extsettings.includeCoreData.navigation) {
+        setCoreDataConfigurations();
+        if (CORE_DATA_CONFIGURATIONS.navigation && CORE_DATA_CONFIGURATIONS.navigation.layout) {
+          navigation.layout = Object.assign({}, navigation.layout);
+          navigation.layout.children = Object.assign([], navigation.layout.children);
+          navigation.layout.children = navigation.layout.children.concat(CORE_DATA_CONFIGURATIONS.navigation.layout.children || []);
+        }
+      }
+      navigation.wrapper = extsettings.navigationLayout.wrapper;
+      navigation.container = extsettings.navigationLayout.container;
       navigation.layout = recursivePrivilegesFilter(Object.keys(req.session.userprivilegesdata), [navigation.layout])[0];
+      if (res && typeof res.send === 'function') {
+        res.status(200).send({
+          result: 'success',
+          status: 200,
+          data: {
+            settings: navigation,
+          },
+        });
+      } else return navigation;
+    })
+    .catch(e => (typeof next === 'function') ? next(e) : Promisie.reject(e));
+};
+
+var loadConfigurations = function (req, res) {
+  return pullConfigurationSettings((req.query && req.query.refresh) ? true : false)
+    .then(() => {
+      if (req.query) delete req.query.refresh;
+      return Promisie.parallel({
+        navigation: loadNavigation.bind(null, req),
+        manifest: loadManifest.bind(null, req),
+        preferences: loadUserPreferences.bind(null, req)
+      });
+    })
+    .then(settings => {
       res.status(200).send({
         result: 'success',
         status: 200,
-        data: {
-          settings: navigation,
-        },
+        data: { settings }
       });
     })
-    .catch(next);
+    .catch(e => {
+      res.status(500).send({
+        result: 'error',
+        status: 500,
+        data: {
+          error: e.message
+        }
+      });
+    });
 };
 
 module.exports = function (resources) {
@@ -488,9 +584,15 @@ module.exports = function (resources) {
   CoreController = resources.core.controller;
   CoreUtilities = resources.core.utilities;
   logger = resources.logger;
-  Promisie.all(pullConfigurationSettings(), pullComponentSettings())
-    .then(logger.silly.bind(logger, 'successfully loaded configurations in reactadmin'))
-    .catch(logger.warn.bind(logger, 'there was an error loading configurations in reactadmin'));
+  extsettings = resources.app.locals.extension.reactadmin.settings;
+  utility = require(path.join(__dirname, '../utility/index'))(resources);
+  if (extsettings && extsettings.includeCoreData && extsettings.includeCoreData.manifest) {
+    let task = setImmediate(() => {
+      setCoreDataConfigurations();
+      clearImmediate(task);
+    });
+  }
+  Promisie.all(pullConfigurationSettings(), pullComponentSettings());
 
   return { 
     index: admin_index,
@@ -498,5 +600,6 @@ module.exports = function (resources) {
     loadComponent,
     loadUserPreferences,
     loadNavigation,
+    loadConfigurations
   };
 };

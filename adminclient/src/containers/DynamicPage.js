@@ -1,45 +1,84 @@
 import React, { Component, } from 'react';
-// import styles from '../styles';
 import AppSectionLoading from '../components/AppSectionLoading';
 import AppError404 from '../components/AppError404';
 import { getRenderedComponent, } from '../components/AppLayoutMap';
 import utilities from '../util';
 
-let AppManifest = {};
-
-const setAppManifest = (props) => {
-  if (props.containers && props.updatedAt !== AppManifest.updatedAt) {
-    AppManifest = props;
+const _handleComponentLifecycle = function () {
+  this.setState({ ui_is_loaded: false, });
+  let parentState = this.props.getState();
+  let pathname = (this.props.location.pathname) ? this.props.location.pathname : window.location.pathname;
+  if (parentState.manifest && parentState.manifest.hasLoaded) {
+    if (pathname === '/mfa' && window.location.pathname === '/mfa') return this.fetchData();
+    else {
+      let isValid = this.props.enforceMFA(true);
+      if (isValid) this.fetchData();
+    }
+  } else {
+    return this.props.initializeAuthenticatedUser(parentState.user.jwt_token, false)
+      .then(() => this.props.enforceMFA(true))
+      .then(isValid => {
+        if (isValid) this.fetchData();
+      }, e => this.fetchDynamicErrorContent(pathname));
   }
 };
 
 class DynamicPage extends Component {
-  constructor(props) {
-    const Props = Object.assign({}, props, props.getState());
-    // console.log({ Props });
-    super(props);
-    setAppManifest(Props.manifest);
+  constructor () {
+    super(...arguments);
     this.state = {
       ui_is_loaded: false,
       async_data_is_loaded: false,
     };
     this.uiLayout = {};
     this.getRenderedComponent = getRenderedComponent.bind(this);
+    this.handleComponentLifecycle = _handleComponentLifecycle.bind(this);
   }
-  fetchDynamicPageContent (pathname) {
-    let layout = Object.assign({}, AppManifest.containers[pathname].layout);
-    if (AppManifest.containers[pathname].resources && typeof AppManifest.containers[pathname].resources === 'object') {
-      return utilities.fetchPaths(this.props.getState().settings.basename, AppManifest.containers[pathname].resources)
-        .then(resources => {
-          this.uiLayout = this.getRenderedComponent(layout, resources);
-          this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
-        })
-        .catch(e => {
-          this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
-        });
-    } else {
-      this.uiLayout = this.getRenderedComponent(AppManifest.containers[pathname].layout);
-      this.setState({ ui_is_loaded: true, });
+  fetchDynamicPageContent (pathname, hasParams) {
+    try {
+      let state = this.props.getState();
+      let containers = state.manifest.containers;
+      let layout = Object.assign({}, containers[pathname].layout);
+      if (containers[pathname].resources && typeof containers[pathname].resources === 'object') {
+        let resources = containers[pathname].resources;
+        if (hasParams) {
+          let currentPathname = (window.location.pathname) ? window.location.pathname : this.props.location.pathname;
+          resources = Object.keys(resources).reduce((result, key) => {
+            let updatedPath = utilities.setParameters({
+              route: pathname,
+              location: currentPathname,
+              query: (/\?[^\s]+$/.test(currentPathname)) ? currentPathname.replace(/\?([^\s]+)$/g, '$1') : undefined,
+              resource: resources[key],
+            });
+            result[key] = updatedPath;
+            return result;
+          }, {});
+        }
+        // console.log('containers[pathname]',containers[pathname]);
+        if (containers[pathname].pageData && containers[pathname].pageData.title) {
+          window.document.title = containers[pathname].pageData.title;
+        }
+        if (containers[pathname].pageData && containers[pathname].pageData.navLabel) {
+          this.props.setNavLabel(containers[pathname].pageData.navLabel);
+        } else {
+          this.props.setNavLabel('');
+        }
+        return utilities.fetchPaths(this.props.getState().settings.basename, resources)
+          .then(resources => {
+            this.uiLayout = this.getRenderedComponent(layout, resources);
+            this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
+          })
+          .catch(e => {
+            this.props.errorNotification(e);
+            this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
+          });
+      } else {
+        this.uiLayout = this.getRenderedComponent(containers[pathname].layout);
+        this.setState({ ui_is_loaded: true, });
+      }
+    } catch (e) {
+      this.props.errorNotification(e);
+      this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
     }
   }
   fetchDynamicErrorContent (/*pathname*/) {
@@ -57,7 +96,7 @@ class DynamicPage extends Component {
               this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
             })
             .catch(e => {
-              this.uiLayout = <AppError404/>;
+              this.uiLayout = <AppError404 error={e}/>;
               this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
             });
         } else custom404Error = this.getRenderedComponent(componentData.layout);
@@ -65,33 +104,32 @@ class DynamicPage extends Component {
       custom404Error = (typeof componentData.status === 'undefined' || componentData.status === 'undefined' || componentData.status === 'uninitialized') ? false : this.getRenderedComponent(componentData.layout);
     }
     this.uiLayout = (custom404Error) ? custom404Error : <AppError404/>;
+    window.document.title = 'Page Not Found';
+    this.props.setNavLabel('Error');
     this.setState({ ui_is_loaded: true, });
   }
   fetchData (/*options = {}*/) {
     const pathname = (window.location.pathname) ? window.location.pathname : this.props.location.pathname;
     const state = this.props.getState();
-    if (AppManifest.containers[pathname]) {
+    if (state.manifest.containers[pathname]) {
       return this.fetchDynamicPageContent(pathname);
-    } else if (AppManifest.containers[ pathname.replace(state.settings.auth.admin_path, '') ]) {
+    } else if (state.manifest.containers[pathname.replace(state.settings.auth.admin_path, '')]) {
       let adminPathname = pathname.replace(state.settings.auth.admin_path, ''); 
-      // console.log({ adminPathname, pathname, });
-      return this.fetchDynamicPageContent(adminPathname, pathname);
+      return this.fetchDynamicPageContent(adminPathname);
     } else {
-      return this.fetchDynamicErrorContent(pathname);
+      let dynamicPathname = utilities.findMatchingRoute(state.manifest.containers, pathname.replace(state.settings.auth.admin_path, ''));
+      if (!dynamicPathname) return this.fetchDynamicErrorContent(pathname);
+      return this.fetchDynamicPageContent(dynamicPathname, true);
     }
   }
-  componentDidMount() { // console.log('component DId Mount', this.props);
-    this.setState({ ui_is_loaded: false, });
-    this.fetchData();
+  componentDidMount () { 
+    this.handleComponentLifecycle();
   }
-  componentWillReceiveProps(/*nextProps*/) { // console.log('DynamicPage componentWillReceiveProps nextProps', nextProps);
-    this.setState({ ui_is_loaded: false, });
-    this.fetchData();
+  componentWillReceiveProps () { 
+    this.handleComponentLifecycle();
   }
-  render() {
-    // const Props = Object.assign({}, this.props, this.props.getState());
-    // console.log({ Props, });
-    return (this.state.ui_is_loaded ===false)? <AppSectionLoading/> : this.uiLayout;
+  render () {
+    return (this.state.ui_is_loaded === false) ? <AppSectionLoading/> : this.uiLayout;
   }
 }
 

@@ -1,6 +1,6 @@
 {
   "containers":{
-    "/healthcheck":{
+    "/healthcheck/:id/:name":{
       "layout":{
         "component":"Hero",
         "props":{
@@ -16,7 +16,6 @@
               {
                 "component":"Container",
                 "props":{
-
                 },
                 "children":[
                   {
@@ -27,7 +26,7 @@
                   },
                   {
                     "component":"Title",
-                    "children":"Documentation Page"
+                    "children":"Documentation Page Healthcheck"
                   }
                 ]
               }
@@ -36,9 +35,64 @@
         ]
       },
       "resources":{
-        "healthcheckStatus":"/load/healthcheck"
+        "healthcheckStatus":"/r-admin/load/healthcheck/:id/:name"
       },
-      "onFinish":"render"
+      "onFinish":"render",
+      "pageData":{
+        "title":"Healthcheck",
+        "navLabel":"Healthcheck"
+      }
+    },
+    "/r-admin/documentation":{
+      "layout":{
+        "component":"Hero",
+        "props":{
+          "size":"isFullheight"
+        },
+        "children":[
+          {
+            "component":"HeroBody",
+            "props":{
+
+            },
+            "asyncprops":{
+              "healthcheck":[
+                "healthcheckStatus"
+              ]
+            },
+            "children":[
+              {
+                "component":"Container",
+                "props":{
+
+                },
+                "children":[
+                  {
+                    "component":"div",
+                    "props":{
+                      "dangerouslySetInnerHTML":{
+                        "__html":"<h1>FooBar: the most used line in code</h1>"
+                      }
+                    }
+                  },
+                  {
+                    "component":"Title",
+                    "children":"Admin Documentation Page"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "resources":{
+        "healthcheckStatus":"/r-admin/load/healthcheck"
+      },
+      "onFinish":"render",
+      "pageData":{
+        "title":"Admin Documentation",
+        "navLabel":"Admin Documentation"
+      }
     },
     "/playground":{
       "layout":{
@@ -199,7 +253,7 @@
                   },
                   {
                     "component":"Title",
-                    "children":"Documentation Page"
+                    "children":"Standard Documentation Page"
                   }
                 ]
               }
@@ -208,9 +262,13 @@
         ]
       },
       "resources":{
-        "healthcheckStatus":"/load/healthcheck"
+        "healthcheckStatus":"/r-admin/load/healthcheck"
       },
-      "onFinish":"render"
+      "onFinish":"render",
+      "pageData":{
+        "title":"Documentation",
+        "navLabel":"Documentation"
+      }
     }
   }
 }

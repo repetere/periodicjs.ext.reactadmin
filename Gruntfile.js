@@ -91,6 +91,13 @@ module.exports = function (grunt) {
 				src: '**/*.*',
 				dest: '../../public/extensions/periodicjs.ext.reactadmin',
 			},
+			ext: {
+				cwd: 'adminclient/build',
+				// cwd: 'public',
+				expand: true,
+				src: ['**/*.*'],
+				dest: 'public',
+			},
 		},
 		watch: {
 			scripts: {

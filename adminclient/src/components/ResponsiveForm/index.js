@@ -1,5 +1,5 @@
 import React, { Component, } from 'react';
-import { Columns, Card, CardContent, CardFooter, CardFooterItem, Notification, Container, Column, } from 're-bulma'; 
+import { Columns, Card, CardContent, CardFooter, CardFooterItem, Notification, Column, } from 're-bulma'; 
 import ResponsiveCard from '../ResponsiveCard';
 import utilities from '../../util';
 import { getFormTextInputArea, getFormCheckbox, getFormSubmit, getCardFooterItem, } from './FormElements';
@@ -180,24 +180,26 @@ class ResponsiveForm extends Component{
         {formgroup.formElements.map(getFormElements)}
       </Columns>);
     });
-    let footerGroupData = this.props.footergroups.map((formgroup, i) => { 
-      let gridProps = Object.assign({
-        isMultiline: true,
-        key: i,
-      }, formgroup.gridProps);
-      let getFormElements = (formElement, j) => {
-        if (formElement.type === 'submit') {
-          return this.getCardFooterItem({ formElement,  i:j, formgroup, });
-        } else {
-          return <CardFooterItem>
-            <div key={j} />
-          </CardFooterItem>;
-        }
-      };      
-      return (<CardFooter {...gridProps}>
-        {formgroup.formElements.map(getFormElements)}
-      </CardFooter>);
-    });
+    let footerGroupData = (this.props.footergroups)
+      ? this.props.footergroups.map((formgroup, i) => { 
+        let gridProps = Object.assign({
+          isMultiline: true,
+          key: i,
+        }, formgroup.gridProps);
+        let getFormElements = (formElement, j) => {
+          if (formElement.type === 'submit') {
+            return this.getCardFooterItem({ formElement,  i:j, formgroup, });
+          } else {
+            return <CardFooterItem>
+              <div key={j} />
+            </CardFooterItem>;
+          }
+        };      
+        return (<CardFooter {...gridProps}>
+          {formgroup.formElements.map(getFormElements)}
+        </CardFooter>);
+      })
+      : [];
 
     if (this.props.cardForm) {
       return (<Card {...this.props.cardFormProps}>

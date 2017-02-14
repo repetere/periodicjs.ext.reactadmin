@@ -15,7 +15,7 @@ function getRoutes(appContainer) {
   }, ];
   return {
     childRoutes: [{
-      path: '/p-admin',
+      path: (typeof window.__padmin.adminPath !=='undefined') ? window.__padmin.adminPath : '/p-admin',
       component: appContainer,
       // onEnter: requireAuth,
       indexRoute: { 

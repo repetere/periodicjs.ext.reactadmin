@@ -2,6 +2,10 @@
   "name":"reactadmin",
   "basename": "http://localhost:8786",
   "routerHistory":"browserHistory",
+  "includeCoreData": {
+    "manifest": true,
+    "navigation": true
+  },
   "allHistoryOptions":"browserHistory|hashHistory|createMemoryHistory",
   "application":{
     "environment":"development"
@@ -9,16 +13,36 @@
   "ui":{
     "initialization":{
       "show_header":false,
-      "show_footer":false
+      "show_footer":false,
+      "show_sidebar_overlay":true
     },
     "notifications":{
       "error_timeout":10000,
       "timed_timeout":10000
+    },
+    "fixedSidebar":true,
+    "sidebarBG":"#ffffff",
+    "header":{
+      "isBold":true,
+      "color":"isDark",
+      "buttonColor":"isWhite",
+      "useGlobalSearch":false,
+      "useHeaderLogout":false,
+      "customButton":false,
+      "navLabelStyle":{},
+      "containerStyle":{},
+      "userNameStyle":{}
+    },
+    "footer":{
+      "navStyle":{}
+    },
+    "sidebar":{
+      "containerStyle":{},
+      "use_floating_nav":true
     }
   },
   "auth":{
-    "logged_in_homepage":"/home",
-    "admin_path":"/p-admin"
+    "logged_in_homepage":"/home"
   },
   "login":{
     "url":"https://pas-dev.promisefinancial.net:8784/api/jwt/token",

@@ -2,7 +2,6 @@ import constants from '../constants';
 import utilities from '../util';
 import notification from './notification';
 // import { AsyncStorage, } from 'react-web';
-// import customSettings from '../content/config/settings.json';
 // import Immutable from 'immutable';
 
 const fetchComponentUtil = utilities.fetchComponent;
@@ -54,14 +53,24 @@ const ui = {
       type: constants.ui.SET_SELECTED_NAV_STATE,
       payload: {
         success: true,
-        id
-      }
-    }
+        id,
+      },
+    };
+  },
+  setNavLabel: function (label) {
+    return {
+      type: constants.ui.SET_NAV_LABEL,
+      payload: {
+        label,
+      },
+    };
   },
   fetchComponent: function (type) {
     let component, componentLoadError;
     //add ?refresh=true to below component loading routes to individually reload configurations for a given component
+
     switch (type) {
+<<<<<<< HEAD
       case constants.ui.LOGIN_COMPONENT:
         component = constants.ui.LOGIN_COMPONENT;
         if (!COMPONENTS[ component ]) COMPONENTS[ component ] = function (basename) {
@@ -81,6 +90,27 @@ const ui = {
         };
         break;
       default:
+=======
+    case constants.ui.LOGIN_COMPONENT:
+      component = constants.ui.LOGIN_COMPONENT;
+      if (!COMPONENTS[ component ]) COMPONENTS[ component ] = function (basename) {
+        return fetchComponentUtil(`${basename}/load/components/login`);
+      };
+      break;
+    case constants.ui.MAIN_COMPONENT:
+      component = constants.ui.MAIN_COMPONENT;
+      if (!COMPONENTS[ component ]) COMPONENTS[ component ] = function (basename) {
+        return fetchComponentUtil(`${basename}/load/components/main`);
+      };
+      break;
+    case constants.ui.ERROR_COMPONENTS:
+      component = constants.ui.ERROR_COMPONENTS;
+      if (!COMPONENTS[ component ]) COMPONENTS[ component ] = function (basename) {
+        return fetchComponentUtil(`${basename}/load/components/error`);
+      };
+      break;
+    default:
+>>>>>>> 333f8ea91ae71b6e21ca857fdb5c1b67e911e59b
       component = false;
     }
     return function (dispatch, getState) {
@@ -91,7 +121,7 @@ const ui = {
         throw componentLoadError;
       }
       let state = getState();
-      let basename = state.settings.basename;
+      let basename = (typeof state.settings.adminPath ==='string' && state.settings.adminPath !=='/') ? state.settings.basename+state.settings.adminPath : state.settings.basename;
       dispatch({ type: `INIT_${ component }`, });
       return COMPONENTS[component](basename)()
         .then(response => {

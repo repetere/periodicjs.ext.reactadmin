@@ -13,7 +13,7 @@
     "children":[
       {
         "component":"MenuLabel",
-        "children":"General"
+        "children":"Generals"
       },
       {
         "component":"MenuList",
@@ -41,6 +41,13 @@
               "label":"Documentation",
               "id": "documentation"
             }
+          },{
+            "component":"MenuAppLink",
+            "props":{
+              "href":"/#logout",
+              "label":"Logout",
+              "onClick": "func:this.props.logoutUser"
+            }
           }
         ]
       },
@@ -57,7 +64,7 @@
               {
                 "component":"MenuAppLink",
                 "props":{
-                  "href":"/blog",
+                  "href":"/r-admin/documentation",
                   "label":"Members",
                   "id": "members"
                 }
