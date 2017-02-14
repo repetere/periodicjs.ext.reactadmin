@@ -104,6 +104,6 @@ export const fetchDynamicContent = function _fetchDynamicContent (_pathname, onS
   } else {
     let dynamicPathname = utilities.findMatchingRoute(state.manifest.containers, pathname.replace(state.settings.auth.admin_path, ''));
     if (!dynamicPathname) return onError();
-    return onSuccess(dynamicPathname);
+    return onSuccess(dynamicPathname, true);
   }
 };
