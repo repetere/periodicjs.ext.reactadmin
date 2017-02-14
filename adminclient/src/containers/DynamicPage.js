@@ -32,7 +32,7 @@ class DynamicPage extends Component {
     this.uiLayout = {};
     this.getRenderedComponent = getRenderedComponent.bind(this);
     this.handleComponentLifecycle = _handleComponentLifecycle.bind(this);
-    this.fetchData = utilities.fetchDynamicContent.bind(this, undefined, this.props.getState);
+    this.fetchData = utilities.fetchDynamicContent.bind(this);
   }
   fetchDynamicErrorContent (/*pathname*/) {
     return utilities.fetchErrorContent.call(this); 

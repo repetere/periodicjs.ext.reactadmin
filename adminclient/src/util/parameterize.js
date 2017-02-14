@@ -32,6 +32,7 @@ export const parameterize = function (route, location) {
 	let params = regexp.re.exec(location);
 	if (params.length > 1 && Array.isArray(regexp.keys)) {
 		params = params.slice(1);
+		console.log({ params });
 		return regexp.keys.reduce((result, param, index) => {
 			param = param.name;
 			result[index] = param;
