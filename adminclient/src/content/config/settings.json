@@ -24,8 +24,8 @@
     "sidebarBG":"#ffffff",
     "header":{
       "isBold":true,
-      "color":"isDark",
-      "buttonColor":"isWhite",
+      "color":"isBlack",
+      "buttonColor":"isWhite", 
       "useGlobalSearch":false,
       "useHeaderLogout":false,
       "customButton":false,
@@ -38,7 +38,7 @@
     },
     "sidebar":{
       "containerStyle":{},
-      "use_floating_nav":true
+      "use_floating_nav":false
     }
   },
   "auth":{

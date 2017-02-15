@@ -27,7 +27,7 @@ module.exports = {
       },
       onFinish: 'render'
     },    
-    '/documentation': {
+    '/documentation2': {
       layout: {
         component: 'Hero',
         props: { size: 'isFullheight' },
@@ -44,7 +44,7 @@ module.exports = {
               {
                 component: 'div',
                 props: {
-                  dangerouslySetInnerHTML: {__html:'<h1>FooBar: the most used line in code</h1>'}
+                  dangerouslySetInnerHTML: {__html:'<h1>FooBarsss: the most used line in code</h1>'}
                 }
               },
               {
@@ -52,12 +52,16 @@ module.exports = {
                 // props: {
                 // },
                 children: 'Documentation Page Default',
+              }, {
+                component: 'CodeMirror',
+                props: {
+                  mode:'javascript',
+                }
               }]
           }]
         }]
       },
       resources: {
-        healthcheckStatus: '/load/healthcheck'
       },
       onFinish:'render'
     }

@@ -144,6 +144,57 @@
         "title":"Documentation",
         "navLabel":"Documentation"
       }
+    },
+    "/documentationtest":{
+      "layout":{
+        "component":"Hero",
+        "props":{
+          "size":"isFullheight"
+        },
+        "children":[
+          {
+            "component":"HeroBody",
+            "props":{
+
+            },
+            "asyncprops":{
+              "healthcheck":[
+                "healthcheckStatus"
+              ]
+            },
+            "children":[
+              {
+                "component":"Container",
+                "props":{
+
+                },
+                "children":[
+                  {
+                    "component":"div",
+                    "props":{
+                      "dangerouslySetInnerHTML":{
+                        "__html":"<h1>FooBarsssss: the most used line in code</h1>"
+                      }
+                    }
+                  },
+                  {
+                    "component":"Title",
+                    "children":"Standard Documentation Page"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "resources":{
+        "healthcheckStatus":"/r-admin/load/healthcheck"
+      },
+      "onFinish":"render",
+      "pageData":{
+        "title":"Documentation",
+        "navLabel":"Documentation"
+      }
     }
   }
 }

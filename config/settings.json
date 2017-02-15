@@ -1,7 +1,8 @@
 {
 	"basename": "http://localhost:8786",
 	"adminPath":"/r-admin",
-	"name":"reactadmin",
+	"name":"Admin Panel",
+	"title":"Welcome",
 	"includeCoreData": {
     "manifest": true,
     "navigation": true
