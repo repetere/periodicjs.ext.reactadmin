@@ -79,7 +79,7 @@ const ui = {
     case constants.ui.MAIN_COMPONENT:
       component = constants.ui.MAIN_COMPONENT;
       if (!COMPONENTS[ component ]) COMPONENTS[ component ] = function (basename) {
-        return fetchComponentUtil(`${basename}/load/components/main`);
+        return fetchComponentUtil(`${basename}/load/components/main?refresh=true`);
       };
       break;
     case constants.ui.ERROR_COMPONENTS:

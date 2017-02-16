@@ -18,6 +18,7 @@ class RACodeMirror extends Component {
   }
 }
 
+//ok
 RACodeMirror.propTypes = propTypes;
 RACodeMirror.defaultProps = defaultProps;
 

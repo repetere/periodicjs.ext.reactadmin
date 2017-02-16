@@ -145,7 +145,7 @@
         "navLabel":"Documentation"
       }
     },
-    "/documentationtest":{
+    "/r-admin/content/accounts":{
       "layout":{
         "component":"Hero",
         "props":{
@@ -173,13 +173,54 @@
                     "component":"div",
                     "props":{
                       "dangerouslySetInnerHTML":{
-                        "__html":"<h1>FooBarsssss: the most used line in code</h1>"
+                        "__html":"<h1>Accounts: the most used line in code</h1>"
                       }
                     }
                   },
                   {
-                    "component":"Title",
-                    "children":"Standard Documentation Page"
+                    "component": "ResponsiveCard",
+                    "props": {
+                      "cardTitle": "Application Results(# Records)",
+                      "leftIcon":true
+                    },
+                    "children": [{
+                      "component": "ResponsiveTable",
+                      "props": {
+                        "maxRows":"10",
+                        "baseUrl":"/r-admin/content/accounts?format=json",
+                        "headers": [
+                          { "label": "#", "value":"--idx-ctr--" },
+                          { 
+                            "label": "Id", 
+                            "sortid":"_id", 
+                            "link":{
+                              "baseUrl":"/r-admin/content/accounts/:id",
+                              "params":[{"key":":id","val":"_id"}]
+                            },
+                            "linkProps":{
+                              "style":{
+                                "textDecoration":"none"
+                              }
+                            } 
+                          },
+                          { "label": "Email", "sortid":"email" },
+                          { "label": "First Name", "sortid":"firstname" }, 
+                          { "label": "Last Name", "sortid":"lastname" }, 
+                          { "label": "Create Date", "sortid":"createdat", "momentFormat":"lll" }
+                        ]
+                      },
+                      "asyncprops":{
+                        "rows":[
+                          "tabledata","accounts"
+                        ],
+                        "numItems":[
+                          "tabledata","accountscount"
+                        ],
+                        "numPages":[
+                          "tabledata","accountpages"
+                        ]
+                      }
+                    }]
                   }
                 ]
               }
@@ -188,12 +229,12 @@
         ]
       },
       "resources":{
-        "healthcheckStatus":"/r-admin/load/healthcheck"
+        "tabledata":"/r-admin/content/accounts?format=json"
       },
       "onFinish":"render",
       "pageData":{
-        "title":"Documentation",
-        "navLabel":"Documentation"
+        "title":"Accounts",
+        "navLabel":"Accounts"
       }
     }
   }

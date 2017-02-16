@@ -8,6 +8,7 @@ const propTypes = {
   headerTextColor: PropTypes.object,
   cardTitle: PropTypes.string,
   display: PropTypes.bool,
+  leftIcon: PropTypes.bool,
   icon: PropTypes.string,
 };
 
@@ -44,13 +45,17 @@ class ResponsiveCard extends Component {
   }
 
   render() {
+    let cardIcon = <CardHeaderIcon icon={this.state.icon} onClick={() => this.expandCard()} />;
+    let leftIcon = (this.props.leftIcon)?cardIcon:null;
+    let rightIcon = (!this.props.leftIcon)?cardIcon:null;
     const fullCard = (
       <Card isFullwidth style={this.props.cardStyle}>
         <CardHeader>
+          {leftIcon}
           <CardHeaderTitle style={this.state.headerColor}>
             {this.state.cardTitle}
           </CardHeaderTitle>
-          <CardHeaderIcon icon={this.state.icon} onClick={() => this.expandCard()}/>
+          {rightIcon}
         </CardHeader>
         {(this.state.display) ? (
           <CardContent>{this.props.children}</CardContent>

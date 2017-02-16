@@ -10,6 +10,7 @@
     }
   },
   "layout":{
+    "component":"Menu",
     "children":[
       {
         "component":"MenuLabel",
@@ -132,11 +133,24 @@
             }
           }
         ]
+      },
+      {
+        "component":"MenuLabel",
+        "children":"Content Manager"
+      },
+      {
+        "component":"MenuList",
+        "children":[
+          {
+            "component":"MenuAppLink",
+            "props":{
+              "href":"/r-admin/content/accounts",
+              "label":"Accounts",
+              "id": "accounts"
+            }
+          }
+        ]
       }
-    ],
-    "component":"Menu",
-    "props":{
-
-    }
+    ]
   }
 }

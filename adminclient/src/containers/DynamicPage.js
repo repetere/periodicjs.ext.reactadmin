@@ -6,7 +6,7 @@ import utilities from '../util';
 const _handleComponentLifecycle = function () {
   this.setState({ ui_is_loaded: false, });
   let parentState = this.props.getState();
-  let pathname = (this.props.location.pathname) ? this.props.location.pathname : window.location.pathname;
+  let pathname = (this.props.location.pathname) ? this.props.location.pathname : window.location.href || window.location.pathname;
   if (parentState.manifest && parentState.manifest.hasLoaded) {
     if (pathname === '/mfa' && window.location.pathname === '/mfa') return this.fetchData();
     else {
@@ -21,6 +21,7 @@ const _handleComponentLifecycle = function () {
       }, e => this.fetchDynamicErrorContent(pathname));
   }
 };
+
 
 class DynamicPage extends Component {
   constructor () {
