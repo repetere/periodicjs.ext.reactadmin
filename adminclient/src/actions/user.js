@@ -218,7 +218,7 @@ const user = {
       delete headers.clientid_default;
       options.headers = Object.assign({}, options.headers, headers);
       //add ?refresh=true to fetch route below to reload navigtion configuration
-      return utilities.fetchComponent(`${ basename }/load/navigation?refresh=true`, options)()
+      return utilities.fetchComponent(`${ basename }/load/navigation`, options)()
         .then(response => {
           dispatch(this.navigationSuccessResponse(response));
         }, e => dispatch(this.navigationErrorResponse(e)));
@@ -348,7 +348,7 @@ const user = {
         delete headers.clientid_default;
         options.headers = Object.assign({}, options.headers, headers);
         //add ?refresh=true to fetch route below to reload configurations
-        return utilities.fetchComponent(`${basename}/load/configurations?refresh=true`, options)()
+        return utilities.fetchComponent(`${basename}/load/configurations`, options)()
           .then(response => {
             if (response.result === 'error') return Promise.reject(new Error(response.data.error));
             let responses = Object.keys(response.data.settings).reduce((result, key) => {

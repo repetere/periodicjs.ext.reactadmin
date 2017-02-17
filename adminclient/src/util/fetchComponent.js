@@ -12,7 +12,7 @@ export const checkStatus = function (response) {
   });
 };
 
-export const fetchComponent = function (url, options = {}) {
+export const fetchComponent = function (url, options = {}) {  
   return function () {
     return fetch(url, Object.assign({}, options))
       .then(checkStatus)
@@ -21,7 +21,7 @@ export const fetchComponent = function (url, options = {}) {
   };
 };
 
-export const fetchPaths = function (basename, data = {}) {
+export const fetchPaths = function (basename, data = {}, headers) {
   let result = {};
   let finished = Object.keys(data).map(key => {
     let val;
@@ -31,9 +31,11 @@ export const fetchPaths = function (basename, data = {}) {
       ? window.location.search.substr(1)
       : window.location.search;
     let route = val[ 0 ];
-    // console.log({ data, key, val, });
+    // console.log({ data, key, val, },this);
     // console.log(qs.parse(additionalParams),val[0])
-    return fetchComponent(`${ basename }${ route }&${additionalParams}`, val[1])()
+    let fetchOptions = Object.assign({}, val[ 1 ], { headers, });
+    
+    return fetchComponent(`${ basename }${ route }&${additionalParams}`, fetchOptions)()
       .then(response => {
         result[key] = response;
       }, e => Promise.reject(e));

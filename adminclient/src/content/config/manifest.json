@@ -186,10 +186,25 @@
                     "children": [{
                       "component": "ResponsiveTable",
                       "props": {
-                        "maxRows":10,
+                        "limit":10,
                         "filterSearch":true,
                         "tableSearch":true,
                         "baseUrl":"/r-admin/contentdata/accounts?format=json",
+                        "dataMap":[{
+                          "key":"rows",
+                          "value":"accounts"
+                        },{
+                          "key":"numItems",
+                          "value":"accountscount"
+                        },{
+                          "key":"numPages",
+                          "value":"accountpages"
+                        }],
+                        "headerLinkProps":{
+                          "style":{
+                            "textDecoration":"none"
+                          }
+                        },
                         "headers": [
                           { "label": "#", "value":"--idx-ctr--" },
                           { 
@@ -205,10 +220,10 @@
                               }
                             } 
                           },
-                          { "label": "Email", "sortid":"email" },
-                          { "label": "First Name", "sortid":"firstname" }, 
-                          { "label": "Last Name", "sortid":"lastname" }, 
-                          { "label": "Create Date", "sortid":"createdat", "momentFormat":"lll" }
+                          { "label": "Email", "sortid":"email", "sortable":true },
+                          { "label": "First Name", "sortid":"firstname", "sortable":true }, 
+                          { "label": "Last Name", "sortid":"lastname", "sortable":true }, 
+                          { "label": "Create Date", "sortid":"createdat", "momentFormat":"lll", "sortable":true }
                         ]
                       },
                       "asyncprops":{

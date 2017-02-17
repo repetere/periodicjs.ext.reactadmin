@@ -43,16 +43,24 @@ var _handleDynamicParams = function (pathname, resources, current) {
  */
 var _handleFetchPaths = function (layout, resources = {}, options = {}) {
   let state = _getState.call(this)();
-  return utilities.fetchPaths(state.settings.basename, resources)
+  let headers = (state.settings && state.settings.userprofile && state.settings.userprofile.options && state.settings.userprofile.options.headers)
+    ? state.settings.userprofile.options.headers
+    : {};
+  delete headers.clientid_default;
+  if (state.user && state.user.jwt_token) {
+    headers[ 'x-access-token' ] = state.user.jwt_token;
+  }
+
+  return utilities.fetchPaths(state.settings.basename, resources, headers)
     .then((typeof options.onSuccess === 'function') ? options.onSuccess : _resources => {
-  this.uiLayout = this.getRenderedComponent(layout, _resources);
-  this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
-})
+      this.uiLayout = this.getRenderedComponent(layout, _resources);
+      this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
+    })
     .catch((typeof options.onError === 'function') ? options.onError : e => {
-  if (this.props && this.props.errorNotification) this.props.errorNotification(e);
-  else console.error(e);
-  this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
-});
+      if (this.props && this.props.errorNotification) this.props.errorNotification(e);
+      else console.error(e);
+      this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
+    });
 };
 
 /**
@@ -71,9 +79,9 @@ export const fetchErrorContent = function _fetchErrorContent () {
       if (componentData.resources && Object.keys(componentData.resources).length) {
         return _handleFetchPaths.call(this, componentData.layout, componentData.resources, {
           onError: function (e) {
-          this.uiLayout = <AppError404 error={e}/>;
-          this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
-        }.bind(this),
+            this.uiLayout = <AppError404 error={e}/>;
+            this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
+          }.bind(this),
           getState,
         });
       } else custom404Error = this.getRenderedComponent(componentData.layout);

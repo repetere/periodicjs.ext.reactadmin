@@ -24,6 +24,7 @@
     "redux-thunk": "^2.1.0"
   },
   "dependencies": {
+    "debounce": "^1.0.0",
     "eslint": "^3.14.1",
     "eslint-plugin-react": "^6.9.0",
     "react": "15.3.2",

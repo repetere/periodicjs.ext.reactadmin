@@ -19,9 +19,9 @@ const AppReduxStore = createStore(
   combinedReducers,
   applyMiddleware(
     thunk,
-    routerMiddleware(getRouterHistoryType(AppConfigSettings.routerHistory)),
+    routerMiddleware(getRouterHistoryType(AppConfigSettings.routerHistory))//,
     // promise,
-    logger
+    // logger
   )
 );
 
