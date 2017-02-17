@@ -25,6 +25,27 @@ const defaultProps = {
   numItems: 0,
   itemCount: 100,
   numButtons: 1,
+  searchTable:false,
+  filterSearch:false,
+  filterAddonProps:{
+    style:{
+      marginBottom:"20px",
+    }
+  },
+  filterButtonProps:{
+    icon:"fa fa-filter",
+    style:{
+      marginRight:"0px",
+      marginLeft:"0px",
+    }
+  },
+  searchButtonProps:{
+  },
+  filterSearchProps:{
+    type:"text",
+    placeholder:"Search",
+    isExpanded:true 
+  }
 };
 
 class ResponsiveTable extends Component {
@@ -45,8 +66,7 @@ class ResponsiveTable extends Component {
       numPages: Math.ceil(props.numItems / props.maxRows),
       numButtons: props.numButtons,
     };
-
-    console.log('this.state',this.state)
+    // console.log('this.state',this.state)
   }
   componentWillReceiveProps(nextProps) {
     // console.log('componentWillReceiveProps nextProps', nextProps);;
@@ -115,7 +135,7 @@ class ResponsiveTable extends Component {
       ));
       pageButtons.push(<li key="dot-before">...</li>);
     }
-//
+
     for (let index = start; index <= end; index += 1) {
       const inActive = ((index + 1) !== currentPage);
       if (inActive) {
@@ -150,9 +170,26 @@ class ResponsiveTable extends Component {
         </ul>
       </rb.Pagination>);
     
-    
+    var fbts= <a/>;
+    // // const filterButton = <rb.Button {...this.props.filterButtonProps}/>
+    // console.log('this.props',this.props)
+    // // const filterButton = (this.props.filterSearch)
+    // //   ? <rb.Button {...this.props.filterButtonProps}/>
+    // //   : null;
+    if(this.props.filterSearch){
+      fbts = <rb.Button {...this.props.filterButtonProps}/>
+    }
     return (
       <rb.Container>
+        {(this.props.tableSearch)
+          ? (<rb.Addons
+              {...this.props.filterAddonProps}
+            >
+              {fbts}
+              <rb.Input {...this.props.filterSearchProps}/>
+              <rb.Button {...this.props.searchButtonProps}>Search</rb.Button>
+            </rb.Addons>)
+          : null}
         <rb.Table {...this.props.tableProps}>
           <rb.Thead>
             <rb.Tr>

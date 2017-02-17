@@ -1,7 +1,7 @@
 import React, { Component, } from 'react'; 
 import { Nav, NavGroup, NavItem, Button, Container, Input, Hero, HeroHead, } from 're-bulma'; // FormHorizontal, NavToggle, ControlLabel, Group,
 import { Link, } from 'react-router';
-// import ResponsiveLink from '../ResponsiveLink';
+// import ResponsiveLink from '../ResponsiveLink';;;
 import 'font-awesome/css/font-awesome.css';
 import styles from '../../styles';
 import capitalize from 'capitalize';

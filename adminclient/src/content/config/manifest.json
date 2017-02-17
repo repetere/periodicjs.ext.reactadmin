@@ -186,15 +186,17 @@
                     "children": [{
                       "component": "ResponsiveTable",
                       "props": {
-                        "maxRows":"10",
-                        "baseUrl":"/r-admin/content/accounts?format=json",
+                        "maxRows":10,
+                        "filterSearch":true,
+                        "tableSearch":true,
+                        "baseUrl":"/r-admin/contentdata/accounts?format=json",
                         "headers": [
                           { "label": "#", "value":"--idx-ctr--" },
                           { 
                             "label": "Id", 
                             "sortid":"_id", 
                             "link":{
-                              "baseUrl":"/r-admin/content/accounts/:id",
+                              "baseUrl":"/r-admin/contentdata/accounts/:id",
                               "params":[{"key":":id","val":"_id"}]
                             },
                             "linkProps":{
@@ -229,7 +231,7 @@
         ]
       },
       "resources":{
-        "tabledata":"/r-admin/content/accounts?format=json"
+        "tabledata":"/r-admin/contentdata/accounts?format=json&limit=10"
       },
       "onFinish":"render",
       "pageData":{
