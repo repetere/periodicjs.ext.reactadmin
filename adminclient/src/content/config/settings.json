@@ -14,7 +14,10 @@
     "initialization":{
       "show_header":false,
       "show_footer":false,
-      "show_sidebar_overlay":true
+      "show_sidebar_overlay":true,
+      "refresh_manifests":true,
+      "refresh_navigation":true,
+      "refresh_components":true
     },
     "notifications":{
       "error_timeout":10000,

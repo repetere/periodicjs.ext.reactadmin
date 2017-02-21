@@ -50,7 +50,7 @@ export function getFormTextInputArea(options) {
       onChange={onChange}
       onKeyPress={keyPress}
       placeholder={formElement.placeholder||formElement.label}
-      value={this.state[ formElement.name ]} />
+      value={this.state[ formElement.name ] || initialValue} />
   </FormItem>);
 }
 

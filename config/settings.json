@@ -15,6 +15,40 @@
 			"style":{}
 		}
 	},
+	"ui":{
+    "initialization":{
+      "show_header":false,
+      "show_footer":false,
+      "show_sidebar_overlay":true,
+      "refresh_manifests":false,
+      "refresh_navigation":false,
+      "refresh_components":false
+    },
+    "notifications":{
+      "error_timeout":10000,
+      "timed_timeout":10000
+    },
+    "fixedSidebar":true,
+    "sidebarBG":"#ffffff",
+    "header":{
+      "isBold":true,
+      "color":"isBlack",
+      "buttonColor":"isWhite", 
+      "useGlobalSearch":false,
+      "useHeaderLogout":false,
+      "customButton":false,
+      "navLabelStyle":{},
+      "containerStyle":{},
+      "userNameStyle":{}
+    },
+    "footer":{
+      "navStyle":{}
+    },
+    "sidebar":{
+      "containerStyle":{},
+      "use_floating_nav":false
+    }
+  },
 	"routerHistory":"browserHistory",
 	"allHistoryOptions":"browserHistory|hashHistory|createMemoryHistory",
 	"application":{

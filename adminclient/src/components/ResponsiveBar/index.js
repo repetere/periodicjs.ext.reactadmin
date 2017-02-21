@@ -25,7 +25,7 @@ class ResponsiveBars extends Component {
       <Columns {...this.state.columnsProps} isMultiline>
         {this.state.features.map((feature, idx) => {
           return (
-            <Column size="is3">
+            <Column key={idx} size="is3">
               <Box {...this.state.boxProps}>
                 <span onClick={() => {
                   this.props.reduxRouter.push(feature.location);

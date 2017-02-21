@@ -69,36 +69,37 @@ const ui = {
     let component, componentLoadError;
     //add ?refresh=true to below component loading routes to individually reload configurations for a given component
 
-    switch (type) {
-    case constants.ui.LOGIN_COMPONENT:
-      component = constants.ui.LOGIN_COMPONENT;
-      if (!COMPONENTS[ component ]) COMPONENTS[ component ] = function (basename) {
-        return fetchComponentUtil(`${basename}/load/components/login`);
-      };
-      break;
-    case constants.ui.MAIN_COMPONENT:
-      component = constants.ui.MAIN_COMPONENT;
-      if (!COMPONENTS[ component ]) COMPONENTS[ component ] = function (basename) {
-        return fetchComponentUtil(`${basename}/load/components/main`);
-      };
-      break;
-    case constants.ui.ERROR_COMPONENTS:
-      component = constants.ui.ERROR_COMPONENTS;
-      if (!COMPONENTS[ component ]) COMPONENTS[ component ] = function (basename) {
-        return fetchComponentUtil(`${basename}/load/components/error`);
-      };
-      break;
-    default:
-      component = false;
-    }
     return function (dispatch, getState) {
+      let state = getState();
+      switch (type) {
+      case constants.ui.LOGIN_COMPONENT:
+        component = constants.ui.LOGIN_COMPONENT;
+        if (!COMPONENTS[ component ]) COMPONENTS[ component ] = function (basename) {
+          return fetchComponentUtil(`${basename}/load/components/login${(state.settings.ui.initialization.refresh_components)?'?refresh=true':''}`);
+        };
+        break;
+      case constants.ui.MAIN_COMPONENT:
+        component = constants.ui.MAIN_COMPONENT;
+        if (!COMPONENTS[ component ]) COMPONENTS[ component ] = function (basename) {
+          return fetchComponentUtil(`${basename}/load/components/main${(state.settings.ui.initialization.refresh_components)?'?refresh=true':''}`);
+        };
+        break;
+      case constants.ui.ERROR_COMPONENTS:
+        component = constants.ui.ERROR_COMPONENTS;
+        if (!COMPONENTS[ component ]) COMPONENTS[ component ] = function (basename) {
+          return fetchComponentUtil(`${basename}/load/components/error${(state.settings.ui.initialization.refresh_components)?'?refresh=true':''}`);
+        };
+        break;
+      default:
+        component = false;
+      }
       if (!component) {
         componentLoadError = new Error(`Can't fetch component - ${component}`);
           // console.log({ componentLoadError });
         dispatch(notification.errorNotification(componentLoadError));
         throw componentLoadError;
       }
-      let state = getState();
+      // let state = getState();
       let basename = (typeof state.settings.adminPath ==='string' && state.settings.adminPath !=='/') ? state.settings.basename+state.settings.adminPath : state.settings.basename;
       dispatch({ type: `INIT_${ component }`, });
       return COMPONENTS[component](basename)()

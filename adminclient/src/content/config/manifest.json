@@ -189,6 +189,7 @@
                         "limit":10,
                         "filterSearch":true,
                         "tableSearch":true,
+                        "flattenRowData":true,
                         "baseUrl":"/r-admin/contentdata/accounts?format=json",
                         "dataMap":[{
                           "key":"rows",

@@ -218,7 +218,7 @@ const user = {
       delete headers.clientid_default;
       options.headers = Object.assign({}, options.headers, headers);
       //add ?refresh=true to fetch route below to reload navigtion configuration
-      return utilities.fetchComponent(`${ basename }/load/navigation`, options)()
+      return utilities.fetchComponent(`${ basename }/load/navigation${(state.settings.ui.initialization.refresh_navigation)?'?refresh=true':''}`, options)()
         .then(response => {
           dispatch(this.navigationSuccessResponse(response));
         }, e => dispatch(this.navigationErrorResponse(e)));
@@ -328,6 +328,7 @@ const user = {
   fetchConfigurations (options = {}) {
     return (dispatch, getState) => {
       let state = getState();
+      // console.log({ state, });
       if ((state.manifest && state.manifest.hasLoaded) || (state.settings.user && state.settings.user.navigation && state.settings.user.navigation.hasLoaded) || (state.settings.user && state.settings.user.preferences && state.settings.user.preferences.hasLoaded)) {
         let operations = [];
         if (!state.manifest || (state.manifest && !state.manifest.hasLoaded)) operations.push(manifest.fetchManifest(options)(dispatch, getState));
@@ -348,7 +349,7 @@ const user = {
         delete headers.clientid_default;
         options.headers = Object.assign({}, options.headers, headers);
         //add ?refresh=true to fetch route below to reload configurations
-        return utilities.fetchComponent(`${basename}/load/configurations`, options)()
+        return utilities.fetchComponent(`${basename}/load/configurations${(state.settings.ui.initialization.refresh_components)?'?refresh=true':''}`, options)()
           .then(response => {
             if (response.result === 'error') return Promise.reject(new Error(response.data.error));
             let responses = Object.keys(response.data.settings).reduce((result, key) => {

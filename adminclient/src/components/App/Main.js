@@ -74,6 +74,7 @@ class MainApp extends Component{
               //   this.handleErrorNotification({ message: 'Access Token Expired' + expiredTokenError, }, expiredTokenError);
               //   clearTimeout(task);
               // }, 1000);
+              this.props.logoutUser();
               throw expiredTokenError;
             } else {
               // console.log('saving logged in user', { json, });

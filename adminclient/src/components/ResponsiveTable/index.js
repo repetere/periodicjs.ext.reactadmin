@@ -5,6 +5,8 @@ import moment from 'moment';
 import utilities from '../../util';
 import qs from 'querystring';
 import debounce from 'debounce';
+import flatten from 'flat';
+
 // import styles from '../styles';
 
 const propTypes = {
@@ -25,6 +27,8 @@ const defaultProps = {
   numPages: 1,
   numItems: 0,
   numButtons: 1,
+  flattenRowData: false,
+  flattenRowDataOptions: {},
   searchTable:false,
   filterSearch:false,
   filterAddonProps:{
@@ -48,11 +52,14 @@ class ResponsiveTable extends Component {
   constructor(props) {
     super(props);
     // console.log({ props });
-    // let rows = props.rows || [];
+    let rows = props.rows || [];
+    if (props.flattenRowData) {
+      rows = rows.map(row => flatten(row, props.flattenRowDataOptions));
+    }
     // let itemCount =  props.rows.length || props.itemCount;;
     this.state = {
       headers: props.headers || [],
-      rows: props.rows || [],
+      rows:rows,
       hasPagination: props.hasPagination,
       hasHeader: props.hasHeader,
       hasFooter: props.hasFooter,
@@ -66,12 +73,17 @@ class ResponsiveTable extends Component {
       sortOrder: '',
     };
     this.searchFunction = debounce(this.updateTableData, 200);
+    // console.log('this.state', this.state);
   }
   componentWillReceiveProps(nextProps) {
-    // console.log('componentWillReceiveProps nextProps', nextProps);;
+    let rows = nextProps.rows || [];
+    if (nextProps.flattenRowData) {
+      rows = rows.map(row => flatten(row, nextProps.flattenRowDataOptions));
+    }
+
     this.setState({
       headers: nextProps.headers || [],
-      rows: nextProps.rows || [],
+      rows: rows,
       hasPagination: nextProps.hasPagination,
       hasHeader: nextProps.hasHeader,
       hasFooter: nextProps.hasFooter,
@@ -81,6 +93,7 @@ class ResponsiveTable extends Component {
       numPages: Math.ceil(nextProps.numItems / nextProps.limit),
       numButtons: nextProps.numButtons,
     });
+    // console.log('this.state', this.state);
   }
   updateTableData(options) {
     let newSortOptions = {};
@@ -112,8 +125,19 @@ class ResponsiveTable extends Component {
     utilities.fetchComponent(fetchURL, { headers, })()  
       .then(response => { 
         let updatedState = {};
+        // if (this.props.flattenRowData) {
+        //   response = flatten(response, this.props.flattenRowDataOptions);
+        // }
+        // console.log({ response });
         this.props.dataMap.forEach(data => { 
-          updatedState[ data.key ] = response[ data.value ];
+          if (data.key === 'rows') {
+            let rows = response[ data.value ] || [];
+            if (this.props.flattenRowData) {
+              updatedState[ data.key ] = rows.map(row => flatten(row, this.props.flattenRowDataOptions));
+            }
+          } else {
+            updatedState[ data.key ] = response[ data.value ];
+          }
         });
         updatedState.numPages = Math.ceil(updatedState.numItems / this.props.limit);
         updatedState.limit = this.props.limit;
