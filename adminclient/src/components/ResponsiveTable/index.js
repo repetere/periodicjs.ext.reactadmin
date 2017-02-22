@@ -151,10 +151,10 @@ class ResponsiveTable extends Component {
   formatValue(value, row, options) {
     // console.log({ value, row, options });
     let returnValue = value;
-    if (typeof options.idx !=='undefined' && typeof returnValue!=='undefined' && returnValue.indexOf('--idx--')!==-1) {
+    if (typeof options.idx !=='undefined' && typeof returnValue==='string' && returnValue.indexOf('--idx--')!==-1) {
       returnValue = returnValue.replace('--idx--', options.idx);
     }
-    if (typeof options.idx !=='undefined' && typeof returnValue!=='undefined' && returnValue.indexOf('--idx-ctr--')!==-1) {
+    if (typeof options.idx !=='undefined' && typeof returnValue==='string' && returnValue.indexOf('--idx-ctr--')!==-1) {
       returnValue = returnValue.replace('--idx-ctr--', (options.idx+1));
     }
     if (options.momentFormat) {
@@ -299,7 +299,7 @@ class ResponsiveTable extends Component {
             <rb.Thead>
               <rb.Tr>
                 {this.props.headers.map((header, idx) => (
-                  <rb.Th key={idx}>{(header.sortable)
+                  <rb.Th key={idx} {...header.headerColumnProps}>{(header.sortable)
                     ? (<a href="#" {...this.props.headerLinkProps} onClick={() => {
                       this.updateTableData({ sort: header.sortid, });
                     }}>{header.label}</a>)
@@ -315,7 +315,7 @@ class ResponsiveTable extends Component {
                     // console.log({header});
                     if (header.link) {
                       return (
-                        <rb.Td key={`row${rowIndex}col${colIndex}`}>
+                        <rb.Td key={`row${rowIndex}col${colIndex}`} {...header.columnProps}>
                           <Link {...header.linkProps} to={this.getHeaderLinkURL(header.link, row)}>{
                             this.formatValue(
                               row[ header.sortid ] || header.value,
@@ -329,7 +329,7 @@ class ResponsiveTable extends Component {
                       );
                     } else {
                       return (
-                        <rb.Td key={`row${rowIndex}col${colIndex}`}>
+                        <rb.Td key={`row${rowIndex}col${colIndex}`} {...header.columnProps}>
                           {
                             this.formatValue(
                               row[ header.sortid ] || header.value,

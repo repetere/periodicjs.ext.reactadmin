@@ -1,5 +1,5 @@
 import React, { Component, PropTypes, } from 'react';
-import { Card, CardHeader, CardHeaderIcon, CardContent, CardHeaderTitle, } from 're-bulma';
+import { Card, CardHeader, CardHeaderIcon, CardContent, CardHeaderTitle, Image } from 're-bulma';
 import 'font-awesome/css/font-awesome.css';
 // import styles from '../../styles';
 
@@ -21,6 +21,8 @@ const defaultProps = {
   cardTitle: 'Not Set',
   display: true,
   icon: 'fa fa-angle-down',
+  iconDown: 'fa fa-angle-down',
+  iconUp: 'fa fa-angle-right',
 };
 
 class ResponsiveCard extends Component {
@@ -32,6 +34,8 @@ class ResponsiveCard extends Component {
       headerTextColor: props.headerTextColor,
       display: props.display,
       icon: props.icon,
+      iconDown: props.iconDown,
+      iconUp: props.iconUp,
       cardTitle: props.cardTitle,
       cardProps: props.cardProps,
     };
@@ -40,19 +44,19 @@ class ResponsiveCard extends Component {
   expandCard() {
     this.setState({
       display: (this.state.display === true) ? false : true,
-      icon: (this.state.icon === 'fa fa-angle-down') ? 'fa fa-angle-right' : 'fa fa-angle-down',
+      icon: (this.state.display) ? this.props.iconUp : this.props.iconDown,
     });
   }
 
   render() {
-    let cardIcon = <CardHeaderIcon icon={this.state.icon} onClick={() => this.expandCard()} />;
+    let cardIcon = (this.props.iconImage) ? <Image src={this.state.icon} size="is16X16"/> : <CardHeaderIcon icon={this.state.icon} onClick={() => this.expandCard()} />;
     let leftIcon = (this.props.leftIcon)?cardIcon:null;
     let rightIcon = (!this.props.leftIcon)?cardIcon:null;
     const fullCard = (
       <Card isFullwidth style={this.props.cardStyle}>
-        <CardHeader>
+        <CardHeader style={this.props.headerStyle}>
           {leftIcon}
-          <CardHeaderTitle style={this.state.headerColor}>
+          <CardHeaderTitle style={this.props.headerTitleStyle}>
             {this.state.cardTitle}
           </CardHeaderTitle>
           {rightIcon}

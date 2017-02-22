@@ -58,7 +58,7 @@ export function getRenderedComponent(componentObject, resources) {
         : componentObject.children
     );
   } catch (e) {
-    // console.error(e);
+    console.error(e);
     return createElement('div', {}, e.toString());
   }
 }

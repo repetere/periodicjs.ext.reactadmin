@@ -34,7 +34,7 @@ class AppHeader extends Component {
       <NavItem style={Object.assign({
         justifyContent: 'flex-start',
       }, styles.fullWidth)}>
-        <span style={Object.assign({ fontSize:'20px' ,}, this.props.settings.ui.header.navLabelStyle)}>{this.props.ui.nav_label}</span>
+        <span style={Object.assign({ fontSize:'20px', }, this.props.settings.ui.header.navLabelStyle)}>{this.props.ui.nav_label}</span>
       </NavItem>) : null;
     return (
       <Hero color={this.props.settings.ui.header.color} isBold={this.props.settings.ui.header.isBold} style={Object.assign(styles.fixedTop, styles.navContainer, this.props.settings.ui.header.containerStyle)}

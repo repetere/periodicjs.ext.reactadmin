@@ -3,37 +3,31 @@ import { Columns, Card, CardContent, CardFooter, CardFooterItem, Notification, C
 import ResponsiveCard from '../ResponsiveCard';
 import utilities from '../../util';
 import { getFormTextInputArea, getFormCheckbox, getFormSubmit, getCardFooterItem, } from './FormElements';
+import flatten from 'flat';
 
 class ResponsiveForm extends Component{
   constructor(props) {
     super(props);
+    let formdata = (props.flattenFormData) ? flatten(props.formdata, props.flattenDataOptions) : props.formdata;
+    // console.log('form state', { formdata, });
     this.state = Object.assign({
       formDataError: null,
       formDataStatusDate: new Date(),
       formDataLists:{},
       formDataTables:{},
-    }, props.formdata);
+    }, formdata);
     this.datalists = {};
-    // props.formgroups.forEach((formgroup) => {
-    //   formgroup.formElements.forEach((formelement) => {
-    //     if (formelement.type === 'datalist') {
-    //       this.datalists[ formelement.name ] = {
-    //         data: formelement.data || [],
-    //         status: null,
-    //       };
-    //       this.state.formDataLists[ formelement.name ] = {
-    //         data: [], //formelement.data || [],
-    //         status: null,
-    //       };
-    //     }
-    //   });
-    // });
 
     this.getFormSubmit = getFormSubmit.bind(this);
     this.getFormTextInputArea = getFormTextInputArea.bind(this);
     this.getFormCheckbox = getFormCheckbox.bind(this);
     this.getCardFooterItem = getCardFooterItem.bind(this);
   }
+  componentWillReceiveProps(nextProps) {
+    let formdata = (nextProps.flattenFormData) ? flatten(nextProps.formdata, nextProps.flattenDataOptions) : nextProps.formdata;
+    this.setState(formdata);
+  }
+  
   submitForm() {
     // console.log('submitting Form', this);
     let formdata = Object.assign({}, this.state);

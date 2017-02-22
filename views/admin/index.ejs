@@ -6,12 +6,13 @@
     <link rel="shortcut icon" href="/favicon.png">
     <title><%- locals.extension.reactadmin.settings.title || locals.extension.reactadmin.settings.name || 'Welcome' %></title>
     <link href="/extensions/periodicjs.ext.reactadmin/static/css/main.fdc660ef.css" rel="stylesheet">
+    <%- (locals.extension.reactadmin.settings.custom_css_stylesheet)?`<link href="${locals.extension.reactadmin.settings.custom_css_stylesheet}" rel="stylesheet">`:'' %>
     <script type="text/javascript">
       <%- locals.viewhelper.passObjToClient(locals.extension.reactadmin.settings,"__padmin") %>
     </script>
   </head>
   <body>
     <div id="root"></div>
-    <script type="text/javascript" src="/extensions/periodicjs.ext.reactadmin/static/js/main.eb22a8e0.js"></script>
+    <script type="text/javascript" src="/extensions/periodicjs.ext.reactadmin/static/js/main.9c1b149a.js"></script>
   </body>
 </html>

@@ -162,87 +162,172 @@
                 "healthcheckStatus"
               ]
             },
-            "children":[
-              {
-                "component":"Container",
-                "props":{
-
+            "children":[{
+              "component":"Container",
+              "props":{
+              },
+              "children":[
+                {
+                  "component":"div",
+                  "props":{
+                    "dangerouslySetInnerHTML":{
+                      "__html":"<h1>Accounts: the most used line in code</h1>"
+                    }
+                  }
                 },
-                "children":[
-                  {
-                    "component":"div",
-                    "props":{
-                      "dangerouslySetInnerHTML":{
-                        "__html":"<h1>Accounts: the most used line in code</h1>"
-                      }
+                {
+                  "component": "ResponsiveCard",
+                  "props": {
+                    "cardTitle": "Application Results(# Records)",
+                    "leftIcon":true
+                  },
+                  "children": [{
+                    "component": "ResponsiveTable",
+                    "props": {
+                      "limit":10,
+                      "filterSearch":true,
+                      "tableSearch":true,
+                      "flattenRowData":true,
+                      "baseUrl":"/r-admin/contentdata/accounts?format=json",
+                      "dataMap":[{
+                        "key":"rows",
+                        "value":"accounts"
+                      },{
+                        "key":"numItems",
+                        "value":"accountscount"
+                      },{
+                        "key":"numPages",
+                        "value":"accountpages"
+                      }],
+                      "headerLinkProps":{
+                        "style":{
+                          "textDecoration":"none"
+                        }
+                      },
+                      "headers": [
+                        { "label": "#", "value":"--idx-ctr--" },
+                        { 
+                          "label": "Id", 
+                          "sortid":"_id", 
+                          "link":{
+                            "baseUrl":"/r-admin/contentdata/accounts/:id",
+                            "params":[{"key":":id","val":"_id"}]
+                          },
+                          "linkProps":{
+                            "style":{
+                              "textDecoration":"none"
+                            }
+                          } 
+                        },
+                        { "label": "Email", "sortid":"email", "sortable":true },
+                        { 
+                          "label": "First Name", 
+                          "sortid":"firstname", 
+                          "sortable":true, 
+                          "columnProps":{
+                            "style":{
+                              "backgroundColor":"lightgrey",
+                              "color":"grey"
+                            }
+                          }, 
+                          "headerColumnProps":{
+                            "style":{
+                              "backgroundColor":"black",
+                              "color":"white"
+                            }
+                          }
+                        }, 
+                        { "label": "Last Name", "sortid":"lastname", "sortable":true }, 
+                        { "label": "Create Date", "sortid":"createdat", "momentFormat":"lll", "sortable":true }
+                      ]
+                    },
+                    "asyncprops":{
+                      "rows":[
+                        "tabledata","accounts"
+                      ],
+                      "numItems":[
+                        "tabledata","accountscount"
+                      ],
+                      "numPages":[
+                        "tabledata","accountpages"
+                      ]
+                    }
+                  }]
+                },
+                {
+                  "component":"ResponsiveForm",
+                  "props":{
+                    "notificationForm":true,
+                    "flattenFormData":true,
+                    "formgroups":[{
+                      "formElements":[{
+                        "type":"text",
+                        "name":"0.email",
+                        "label":"Email",
+                        "value":"email"
+                      }]
+                    }]
+                  },
+                  "asyncprops":{
+                    "formdata":["tabledata","accounts"]
+                  }
+                },
+                {
+                  "component": "Tabs",
+                  "props":{
+                    "style":{
                     }
                   },
-                  {
-                    "component": "ResponsiveCard",
-                    "props": {
-                      "cardTitle": "Application Results(# Records)",
-                      "leftIcon":true
+                  "children": [{
+                    "component": "TabGroup",
+                    "props":{
+                      "className":"breadcrumb",
+                      "style":{
+                        "border":"1px solid black",
+                        "color":"red"
+                      }
                     },
                     "children": [{
-                      "component": "ResponsiveTable",
+                      "component": "Tab",
                       "props": {
-                        "limit":10,
-                        "filterSearch":true,
-                        "tableSearch":true,
-                        "flattenRowData":true,
-                        "baseUrl":"/r-admin/contentdata/accounts?format=json",
-                        "dataMap":[{
-                          "key":"rows",
-                          "value":"accounts"
-                        },{
-                          "key":"numItems",
-                          "value":"accountscount"
-                        },{
-                          "key":"numPages",
-                          "value":"accountpages"
-                        }],
-                        "headerLinkProps":{
-                          "style":{
-                            "textDecoration":"none"
-                          }
-                        },
-                        "headers": [
-                          { "label": "#", "value":"--idx-ctr--" },
-                          { 
-                            "label": "Id", 
-                            "sortid":"_id", 
-                            "link":{
-                              "baseUrl":"/r-admin/contentdata/accounts/:id",
-                              "params":[{"key":":id","val":"_id"}]
-                            },
-                            "linkProps":{
-                              "style":{
-                                "textDecoration":"none"
-                              }
-                            } 
-                          },
-                          { "label": "Email", "sortid":"email", "sortable":true },
-                          { "label": "First Name", "sortid":"firstname", "sortable":true }, 
-                          { "label": "Last Name", "sortid":"lastname", "sortable":true }, 
-                          { "label": "Create Date", "sortid":"createdat", "momentFormat":"lll", "sortable":true }
-                        ]
+                        "isActive": true,
+                        "style": {}
                       },
-                      "asyncprops":{
-                        "rows":[
-                          "tabledata","accounts"
-                        ],
-                        "numItems":[
-                          "tabledata","accountscount"
-                        ],
-                        "numPages":[
-                          "tabledata","accountpages"
-                        ]
-                      }
+                      "children": [{
+                        "component": "ResponsiveButton",
+                        "props": {
+                          "onClick": "func:this.props.reduxRouter.push",
+                          "onclickProps": "/crm/customers",
+                          "style": {}
+                        },
+                        "children": "customer"      
+                      }]
+                    },
+                    {
+                      "component": "Tab",
+                      "props": {
+                        "isActive": false,
+                        "style": {}
+                      },
+                      "children": [{
+                        "component": "ResponsiveButton",
+                        "props": {
+                          "onClick": "func:this.props.reduxRouter.push",
+                          "onclickProps": "/crm/applications",
+                          "onclickBaseUrl":"/r-admin/contentdata/accounts/:id",
+                          "onclickLinkParams":[{"key":":id","val":"headerHost"}],
+                          "style": {}
+                        },
+                        "asyncprops":{
+                          "onclickPropObject":["tabledata","request"]
+                        },
+                        "children": "application"      
+                      }]
                     }]
-                  }
-                ]
-              }
-            ]
+                  }]
+                }
+              ]
+            }]
           }
         ]
       },

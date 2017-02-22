@@ -18,11 +18,22 @@ class ResponsiveButton extends Component {
   // constructor(props) {
   //   super(props);
   // }
-  
+  getButtonLink(baseurl, params, prop) {
+    let returnLink = baseurl;
+    if (params && params.length > 0) {
+      params.forEach((param) => {
+        returnLink = returnLink.replace(param.key, prop[ param.val ]);
+      });
+    }
+    return returnLink;
+  }
   render() {
     let onclickFunction = (data) => {
       console.log('ResponsiveButton', { data, });
     };
+    let onclickProp = (this.props.onclickBaseUrl) ? this.getButtonLink(this.props.onclickBaseUrl, this.props.onclickLinkParams, this.props.onclickPropObject) : this.props.onclickProps;
+
+    console.info('onclickProp', onclickProp);
     if (typeof this.props.onClick === 'string' && this.props.onClick.indexOf('func:this.props.reduxRouter') !== -1) { 
       onclickFunction = this.props.reduxRouter[ this.props.onClick.replace('func:this.props.reduxRouter.', '') ];
     } else if (typeof this.props.onClick === 'string' && this.props.onClick.indexOf('func:this.props') !== -1) { 
@@ -33,7 +44,7 @@ class ResponsiveButton extends Component {
         {...this.props.buttonProps}
         style={Object.assign({ cursor: 'pointer', }, this.props.style)}
         onClick={() => {
-          onclickFunction(this.props.onclickProps);
+          onclickFunction(onclickProp);
         }}
         >
         {this.props.children}
@@ -43,7 +54,7 @@ class ResponsiveButton extends Component {
         {...this.props.spanProps}
         style={Object.assign({ cursor: 'pointer', }, this.props.style)}
         onClick={() => {
-          onclickFunction(this.props.onclickProps);
+          onclickFunction(onclickProp);
         }}
         >
         {this.props.children}

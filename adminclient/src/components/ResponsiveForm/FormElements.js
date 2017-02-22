@@ -45,7 +45,7 @@ export function getFormTextInputArea(options) {
   }
 
   return (<FormItem key={i} {...formElement.layoutProps} >
-    {(formElement.layoutProps.horizontalform) ? (<ControlLabel>{formElement.label}</ControlLabel>) : (<Label>{formElement.label}</Label>)}  
+    {(formElement.layoutProps && formElement.layoutProps.horizontalform) ? (<ControlLabel>{formElement.label}</ControlLabel>) : (<Label>{formElement.label}</Label>)}  
     <Input {...formElement.passProps}
       onChange={onChange}
       onKeyPress={keyPress}

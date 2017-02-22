@@ -120,18 +120,18 @@ class MainApp extends Component{
     // console.log('this.state', this.state);
     let fixedSider = (this.state.settings.ui.fixedSidebar) ? { position: 'fixed', zIndex:1000, } : {};
     let sidebarColumn = (this.state.settings.ui.sidebar.use_floating_nav && this.state.ui.sidebar_is_open)
-      ? (<FloatingNav {...this.state} />)
+      ? (<FloatingNav className="reactadmin__app_floating_sidebar" {...this.state} />)
       : (this.state.ui.sidebar_is_open)
-        ? (<Column size="isNarrow" style={Object.assign({}, fixedSider, styles.fullMinHeight, styles.fullHeight)}>
-          <AppSidebar {...this.state} />
+        ? (<Column className="reactadmin__app_container_sidebar" size="isNarrow" style={Object.assign({}, fixedSider, styles.fullMinHeight, styles.fullHeight)}>
+          <AppSidebar className="reactadmin__app_sidebar" {...this.state} />
         </Column>)
         : null;
     
     let headerNav = (this.state.settings.ui.initialization.show_header || this.state.user.isLoggedIn)
-      ? (<AppHeader {...this.state} />)
+      ? (<AppHeader className="reactadmin__app_header" {...this.state} />)
     : null;
     let footerNav = (this.state.settings.ui.initialization.show_footer || this.state.user.isLoggedIn)
-      ? (<AppFooter {...this.state} />)
+      ? (<AppFooter className="reactadmin__app_footer" {...this.state} />)
     : null;  
 
     let overlay = (this.props.ui.sidebar_is_open && this.state.settings.ui.initialization.show_sidebar_overlay)?(<div style={styles.sidebarOverlay} onClick={this.props.toggleUISidebar} ></div>):null;
@@ -139,16 +139,16 @@ class MainApp extends Component{
     return (
       (this.state.ui.ui_is_loaded === false)
         ? (<AppSectionLoading><AppOverlay {...this.state}/></AppSectionLoading>)
-        : (<div>
+        : (<div className="reactadmin__app_div_content">
           {/*<div style={styles.redBkgrd}>*/}
-          <AppOverlay {...this.state}/>
+          <AppOverlay className="reactadmin__app_overlay" {...this.state}/>
           {headerNav}
-          <main style={styles.fullHeight}>
+          <main style={styles.fullHeight} className="reactadmin__main">
             {/*DEBUG HERE */}
-            <Columns style={Object.assign({}, styles.fullMinHeight, styles.fullHeight)}>
+            <Columns className="reactadmin__main_container" style={Object.assign({}, styles.fullMinHeight, styles.fullHeight)}>
               {sidebarColumn}
               {overlay}
-              <Column style={styles.fullMinHeight}>
+              <Column  className="reactadmin__main_content" style={styles.fullMinHeight}>
                 {this.props.children}
               </Column>
             </Columns>

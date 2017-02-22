@@ -38,7 +38,9 @@ const defaultStyles = {
     display:'none',
   },
   iconButton: {
-    paddingRight:3,
+    paddingRight: 3,
+    border: 'none',
+    fontSize:22,
   },
 };
 
