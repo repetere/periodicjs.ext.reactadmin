@@ -46,7 +46,7 @@ export function getFormTextInputArea(options) {
   }
 
   return (<FormItem key={i} {...formElement.layoutProps} >
-    {(formElement.layoutProps && formElement.layoutProps.horizontalform) ? (<ControlLabel>{formElement.label}</ControlLabel>) : (<Label>{formElement.label}</Label>)}  
+    {(formElement.layoutProps && formElement.layoutProps.horizontalform) ? (<ControlLabel {...formElement.labelProps}>{formElement.label}</ControlLabel>) : (<Label {...formElement.labelProps}>{formElement.label}</Label>)}  
     <Input {...formElement.passProps}
       onChange={onChange}
       onKeyPress={keyPress}
@@ -74,7 +74,7 @@ export function getFormSelect(options) {
   }  
 
   return (<FormItem key={i} {...formElement.layoutProps} >
-    {(formElement.layoutProps && formElement.layoutProps.horizontalform) ? (<ControlLabel>{formElement.label}</ControlLabel>) : (<Label>{formElement.label}</Label>)}  
+    {(formElement.layoutProps && formElement.layoutProps.horizontalform) ? (<ControlLabel {...formElement.labelProps}>{formElement.label}</ControlLabel>) : (<Label {...formElement.labelProps}>{formElement.label}</Label>)}  
     <Select {...formElement.passProps}
       onChange={onChange}
       placeholder={formElement.placeholder||formElement.label}
@@ -97,7 +97,7 @@ export function getFormCheckbox(options) {
     };
   }
   return (<FormItem key={i} {...formElement.layoutProps} >
-    {(formElement.layoutProps.horizontalform) ? (<ControlLabel>{formElement.label}</ControlLabel>) : (<Label>{formElement.label}</Label>)}  
+    {(formElement.layoutProps.horizontalform) ? (<ControlLabel {...formElement.labelProps}>{formElement.label}</ControlLabel>) : (<Label {...formElement.labelProps}>{formElement.label}</Label>)}  
     <Checkbox {...formElement.passProps}
       onChange={onValueChange.bind(this)} >
         {formElement.placeholder}
@@ -122,7 +122,11 @@ export function getFormCode(options) {
     };
   }
 
-  return (<RACodeMirror key={i} {...CodeMirrorProps} onChange={onValueChange.bind(this)} />);
+  return (<FormItem key={i} {...formElement.layoutProps} >
+    {(formElement.layoutProps.horizontalform) ? (<ControlLabel {...formElement.labelProps}>{formElement.label}</ControlLabel>) : (<Label {...formElement.labelProps}>{formElement.label}</Label>)}  
+    <RACodeMirror key={i} {...CodeMirrorProps} onChange={onValueChange.bind(this)} />
+  </FormItem>
+  );
 }
 
 

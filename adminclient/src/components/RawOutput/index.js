@@ -1,8 +1,15 @@
 import React from 'react';
 
 const RawOutput = (props) => {
-  let displayProp = (props.select) ? props[ props.select ] : props;
-  let displayData = (props.display) ? displayProp.toString() : JSON.stringify(displayProp, null, 2);
+  let displayProp='';
+  let displayData='';
+  try {
+    displayProp = (props.select) ? props[ props.select ] : props;
+    displayData = (props.display) ? displayProp.toString() : JSON.stringify(displayProp, null, 2);
+  }
+  catch (e) {
+    console.error(e);
+  }  
   switch (props.type) {
   case 'inline':
     return (
