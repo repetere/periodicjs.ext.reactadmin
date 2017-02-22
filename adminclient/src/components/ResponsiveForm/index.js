@@ -1,8 +1,9 @@
 import React, { Component, } from 'react';
 import { Columns, Card, CardContent, CardFooter, CardFooterItem, Notification, Column, } from 're-bulma'; 
 import ResponsiveCard from '../ResponsiveCard';
+import { getRenderedComponent, } from '../AppLayoutMap';
 import utilities from '../../util';
-import { getFormTextInputArea, getFormCheckbox, getFormSubmit, getCardFooterItem, } from './FormElements';
+import { getFormTextInputArea, getFormCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, } from './FormElements';
 import flatten from 'flat';
 
 class ResponsiveForm extends Component{
@@ -18,10 +19,13 @@ class ResponsiveForm extends Component{
     }, formdata);
     this.datalists = {};
 
+    this.getRenderedComponent = getRenderedComponent.bind(this);
     this.getFormSubmit = getFormSubmit.bind(this);
+    this.getFormCode = getFormCode.bind(this);
     this.getFormTextInputArea = getFormTextInputArea.bind(this);
     this.getFormCheckbox = getFormCheckbox.bind(this);
     this.getCardFooterItem = getCardFooterItem.bind(this);
+    this.getFormSelect = getFormSelect.bind(this);
   }
   componentWillReceiveProps(nextProps) {
     let formdata = (nextProps.flattenFormData) ? flatten(nextProps.formdata, nextProps.flattenDataOptions) : nextProps.formdata;
@@ -122,6 +126,12 @@ class ResponsiveForm extends Component{
           return this.getFormTextInputArea({ formElement,  i:j, formgroup, });
         } else if (formElement.type === 'checkbox') {
           return this.getFormCheckbox({ formElement,  i:j, formgroup, });
+        } else if (formElement.type === 'code') {
+          return this.getFormCode({ formElement,  i:j, formgroup, }); 
+        } else if (formElement.type === 'select') {
+          return this.getFormSelect({ formElement,  i:j, formgroup, }); 
+        } else if (formElement.type === 'layout') {
+          return this.getRenderedComponent(formElement.value); 
         } else if (formElement.type === 'submit') {
           return this.getFormSubmit({ formElement,  i:j, formgroup, }); 
         } else {

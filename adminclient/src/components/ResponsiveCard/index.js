@@ -53,7 +53,7 @@ class ResponsiveCard extends Component {
     let leftIcon = (this.props.leftIcon)?cardIcon:null;
     let rightIcon = (!this.props.leftIcon)?cardIcon:null;
     const fullCard = (
-      <Card isFullwidth style={this.props.cardStyle}>
+      <Card {...this.props.cardProps} isFullwidth style={this.props.cardStyle}>
         <CardHeader style={this.props.headerStyle}>
           {leftIcon}
           <CardHeaderTitle style={this.props.headerTitleStyle}>

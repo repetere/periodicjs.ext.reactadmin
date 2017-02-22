@@ -33,7 +33,7 @@ class ModalUI extends Component {
     super(...arguments);
     this.state = {
       ui_is_loaded: false,
-      async_data_is_loaded: false
+      async_data_is_loaded: false,
     };
     this.uiLayout = {};
     this.title = '';
@@ -49,7 +49,7 @@ class ModalUI extends Component {
     this.title = this.props.title;
     this.footer = this.props.footer;
     this.text = this.props.text;
-    this.setState({ ui_is_loaded: false, async_data_is_loaded: false });
+    this.setState({ ui_is_loaded: false, async_data_is_loaded: false, });
   }
   componentDidMount () {
     this.handleComponentLifecycle();

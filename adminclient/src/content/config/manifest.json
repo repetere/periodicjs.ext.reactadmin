@@ -254,17 +254,64 @@
                     }
                   }]
                 },
+                
                 {
                   "component":"ResponsiveForm",
                   "props":{
                     "notificationForm":true,
                     "flattenFormData":true,
+                    "onSubmit":"func:this.props.debug",
                     "formgroups":[{
                       "formElements":[{
                         "type":"text",
                         "name":"0.email",
                         "label":"Email",
                         "value":"email"
+                      },{
+                        "type":"layout",
+                        "value":{
+                          "component":"div",
+                          "children":[{
+                            "component":"Title",
+                            "size":"is2",
+                            "children":"random text"
+                          },{
+                            "component":"span",
+                            "children":"random text"
+                          }]
+                        }
+                      },{
+                        "type":"submit",
+                        "value":"debug"
+                      
+                      }]
+                    },{
+                      "formElements":[{
+                        "type":"code",
+                        "name":"jsCode",
+                        "passProps": {
+                          "mode": "javascript"
+                        },
+                        "value":"in here for in here"
+                 
+                      },{
+                        "type":"select",
+                        "name":"testSelect",
+                        "label":"status",
+                        "value":"off",
+                        "options":[{
+                          "label":"true",
+                          "value":true
+                        },{
+                          "label":"false",
+                          "value":false
+                        },{
+                          "label":"Turn Off",
+                          "value":"off"
+                        },{
+                          "label":"Turn On",
+                          "value":"on"
+                        }]
                       }]
                     }]
                   },
