@@ -18,7 +18,7 @@ const defaultProps = {
   cardStyle: {
     marginBottom: '20px',
   },
-  cardTitle: 'Not Set',
+  cardTitle: '',
   display: true,
   icon: 'fa fa-angle-down',
   iconDown: 'fa fa-angle-down',
@@ -49,7 +49,7 @@ class ResponsiveCard extends Component {
   }
 
   render() {
-    let cardIcon = (this.props.iconImage) ? <Image src={this.state.icon} size="is16X16"/> : <CardHeaderIcon icon={this.state.icon} onClick={() => this.expandCard()} />;
+    let cardIcon = (this.props.iconImage) ? <Image src={this.state.icon} {...this.props.iconImage} onClick={() => this.expandCard()}/> : <CardHeaderIcon icon={this.state.icon} onClick={() => this.expandCard()} />;
     let leftIcon = (this.props.leftIcon)?cardIcon:null;
     let rightIcon = (!this.props.leftIcon)?cardIcon:null;
     const fullCard = (

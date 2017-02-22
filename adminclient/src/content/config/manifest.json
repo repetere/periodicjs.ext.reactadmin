@@ -325,6 +325,18 @@
                       }]
                     }]
                   }]
+                },
+                {
+                  "component":"ResponsiveCard",
+                  "props":{
+                    "iconImage":{
+                      "size":"is48X48"
+                    },
+                    "icon":"https://s3-us-west-2.amazonaws.com/promisefinancial.com/cloudfiles%2F2015%2F07%2F03%2F800x800-yaw-etse-portrait-min.jpg",
+                    "iconDown":"https://s3-us-west-2.amazonaws.com/promisefinancial.com/cloudfiles%2F2015%2F07%2F03%2F800x800-yaw-etse-portrait-min.jpg",
+                    "iconUp":"https://promisefinancial.com/favicon.png"
+                  },
+                  "children":"inside car"
                 }
               ]
             }]

@@ -33,7 +33,7 @@ class ResponsiveButton extends Component {
     };
     let onclickProp = (this.props.onclickBaseUrl) ? this.getButtonLink(this.props.onclickBaseUrl, this.props.onclickLinkParams, this.props.onclickPropObject) : this.props.onclickProps;
 
-    console.info('onclickProp', onclickProp);
+    // console.info('onclickProp', onclickProp);
     if (typeof this.props.onClick === 'string' && this.props.onClick.indexOf('func:this.props.reduxRouter') !== -1) { 
       onclickFunction = this.props.reduxRouter[ this.props.onClick.replace('func:this.props.reduxRouter.', '') ];
     } else if (typeof this.props.onClick === 'string' && this.props.onClick.indexOf('func:this.props') !== -1) { 
