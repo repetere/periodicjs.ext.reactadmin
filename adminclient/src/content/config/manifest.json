@@ -292,7 +292,7 @@
                         "passProps": {
                           "mode": "javascript"
                         },
-                        "value":"in here for in here"
+                        "value":"console.log('this is a code mirror);"
                  
                       },{
                         "type":"select",

@@ -131,7 +131,7 @@ class ResponsiveForm extends Component{
         } else if (formElement.type === 'select') {
           return this.getFormSelect({ formElement,  i:j, formgroup, }); 
         } else if (formElement.type === 'layout') {
-          return this.getRenderedComponent(formElement.value); 
+          return (<div key={j} {...formElement.layoutProps}>{this.getRenderedComponent(formElement.value)}</div>);
         } else if (formElement.type === 'submit') {
           return this.getFormSubmit({ formElement,  i:j, formgroup, }); 
         } else {
