@@ -174,7 +174,7 @@ export function getFormCheckbox(options) {
       onChange={(event)=>onValueChange()(event)}
     >
     </input>
-    {formElement.placeholder}
+    <span {...formElement.placeholderProps}>{formElement.placeholder}</span>
     {getCustomErrorLabel(hasError, this.state, formElement)}
   </FormItem>);
 }
