@@ -3,8 +3,9 @@ import { Columns, Card, CardContent, CardFooter, CardFooterItem, Notification, C
 import ResponsiveCard from '../ResponsiveCard';
 import { getRenderedComponent, } from '../AppLayoutMap';
 import utilities from '../../util';
-import { getFormTextInputArea, getFormCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, getFormTextArea, } from './FormElements';
+import { getFormTextInputArea, getFormCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, getFormTextArea, getFormEditor, } from './FormElements';
 import flatten from 'flat';
+import validate from 'validate.js';
 
 class ResponsiveForm extends Component{
   constructor(props) {
@@ -13,6 +14,7 @@ class ResponsiveForm extends Component{
     // console.log('form state', { formdata, });
     this.state = Object.assign({
       formDataError: null,
+      formDataErrors: {},
       formDataStatusDate: new Date(),
       formDataLists:{},
       formDataTables:{},
@@ -28,23 +30,40 @@ class ResponsiveForm extends Component{
     this.getFormCheckbox = getFormCheckbox.bind(this);
     this.getCardFooterItem = getCardFooterItem.bind(this);
     this.getFormSelect = getFormSelect.bind(this);
+    this.getFormEditor = getFormEditor.bind(this);
   }
   componentWillReceiveProps(nextProps) {
     let formdata = (nextProps.flattenFormData) ? flatten(nextProps.formdata, nextProps.flattenDataOptions) : nextProps.formdata;
     this.setState(formdata);
   }
-  
   submitForm() {
-    console.debug('this.props.getState()', this.props.getState());
     let state = this.props.getState();
     let headers = (state.settings.userprofile) ? state.settings.userprofile.options.headers : {};
     let formdata = Object.assign({}, this.state);
-    delete formdata.formDataError;
+    let validationErrors = {};
     delete formdata.formDataLists;
     delete formdata.formDataStatusDate;
     delete formdata.formDataTables;
-    console.debug({ formdata });
-    if (typeof this.props.onSubmit === 'string' && this.props.onSubmit.indexOf('func:this.props') !== -1) {
+    if (this.props.validations) {
+      this.props.validations.forEach(validation => {
+        // console.debug(formdata[ validation.name ], { validation, });
+        let validationerror = validate({ [ validation.name ]: formdata[ validation.name ], }, validation.constraints);
+        if (validationerror) {
+          validationErrors[ validation.name ] = validationerror[ validation.name ];
+        }
+      });
+    } else {
+      delete formdata.formDataErrors;
+    }
+    if (validationErrors && Object.keys(validationErrors).length < 1) {
+      this.setState({ formDataErrors: {}, });
+    }
+    if (validationErrors && Object.keys(validationErrors).length > 0) {
+      this.setState({ formDataErrors: validationErrors, });
+      console.debug('has errors', validationErrors, { formdata, });
+    } else if (typeof this.props.onSubmit === 'string' && this.props.onSubmit.indexOf('func:this.props') !== -1) {
+      delete formdata.formDataFiles;
+      delete formdata.formDataErrors;
       this.props[this.props.onSubmit.replace('func:this.props.', '')](formdata);
     } else if (typeof this.props.onSubmit !== 'function') {
       let fetchOptions = this.props.onSubmit;
@@ -55,60 +74,55 @@ class ResponsiveForm extends Component{
       if (Object.keys(formdata.formDataFiles).length) {
         delete headers[ 'Content-Type' ];
         delete headers[ 'content-type' ];
+        Object.keys(formdata.formDataFiles).forEach((formFileName) => {
+          let fileList = formdata.formDataFiles[ formFileName ].files;
+          for (let x = 0; x < fileList.length; x++){
+            formBody.append(formFileName, fileList.item(x));
+          }
+        });
+        delete formdata.formDataErrors;
+        delete formdata.formDataFiles;
         Object.keys(formdata).forEach(form_name => {
           formBody.append(form_name, formdata[ form_name ]);
         });
         fetchPostBody = formBody;
-      }
-      else {
+      } else {
+        delete formdata.formDataErrors;
         delete formdata.formDataFiles;
         fetchPostBody = JSON.stringify(formdata);        
       }
 
       fetchOptions.options = Object.assign(
-        { headers },
+        {
+          headers,
+        },
         fetchOptions.options,
         {
           body: fetchPostBody, 
         });
-      console.debug({ fetchOptions, fetchPostBody, headers, },'has formData',formBody);
-      console.debug('got formdata in here')
 
-      // https://lowrey.me/upload-files-as-a-gist-using-javascripts-fetch-api/
-      // https://www.raymondcamden.com/2016/05/10/uploading-multiple-files-at-once-with-fetch
-      /*     var formData = new FormData();
-        if($f1.val()) {
-            var fileList = $f1.get(0).files;
-            for(var x=0;x<fileList.length;x++) {
-                formData.append('file'+x, fileList.item(x));    
-            }
-        }
-
-        fetch('http://localhost:3000/upload', {
-            method:'POST',
-            body:formData   
-        }).then(function(res) {
-            console.log('Status', res);
-        }).catch(function(e) {
-            console.log('Error',e);
-        }); */
-      //http://stackoverflow.com/questions/36067767/how-do-i-upload-a-file-with-the-html5-js-fetch-api
-      /* var input = document.querySelector('input[type="file"]')
-
-        var data = new FormData()
-        data.append('file', input.files[0])
-        data.append('user', 'hubot')
-
-        fetch('/avatars', {
-          method: 'POST',
-          body: data
-        }) */
-      // https://github.com/yawetse/formie/blob/master/lib/formie.js
+      /*
+        // https://lowrey.me/upload-files-as-a-gist-using-javascripts-fetch-api/
+        // https://www.raymondcamden.com/2016/05/10/uploading-multiple-files-at-once-with-fetch
+        //http://stackoverflow.com/questions/36067767/how-do-i-upload-a-file-with-the-html5-js-fetch-api
+        // https://github.com/yawetse/formie/blob/master/lib/formie.js
+      */
       fetch(fetchOptions.url,
         fetchOptions.options
       )
         .then(utilities.checkStatus)
-        .then(res => res.json())
+        .then(res => {
+          if (fetchOptions.success) {
+            if (fetchOptions.success.modal) {
+              this.props.createModal(fetchOptions.success.modal);
+            } else if (fetchOptions.success.notification) {
+              this.props.createNotification(fetchOptions.success.notification);
+            } else {
+              this.props.createNotification({ text: 'Saved', timeout:4000, type:'success',  });
+            }
+          } 
+          return res.json();
+        })
         .catch(e => {
           if (typeof this.props.onError !== 'function') {
             console.error(e);
@@ -190,6 +204,8 @@ class ResponsiveForm extends Component{
           return this.getFormCheckbox({ formElement,  i:j, formgroup, });
         } else if (formElement.type === 'code') {
           return this.getFormCode({ formElement,  i:j, formgroup, }); 
+        } else if (formElement.type === 'editor') {
+          return this.getFormEditor({ formElement,  i:j, formgroup, }); 
         } else if (formElement.type === 'select') {
           return this.getFormSelect({ formElement,  i:j, formgroup, }); 
         } else if (formElement.type === 'layout') {

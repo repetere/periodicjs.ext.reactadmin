@@ -355,7 +355,7 @@ class ResponsiveTable extends Component {
         </div>  
 
           
-        {this.state.hasPagination ? footer : ''}
+        {this.state.hasPagination ? footer : null}
       </rb.Container>
     );
   }

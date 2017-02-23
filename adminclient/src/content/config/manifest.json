@@ -188,16 +188,16 @@
                       "filterSearch":true,
                       "tableSearch":true,
                       "flattenRowData":true,
-                      "baseUrl":"/r-admin/contentdata/accounts?format=json",
+                      "baseUrl":"/r-admin/contentdata/users?format=json",
                       "dataMap":[{
                         "key":"rows",
-                        "value":"accounts"
+                        "value":"users"
                       },{
                         "key":"numItems",
-                        "value":"accountscount"
+                        "value":"userscount"
                       },{
                         "key":"numPages",
-                        "value":"accountpages"
+                        "value":"userpages"
                       }],
                       "headerLinkProps":{
                         "style":{
@@ -210,7 +210,7 @@
                           "label": "Id", 
                           "sortid":"_id", 
                           "link":{
-                            "baseUrl":"/r-admin/contentdata/accounts/:id",
+                            "baseUrl":"/r-admin/contentdata/users/:id",
                             "params":[{"key":":id","val":"_id"}]
                           },
                           "linkProps":{
@@ -243,13 +243,13 @@
                     },
                     "asyncprops":{
                       "rows":[
-                        "tabledata","accounts"
+                        "tabledata","users"
                       ],
                       "numItems":[
-                        "tabledata","accountscount"
+                        "tabledata","userscount"
                       ],
                       "numPages":[
-                        "tabledata","accountpages"
+                        "tabledata","userpages"
                       ]
                     }
                   }]
@@ -260,13 +260,77 @@
                     "notificationForm":true,
                     "flattenFormData":true,
                     "onSubmit":"func:this.props.debug",
+                    "validations":[{
+                      "name":"baseurl",
+                      "constraints":{
+                        "baseurl":{
+                          "presence":"true",
+                          "length":{
+                            "minimum":3,
+                            "message":"has to be an email and is  required"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "name":"originalurl",
+                      "constraints":{
+                        "originalurl":{
+                          "presence":"true",
+                          "length":{
+                            "minimum":3,
+                            "message":"has to be an email and is  required"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "name":"testSelect",
+                      "constraints":{
+                        "testSelect":{
+                          "presence":"true"
+                        }
+                      }
+                    },
+                    {
+                      "name":"testTextAreaInputts",
+                      "constraints":{
+                        "testTextAreaInputts":{
+                          "presence":"true"
+                        }
+                      }
+                    },
+                    {
+                      "name":"jsCode",
+                      "constraints":{
+                        "jsCode":{
+                          "presence":"true",
+                          "length":{
+                            "minimum":3,
+                            "message":"has to be an email and is  required"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "name":"samplecheck",
+                      "constraints":{
+                        "samplecheck":{
+                          "presence":"true"
+                        }
+                      }
+                    }],
                     "formgroups":[{
                       "formElements":[{
                         "type":"text",
-                        "name":"0.email",
-                        "label":"Email",
-                        "value":"email"
+                        "name":"baseurl",
+                        "label":"baseurl"
                       },{
+                        "type":"text",
+                        "name":"originalurl",
+                        "label":"originalurl"
+                      },
+                      {
                         "type":"layout",
                         "value":{
                           "component":"div",
@@ -279,25 +343,11 @@
                             "children":"random text"
                           }]
                         }
-                      },{
-                        "type":"submit",
-                        "value":"debug"
-                      
-                      }]
-                    },{
-                      "formElements":[{
-                        "type":"code",
-                        "name":"jsCode",
-                        "passProps": {
-                          "mode": "javascript"
-                        },
-                        "value":"console.log('this is a code mirror);"
-                 
-                      },{
+                      },
+                      {
                         "type":"select",
                         "name":"testSelect",
                         "label":"status",
-                        "value":"off",
                         "options":[{
                           "label":"true",
                           "value":true
@@ -311,11 +361,44 @@
                           "label":"Turn On",
                           "value":"on"
                         }]
+                      },{
+                        "type":"submit",
+                        "value":"debug"
+                      }]
+                    },{
+                      "formElements":[{
+                        "type":"code",
+                        "name":"jsCode",
+                        "passProps": {
+                          "mode": "javascript"
+                        },
+                        "value":"console.log('this is a code mirror');"
+                 
+                      },{
+                        "type":"editor",
+                        "name":"wysiwyg",
+                        "passProps": {
+                          "mode": "javascript"
+                        },
+                        "value":"console.log('this is a code mirror');"
+                 
+                      }]
+                    },
+                    {
+                      "formElements":[{
+                        "type":"textarea",
+                        "name":"testTextAreaInputts",
+                        "label":"blog"
+                      },{
+                        "type":"checkbox",
+                        "name":"samplecheck",
+                        "label":"save",
+                        "placeholder":"rememberme"
                       }]
                     }]
                   },
                   "asyncprops":{
-                    "formdata":["tabledata","accounts"]
+                    "formdata":["tabledata","request"]
                   }
                 },
                 {
@@ -388,9 +471,12 @@
                       "component":"ResponsiveForm",
                       "props":{
                         "onSubmit":{
-                          "url":"http://localhost:8786/r-admin/contentdata/assets",
+                          "url":"http://localhost:8786/r-admin/contentdata/assetupload",
                           "options":{
                             "method":"post"
+                          },
+                          "success":{
+                            "modal":{"text":"uploaded file","timeout":3000}
                           }
                         },
                         "card":{
@@ -405,6 +491,11 @@
                                 "type":"text",
                                 "name":"title",
                                 "label":"title",
+                                "value":"my new file"
+                              },{
+                                "type":"textarea",
+                                "name":"firstname",
+                                "label":"firstname",
                                 "value":"my new file"
                               },
                               {
@@ -427,7 +518,7 @@
                           {
                             "formElements":[
                               {
-                                "type":"textarea",
+                                "type":"editor",
                                 "value":"no desc",
                                 "name":"description",
                                 "label":"description",
@@ -454,9 +545,23 @@
                             ]
                           }
                         ]
+                      },
+                      "thisprops":{
+                        "formdata":["user","userdata"]
                       }
                     }
                   ]
+                },
+                {
+                  "component":"Editor",
+                  "props":{
+                    "wrapperProps":{
+                      "style":{
+                        "border":"1px solid black",
+                        "marginBottom":30 
+                      }
+                    }
+                  }
                 }
               ]
             }]
@@ -464,7 +569,7 @@
         ]
       },
       "resources":{
-        "tabledata":"/r-admin/contentdata/accounts?format=json&limit=10"
+        "tabledata":"/r-admin/contentdata/users?format=json&limit=10"
       },
       "onFinish":"render",
       "pageData":{
