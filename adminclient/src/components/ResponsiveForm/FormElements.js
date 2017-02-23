@@ -1,7 +1,7 @@
 import React from 'react';
 import FormItem from '../FormItem';
 import RACodeMirror from '../RACodeMirror';
-import { ControlLabel, Label, Input, Button, CardFooterItem, Checkbox, Select, } from 're-bulma'; 
+import { ControlLabel, Label, Input, Button, CardFooterItem, Checkbox, Select, Textarea } from 're-bulma'; 
 
 
 export function getPropertyAttribute(options) {
@@ -55,6 +55,37 @@ export function getFormTextInputArea(options) {
   </FormItem>);
 }
 
+
+export function getFormTextArea(options) {
+  let { formElement, i, /*formgroup, width,*/ onChange, } = options;
+  let initialValue = formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
+  let keyPress = (e) => {
+    if (formElement.submitOnEnter && (e.key === 'Enter' || e.which === 13)) {
+      this.submitForm();
+    }
+  };
+
+  if (typeof initialValue !== 'string') {
+    initialValue = JSON.stringify(initialValue, null, 2);
+  }
+  if (!onChange) {
+    onChange = (event) => {
+      let text = event.target.value;
+      let updatedStateProp = {};
+      updatedStateProp[ formElement.name ] = text;
+      this.setState(updatedStateProp);
+    };
+  }
+
+  return (<FormItem key={i} {...formElement.layoutProps} >
+    {(formElement.layoutProps && formElement.layoutProps.horizontalform) ? (<ControlLabel {...formElement.labelProps}>{formElement.label}</ControlLabel>) : (<Label {...formElement.labelProps}>{formElement.label}</Label>)}  
+    <Textarea {...formElement.passProps}
+      onChange={onChange}
+      placeholder={formElement.placeholder||formElement.label}
+      value={this.state[ formElement.name ] || initialValue} />
+  </FormItem>);
+}
+
 export function getFormSelect(options) {
   // let { formElement, i, formgroup, width, onValueChange, onSelect, } = options;
   let { formElement, i, /*formgroup, width,*/ onChange, } = options;
@@ -97,7 +128,7 @@ export function getFormCheckbox(options) {
     };
   }
   return (<FormItem key={i} {...formElement.layoutProps} >
-    {(formElement.layoutProps.horizontalform) ? (<ControlLabel {...formElement.labelProps}>{formElement.label}</ControlLabel>) : (<Label {...formElement.labelProps}>{formElement.label}</Label>)}  
+    {(formElement.layoutProps && formElement.layoutProps.horizontalform) ? (<ControlLabel {...formElement.labelProps}>{formElement.label}</ControlLabel>) : (<Label {...formElement.labelProps}>{formElement.label}</Label>)}  
     <Checkbox {...formElement.passProps}
       onChange={onValueChange.bind(this)} >
         {formElement.placeholder}
@@ -123,7 +154,7 @@ export function getFormCode(options) {
   }
 
   return (<FormItem key={i} {...formElement.layoutProps} >
-    {(formElement.layoutProps.horizontalform) ? (<ControlLabel {...formElement.labelProps}>{formElement.label}</ControlLabel>) : (<Label {...formElement.labelProps}>{formElement.label}</Label>)}  
+    {(formElement.layoutProps && formElement.layoutProps.horizontalform) ? (<ControlLabel {...formElement.labelProps}>{formElement.label}</ControlLabel>) : (<Label {...formElement.labelProps}>{formElement.label}</Label>)}  
     <RACodeMirror key={i} {...CodeMirrorProps} onChange={onValueChange.bind(this)} />
   </FormItem>
   );

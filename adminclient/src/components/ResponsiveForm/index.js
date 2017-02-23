@@ -3,7 +3,7 @@ import { Columns, Card, CardContent, CardFooter, CardFooterItem, Notification, C
 import ResponsiveCard from '../ResponsiveCard';
 import { getRenderedComponent, } from '../AppLayoutMap';
 import utilities from '../../util';
-import { getFormTextInputArea, getFormCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, } from './FormElements';
+import { getFormTextInputArea, getFormCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, getFormTextArea, } from './FormElements';
 import flatten from 'flat';
 
 class ResponsiveForm extends Component{
@@ -23,6 +23,7 @@ class ResponsiveForm extends Component{
     this.getFormSubmit = getFormSubmit.bind(this);
     this.getFormCode = getFormCode.bind(this);
     this.getFormTextInputArea = getFormTextInputArea.bind(this);
+    this.getFormTextArea = getFormTextArea.bind(this);
     this.getFormCheckbox = getFormCheckbox.bind(this);
     this.getCardFooterItem = getCardFooterItem.bind(this);
     this.getFormSelect = getFormSelect.bind(this);
@@ -33,19 +34,55 @@ class ResponsiveForm extends Component{
   }
   
   submitForm() {
-    // console.log('submitting Form', this);
+    console.debug('this.props.getState()', this.props.getState());
+    let state = this.props.getState();
+    let headers = (state.settings.userprofile) ? state.settings.userprofile.options.headers : {};
     let formdata = Object.assign({}, this.state);
     delete formdata.formDataError;
     delete formdata.formDataLists;
     delete formdata.formDataStatusDate;
     delete formdata.formDataTables;
-    // console.log({ formdata });
+    console.debug({ formdata });
     if (typeof this.props.onSubmit === 'string' && this.props.onSubmit.indexOf('func:this.props') !== -1) {
       this.props[this.props.onSubmit.replace('func:this.props.', '')](formdata);
     } else if (typeof this.props.onSubmit !== 'function') {
       let fetchOptions = this.props.onSubmit;
+      fetchOptions.options = Object.assign({headers}, fetchOptions.options, { body: JSON.stringify(formdata), });
+      console.debug({ fetchOptions });
+
+
+      // https://lowrey.me/upload-files-as-a-gist-using-javascripts-fetch-api/
+      // https://www.raymondcamden.com/2016/05/10/uploading-multiple-files-at-once-with-fetch
+      /*     var formData = new FormData();
+        if($f1.val()) {
+            var fileList = $f1.get(0).files;
+            for(var x=0;x<fileList.length;x++) {
+                formData.append('file'+x, fileList.item(x));    
+            }
+        }
+
+        fetch('http://localhost:3000/upload', {
+            method:'POST',
+            body:formData   
+        }).then(function(res) {
+            console.log('Status', res);
+        }).catch(function(e) {
+            console.log('Error',e);
+        }); */
+      //http://stackoverflow.com/questions/36067767/how-do-i-upload-a-file-with-the-html5-js-fetch-api
+      /* var input = document.querySelector('input[type="file"]')
+
+        var data = new FormData()
+        data.append('file', input.files[0])
+        data.append('user', 'hubot')
+
+        fetch('/avatars', {
+          method: 'POST',
+          body: data
+        }) */
+      // https://github.com/yawetse/formie/blob/master/lib/formie.js
       fetch(fetchOptions.url,
-        Object.assign({}, fetchOptions.options, { body: JSON.stringify(formdata), })
+        fetchOptions.options
       )
         .then(utilities.checkStatus)
         .then(res => res.json())
@@ -122,8 +159,10 @@ class ResponsiveForm extends Component{
         key: i,
       }, formgroup.gridProps);
       let getFormElements = (formElement, j) => {
-        if (formElement.type === 'text' || formElement.type === 'textarea') {
+        if (formElement.type === 'text' ) {
           return this.getFormTextInputArea({ formElement,  i:j, formgroup, });
+        } else if (formElement.type === 'textarea') {
+          return this.getFormTextArea({ formElement,  i:j, formgroup, });
         } else if (formElement.type === 'checkbox') {
           return this.getFormCheckbox({ formElement,  i:j, formgroup, });
         } else if (formElement.type === 'code') {

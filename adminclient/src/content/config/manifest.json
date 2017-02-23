@@ -254,7 +254,6 @@
                     }
                   }]
                 },
-                
                 {
                   "component":"ResponsiveForm",
                   "props":{
@@ -376,6 +375,7 @@
                 {
                   "component":"ResponsiveCard",
                   "props":{
+                    "cardTitle":"upload new asset",
                     "iconImage":{
                       "size":"is48X48"
                     },
@@ -383,7 +383,70 @@
                     "iconDown":"https://s3-us-west-2.amazonaws.com/promisefinancial.com/cloudfiles%2F2015%2F07%2F03%2F800x800-yaw-etse-portrait-min.jpg",
                     "iconUp":"https://promisefinancial.com/favicon.png"
                   },
-                  "children":"inside car"
+                  "children":[
+                    {
+                      "component":"ResponsiveForm",
+                      "props":{
+                        "onSubmit":{
+                          "url":"http://localhost:8786/r-admin/contentdata/assets",
+                          "options":{
+                            "method":"post"
+                          }
+                        },
+                        "card":{
+                          "props":{
+                            "cardTitle":"Upload New Asset"
+                          }
+                        },
+                        "formgroups":[
+                          {
+                            "formElements":[
+                              {
+                                "type":"text",
+                                "name":"title",
+                                "label":"title"
+                              },
+                              {
+                                "type":"select",
+                                "name":"status",
+                                "label":"status",
+                                "options":[
+                                {
+                                  "label":"valid",
+                                  "value":"VALID"
+                                },
+                                {
+                                  "label":"invalid",
+                                  "value":"INVALID"
+                                }]
+                              }
+                            ]
+                          },
+                          {
+                            "formElements":[
+                              {
+                                "type":"textarea",
+                                "value":"no desc",
+                                "name":"description",
+                                "label":"description",
+                                "passProps":{
+                                  "isExpanded":true
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "formElements":[
+                              {
+                                "type":"submit",
+                                "value":"upload"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ]
                 }
               ]
             }]
