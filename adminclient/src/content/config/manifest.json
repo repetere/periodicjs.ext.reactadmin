@@ -404,12 +404,14 @@
                               {
                                 "type":"text",
                                 "name":"title",
-                                "label":"title"
+                                "label":"title",
+                                "value":"my new file"
                               },
                               {
                                 "type":"select",
                                 "name":"status",
                                 "label":"status",
+                                "value":"invalid",
                                 "options":[
                                 {
                                   "label":"valid",
@@ -431,6 +433,14 @@
                                 "label":"description",
                                 "passProps":{
                                   "isExpanded":true
+                                }
+                              },
+                              {
+                                "type":"text",
+                                "name":"assetfile",
+                                "label":"asset file",
+                                "passProps":{
+                                  "type":"file"
                                 }
                               }
                             ]

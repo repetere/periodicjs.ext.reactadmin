@@ -32,7 +32,11 @@ export function getFormTextInputArea(options) {
       this.submitForm();
     }
   };
+  let fileClassname = `__reactadmin_file_${formElement.name}`;
 
+  if (formElement.passProps && formElement.passProps.type === 'file') { 
+    formElement.passProps.className = fileClassname;
+  } 
   if (typeof initialValue !== 'string') {
     initialValue = JSON.stringify(initialValue, null, 2);
   }
@@ -40,7 +44,15 @@ export function getFormTextInputArea(options) {
     onChange = (event) => {
       let text = event.target.value;
       let updatedStateProp = {};
-      updatedStateProp[ formElement.name ] = text;
+      if (formElement.passProps && formElement.passProps.type === 'file') {
+        updatedStateProp.formDataFiles = Object.assign({}, this.state.formDataFiles, {
+          [ formElement.name ]: document.querySelector(`.${fileClassname} input`)
+        });
+        console.debug('document.querySelector(`.${fileClassname} input`)', document.querySelector(`.${fileClassname} input`));
+        console.debug('document.querySelector(`.${fileClassname} input`).files', document.querySelector(`.${fileClassname} input`).files);
+      } else {
+        updatedStateProp[ formElement.name ] = text;
+      }
       this.setState(updatedStateProp);
     };
   }
@@ -48,6 +60,7 @@ export function getFormTextInputArea(options) {
   return (<FormItem key={i} {...formElement.layoutProps} >
     {(formElement.layoutProps && formElement.layoutProps.horizontalform) ? (<ControlLabel {...formElement.labelProps}>{formElement.label}</ControlLabel>) : (<Label {...formElement.labelProps}>{formElement.label}</Label>)}  
     <Input {...formElement.passProps}
+    
       onChange={onChange}
       onKeyPress={keyPress}
       placeholder={formElement.placeholder||formElement.label}
@@ -59,11 +72,6 @@ export function getFormTextInputArea(options) {
 export function getFormTextArea(options) {
   let { formElement, i, /*formgroup, width,*/ onChange, } = options;
   let initialValue = formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
-  let keyPress = (e) => {
-    if (formElement.submitOnEnter && (e.key === 'Enter' || e.which === 13)) {
-      this.submitForm();
-    }
-  };
 
   if (typeof initialValue !== 'string') {
     initialValue = JSON.stringify(initialValue, null, 2);

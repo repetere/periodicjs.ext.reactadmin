@@ -16,6 +16,7 @@ class ResponsiveForm extends Component{
       formDataStatusDate: new Date(),
       formDataLists:{},
       formDataTables:{},
+      formDataFiles:{},
     }, formdata);
     this.datalists = {};
 
@@ -47,9 +48,31 @@ class ResponsiveForm extends Component{
       this.props[this.props.onSubmit.replace('func:this.props.', '')](formdata);
     } else if (typeof this.props.onSubmit !== 'function') {
       let fetchOptions = this.props.onSubmit;
-      fetchOptions.options = Object.assign({headers}, fetchOptions.options, { body: JSON.stringify(formdata), });
-      console.debug({ fetchOptions });
+      let formBody = new FormData();
+      let fetchPostBody;
 
+      //if file
+      if (Object.keys(formdata.formDataFiles).length) {
+        delete headers[ 'Content-Type' ];
+        delete headers[ 'content-type' ];
+        Object.keys(formdata).forEach(form_name => {
+          formBody.append(form_name, formdata[ form_name ]);
+        });
+        fetchPostBody = formBody;
+      }
+      else {
+        delete formdata.formDataFiles;
+        fetchPostBody = JSON.stringify(formdata);        
+      }
+
+      fetchOptions.options = Object.assign(
+        { headers },
+        fetchOptions.options,
+        {
+          body: fetchPostBody, 
+        });
+      console.debug({ fetchOptions, fetchPostBody, headers, },'has formData',formBody);
+      console.debug('got formdata in here')
 
       // https://lowrey.me/upload-files-as-a-gist-using-javascripts-fetch-api/
       // https://www.raymondcamden.com/2016/05/10/uploading-multiple-files-at-once-with-fetch
