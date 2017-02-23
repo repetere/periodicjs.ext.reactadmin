@@ -6,22 +6,18 @@ import AppSectionLoading from '../components/AppSectionLoading';
 
 function getLoginLayout(options) {
   let { loginfunction, } =  options ;
-  // console.log({loginfunction})
   let loginLayout = {
     component: 'Hero',
     props: {
       size: 'isFullheight',
-    // children: 'hero body text',
     },
     children: [ {
       component: 'HeroBody',
       props: {
-      // children: 'hero body text'
       },
       children: [ {
         component: 'Container',
         props: {
-        // children: 'container text'
         },
         children: [
           {
@@ -44,22 +40,13 @@ function getLoginLayout(options) {
                   },
                   children: 'Please Sign in',
                 },
-              //   {
-              //     component: 'Subtitle',
-              //     children: 'Subtitle Login',
-              // //   props: {
-              // // },  
-              //   }, 
                 {
                   component: 'ResponsiveForm',
-                // children:'hello',
                   props: {
                     cardForm: true,
                     cardFormProps: {
                       isFullwidth:true,
                     },
-                // notificationForm: true,
-                // notificationProps: {},
                     onSubmit: loginfunction, // (data) => { console.log('formsubmit', data); },
                     footergroups: [{
                       gridProps: {},
@@ -102,76 +89,81 @@ function getLoginLayout(options) {
                         label: 'Username',
                         name:'username',
                         layoutProps: {
-                          horizontalform:true,
+                          // horizontalform:true,
                         },
                       }, ],
-                    }, {
-                      gridProps: {},
-                      formElements: [{
-                        type: 'text',
-                        label: 'Password',
-                        name: 'password',
-                        submitOnEnter: true,
-                        passProps: {
-                          type:'password',
+                    },
+                      {
+                        gridProps: {},
+                        formElements: [{
+                          type: 'text',
+                          label: 'Password',
+                          name: 'password',
+                          submitOnEnter: true,
+                          passProps: {
+                            type:'password',
+                          },
+                          layoutProps: {
+                            // horizontalform:true,
+                          },
+                        }, ],
+                      },
+                      {
+                        gridProps: {},
+                        formElements: [{
+                          type: 'checkbox',
+                          label: '',
+                          placeholder: 'Remember Me',
+                          name: 'rememberme',
+                          passProps: {
+                            type:'rememberme',
+                          },
+                          layoutProps: {
+                            // horizontalform:true,
+                          },
+                        }, ],
+                      },
+                    ],
+                    'validations': [
+                      {
+                        'name': 'username',
+                        'constraints': {
+                          'username': {
+                            presence: {
+                              message: 'is required',
+                            },
+                            'length': {
+                              'minimum': 3,
+                              'message': 'Your username is required',
+                            },
+                          },
                         },
-                        layoutProps: {
-                          horizontalform:true,
+                      },
+                      {
+                        'name': 'password',
+                        'constraints': {
+                          'password': {
+                            presence: {
+                              message: 'is required',
+                            },
+                            'length': {
+                              'minimum': 4,
+                              'message': 'Your password is too short',
+                            },
+                          },
                         },
-                      }, ],
-                    }, {
-                      gridProps: {},
-                      formElements: [{
-                        type: 'checkbox',
-                        label: '',
-                        placeholder: 'Remember Me',
+                      },
+                      {
                         name: 'rememberme',
-                        passProps: {
-                          type:'rememberme',
+                        'constraints': {
+                          'rememberme': {
+                            presence: {
+                              message: 'is required',
+                            },
+                          },
                         },
-                        layoutProps: {
-                          horizontalform:true,
-                        },
-                      }, ],
-                    },
-                /*  {
-                  gridProps: {},
-                  formElements: [ {
-                    type: 'text',
-                    label: 'Telephone',
-                    name:'telephone',
-                    passProps: {
-                      name:'telephone'
-                    },
-                    layoutProps: {},
-                  },{
-                    type: 'text',
-                    placeholder: 'Telephone',
-                    name:'telephone',
-                    passProps: {
-                      name:'telephone'
-                    },
-                    layoutProps: {},
-                  }]
-              },*/
-              /*  
-                {
-                  gridProps: {},
-                  formElements: [ {
-                    type: 'submit',
-                    value: 'login',
-                    name:'login',
-                    passProps: {
-                      // name:'telephone'
-                    },
-                    layoutProps: {
-                      style:{textAlign:'center'}
-                    },
-                  }]
-                }
-                
-                */
-                ],
+                      },
+                    ],
                   },
                 }, ],
             }, {

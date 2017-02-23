@@ -94,7 +94,7 @@
         "navLabel":"Admin Documentation"
       }
     },
-    "/documentation":{
+    "/home":{
       "layout":{
         "component":"Hero",
         "props":{

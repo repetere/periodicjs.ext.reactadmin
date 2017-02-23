@@ -28,7 +28,7 @@ const manifestReducer = (state, action) => {
       updatedAt: new Date(),
     });
   case constants.manifest.MANIFEST_DATA_SUCCESS:
-      var manifestSuccessPayload = action.payload;
+    var manifestSuccessPayload = action.payload;
     return Object.assign({}, state, {
       isFetching: true,
       hasLoaded: true,

@@ -6,7 +6,7 @@
     ],
     "navigation":"node_modules/periodicjs.ext.reactadmin/adminclient/src/content/config/navigation.json",
     "components":{
-      "login":"/content/themes/periodicjs.theme.default/views/auth/login.manifest.json",
+      "login":"/content/themes/periodicjs.theme.default/views/auth/loginDISABLED.manifest.json",
       "main":{
         "header":"/content/themes/periodicjs.theme.default/views/shared/header.manifest.json",
         "footer":"/content/themes/periodicjs.theme.default/views/shared/footer.manifest.json"

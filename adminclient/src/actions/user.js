@@ -164,9 +164,9 @@ const user = {
       payload: {
         updatedAt: new Date(),
         timestamp: Date.now(),
-        isMFAAuthenticated: isAuthenticated
-      }
-    }
+        isMFAAuthenticated: isAuthenticated,
+      },
+    };
   },
   logoutUser() {
     return (dispatch) => {
@@ -267,6 +267,7 @@ const user = {
       let extensionattributes = (state.user.userdata) ? state.user.userdata.extensionattributes : false;
       let queryparams = qs.parse((window.location.search.charAt(0) === '?') ? window.location.search.substr(1, window.location.search.length) : window.location.search);
       let returnUrl = (queryparams.return_url) ? queryparams.return_url : false;
+      // console.log({ returnUrl });
       if (state.settings.auth.enforce_mfa || (extensionattributes && extensionattributes.login_mfa)) {
         if (state.user.isMFAAuthenticated) {
           if (!noRedirect) {
@@ -278,7 +279,7 @@ const user = {
           if (!state.manifest.containers || (state.manifest.containers && !state.manifest.containers['/mfa'])) {
             dispatch(notification.errorNotification(new Error('Multi-Factor Authentication not Properly Configured')));
             this.logoutUser()(dispatch);
-          } else dispatch(push('/mfa'));
+          } else dispatch(push(`/mfa${(returnUrl)?'?return_url='+returnUrl:''}`));
           return false;
         }
       } else {
@@ -286,6 +287,7 @@ const user = {
           if (state.user.isLoggedIn && returnUrl) dispatch(push(returnUrl));
           else dispatch(push(state.settings.auth.logged_in_homepage));
         }
+        if (state.user.isLoggedIn && returnUrl) dispatch(push(returnUrl));
         return true;
       } 
     };
