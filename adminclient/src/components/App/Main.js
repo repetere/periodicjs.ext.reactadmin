@@ -80,7 +80,7 @@ class MainApp extends Component{
               // console.log('saving logged in user', { json, });
               this.props.saveUserProfile(url, response, json);
               this.props.initializeAuthenticatedUser(json.token, false);
-              this.props.createNotification({ text: 'welcome back', timeout:4000, });
+              // this.props.createNotification({ text: 'welcome back', timeout:4000, });
               // if (appTabs) {
               //   this.props.setTabExtensions(appTabs);
               // }
