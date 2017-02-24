@@ -8,12 +8,6 @@
       {
         "component":"HeroBody",
         "props":{
-
-        },
-        "asyncprops":{
-          "healthcheck":[
-            "healthcheckStatus"
-          ]
         },
         "children":[
           {

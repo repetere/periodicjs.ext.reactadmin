@@ -1,5 +1,5 @@
 import React, { Component, PropTypes, } from 'react';
-import { Button, } from 're-bulma'; 
+import { Button, Select, } from 're-bulma'; 
 
 const propTypes = {
   onClick: PropTypes.string,
@@ -27,25 +27,74 @@ class ResponsiveButton extends Component {
     }
     return returnLink;
   }
-  render() {
+  handleOnClick(options) {
+    // console.debug({ options });
+    let { clickprop, thisDotProp, clickThisProp, clickPropObject, clickBaseUrl, clickLinkParams, clickPassProps } = options;
     let onclickFunction = (data) => {
-      console.log('ResponsiveButton', { data, });
+      console.debug('ResponsiveButton', { data, });
     };
-    let onclickProp = (this.props.onclickBaseUrl) ? this.getButtonLink(this.props.onclickBaseUrl, this.props.onclickLinkParams, this.props.onclickPropObject) : this.props.onclickProps;
-
-    // console.info('onclickProp', onclickProp);
-    if (typeof this.props.onClick === 'string' && this.props.onClick.indexOf('func:this.props.reduxRouter') !== -1) { 
-      onclickFunction = this.props.reduxRouter[ this.props.onClick.replace('func:this.props.reduxRouter.', '') ];
-    } else if (typeof this.props.onClick === 'string' && this.props.onClick.indexOf('func:this.props') !== -1) { 
-      onclickFunction = this.props[ this.props.onClick.replace('func:this.props.', '') ];
+    let linkSelectionProp = (clickThisProp)
+      ? thisDotProp[clickThisProp]
+      : clickPropObject;
+    let onclickProp = (clickBaseUrl)
+      ? this.getButtonLink(clickBaseUrl, clickLinkParams, linkSelectionProp)
+      : clickPassProps;
+    
+    if (typeof clickprop === 'string' && clickprop.indexOf('func:this.props.reduxRouter') !== -1) { 
+      onclickFunction = this.props.reduxRouter[ clickprop.replace('func:this.props.reduxRouter.', '') ];
+    } else if (typeof clickprop === 'string' && clickprop.indexOf('func:this.funcs') !== -1) { 
+      onclickFunction = this.funcs[ clickprop.replace('func:this.funcs.', '') ];
+    } else if (typeof clickprop === 'string' && clickprop.indexOf('func:this.props') !== -1) { 
+      onclickFunction = this.props[ clickprop.replace('func:this.props.', '') ];
     } 
-    if (this.props.buttonProps) {
+    onclickFunction(onclickProp);
+  }
+  handleSelect(event, selectProps) {
+    let value = event.target.value;
+    let selectedProp = selectProps[ value ];
+    let buttonProps = selectedProp.buttonProps;
+    this.handleOnClick.call(this, {
+      clickprop: buttonProps.onClick,
+      clickThisProp: buttonProps.onclickThisProp,
+      clickPropObject: buttonProps.onclickPropObject,
+      clickBaseUrl: buttonProps.onclickBaseUrl,
+      clickLinkParams: buttonProps.onclickLinkParams,
+      clickPassProps: buttonProps.onclickProps,
+      thisDotProp: this.props,
+    });
+    // console.debug({ value, selectProps });
+  }
+  render() {
+    let getPropsForOnClick = () => {
+      return {
+        clickprop: this.props.onClick,
+        clickThisProp: this.props.onclickThisProp,
+        clickPropObject: this.props.onclickPropObject,
+        clickBaseUrl: this.props.onclickBaseUrl,
+        clickLinkParams: this.props.onclickLinkParams,
+        clickPassProps: this.props.onclickProps,
+        thisDotProp: this.props,
+      };
+    };
+    if (this.props.selectProps) {
+      let options = [];
+      let selectPropsVals = this.props.selectProps.values;
+
+      Object.keys(selectPropsVals).forEach(key => {
+        options.push(<option key={`sddb-${key}`} value={key}>{selectPropsVals[key].label}</option>);
+      });
+
+      return <Select value={this.props.selectProps.selected}  onChange={(event) => {
+        // console.log({ event });
+        this.handleSelect.call(this, event, this.props.selectProps.values);
+      }}>
+        {options}  
+      </Select>;
+    } else if (this.props.buttonProps) {
       return <Button
         {...this.props.buttonProps}
         style={Object.assign({ cursor: 'pointer', }, this.props.style)}
-        onClick={() => {
-          onclickFunction(onclickProp);
-        }}
+        onClick={this.handleOnClick.bind(this, getPropsForOnClick())}
         >
         {this.props.children}
       </Button>;
@@ -53,9 +102,7 @@ class ResponsiveButton extends Component {
       return <span
         {...this.props.spanProps}
         style={Object.assign({ cursor: 'pointer', }, this.props.style)}
-        onClick={() => {
-          onclickFunction(onclickProp);
-        }}
+        onClick={this.handleOnClick.bind(this, getPropsForOnClick())}
         >
         {this.props.children}
       </span>;
@@ -67,14 +114,3 @@ ResponsiveButton.propTypes = propTypes;
 ResponsiveButton.defaultProps = defaultProps;
 
 export default ResponsiveButton;
-
-// export function ResponsiveButton(props) {
-//   // console.log({ this});
-  
-//   return createElement('span', Object.assign({
-//     onClick: () => {
-//       this.props.reduxRouter.push(this.props.location);
-//     }
-//   },props), this.props.children);
-
-// };

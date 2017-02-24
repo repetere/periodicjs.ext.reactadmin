@@ -154,19 +154,124 @@
         "children":[
           {
             "component":"HeroBody",
-            "props":{
-
-            },
-            "asyncprops":{
-              "healthcheck":[
-                "healthcheckStatus"
-              ]
-            },
             "children":[{
               "component":"Container",
               "props":{
+                "style":{
+                  "paddingTop":80
+                }
               },
               "children":[
+                {
+                  "component": "Tabs",
+                  "props":{
+                    "style":{
+                    }
+                  },
+                  "children": [{
+                    "component": "TabGroup",
+                    "props":{
+                      "className":"breadcrumb",
+                      "style":{
+                        "border":"1px solid black",
+                        "color":"red"
+                      }
+                    },
+                    "children": [{
+                      "component": "Tab",
+                      "props": {
+                        "isActive": true,
+                        "style": {}
+                      },
+                      "children": [{
+                        "component": "ResponsiveButton",
+                        "props": {
+                          "selectProps": {
+                            "selected":"loan",
+                            "values":{
+                              "customer":{
+                                "label":"Customer",
+                                "buttonProps":{
+                                  "onClick": "func:this.props.reduxRouter.push",
+                                  "onclickProps": "/crm/applications",
+                                  "onclickBaseUrl":"/r-admin/contentdata/customer/:id",
+                                  "onclickThisProp":"buttonPropsAdded",
+                                  "onclickLinkParams":[{"key":":id","val":"headerHost"}]
+                                }
+                              },
+                              "application":{
+                                "label":"Application",
+                                "buttonProps":{
+                                  "onClick": "func:this.props.reduxRouter.push",
+                                  "onclickProps": "/crm/applications",
+                                  "onclickBaseUrl":"/r-admin/contentdata/application/:id",
+                                  "onclickThisProp":"buttonPropsAdded",
+                                  "onclickLinkParams":[{"key":":id","val":"headerHost"}]
+                                }
+                              },
+                              "loan":{
+                                "label":"loan",
+                                "buttonProps":{
+                                  "onClick": "func:this.props.reduxRouter.push",
+                                  "onclickProps": "/crm/loans",
+                                  "onclickBaseUrl":"/r-admin/contentdata/loan/:id",
+                                  "onclickThisProp":"buttonPropsAdded",
+                                  "onclickLinkParams":[{"key":":id","val":"headerHost"}]
+                                }
+                              },
+                              "cards":{
+                                "label":"cards",
+                                "buttonProps":{
+                                  "onClick": "func:this.props.reduxRouter.push",
+                                  "onclickProps": "/crm/cardss",
+                                  "onclickBaseUrl":"/r-admin/contentdata/cards/:id",
+                                  "onclickThisProp":"buttonPropsAdded",
+                                  "onclickLinkParams":[{"key":":id","val":"headerHost"}]
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "asyncprops":{
+                          "buttonPropsAdded":["tabledata","request"]
+                        },
+                        "children": "customer"      
+                      }]
+                    },
+                    {
+                      "component": "Tab",
+                      "props": {
+                        "isActive": false                      },
+                      "children": [{
+                        "component": "ResponsiveButton",
+                        "props": {
+                          "onClick": "func:this.props.reduxRouter.push",
+                          "onclickProps": "/crm/applications",
+                          "onclickBaseUrl":"/r-admin/contentdata/accounts/:id",
+                          "onclickLinkParams":[{"key":":id","val":"headerHost"}],
+                          "style": {}
+                        },
+                        "asyncprops":{
+                          "onclickPropObject":["tabledata","request"]
+                        },
+                        "children": "application"      
+                      }]
+                    },
+                    {
+                      "component": "Tab",
+                      "props": {
+                        "isActive": false
+                      },
+                      "children": [{
+                        "component": "ResponsiveButton",
+                        "props": {
+                          "onclickProps": "/crm/applications"
+                        },
+                        "children": "debug"      
+                      }]
+                    }]
+                  }]
+                },
                 {
                   "component":"div",
                   "props":{
@@ -260,6 +365,9 @@
                     "notificationForm":true,
                     "flattenFormData":true,
                     "onSubmit":"func:this.props.debug",
+                    "style":{
+                      "marginBottom":50
+                    },
                     "validations":[{
                       "name":"baseurl",
                       "constraints":{
@@ -320,29 +428,129 @@
                         }
                       }
                     }],
-                    "formgroups":[{
-                      "formElements":[{
-                        "type":"text",
-                        "name":"baseurl",
-                        "label":"baseurl"
-                      },{
-                        "type":"text",
-                        "name":"originalurl",
-                        "label":"originalurl"
-                      },
+                    "formgroups":[
+                    {
+                      "formElements":[
                       {
                         "type":"layout",
+                        "layoutProps":{
+                          "style":{
+                            "width":"100%"
+                          }
+                        },
                         "value":{
                           "component":"div",
+                          "props":{
+                            "style":{
+                              "textAlign":"center"
+                            }
+                          },
                           "children":[{
                             "component":"Title",
-                            "size":"is2",
-                            "children":"random text"
+                            "props":{
+                              "size":"is2",
+                              "style":{
+                                "margin":"auto"
+                              }
+                            },
+                            "children":"CUSTOM LAYOUT text"
                           },{
                             "component":"span",
                             "children":"random text"
                           }]
                         }
+                      }]
+                    },
+                    {
+                      "formElements":[
+                      {
+                        "type":"checkbox",
+                        "name":"samplecheck",
+                        "value":"on",
+                        "label":"save",
+                        "placeholder":"rememberme"
+                      },
+                      {
+                        "type":"link",
+                        "name":"myaccount",
+                        "label":"My Account",
+                        "value":{
+                          "component": "ResponsiveButton",
+                          "props": {
+                            "onClick": "func:this.props.reduxRouter.push",
+                            "onclickProps": "/crm/applications",
+                            "onclickBaseUrl":"/r-admin/contentdata/accounts/:id",
+                            "onclickThisProp":"formdata",
+                            "onclickLinkParams":[{"key":":id","val":"headerHost"}],
+                            "style": {}
+                          },
+                          "children":"go to my account"
+                        }
+                      },
+                      {
+                        "type":"submit",
+                        "passProps":{
+                          "color":"isInfo",
+                          "size":"isLarge"
+                        },
+                        "value":"Debug Form"
+                      }]
+                    },
+                    {
+                      "formElements":[
+                      {
+                        "type":"text",
+                        "name":"state",
+                        "placeholder":"new jersey",
+                        "label":"state"
+                      },
+                      {
+                        "type":"group",
+                        "label":"Address",
+                        "layoutProps":{
+                        },
+                        "groupElements":[
+                          {
+                            "type":"text",
+                            "name":"street",
+                            "placeholder":"22 hudson pl",
+                            "layoutProps":{
+                              "innerFormItem":true
+                            }
+                          },
+                          {
+                            "type":"text",
+                            "name":"city",
+                            "placeholder":"hoboken NEW JERSEY IN HEREE",
+                            "layoutProps":{
+                              "innerFormItem":true
+                            }
+                          },
+                          {
+                            "type":"text",
+                            "name":"zip",
+                            "placeholder":"07030",
+                            "layoutProps":{
+                              "innerFormItem":true
+                            },
+                            "passProps":{
+                              "isExpanded":true
+                            }
+                          }
+                        ]
+                      }]
+                    },
+                    {
+                      "formElements":[
+                      {
+                        "type":"text",
+                        "name":"baseurl",
+                        "label":"baseurl"
+                      },
+                      {
+                        "type":"text",
+                        "name":"originalurl",
+                        "label":"originalurl"
                       },
                       {
                         "type":"select",
@@ -361,11 +569,9 @@
                           "label":"Turn On",
                           "value":"on"
                         }]
-                      },{
-                        "type":"submit",
-                        "value":"debug"
                       }]
-                    },{
+                    },
+                    {
                       "formElements":[{
                         "type":"code",
                         "name":"jsCode",
@@ -375,85 +581,15 @@
                         "value":"console.log('this is a code mirror');"
                  
                       },{
-                        "type":"editor",
-                        "name":"wysiwyg",
-                        "passProps": {
-                          "mode": "javascript"
-                        },
-                        "value":"console.log('this is a code mirror');"
-                 
-                      }]
-                    },
-                    {
-                      "formElements":[{
                         "type":"textarea",
                         "name":"testTextAreaInputts",
                         "label":"blog"
-                      },{
-                        "type":"checkbox",
-                        "name":"samplecheck",
-                        "label":"save",
-                        "placeholder":"rememberme"
                       }]
                     }]
                   },
                   "asyncprops":{
                     "formdata":["tabledata","request"]
                   }
-                },
-                {
-                  "component": "Tabs",
-                  "props":{
-                    "style":{
-                    }
-                  },
-                  "children": [{
-                    "component": "TabGroup",
-                    "props":{
-                      "className":"breadcrumb",
-                      "style":{
-                        "border":"1px solid black",
-                        "color":"red"
-                      }
-                    },
-                    "children": [{
-                      "component": "Tab",
-                      "props": {
-                        "isActive": true,
-                        "style": {}
-                      },
-                      "children": [{
-                        "component": "ResponsiveButton",
-                        "props": {
-                          "onClick": "func:this.props.reduxRouter.push",
-                          "onclickProps": "/crm/customers",
-                          "style": {}
-                        },
-                        "children": "customer"      
-                      }]
-                    },
-                    {
-                      "component": "Tab",
-                      "props": {
-                        "isActive": false,
-                        "style": {}
-                      },
-                      "children": [{
-                        "component": "ResponsiveButton",
-                        "props": {
-                          "onClick": "func:this.props.reduxRouter.push",
-                          "onclickProps": "/crm/applications",
-                          "onclickBaseUrl":"/r-admin/contentdata/accounts/:id",
-                          "onclickLinkParams":[{"key":":id","val":"headerHost"}],
-                          "style": {}
-                        },
-                        "asyncprops":{
-                          "onclickPropObject":["tabledata","request"]
-                        },
-                        "children": "application"      
-                      }]
-                    }]
-                  }]
                 },
                 {
                   "component":"ResponsiveCard",
@@ -551,17 +687,6 @@
                       }
                     }
                   ]
-                },
-                {
-                  "component":"Editor",
-                  "props":{
-                    "wrapperProps":{
-                      "style":{
-                        "border":"1px solid black",
-                        "marginBottom":30 
-                      }
-                    }
-                  }
                 }
               ]
             }]

@@ -42,6 +42,19 @@ const defaultStyles = {
     border: 'none',
     fontSize:22,
   },
+  inputStyle: {
+    overflow: 'hidden',
+    backgroundColor: 'white',
+    border: '1px solid #d3d6db',
+    borderRadius: 3,
+    display: 'inline-flex',
+    height: 30,
+    lineHeight: '30px',
+    // padding: '0px 5px',
+    margin: 0,
+    width:'100%',
+    boxShadow: 'inset 0 1px 2px rgba(17,17,17,.1)',
+  }
 };
 
 export default defaultStyles;

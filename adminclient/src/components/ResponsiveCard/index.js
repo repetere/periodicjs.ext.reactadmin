@@ -54,9 +54,9 @@ class ResponsiveCard extends Component {
     let rightIcon = (!this.props.leftIcon)?cardIcon:null;
     const fullCard = (
       <Card {...this.props.cardProps} isFullwidth style={this.props.cardStyle}>
-        <CardHeader style={this.props.headerStyle}>
+        <CardHeader style={Object.assign({ cursor:'pointer', }, this.props.headerStyle)}>
           {leftIcon}
-          <CardHeaderTitle style={this.props.headerTitleStyle}>
+          <CardHeaderTitle style={this.props.headerTitleStyle} onClick={() => this.expandCard()}>
             {this.state.cardTitle}
           </CardHeaderTitle>
           {rightIcon}

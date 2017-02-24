@@ -4,10 +4,6 @@
     "props": { "size": "isFullheight" },
     "children": [ {
       "component": "HeroBody",
-      "props":{},
-      "asyncprops": {
-        "healthcheck": ["healthcheckStatus" ]
-      },
       "children": [ {
         "component": "Container",
         "props":{},
@@ -37,8 +33,6 @@
       } ]
     } ]
   },
-  "resources": {
-    "healthcheckStatus":"/load/healthcheck"
-  },
+  "resources": {  },
   "onFinish":"render"
 }

@@ -11,6 +11,12 @@
   },
   "layout":{
     "component":"Menu",
+    "props":{
+      "style":{
+        "paddingBottom":70,
+        "width":"10rem"
+      }
+    },
     "children":[
       {
         "component":"MenuLabel",

@@ -3,7 +3,7 @@ import { Columns, Card, CardContent, CardFooter, CardFooterItem, Notification, C
 import ResponsiveCard from '../ResponsiveCard';
 import { getRenderedComponent, } from '../AppLayoutMap';
 import utilities from '../../util';
-import { getFormTextInputArea, getFormCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, getFormTextArea, getFormEditor, } from './FormElements';
+import { getFormTextInputArea, getFormCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, getFormTextArea, getFormEditor, getFormLink, getFormGroup, } from './FormElements';
 import flatten from 'flat';
 import validate from 'validate.js';
 
@@ -11,7 +11,6 @@ class ResponsiveForm extends Component{
   constructor(props) {
     super(props);
     let formdata = (props.flattenFormData) ? flatten(props.formdata, props.flattenDataOptions) : props.formdata;
-    // console.log('form state', { formdata, });
     this.state = Object.assign({
       formDataError: null,
       formDataErrors: {},
@@ -31,6 +30,8 @@ class ResponsiveForm extends Component{
     this.getCardFooterItem = getCardFooterItem.bind(this);
     this.getFormSelect = getFormSelect.bind(this);
     this.getFormEditor = getFormEditor.bind(this);
+    this.getFormLink = getFormLink.bind(this);
+    this.getFormGroup = getFormGroup.bind(this);
   }
   componentWillReceiveProps(nextProps) {
     let formdata = (nextProps.flattenFormData) ? flatten(nextProps.formdata, nextProps.flattenDataOptions) : nextProps.formdata;
@@ -206,14 +207,20 @@ class ResponsiveForm extends Component{
           return this.getFormCode({ formElement,  i:j, formgroup, }); 
         } else if (formElement.type === 'editor') {
           return this.getFormEditor({ formElement,  i:j, formgroup, }); 
+        } else if (formElement.type === 'link') {
+          return this.getFormLink({
+            formElement, i: j, button: this.getRenderedComponent(formElement.value,undefined,true),
+          }); 
         } else if (formElement.type === 'select') {
           return this.getFormSelect({ formElement,  i:j, formgroup, }); 
         } else if (formElement.type === 'layout') {
           return (<div key={j} {...formElement.layoutProps}>{this.getRenderedComponent(formElement.value)}</div>);
         } else if (formElement.type === 'submit') {
           return this.getFormSubmit({ formElement,  i:j, formgroup, }); 
+        } else if (formElement.type === 'group') {
+          return this.getFormGroup({ formElement,  i:j, groupElements:formElement.groupElements.map(getFormElements), }); 
         } else {
-          return <div key={j} />;
+          return <div key={j}>{`${formElement.label || formElement.name }(${formElement.type || 'unknown'}):${ this.state[formElement.name] || formElement.value }`}</div>;
         }
       };
       /** If the formgroup is a card and has two columns, it will create a single card with two inputs split into two columns based on which ones are set in each column */
@@ -297,11 +304,11 @@ class ResponsiveForm extends Component{
         {footerGroupData}
       </Card>);
     } else if(this.props.notificationForm){
-      return(<div>
-      <Notification>{formGroupData}</Notification>
+      return (<div style={this.props.style}>
+        <Notification {...this.props.notificationForm}>{formGroupData}</Notification>
       </div>);
     } else {
-      return (<div>{ formGroupData }</div>);
+      return (<div style={this.props.style}>{ formGroupData }</div>);
     }
   }
   componentDidUpdate() {

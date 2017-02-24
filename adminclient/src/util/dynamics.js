@@ -71,8 +71,15 @@ export const fetchErrorContent = function _fetchErrorContent () {
   let state = getState();
   let custom404Error;
   let errorComponents = (state.ui && state.ui.components && state.ui.components.error) ? state.ui.components.error : false;
+  // console.debug({ errorComponents });
   if (errorComponents && errorComponents['404']) {
-    let componentData = errorComponents['404'];
+    let componentData = errorComponents[ '404' ];
+    //TODO: Jan, this was broken because the custom error component had layout nested under settings
+    if (!componentData.layout && componentData.settings) {
+      componentData.layout = componentData.settings.layout;
+      componentData.resources = componentData.settings.resources;
+    }
+    // console.debug({componentData})
     if (typeof componentData.status === 'undefined' || componentData.status === 'undefined' || componentData.status === 'uninitialized') {
       custom404Error = false;
     } else {
@@ -84,9 +91,13 @@ export const fetchErrorContent = function _fetchErrorContent () {
           }.bind(this),
           getState,
         });
-      } else custom404Error = this.getRenderedComponent(componentData.layout);
+      } else {
+        // console.debug('error page has no resources')
+        custom404Error = this.getRenderedComponent(componentData.layout);
+      }
     }
   }
+  // console.log({ custom404Error });
   this.uiLayout = (custom404Error) ? custom404Error : <AppError404/>;
   window.document.title = 'Page Not Found';
   if (this.props && this.props.setNavLabel) this.props.setNavLabel('Error');

@@ -27,17 +27,23 @@ export let AppLayoutMap = Object.assign({}, {
 // console.log({ ReactDOM: React.DOM['div'] });
 
 
-export function getRenderedComponent(componentObject, resources) {
+export function getRenderedComponent(componentObject, resources, debug) {
   AppLayoutMap.ResponsiveLink = ResponsiveLink.bind(this);
   AppLayoutMap.ResponsiveButton = ResponsiveButton.bind(this);
   // console.log('this.props', this);
   renderIndex++;
+  // console.info({ resources });
 
   try {
     let asyncprops = (componentObject.asyncprops && typeof componentObject.asyncprops === 'object') ? utilities.traverse(componentObject.asyncprops, resources) : {};
     let windowprops = (componentObject.windowprops && typeof componentObject.windowprops === 'object') ? utilities.traverse(componentObject.windowprops, window) : {};
     let thisprops = (componentObject.thisprops && typeof componentObject.thisprops === 'object') ? utilities.traverse(componentObject.thisprops, this.props.getState()) : {};
     let thisDotProps = (!React.DOM[ componentObject.component ] && !rebulma[ componentObject.component ]) ? this.props : null;
+    // if (debug) {
+    //   console.debug({
+    //     asyncprops, thisprops,
+    //   });
+    // }
     // if(!React.DOM[ componentObject.component ] && !rebulma[ componentObject.component ]){
     //   console.log(componentObject.component,'is not in bulma or reactdom')
     // }
@@ -60,6 +66,7 @@ export function getRenderedComponent(componentObject, resources) {
     );
   } catch (e) {
     console.error(e);
+    console.error({ componentObject, resources, },this);
     return createElement('div', {}, e.toString());
   }
 }

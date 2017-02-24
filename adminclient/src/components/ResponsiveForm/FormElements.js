@@ -2,8 +2,10 @@ import React from 'react';
 import FormItem from '../FormItem';
 import RACodeMirror from '../RACodeMirror';
 import RAEditor from '../RAEditor';
+// import ResponsiveButton from '../ResponsiveButton';
 import { EditorState, } from 'draft-js';
-import { ControlLabel, Label, Input, Button, CardFooterItem, Select, Textarea, } from 're-bulma'; 
+import { ControlLabel, Label, Input, Button, CardFooterItem, Select, Textarea, Group, } from 're-bulma'; 
+import styles from '../../styles';
 
 export function getPropertyAttribute(options) {
   let { property, element, } = options;
@@ -55,6 +57,14 @@ function valueChangeHandler(formElement) {
   };
 }
 
+function getFormLabel(formElement) {
+  return (formElement.label)
+    ? (formElement.layoutProps && formElement.layoutProps.horizontalform)
+      ? (<ControlLabel {...formElement.labelProps}>{formElement.label}</ControlLabel>)
+      : (<Label {...formElement.labelProps}>{formElement.label}</Label>)
+    : null;
+}
+
 export function getFormTextInputArea(options) {
   let { formElement, i, /*formgroup, width,*/ onChange, } = options;
   let initialValue = formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
@@ -87,7 +97,7 @@ export function getFormTextInputArea(options) {
   }
 
   return (<FormItem key={i} {...formElement.layoutProps} >
-    {(formElement.layoutProps && formElement.layoutProps.horizontalform) ? (<ControlLabel {...formElement.labelProps}>{formElement.label}</ControlLabel>) : (<Label {...formElement.labelProps}>{formElement.label}</Label>)}  
+    {getFormLabel(formElement)}  
     <Input {...formElement.passProps}
       help={getFormElementHelp(hasError, this.state, formElement.name)}
       color={(hasError)?'isDanger':undefined}
@@ -112,7 +122,7 @@ export function getFormTextArea(options) {
   }
 
   return (<FormItem key={i} {...formElement.layoutProps} >
-    {(formElement.layoutProps && formElement.layoutProps.horizontalform) ? (<ControlLabel {...formElement.labelProps}>{formElement.label}</ControlLabel>) : (<Label {...formElement.labelProps}>{formElement.label}</Label>)}  
+    {getFormLabel(formElement)}  
     <Textarea {...formElement.passProps}
       onChange={(event)=>onChange()(event)}
       help={getFormElementHelp(hasError, this.state, formElement.name)}
@@ -137,7 +147,7 @@ export function getFormSelect(options) {
   }  
 
   return (<FormItem key={i} {...formElement.layoutProps} >
-    {(formElement.layoutProps && formElement.layoutProps.horizontalform) ? (<ControlLabel {...formElement.labelProps}>{formElement.label}</ControlLabel>) : (<Label {...formElement.labelProps}>{formElement.label}</Label>)}  
+    {getFormLabel(formElement)}  
     <Select {...formElement.passProps}
       help={getFormElementHelp(hasError, this.state, formElement.name)}
       color={(hasError)?'isDanger':undefined}
@@ -156,26 +166,53 @@ export function getFormCheckbox(options) {
   let hasError = getErrorStatus(this.state, formElement.name);
 
   if (!onValueChange) {
-    onValueChange = valueChangeHandler.bind(this, formElement);
+    onValueChange = (/*event*/) => {
+      // let text = event.target.value;
+      let updatedStateProp = {};
+      updatedStateProp[ formElement.name ] = (this.state[ formElement.name ] ) ? false : 'on';
+      // console.log({ updatedStateProp });
+      this.setState(updatedStateProp);
+    };
   }
-  // if (!onValueChange) {
-  //   onValueChange = (event) => {
-  //     let value = event.target.value;
-  //     console.debug({ value, });
-  //     let updatedStateProp = {};
-  //     updatedStateProp[ formElement.name ] = value;
-  //     this.setState(updatedStateProp);
-  //   };
-  // }
+
   return (<FormItem key={i} {...formElement.layoutProps} >
-    {(formElement.layoutProps && formElement.layoutProps.horizontalform) ? (<ControlLabel {...formElement.labelProps}>{formElement.label}</ControlLabel>) : (<Label {...formElement.labelProps}>{formElement.label}</Label>)}  
+    {getFormLabel(formElement)}  
     <input {...formElement.passProps}
-      type="checkbox"  
-      onChange={(event)=>onValueChange()(event)}
+      type="checkbox"
+      checked={this.state[ formElement.name ]}
+      onChange={onValueChange}
     >
     </input>
     <span {...formElement.placeholderProps}>{formElement.placeholder}</span>
     {getCustomErrorLabel(hasError, this.state, formElement)}
+  </FormItem>);
+}
+
+export function getFormLink(options) {
+  let { formElement, i, button, } = options;
+  let wrapperProps = Object.assign({
+    style:styles.inputStyle,
+  }, formElement.wrapperProps);
+
+  return (<FormItem key={i} {...formElement.layoutProps} >
+    {getFormLabel(formElement)}  
+    <span {...wrapperProps}>
+      <span style={{ padding: '0 5px', }}>
+      {button}
+      </span>  
+    </span>
+  </FormItem>);
+}
+
+export function getFormGroup(options) {
+  let { formElement, i, groupElements, } = options;
+
+  return (<FormItem key={i} {...formElement.layoutProps} >
+    {getFormLabel(formElement)}  
+    <Group {...formElement.passProps}
+    >
+      {groupElements}  
+    </Group>
   </FormItem>);
 }
 
@@ -205,7 +242,7 @@ export function getFormCode(options) {
   let hasError = getErrorStatus(this.state, formElement.name);
 
   return (<FormItem key={i} {...formElement.layoutProps} >
-    {(formElement.layoutProps && formElement.layoutProps.horizontalform) ? (<ControlLabel {...formElement.labelProps}>{formElement.label}</ControlLabel>) : (<Label {...formElement.labelProps}>{formElement.label}</Label>)}  
+    {getFormLabel(formElement)}  
     <RACodeMirror key={i} {...CodeMirrorProps}  />
     {getCustomErrorLabel(hasError, this.state, formElement)}
   </FormItem>
@@ -260,7 +297,7 @@ export function getFormEditor(options) {
   }
 
   return (<FormItem key={i} {...formElement.layoutProps} >
-    {(formElement.layoutProps && formElement.layoutProps.horizontalform) ? (<ControlLabel {...formElement.labelProps}>{formElement.label}</ControlLabel>) : (<Label {...formElement.labelProps}>{formElement.label}</Label>)}  
+    {getFormLabel(formElement)}  
     <RAEditor key={i} {...EditorProps} />
   </FormItem>
   );
@@ -269,6 +306,7 @@ export function getFormEditor(options) {
 export function getFormSubmit(options) {
   let { formElement, i, } = options;
   return (<FormItem key={i} {...formElement.layoutProps} >
+    {getFormLabel(formElement)}  
     <Button {...formElement.passProps}
       onClick={this.submitForm.bind(this)}>
       {formElement.value}
