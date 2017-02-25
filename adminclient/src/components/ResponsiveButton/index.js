@@ -84,7 +84,7 @@ class ResponsiveButton extends Component {
         options.push(<option key={`sddb-${key}`} value={key}>{selectPropsVals[key].label}</option>);
       });
 
-      return <Select value={this.props.selectProps.selected}  onChange={(event) => {
+      return <Select {...this.props.selectElmProps} value={this.props.selectProps.selected}  onChange={(event) => {
         // console.log({ event });
         this.handleSelect.call(this, event, this.props.selectProps.values);
       }}>
@@ -93,18 +93,31 @@ class ResponsiveButton extends Component {
     } else if (this.props.buttonProps) {
       return <Button
         {...this.props.buttonProps}
-        style={Object.assign({ cursor: 'pointer', }, this.props.style)}
+        style={Object.assign({
+          cursor: 'pointer', display: 'inline-block',
+        }, this.props.style)}
         onClick={this.handleOnClick.bind(this, getPropsForOnClick())}
         >
-        {this.props.children}
+        {
+          (this.props.onclickThisProp && this.props.displayThisProps)
+          ? this.props[this.props.onclickThisProp][this.props.displayThisProps]
+          : this.props.children
+        }
       </Button>;
     } else {
       return <span
         {...this.props.spanProps}
-        style={Object.assign({ cursor: 'pointer', }, this.props.style)}
+        style={Object.assign({
+          cursor: 'pointer', display: 'inline-block',
+        }, this.props.style)}
         onClick={this.handleOnClick.bind(this, getPropsForOnClick())}
-        >
-        {this.props.children}
+      >
+        
+        {
+          (this.props.onclickThisProp && this.props.displayThisProps)
+          ? this.props[this.props.onclickThisProp][this.props.displayThisProps]
+          : this.props.children
+        }
       </span>;
     }
   }

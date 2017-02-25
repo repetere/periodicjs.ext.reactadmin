@@ -3,7 +3,7 @@ import { Columns, Card, CardContent, CardFooter, CardFooterItem, Notification, C
 import ResponsiveCard from '../ResponsiveCard';
 import { getRenderedComponent, } from '../AppLayoutMap';
 import utilities from '../../util';
-import { getFormTextInputArea, getFormCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, getFormTextArea, getFormEditor, getFormLink, getFormGroup, } from './FormElements';
+import { getFormTextInputArea, getFormCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, getFormTextArea, /*getFormEditor,*/ getFormLink, getFormGroup, } from './FormElements';
 import flatten from 'flat';
 import validate from 'validate.js';
 
@@ -29,7 +29,7 @@ class ResponsiveForm extends Component{
     this.getFormCheckbox = getFormCheckbox.bind(this);
     this.getCardFooterItem = getCardFooterItem.bind(this);
     this.getFormSelect = getFormSelect.bind(this);
-    this.getFormEditor = getFormEditor.bind(this);
+    // this.getFormEditor = getFormEditor.bind(this);
     this.getFormLink = getFormLink.bind(this);
     this.getFormGroup = getFormGroup.bind(this);
   }
@@ -205,8 +205,8 @@ class ResponsiveForm extends Component{
           return this.getFormCheckbox({ formElement,  i:j, formgroup, });
         } else if (formElement.type === 'code') {
           return this.getFormCode({ formElement,  i:j, formgroup, }); 
-        } else if (formElement.type === 'editor') {
-          return this.getFormEditor({ formElement,  i:j, formgroup, }); 
+        // } else if (formElement.type === 'editor') {
+        //   return this.getFormEditor({ formElement,  i:j, formgroup, }); 
         } else if (formElement.type === 'link') {
           return this.getFormLink({
             formElement, i: j, button: this.getRenderedComponent(formElement.value,undefined,true),

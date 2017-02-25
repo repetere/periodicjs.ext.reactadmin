@@ -101,5 +101,5 @@
     "postuninstall": "node uninstall.js",
     "test": "mocha"
   },
-  "version": "0.6.3"
+  "version": "0.6.4"
 }

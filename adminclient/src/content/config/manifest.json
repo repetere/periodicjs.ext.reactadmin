@@ -474,6 +474,12 @@
                         "type":"link",
                         "name":"myaccount",
                         "label":"My Account",
+                        "linkWrapperProps":{
+                          "style": {
+                            "padding": "0 5px",
+                            "width":"100%"
+                          }
+                        },
                         "value":{
                           "component": "ResponsiveButton",
                           "props": {
@@ -481,10 +487,13 @@
                             "onclickProps": "/crm/applications",
                             "onclickBaseUrl":"/r-admin/contentdata/accounts/:id",
                             "onclickThisProp":"formdata",
+                            "displayThisProps":"headerHost",
                             "onclickLinkParams":[{"key":":id","val":"headerHost"}],
-                            "style": {}
+                            "style": {
+                              "width":"100%"
+                            }
                           },
-                          "children":"go to my account"
+                          "children":"my account button"
                         }
                       },
                       {

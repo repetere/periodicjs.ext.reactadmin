@@ -1,7 +1,7 @@
 import React from 'react';
 import FormItem from '../FormItem';
 import RACodeMirror from '../RACodeMirror';
-import RAEditor from '../RAEditor';
+// import RAEditor from '../RAEditor';
 // import ResponsiveButton from '../ResponsiveButton';
 import { EditorState, } from 'draft-js';
 import { ControlLabel, Label, Input, Button, CardFooterItem, Select, Textarea, Group, } from 're-bulma'; 
@@ -193,11 +193,17 @@ export function getFormLink(options) {
   let wrapperProps = Object.assign({
     style:styles.inputStyle,
   }, formElement.wrapperProps);
+  let linkWrapperProps = Object.assign({
+    style: {
+      padding: '0 5px',
+    },
+  }, formElement.linkWrapperProps);
+  // console.debug({ linkWrapperProps, formElement });
 
   return (<FormItem key={i} {...formElement.layoutProps} >
     {getFormLabel(formElement)}  
     <span {...wrapperProps}>
-      <span style={{ padding: '0 5px', }}>
+      <span {...linkWrapperProps}>
       {button}
       </span>  
     </span>
@@ -248,7 +254,7 @@ export function getFormCode(options) {
   </FormItem>
   );
 }
-
+/*
 export function getFormEditor(options) {
   let { formElement, i, onValueChange, } = options;
   let editorStateProp = EditorState.createEmpty();
@@ -303,6 +309,7 @@ export function getFormEditor(options) {
   );
 }
 
+*/
 export function getFormSubmit(options) {
   let { formElement, i, } = options;
   return (<FormItem key={i} {...formElement.layoutProps} >
