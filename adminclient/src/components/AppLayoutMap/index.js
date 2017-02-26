@@ -50,20 +50,28 @@ export function getRenderedComponent(componentObject, resources, debug) {
     let renderedCompProps = Object.assign({ key: renderIndex, }, thisDotProps,
       thisprops,
       componentObject.props, asyncprops, windowprops);
-    return createElement(
-      //element component
-      (React.DOM[ componentObject.component ])
-        ? componentObject.component
-        : (recharts[ componentObject.component.replace('recharts.', '') ])
-          ? recharts[ componentObject.component.replace('recharts.', '') ]
-          : AppLayoutMap[ componentObject.component ],
-      //element props
-      renderedCompProps,
-      //props children
-      (Array.isArray(componentObject.children) && typeof componentObject.children !== 'string')
-        ? componentObject.children.map(childComponentObject => getRenderedComponent.call(this, childComponentObject, resources))
-        : componentObject.children
-    );
+    //this loops through props assigned on component (wither from props obj or asyncprops, etc ) if filtered list length is all false, then dont display
+    if (typeof componentObject.conditionalprops !== 'undefined' &&
+      !Object.keys(utilities.traverse(componentObject.conditionalprops, renderedCompProps)).filter(key=>utilities.traverse(componentObject.conditionalprops, renderedCompProps)[key]).length) {
+      return null;
+    }
+    else {
+       return createElement(
+        //element component
+        (React.DOM[ componentObject.component ])
+          ? componentObject.component
+          : (recharts[ componentObject.component.replace('recharts.', '') ])
+            ? recharts[ componentObject.component.replace('recharts.', '') ]
+            : AppLayoutMap[ componentObject.component ],
+        //element props
+        renderedCompProps,
+        //props children
+        (Array.isArray(componentObject.children) && typeof componentObject.children !== 'string')
+          ? componentObject.children.map(childComponentObject => getRenderedComponent.call(this, childComponentObject, resources))
+          : componentObject.children
+      );
+    }
+   
   } catch (e) {
     console.error(e);
     console.error({ componentObject, resources, },this);

@@ -154,6 +154,14 @@
               "label":"Accounts",
               "id": "accounts"
             }
+          },
+          {
+            "component":"MenuAppLink",
+            "props":{
+              "href":"/r-admin/content/testtables",
+              "label":"Test Tables",
+              "id": "testtables"
+            }
           }
         ]
       }

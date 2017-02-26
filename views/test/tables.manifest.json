@@ -1,0 +1,164 @@
+{
+  "containers":{
+    "/r-admin/content/testtables":{
+      "layout":{
+        "component":"Hero",
+        "props":{
+          "size":"isFullheight"
+        },
+        "children":[
+          {
+            "component":"HeroBody",
+            "props":{
+              "className":"testTest",
+              "style":{
+                "padding":"80px 0"
+              }
+            },
+            "children":[
+              {
+                "component":"Container",
+                "props":{
+                },
+                "children":[
+                  {
+                    "component":"div",
+                    "props":{
+                      "dangerouslySetInnerHTML":{
+                        "__html":"<h1>TEST HOME PAGE</h1>"
+                      }
+                    },  
+                    "thisprops": {
+                      "userdata":["user","userdata"]
+                    } ,
+                    "conditionalprops":{
+                      "useractivated":["userdata","activated"],
+                      "useractivated2":["userdata","activated"]
+                    } 
+                  },
+                  {
+                    "component":"Title",
+                    "children":"Standard Documentation Page"
+                  },
+                  {
+                    "component":"ResponsiveTable",
+                    "props":{
+                      "headers":[
+                        { "label": "#", "value":"--idx-ctr--" },
+                        { "label": "Email", "sortid":"email", "sortable":true },
+                        {"label":"Likes","sortid":"likes"}
+                      ],
+                      "limit":10,
+                      "numItems":20,
+                      "rows":[
+                        {
+                          "email":"yaw.etse@gmail.com",
+                          "likes":300
+                        },
+                        {
+                          "email":"odlyaw@gmail.com",
+                          "likes":45
+                        },
+                        {
+                          "email":"newyaw@gmail.com",
+                          "likes":0
+                        },
+                        {
+                          "email":"med@gmail.com",
+                          "likes":2
+                        },
+                        {
+                          "email":"yaw.etse@gmail.com",
+                          "likes":300
+                        },
+                        {
+                          "email":"odlyaw@gmail.com",
+                          "likes":45
+                        },
+                        {
+                          "email":"newyaw@gmail.com",
+                          "likes":0
+                        },
+                        {
+                          "email":"med@gmail.com",
+                          "likes":2
+                        },
+                        {
+                          "email":"yaw.etse@gmail.com",
+                          "likes":300
+                        },
+                        {
+                          "email":"odlyaw@gmail.com",
+                          "likes":45
+                        },
+                        {
+                          "email":"newyaw@gmail.com",
+                          "likes":0
+                        },
+                        {
+                          "email":"med@gmail.com",
+                          "likes":2
+                        },
+                        {
+                          "email":"yaw.etse@gmail.com",
+                          "likes":300
+                        },
+                        {
+                          "email":"odlyaw@gmail.com",
+                          "likes":45
+                        },
+                        {
+                          "email":"newyaw@gmail.com",
+                          "likes":0
+                        },
+                        {
+                          "email":"med@gmail.com",
+                          "likes":2
+                        },
+                        {
+                          "email":"yaw.etse@gmail.com",
+                          "likes":300
+                        },
+                        {
+                          "email":"odlyaw@gmail.com",
+                          "likes":45
+                        },
+                        {
+                          "email":"newyaw@gmail.com",
+                          "likes":0
+                        },
+                        {
+                          "email":"med@gmail.com",
+                          "likes":2
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "component": "RawOutput",
+                    "props": {
+                      "select": "userdata",  
+                      "type": "block"
+                    },  
+                    "thisprops": {
+                      "userdata":["user","userdata"]
+                    }  
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "resources":{
+        "tabledata":"/r-admin/contentdata/users?format=json&limit=10"
+      },
+      "onFinish":"render",
+      "pageData":{
+        "title":"Home",
+        "navLabel":"Home"
+      }
+    }
+  }
+}
+

@@ -51,12 +51,11 @@ const defaultProps = {
 class ResponsiveTable extends Component {
   constructor(props) {
     super(props);
-    // console.log({ props });
+    // console.debug({ props });
     let rows = props.rows || [];
     if (props.flattenRowData) {
       rows = rows.map(row => flatten(row, props.flattenRowDataOptions));
     }
-    // let itemCount =  props.rows.length || props.itemCount;;
     this.state = {
       headers: props.headers || [],
       rows:rows,
@@ -96,57 +95,67 @@ class ResponsiveTable extends Component {
     // console.log('this.state', this.state);
   }
   updateTableData(options) {
-    let newSortOptions = {};
-    if (options.sort) {
-      newSortOptions.sortProp = options.sort;
-      if (this.state.sortProp === options.sort) {
-        newSortOptions.sortOrder = (this.state.sortOrder === '') ? '-' : '';
-      } else {
-        newSortOptions.sortOrder = '';
+    if (!this.props.baseUrl) {
+      let updatedState = {};
+      updatedState.numPages = Math.ceil(this.state.numItems / this.props.limit);
+      updatedState.limit = this.props.limit;
+      updatedState.currentPage = options.pagenum;
+      updatedState.isLoading = false;
+      this.setState(updatedState);
+    }
+    else {
+      let newSortOptions = {};
+      if (options.sort) {
+        newSortOptions.sortProp = options.sort;
+        if (this.state.sortProp === options.sort) {
+          newSortOptions.sortOrder = (this.state.sortOrder === '') ? '-' : '';
+        } else {
+          newSortOptions.sortOrder = '';
+        }
       }
-    }
-    if (options.pagenum < 1) {
-      options.pagenum = 1;
-    }
-    this.setState({ isLoading: true, });
-    let stateProps = this.props.getState();
-    let fetchURL = `${stateProps.settings.basename}${this.props.baseUrl}&${qs.stringify({
-      limit: this.props.limit,
-      sort: (newSortOptions.sortProp)
-        ? `${newSortOptions.sortOrder}${newSortOptions.sortProp}`
-        : undefined,
-      search: options.search,
-      pagenum: options.pagenum || 1,
-    })}`;
-    // console.log({ options, fetchURL, },options.search.value);
-    let headers = Object.assign({
-      'x-access-token': stateProps.user.jwt_token,
-    }, stateProps.settings.userprofile.options.headers);
-    utilities.fetchComponent(fetchURL, { headers, })()  
-      .then(response => { 
-        let updatedState = {};
-        // if (this.props.flattenRowData) {
-        //   response = flatten(response, this.props.flattenRowDataOptions);
-        // }
-        // console.log({ response });
-        this.props.dataMap.forEach(data => { 
-          if (data.key === 'rows') {
-            let rows = response[ data.value ] || [];
-            if (this.props.flattenRowData) {
-              updatedState[ data.key ] = rows.map(row => flatten(row, this.props.flattenRowDataOptions));
+      if (options.pagenum < 1) {
+        options.pagenum = 1;
+      }
+      this.setState({ isLoading: true, });
+      let stateProps = this.props.getState();
+      let fetchURL = `${stateProps.settings.basename}${this.props.baseUrl}&${qs.stringify({
+        limit: this.props.limit,
+        sort: (newSortOptions.sortProp)
+          ? `${newSortOptions.sortOrder}${newSortOptions.sortProp}`
+          : undefined,
+        search: options.search,
+        pagenum: options.pagenum || 1,
+      })}`;
+      // console.log({ options, fetchURL, },options.search.value);
+      let headers = Object.assign({
+        'x-access-token': stateProps.user.jwt_token,
+      }, stateProps.settings.userprofile.options.headers);
+      utilities.fetchComponent(fetchURL, { headers, })()  
+        .then(response => { 
+          let updatedState = {};
+          // if (this.props.flattenRowData) {
+          //   response = flatten(response, this.props.flattenRowDataOptions);
+          // }
+          // console.log({ response });
+          this.props.dataMap.forEach(data => { 
+            if (data.key === 'rows') {
+              let rows = response[ data.value ] || [];
+              if (this.props.flattenRowData) {
+                updatedState[ data.key ] = rows.map(row => flatten(row, this.props.flattenRowDataOptions));
+              }
+            } else {
+              updatedState[ data.key ] = response[ data.value ];
             }
-          } else {
-            updatedState[ data.key ] = response[ data.value ];
-          }
+          });
+          updatedState.numPages = Math.ceil(updatedState.numItems / this.props.limit);
+          updatedState.limit = this.props.limit;
+          updatedState.currentPage = options.pagenum;
+          updatedState.isLoading = false;
+          this.setState(updatedState);
+        }, e => {
+          this.props.errorNotification(e);
         });
-        updatedState.numPages = Math.ceil(updatedState.numItems / this.props.limit);
-        updatedState.limit = this.props.limit;
-        updatedState.currentPage = options.pagenum;
-        updatedState.isLoading = false;
-        this.setState(updatedState);
-      }, e => {
-        this.props.errorNotification(e);
-      });
+    }
   }
   formatValue(value, row, options) {
     // console.log({ value, row, options });
@@ -172,7 +181,18 @@ class ResponsiveTable extends Component {
     return returnLink;
   }
   render() {
-    // console.log(this.state);
+    let calcStartIndex = ((this.state.currentPage - 1) * this.state.limit);
+    let startIndex = (!this.props.baseUrl)
+      ? calcStartIndex
+      :0 ;
+    let endIndex = (!this.props.baseUrl)
+      ? ((this.state.limit * this.state.currentPage))
+      : this.state.limit;
+    // console.debug({
+    //   startIndex,
+    //   endIndex,
+    // });
+    // console.debug('this.state',this.state);
     const { numPages, currentPage, } = this.state;
     const pageButtons = [];
     const lastIndex = numPages - 1;
@@ -309,7 +329,7 @@ class ResponsiveTable extends Component {
               </rb.Tr>
             </rb.Thead>
             <rb.Tbody>
-              {this.state.rows.map((row, rowIndex) => (
+              {this.state.rows.slice(startIndex,endIndex).map((row, rowIndex) => (
                 <rb.Tr key={`row${rowIndex}`}>
                   {this.state.headers.map((header, colIndex) => {
                     // console.log({header});
@@ -318,10 +338,12 @@ class ResponsiveTable extends Component {
                         <rb.Td key={`row${rowIndex}col${colIndex}`} {...header.columnProps}>
                           <Link {...header.linkProps} to={this.getHeaderLinkURL(header.link, row)}>{
                             this.formatValue(
-                              row[ header.sortid ] || header.value,
+                              (typeof row[ header.sortid ] !=='undefined')
+                              ? row[ header.sortid ]
+                              : header.value,
                               row,
                               {
-                                idx: rowIndex,
+                                idx: rowIndex+calcStartIndex,
                                 momentFormat: header.momentFormat,
                               })
                           }</Link>
@@ -332,10 +354,12 @@ class ResponsiveTable extends Component {
                         <rb.Td key={`row${rowIndex}col${colIndex}`} {...header.columnProps}>
                           {
                             this.formatValue(
-                              row[ header.sortid ] || header.value,
+                              (typeof row[ header.sortid ] !=='undefined')
+                              ? row[ header.sortid ]
+                              : header.value,
                               row,
                               {
-                                idx: rowIndex,
+                                idx: rowIndex+calcStartIndex,
                                 momentFormat: header.momentFormat,
                               })
                           }

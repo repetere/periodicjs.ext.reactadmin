@@ -3,7 +3,7 @@ import FormItem from '../FormItem';
 import RACodeMirror from '../RACodeMirror';
 // import RAEditor from '../RAEditor';
 // import ResponsiveButton from '../ResponsiveButton';
-import { EditorState, } from 'draft-js';
+// import { EditorState, } from 'draft-js';
 import { ControlLabel, Label, Input, Button, CardFooterItem, Select, Textarea, Group, } from 're-bulma'; 
 import styles from '../../styles';
 
