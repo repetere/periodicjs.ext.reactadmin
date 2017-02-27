@@ -81,7 +81,11 @@ class ResponsiveButton extends Component {
       let selectPropsVals = this.props.selectProps.values;
 
       Object.keys(selectPropsVals).forEach(key => {
-        options.push(<option key={`sddb-${key}`} value={key}>{selectPropsVals[key].label}</option>);
+        let additionalOptionProps =
+          (typeof selectPropsVals[ key ].disabled !== 'undefined')
+            ? { disabled:true, }
+            : {};
+        options.push(<option {...additionalOptionProps} key={`sddb-${key}`} value={key}>{selectPropsVals[key].label}</option>);
       });
 
       return <Select {...this.props.selectElmProps} value={this.props.selectProps.selected}  onChange={(event) => {

@@ -65,9 +65,15 @@ function getFormLabel(formElement) {
     : null;
 }
 
+function getInitialValue(formElement, state) {
+  return (typeof state[ formElement.name ] !== 'undefined')
+    ? state[ formElement.name ] !== 'undefined'
+    : formElement.value;
+}
+
 export function getFormTextInputArea(options) {
   let { formElement, i, /*formgroup, width,*/ onChange, } = options;
-  let initialValue = formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
+  let initialValue = getInitialValue(formElement, this.state); //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
   let keyPress = (e) => {
     if (formElement.submitOnEnter && (e.key === 'Enter' || e.which === 13)) {
       this.submitForm();
@@ -111,7 +117,7 @@ export function getFormTextInputArea(options) {
 
 export function getFormTextArea(options) {
   let { formElement, i, /*formgroup, width,*/ onChange, } = options;
-  let initialValue = formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
+  let initialValue = getInitialValue(formElement, this.state); //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
   let hasError = getErrorStatus(this.state, formElement.name);
 
   if (typeof initialValue !== 'string') {
@@ -136,7 +142,7 @@ export function getFormTextArea(options) {
 export function getFormSelect(options) {
   // let { formElement, i, formgroup, width, onValueChange, onSelect, } = options;
   let { formElement, i, /*formgroup, width,*/ onChange, } = options;
-  let initialValue = formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element: formElement, property: this.state, });
+  let initialValue = getInitialValue(formElement, this.state); //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
   let hasError = getErrorStatus(this.state, formElement.name);
   
   if (typeof initialValue !== 'string') {
@@ -178,7 +184,7 @@ export function getFormCheckbox(options) {
   return (<FormItem key={i} {...formElement.layoutProps} >
     {getFormLabel(formElement)}  
     <input {...formElement.passProps}
-      type="checkbox"
+      type={formElement.type || 'checkbox'}
       checked={this.state[ formElement.name ]}
       onChange={onValueChange}
     >
@@ -186,6 +192,15 @@ export function getFormCheckbox(options) {
     <span {...formElement.placeholderProps}>{formElement.placeholder}</span>
     {getCustomErrorLabel(hasError, this.state, formElement)}
   </FormItem>);
+}
+
+export function getHiddenInput(options) {
+  let { formElement, i, } = options;
+  let initialValue = this.state[ formElement.formdata_name  ] || this.state[ formElement.name  ] || formElement.value;
+
+  return <input key={i}  {...formElement.passProps}
+    type="hidden"
+    value={initialValue} />;
 }
 
 export function getFormLink(options) {
@@ -227,7 +242,8 @@ export function getFormCode(options) {
   let CodeMirrorProps = Object.assign({
     codeMirrorProps: {
       lineNumbers: true,
-      value: this.state[ formElement.name ] || formElement.value,
+      value: getInitialValue(formElement, this.state), //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
+      //value: this.state[ formElement.name ] || formElement.value,
       onChange: (!onValueChange) ? function (newvalue){
         // console.log({ newvalue });
         let updatedStateProp = {};

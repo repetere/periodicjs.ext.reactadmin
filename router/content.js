@@ -36,5 +36,9 @@ module.exports = function(resources) {
       res.send({ result: 'success', data: req.controllerData, });
     });
 
+  ContentRouter.get('/secure-asset/:id/:filename', assetController.loadAsset, assetController.decryptAsset);
+
+
+
   return ContentRouter;
 };

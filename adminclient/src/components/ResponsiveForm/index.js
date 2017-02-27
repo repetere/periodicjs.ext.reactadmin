@@ -3,14 +3,14 @@ import { Columns, Card, CardContent, CardFooter, CardFooterItem, Notification, C
 import ResponsiveCard from '../ResponsiveCard';
 import { getRenderedComponent, } from '../AppLayoutMap';
 import utilities from '../../util';
-import { getFormTextInputArea, getFormCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, getFormTextArea, /*getFormEditor,*/ getFormLink, getFormGroup, } from './FormElements';
+import { getFormTextInputArea, getFormCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, getFormTextArea, /*getFormEditor,*/ getFormLink, getHiddenInput, getFormGroup, } from './FormElements';
 import flatten from 'flat';
 import validate from 'validate.js';
 
 class ResponsiveForm extends Component{
   constructor(props) {
     super(props);
-    let formdata = (props.flattenFormData) ? flatten(props.formdata, props.flattenDataOptions) : props.formdata;
+    let formdata = (props.flattenFormData && props.formdata) ? flatten(props.formdata, props.flattenDataOptions) : props.formdata;
     this.state = Object.assign({
       formDataError: null,
       formDataErrors: {},
@@ -29,6 +29,7 @@ class ResponsiveForm extends Component{
     this.getFormCheckbox = getFormCheckbox.bind(this);
     this.getCardFooterItem = getCardFooterItem.bind(this);
     this.getFormSelect = getFormSelect.bind(this);
+    this.getHiddenInput = getHiddenInput.bind(this);
     // this.getFormEditor = getFormEditor.bind(this);
     this.getFormLink = getFormLink.bind(this);
     this.getFormGroup = getFormGroup.bind(this);
@@ -36,6 +37,15 @@ class ResponsiveForm extends Component{
   componentWillReceiveProps(nextProps) {
     let formdata = (nextProps.flattenFormData) ? flatten(nextProps.formdata, nextProps.flattenDataOptions) : nextProps.formdata;
     this.setState(formdata);
+  }
+  getFormSumitUrl(baseurl, params, prop) {
+    let returnLink = baseurl;
+    if (params && params.length > 0) {
+      params.forEach((param) => {
+        returnLink = returnLink.replace(param.key, prop[ param.val ]);
+      });
+    }
+    return returnLink;
   }
   submitForm() {
     let state = this.props.getState();
@@ -45,6 +55,13 @@ class ResponsiveForm extends Component{
     delete formdata.formDataLists;
     delete formdata.formDataStatusDate;
     delete formdata.formDataTables;
+    if (this.props.hiddenFields) {
+      let hiddenInputs = {};
+      this.props.hiddenFields.forEach(hiddenField => {
+        hiddenInputs[ hiddenField.form_name ] = this.state[ hiddenField.form_val ]; 
+      });
+      formdata = Object.assign(formdata, hiddenInputs);
+    }
     if (this.props.validations) {
       this.props.validations.forEach(validation => {
         // console.debug(formdata[ validation.name ], { validation, });
@@ -62,6 +79,8 @@ class ResponsiveForm extends Component{
     if (validationErrors && Object.keys(validationErrors).length > 0) {
       this.setState({ formDataErrors: validationErrors, });
       console.debug('has errors', validationErrors, { formdata, });
+    } else if (!this.props.onSubmit) {
+      this.props.debug(formdata);
     } else if (typeof this.props.onSubmit === 'string' && this.props.onSubmit.indexOf('func:this.props') !== -1) {
       delete formdata.formDataFiles;
       delete formdata.formDataErrors;
@@ -108,7 +127,7 @@ class ResponsiveForm extends Component{
         //http://stackoverflow.com/questions/36067767/how-do-i-upload-a-file-with-the-html5-js-fetch-api
         // https://github.com/yawetse/formie/blob/master/lib/formie.js
       */
-      fetch(fetchOptions.url,
+      fetch(this.getFormSumitUrl(fetchOptions.url, fetchOptions.params, formdata),
         fetchOptions.options
       )
         .then(utilities.checkStatus)
@@ -201,7 +220,9 @@ class ResponsiveForm extends Component{
           return this.getFormTextInputArea({ formElement,  i:j, formgroup, });
         } else if (formElement.type === 'textarea') {
           return this.getFormTextArea({ formElement,  i:j, formgroup, });
-        } else if (formElement.type === 'checkbox') {
+        } else if (formElement.type === 'hidden') {
+          return this.getHiddenInput({ formElement,  i:j, formgroup, });
+        } else if (formElement.type === 'checkbox' || formElement.type === 'radio') {
           return this.getFormCheckbox({ formElement,  i:j, formgroup, });
         } else if (formElement.type === 'code') {
           return this.getFormCode({ formElement,  i:j, formgroup, }); 
@@ -263,10 +284,11 @@ class ResponsiveForm extends Component{
       if (formgroup.card && !formgroup.card.twoColumns && !formgroup.card.doubleCard) {
         keyValue++;
         keyValue += i;
+        let columnProps = gridProps.subColumnProps || {};//previously was size=isHalf
         return (<Columns {...gridProps}>
-        <Column size="isHalf">  
-          <ResponsiveCard {...formgroup.card.props} key={keyValue++}>
-            {formgroup.formElements.map(getFormElements)}
+          <Column {...columnProps}>  
+            <ResponsiveCard {...formgroup.card.props} key={keyValue++}>
+              {formgroup.formElements.map(getFormElements)}
             </ResponsiveCard>
           </Column>  
         </Columns>);
