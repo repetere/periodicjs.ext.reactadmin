@@ -72,6 +72,7 @@ class ResponsiveForm extends Component{
     if (this.props.hiddenFields) {
       this.props.hiddenFields.forEach(hiddenField => {
         hiddenInputs[ hiddenField.form_name ] = this.state[ hiddenField.form_val ]; 
+        submitFormData[ hiddenField.form_name ] = this.state[ hiddenField.form_val ]; 
       });
       formdata = Object.assign(formdata, hiddenInputs);
     }
