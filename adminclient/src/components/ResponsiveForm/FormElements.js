@@ -67,7 +67,7 @@ function getFormLabel(formElement) {
 
 function getInitialValue(formElement, state) {
   return (typeof state[ formElement.name ] !== 'undefined')
-    ? state[ formElement.name ] !== 'undefined'
+    ? state[ formElement.name ]
     : formElement.value;
 }
 

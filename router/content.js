@@ -1,4 +1,4 @@
-
+'use strtict'
 
 module.exports = function(resources) {
   const ensureApiAuthenticated = resources.app.controller.extension.oauth2server.auth.ensureApiAuthenticated;
