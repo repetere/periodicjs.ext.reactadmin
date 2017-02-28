@@ -55,9 +55,19 @@ class ResponsiveForm extends Component{
     let hiddenInputs = {};
     let submitFormData = {};
     let formElementFields = [];
+    let addNameToName = (formElm) => {
+      if (formElm.type === 'group') {
+        if (formElm.groupElements && formElm.groupElements.length) {
+          formElm.groupElements.forEach(addNameToName);
+        }
+      } else if (formElm.name) {
+        formElementFields.push(formElm.name);
+      }
+    }
     delete formdata.formDataLists;
     delete formdata.formDataStatusDate;
     delete formdata.formDataTables;
+
 
     if (this.props.hiddenFields) {
       this.props.hiddenFields.forEach(hiddenField => {
@@ -69,16 +79,19 @@ class ResponsiveForm extends Component{
       this.props.formgroups.forEach(formgroup => {
         if (formgroup.formElements && formgroup.formElements.length) {
           formgroup.formElements.forEach(formElement => {
-            if (formElement.type === 'group') {
+            if (formElement.formGroupElementsLeft &&     formElement.formGroupElementsLeft.length) {
+              formElement.formGroupElementsLeft.forEach(addNameToName);
+            } else if (formElement.formGroupElementsRight &&     formElement.formGroupElementsRight.length) {
+              formElement.formGroupElementsRight.forEach(addNameToName);
+            } else if (formElement.formGroupCardLeft &&     formElement.formGroupCardLeft.length) {
+              formElement.formGroupCardLeft.forEach(addNameToName);
+            } else if (formElement.formGroupCardRight &&     formElement.formGroupCardRight.length) {
+              formElement.formGroupCardRight.forEach(addNameToName);
+            } else if (formElement.type === 'group') {
               if (formElement.groupElements && formElement.groupElements.length) {
-                formElement.groupElements.forEach(groupElement => {
-                  if (groupElement.name) {
-                    formElementFields.push(groupElement.name);
-                  }
-                });
+                formElement.groupElements.forEach(addNameToName);
               }
-            }
-            else {
+            } else {
               if (formElement.name) {
                 formElementFields.push(formElement.name);
               }
@@ -87,7 +100,7 @@ class ResponsiveForm extends Component{
         }
       });
     }
-    console.debug({formElementFields})
+    // console.debug({formElementFields})
     if (this.props.validations) {
       this.props.validations.forEach(validation => {
         // console.debug(formdata[ validation.name ], { validation, });
@@ -104,7 +117,7 @@ class ResponsiveForm extends Component{
         submitFormData[ formElmField ] = formdata[ formElmField ];
       });
     }
-    console.debug({ submitFormData, formdata });
+    // console.debug({ submitFormData, formdata });
     if (validationErrors && Object.keys(validationErrors).length < 1) {
       this.setState({ formDataErrors: {}, });
     }
