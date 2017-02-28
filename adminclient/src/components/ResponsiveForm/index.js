@@ -59,7 +59,6 @@ class ResponsiveForm extends Component{
     delete formdata.formDataStatusDate;
     delete formdata.formDataTables;
 
-    // console.debug({formElementFields})
     if (this.props.hiddenFields) {
       this.props.hiddenFields.forEach(hiddenField => {
         hiddenInputs[ hiddenField.form_name ] = this.state[ hiddenField.form_val ]; 
@@ -88,6 +87,7 @@ class ResponsiveForm extends Component{
         }
       });
     }
+    console.debug({formElementFields})
     if (this.props.validations) {
       this.props.validations.forEach(validation => {
         // console.debug(formdata[ validation.name ], { validation, });
@@ -104,7 +104,7 @@ class ResponsiveForm extends Component{
         submitFormData[ formElmField ] = formdata[ formElmField ];
       });
     }
-    // console.debug({ submitFormData });
+    console.debug({ submitFormData, formdata });
     if (validationErrors && Object.keys(validationErrors).length < 1) {
       this.setState({ formDataErrors: {}, });
     }
