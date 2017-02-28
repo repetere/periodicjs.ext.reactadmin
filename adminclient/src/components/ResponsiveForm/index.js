@@ -159,7 +159,7 @@ class ResponsiveForm extends Component{
         //http://stackoverflow.com/questions/36067767/how-do-i-upload-a-file-with-the-html5-js-fetch-api
         // https://github.com/yawetse/formie/blob/master/lib/formie.js
       */
-      fetch(this.getFormSumitUrl(fetchOptions.url, fetchOptions.params, submitFormData),
+      fetch(this.getFormSumitUrl(fetchOptions.url, fetchOptions.params, formdata),
         fetchOptions.options
       )
         .then(utilities.checkStatus)
