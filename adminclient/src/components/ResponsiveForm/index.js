@@ -52,15 +52,41 @@ class ResponsiveForm extends Component{
     let headers = (state.settings.userprofile) ? state.settings.userprofile.options.headers : {};
     let formdata = Object.assign({}, this.state);
     let validationErrors = {};
+    let hiddenInputs = {};
+    let submitFormData = {};
+    let formElementFields = [];
     delete formdata.formDataLists;
     delete formdata.formDataStatusDate;
     delete formdata.formDataTables;
+
+    // console.debug({formElementFields})
     if (this.props.hiddenFields) {
-      let hiddenInputs = {};
       this.props.hiddenFields.forEach(hiddenField => {
         hiddenInputs[ hiddenField.form_name ] = this.state[ hiddenField.form_val ]; 
       });
       formdata = Object.assign(formdata, hiddenInputs);
+    }
+    if (this.props.formgroups && this.props.formgroups.length) {
+      this.props.formgroups.forEach(formgroup => {
+        if (formgroup.formElements && formgroup.formElements.length) {
+          formgroup.formElements.forEach(formElement => {
+            if (formElement.type === 'group') {
+              if (formElement.groupElements && formElement.groupElements.length) {
+                formElement.groupElements.forEach(groupElement => {
+                  if (groupElement.name) {
+                    formElementFields.push(groupElement.name);
+                  }
+                });
+              }
+            }
+            else {
+              if (formElement.name) {
+                formElementFields.push(formElement.name);
+              }
+            }
+          });
+        }
+      });
     }
     if (this.props.validations) {
       this.props.validations.forEach(validation => {
@@ -73,18 +99,24 @@ class ResponsiveForm extends Component{
     } else {
       delete formdata.formDataErrors;
     }
+    if (formElementFields && formElementFields.length) {
+      formElementFields.forEach(formElmField => {
+        submitFormData[ formElmField ] = formdata[ formElmField ];
+      });
+    }
+    // console.debug({ submitFormData });
     if (validationErrors && Object.keys(validationErrors).length < 1) {
       this.setState({ formDataErrors: {}, });
     }
     if (validationErrors && Object.keys(validationErrors).length > 0) {
       this.setState({ formDataErrors: validationErrors, });
-      console.debug('has errors', validationErrors, { formdata, });
+      console.debug('has errors', validationErrors, { submitFormData, });
     } else if (!this.props.onSubmit) {
-      this.props.debug(formdata);
+      this.props.debug(submitFormData);
     } else if (typeof this.props.onSubmit === 'string' && this.props.onSubmit.indexOf('func:this.props') !== -1) {
       delete formdata.formDataFiles;
       delete formdata.formDataErrors;
-      this.props[this.props.onSubmit.replace('func:this.props.', '')](formdata);
+      this.props[this.props.onSubmit.replace('func:this.props.', '')](submitFormData);
     } else if (typeof this.props.onSubmit !== 'function') {
       let fetchOptions = this.props.onSubmit;
       let formBody = new FormData();
@@ -102,14 +134,14 @@ class ResponsiveForm extends Component{
         });
         delete formdata.formDataErrors;
         delete formdata.formDataFiles;
-        Object.keys(formdata).forEach(form_name => {
-          formBody.append(form_name, formdata[ form_name ]);
+        Object.keys(submitFormData).forEach(form_name => {
+          formBody.append(form_name, submitFormData[ form_name ]);
         });
         fetchPostBody = formBody;
       } else {
         delete formdata.formDataErrors;
         delete formdata.formDataFiles;
-        fetchPostBody = JSON.stringify(formdata);        
+        fetchPostBody = JSON.stringify(submitFormData);        
       }
 
       fetchOptions.options = Object.assign(
@@ -127,7 +159,7 @@ class ResponsiveForm extends Component{
         //http://stackoverflow.com/questions/36067767/how-do-i-upload-a-file-with-the-html5-js-fetch-api
         // https://github.com/yawetse/formie/blob/master/lib/formie.js
       */
-      fetch(this.getFormSumitUrl(fetchOptions.url, fetchOptions.params, formdata),
+      fetch(this.getFormSumitUrl(fetchOptions.url, fetchOptions.params, submitFormData),
         fetchOptions.options
       )
         .then(utilities.checkStatus)
@@ -152,7 +184,7 @@ class ResponsiveForm extends Component{
           }
         });
     } else {
-      this.props.onSubmit(formdata);
+      this.props.onSubmit(submitFormData);
     }
   }
   componentWillUpdate(prevProps, prevState) {
