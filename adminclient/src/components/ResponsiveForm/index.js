@@ -80,22 +80,20 @@ class ResponsiveForm extends Component{
       this.props.formgroups.forEach(formgroup => {
         if (formgroup.formElements && formgroup.formElements.length) {
           formgroup.formElements.forEach(formElement => {
-            if (formElement.formGroupElementsLeft &&     formElement.formGroupElementsLeft.length) {
-              formElement.formGroupElementsLeft.forEach(addNameToName);
-            } else if (formElement.formGroupElementsRight &&     formElement.formGroupElementsRight.length) {
-              formElement.formGroupElementsRight.forEach(addNameToName);
-            } else if (formElement.formGroupCardLeft &&     formElement.formGroupCardLeft.length) {
-              formElement.formGroupCardLeft.forEach(addNameToName);
-            } else if (formElement.formGroupCardRight &&     formElement.formGroupCardRight.length) {
-              formElement.formGroupCardRight.forEach(addNameToName);
+            let formElementsLeft = (formElement.formGroupElementsLeft && formElement.formGroupElementsLeft.length) ? formElement.formGroupElementsLeft : false;
+            let formElementsRight = (formElement.formGroupElementsRight && formElement.formGroupElementsRight.length) ? formElement.formGroupElementsRight : false;
+            let formGroupLeft = (formElement.formGroupCardLeft && formElement.formGroupCardLeft.length) ? formElement.formGroupCardLeft : false;
+            let formGroupRight = (formElement.formGroupCardRight && formElement.formGroupCardRight.length) ? formElement.formGroupCardRight : false;
+            if (formElementsLeft || formElementsRight) {
+              if (formElementsLeft) formElementsLeft.forEach(addNameToName);
+              if (formElementsRight) formElementsRight.forEach(addNameToName);
+            } else if (formGroupLeft || formGroupRight) {
+              if (formGroupLeft) formGroupLeft.forEach(addNameToName);
+              if (formGroupRight) formGroupRight.forEach(addNameToName);
             } else if (formElement.type === 'group') {
-              if (formElement.groupElements && formElement.groupElements.length) {
-                formElement.groupElements.forEach(addNameToName);
-              }
+              if (formElement.groupElements && formElement.groupElements.length) formElement.groupElements.forEach(addNameToName);
             } else {
-              if (formElement.name) {
-                formElementFields.push(formElement.name);
-              }
+               if (formElement.name) formElementFields.push(formElement.name);
             }
           });
         }
