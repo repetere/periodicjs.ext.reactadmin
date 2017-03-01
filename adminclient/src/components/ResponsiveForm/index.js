@@ -1,5 +1,5 @@
 import React, { Component, } from 'react';
-import { Columns, Card, CardContent, CardFooter, CardFooterItem, Notification, Column, } from 're-bulma'; 
+import { Columns, Card, CardContent, CardFooter, CardFooterItem, Notification, Column, Label, } from 're-bulma'; 
 import ResponsiveCard from '../ResponsiveCard';
 import { getRenderedComponent, } from '../AppLayoutMap';
 import utilities from '../../util';
@@ -166,13 +166,6 @@ class ResponsiveForm extends Component{
         {
           body: fetchPostBody, 
         });
-
-      /*
-        // https://lowrey.me/upload-files-as-a-gist-using-javascripts-fetch-api/
-        // https://www.raymondcamden.com/2016/05/10/uploading-multiple-files-at-once-with-fetch
-        //http://stackoverflow.com/questions/36067767/how-do-i-upload-a-file-with-the-html5-js-fetch-api
-        // https://github.com/yawetse/formie/blob/master/lib/formie.js
-      */
       fetch(this.getFormSumitUrl(fetchOptions.url, fetchOptions.params, formdata),
         fetchOptions.options
       )
@@ -187,7 +180,15 @@ class ResponsiveForm extends Component{
               this.props.createNotification({ text: 'Saved', timeout:4000, type:'success',  });
             }
           } 
-          return res.json();
+          if (fetchOptions.successCallback) {
+            let successCallback = this.props[fetchOptions.successCallback.replace('func:this.props.', '')];
+            res.json()
+              .then(successData => {
+                successCallback(fetchOptions.successProps || successData, submitFormData);
+              });
+          } else {
+            return res.json();
+          }
         })
         .catch(e => {
           if (typeof this.props.onError !== 'function') {
@@ -270,6 +271,14 @@ class ResponsiveForm extends Component{
           return this.getHiddenInput({ formElement,  i:j, formgroup, });
         } else if (formElement.type === 'checkbox' || formElement.type === 'radio') {
           return this.getFormCheckbox({ formElement,  i:j, formgroup, });
+        } else if (formElement.type === 'label') {
+          return (<Column key={j} {...formElement.layoutProps}>
+            <Label key={j} {...formElement.labelProps}>{formElement.label}</Label>
+          </Column>);
+        } else if (formElement.type === 'line') {
+          return (<Column key={j} {...formElement.layoutProps}>
+            <hr {...formElement.passProps} />
+          </Column>);
         } else if (formElement.type === 'code') {
           return this.getFormCode({ formElement,  i:j, formgroup, }); 
         // } else if (formElement.type === 'editor') {
@@ -281,13 +290,13 @@ class ResponsiveForm extends Component{
         } else if (formElement.type === 'select') {
           return this.getFormSelect({ formElement,  i:j, formgroup, }); 
         } else if (formElement.type === 'layout') {
-          return (<div key={j} {...formElement.layoutProps}>{this.getRenderedComponent(formElement.value)}</div>);
+          return (<Column key={j} {...formElement.layoutProps}>{this.getRenderedComponent(formElement.value)}</Column>);
         } else if (formElement.type === 'submit') {
           return this.getFormSubmit({ formElement,  i:j, formgroup, }); 
         } else if (formElement.type === 'group') {
           return this.getFormGroup({ formElement,  i:j, groupElements:formElement.groupElements.map(getFormElements), }); 
         } else {
-          return <div key={j}>{`${formElement.label || formElement.name }(${formElement.type || 'unknown'}):${ this.state[formElement.name] || formElement.value }`}</div>;
+          return <Column key={j} {...formElement.layoutProps}>{`${formElement.label || formElement.name }(${formElement.type || 'unknown'}):${ this.state[formElement.name] || formElement.value }`}</Column>;
         }
       };
       /** If the formgroup is a card and has two columns, it will create a single card with two inputs split into two columns based on which ones are set in each column */
@@ -296,7 +305,7 @@ class ResponsiveForm extends Component{
         keyValue += i;
         return (
           <ResponsiveCard {...formgroup.card.props} key={keyValue++}>
-          <Columns>
+          <Columns {...gridProps}>
             <Column size="isHalf">
             {formgroup.formElements[0].formGroupElementsLeft.map(getFormElements)}
             </Column>
@@ -312,7 +321,7 @@ class ResponsiveForm extends Component{
         keyValue++;
         keyValue += i;
         return (
-          <Columns>
+          <Columns {...gridProps}>
             <Column size="isHalf">
               <ResponsiveCard {...formgroup.card.leftCardProps} key={keyValue++}>
                 {formgroup.formElements[0].formGroupCardLeft.map(getFormElements)}

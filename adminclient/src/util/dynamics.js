@@ -160,3 +160,38 @@ export const fetchDynamicContent = function _fetchDynamicContent (_pathname, onS
     return onSuccess(dynamicPathname, true);
   }
 };
+
+export const fetchAction = (pathname, fetchOptions, success) => {
+  let state = _getState.call(this)();
+  let headers = (state.settings && state.settings.userprofile && state.settings.userprofile.options && state.settings.userprofile.options.headers)
+    ? state.settings.userprofile.options.headers
+    : {};
+  delete headers.clientid_default;
+  if (state.user && state.user.jwt_token) {
+    headers[ 'x-access-token' ] = state.user.jwt_token;
+  }
+  fetchOptions.headers = Object.assign({}, fetchOptions.headers, headers);
+
+  fetch(pathname, fetchOptions)
+    .then(utilities.checkStatus)
+    .then(res => {
+      if (success.success) {
+        if (success.success.modal) {
+          this.props.createModal(success.success.modal);
+        } else if (success.success.notification) {
+          this.props.createNotification(success.success.notification);
+        } else {
+          this.props.createNotification({ text: 'Saved', timeout:4000, type:'success',  });
+        }
+      } 
+      if (success.successCallback) {
+        let successCallback = this.props[success.successCallback.replace('func:this.props.', '')];
+        res.json()
+          .then(successData => {
+            successCallback(success.successProps || successData);
+          });
+      } else {
+        return res.json();
+      }
+    });
+};

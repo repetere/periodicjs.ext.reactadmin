@@ -66,7 +66,10 @@ function getFormLabel(formElement) {
 }
 
 function getInitialValue(formElement, state) {
-  return (typeof state[ formElement.name ] !== 'undefined')
+  // console.debug('state[ formElement.name ]', state[ formElement.name ],'typeof state[ formElement.name ] ',typeof state[ formElement.name ] );
+  // console.debug('formElement.value', formElement.value,'typeof formElement.value',typeof formElement.value);
+  if (state[ formElement.name ] === null || formElement.value === null || formElement.value === 'null' ) return '';
+  else return (typeof state[ formElement.name ] !== 'undefined' )
     ? state[ formElement.name ]
     : formElement.value;
 }
@@ -110,8 +113,8 @@ export function getFormTextInputArea(options) {
       icon={(hasError)?'fa fa-warning':undefined}
       onChange={onChange}
       onKeyPress={keyPress}
-      placeholder={formElement.placeholder||formElement.label}
-      value={this.state[ formElement.name ] || initialValue} />
+      placeholder={formElement.placeholder}
+      value={ initialValue } />
   </FormItem>);
 }
 

@@ -29,7 +29,7 @@ class ResponsiveButton extends Component {
   }
   handleOnClick(options) {
     // console.debug({ options });
-    let { clickprop, thisDotProp, clickThisProp, clickPropObject, clickBaseUrl, clickLinkParams, clickPassProps } = options;
+    let { clickprop, thisDotProp, clickThisProp, clickPropObject, clickBaseUrl, clickLinkParams, clickPassProps, clickFetchProps, clickSuccessProps  } = options;
     let onclickFunction = (data) => {
       console.debug('ResponsiveButton', { data, });
     };
@@ -47,7 +47,7 @@ class ResponsiveButton extends Component {
     } else if (typeof clickprop === 'string' && clickprop.indexOf('func:this.props') !== -1) { 
       onclickFunction = this.props[ clickprop.replace('func:this.props.', '') ];
     } 
-    onclickFunction(onclickProp);
+    onclickFunction(onclickProp, clickFetchProps, clickSuccessProps);
   }
   handleSelect(event, selectProps) {
     let value = event.target.value;
@@ -60,6 +60,8 @@ class ResponsiveButton extends Component {
       clickBaseUrl: buttonProps.onclickBaseUrl,
       clickLinkParams: buttonProps.onclickLinkParams,
       clickPassProps: buttonProps.onclickProps,
+      clickFetchProps: buttonProps.fetchProps,
+      clickSuccessProps: buttonProps.successProps,
       thisDotProp: this.props,
     });
     // console.debug({ value, selectProps });
@@ -73,6 +75,8 @@ class ResponsiveButton extends Component {
         clickBaseUrl: this.props.onclickBaseUrl,
         clickLinkParams: this.props.onclickLinkParams,
         clickPassProps: this.props.onclickProps,
+        clickFetchProps: this.props.fetchProps,
+        clickSuccessProps: this.props.successProps,
         thisDotProp: this.props,
       };
     };
