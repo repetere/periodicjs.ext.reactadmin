@@ -25,8 +25,7 @@ const fixCodeMirrorSubmit = (req, res, next) => {
   Object.keys(req.body).forEach(function (key) {
     if (req.body[key] === '!!--EMPTY--single--EMTPY--!!') {
       req.body[key] = null;
-    }
-    else if (req.body[key] === '!!--EMPTY--array--EMTPY--!!') {
+    } else if (req.body[key] === '!!--EMPTY--array--EMTPY--!!') {
       req.body[key] = [];
     }
   });
@@ -39,9 +38,9 @@ const fixFlattenedSubmit = function (req, res, next) {
     if (!req.body.docid && req.body._id) {
       req.body.docid = req.body._id;
     }
-    if (req.body.latest_contact.phone_number_primary) {
-      req.body.latest_contact.phone_number_primary = req.body.latest_contact.phone_number_primary.replace(/\D/gi, '');
-    }
+    // if (req.body.latest_contact.phone_number_primary) {
+    //   req.body.latest_contact.phone_number_primary = req.body.latest_contact.phone_number_primary.replace(/\D/gi, '');
+    // }
     delete req.body._id;
     delete req.body._csrf;
     delete req.body.__v;

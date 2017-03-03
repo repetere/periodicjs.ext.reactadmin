@@ -63,7 +63,7 @@ class ResponsiveForm extends Component{
       } else if (formElm.name) {
         formElementFields.push(formElm.name);
       }
-    }
+    };
     delete formdata.formDataLists;
     delete formdata.formDataStatusDate;
     delete formdata.formDataTables;
@@ -71,8 +71,8 @@ class ResponsiveForm extends Component{
 
     if (this.props.hiddenFields) {
       this.props.hiddenFields.forEach(hiddenField => {
-        hiddenInputs[ hiddenField.form_name ] = this.state[ hiddenField.form_val ]; 
-        submitFormData[ hiddenField.form_name ] = this.state[ hiddenField.form_val ]; 
+        hiddenInputs[ hiddenField.form_name ] = this.state[ hiddenField.form_val ] || hiddenField.form_static_val; 
+        submitFormData[ hiddenField.form_name ] = this.state[ hiddenField.form_val ] || hiddenField.form_static_val; 
       });
       formdata = Object.assign(formdata, hiddenInputs);
     }
@@ -179,7 +179,9 @@ class ResponsiveForm extends Component{
             }
           } 
           if (fetchOptions.successCallback) {
-            let successCallback = this.props[fetchOptions.successCallback.replace('func:this.props.', '')];
+            let successCallback = (typeof fetchOptions.successCallback === 'string' && fetchOptions.successCallback.indexOf('func:this.props.reduxRouter') !== -1)
+              ? this.props[ fetchOptions.successCallback.replace('func:this.props.reduxRouter.', '') ]
+              : this.props[ fetchOptions.successCallback.replace('func:this.props.', '') ];
             res.json()
               .then(successData => {
                 successCallback(fetchOptions.successProps || successData, submitFormData);

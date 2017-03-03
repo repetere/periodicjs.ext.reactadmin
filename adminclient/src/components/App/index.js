@@ -66,6 +66,7 @@ const reduxActions = {
   enforceMFA: (noRedirect) => store.dispatch(actions.user.enforceMFA(noRedirect)),
   validateMFA: (jwt_token) => store.dispatch(actions.user.validateMFA(jwt_token)),
   authenticatedMFA: () => store.dispatch(actions.user.authenticatedMFA()),
+  refresh: ()=> store.dispatch(push(window.location.pathname)),
   reduxRouter: {
     push: (location) => store.dispatch(push(location)),
     replace: (location) => store.dispatch(replace(location)),
