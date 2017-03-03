@@ -41,6 +41,20 @@
                     "children":"Standard Documentation Page"
                   },
                   {
+                    "component": "ResponsiveButton",
+                    "props": {
+                      "style": {
+                        "margin": 10
+                      },
+                      "buttonProps": {
+                        "size": "isLarge",
+                        "color": "isPrimary"
+                      },
+                      "confirmModal":{}
+                    },
+                    "children":"TEST BUTTON"
+                  },
+                  {
                     "component":"ResponsiveTable",
                     "props":{
                       "headers":[

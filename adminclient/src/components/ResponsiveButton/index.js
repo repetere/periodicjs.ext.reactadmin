@@ -45,9 +45,71 @@ class ResponsiveButton extends Component {
     } else if (typeof clickprop === 'string' && clickprop.indexOf('func:this.funcs') !== -1) { 
       onclickFunction = this.funcs[ clickprop.replace('func:this.funcs.', '') ];
     } else if (typeof clickprop === 'string' && clickprop.indexOf('func:this.props') !== -1) { 
+      // console.debug('this.props', this.props);
       onclickFunction = this.props[ clickprop.replace('func:this.props.', '') ];
-    } 
-    onclickFunction(onclickProp, clickFetchProps, clickSuccessProps);
+    } else if (typeof clickprop === 'function') {
+      onclickFunction = clickprop;
+    }
+    if (this.props.confirmModal) {
+      this.props.createModal(Object.assign({
+        title: 'Please Confirm',
+        text: {
+          component: 'div',
+          props: {
+            style: {
+              textAlign: 'center',
+            },
+          },
+          children: [
+            {
+              component: 'div',
+              children: this.props.confirmModal.textContent || '',
+            },
+            {
+              component: 'div',
+              children: [
+                {
+                  component: 'ResponsiveButton',
+                  props: {
+                    style: {
+                      margin: 10
+                    },
+                    buttonProps: {
+                      size: 'isMedium',
+                        
+                      color: 'isPrimary',
+                    },
+                    onClick: () => {
+                      this.props.hideModal('last');
+                      onclickFunction(onclickProp, clickFetchProps, clickSuccessProps);
+                    },
+                    onclickProps: 'last',
+                  },
+                  children: 'Yes'
+                },
+                {
+                  component: 'ResponsiveButton',
+                  props: {
+                    style: {
+                      margin: 10
+                    },
+                    buttonProps: {
+                      size: 'isMedium',
+                    },
+                    onClick: 'func:this.props.hideModal',
+                    onclickProps: 'last',
+                  },
+                  children: 'No',
+                }
+              ]
+            }
+          ]
+        }
+      }, this.props.confirmModal));
+    }
+    else {
+      onclickFunction(onclickProp, clickFetchProps, clickSuccessProps);
+    }
   }
   handleSelect(event, selectProps) {
     let value = event.target.value;
@@ -120,7 +182,6 @@ class ResponsiveButton extends Component {
         }, this.props.style)}
         onClick={this.handleOnClick.bind(this, getPropsForOnClick())}
       >
-        
         {
           (this.props.onclickThisProp && this.props.displayThisProps)
           ? this.props[this.props.onclickThisProp][this.props.displayThisProps]

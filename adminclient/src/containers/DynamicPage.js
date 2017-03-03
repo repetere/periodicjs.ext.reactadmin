@@ -1,5 +1,6 @@
 import React, { Component, } from 'react';
-import AppSectionLoading from '../components/AppSectionLoading';
+// import AppSectionLoading from '../components/AppSectionLoading';
+import AppSectionLoadingOverlay from '../components/AppSectionLoading/overlay';
 import { getRenderedComponent, } from '../components/AppLayoutMap';
 import utilities from '../util';
 
@@ -45,7 +46,25 @@ class DynamicPage extends Component {
     this.handleComponentLifecycle();
   }
   render () {
-    return (this.state.ui_is_loaded === false) ? <AppSectionLoading/> : this.uiLayout;
+    return <div style={{
+      width: '100%',
+      height: '100%', }}>
+        <AppSectionLoadingOverlay display={!this.state.ui_is_loaded} wrapperstyle={{
+          position: 'fixed',
+          height: '100%',
+          width: '100%',
+          top: 0,
+          bottom: 0,
+          left: 0,
+          right: 0,
+          backgroundColor: 'rgba(255,255,255,.8)',
+          zIndex:100,
+        }} /> 
+      {
+        (this.state.async_data_is_loaded && this.uiLayout) ? this.uiLayout : null
+      }
+        
+    </div>
   }
 }
 

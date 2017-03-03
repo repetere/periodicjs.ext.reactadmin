@@ -242,6 +242,7 @@ export function getFormGroup(options) {
 
 export function getFormCode(options) {
   let { formElement, i, onValueChange, } = options;
+  let hasError = getErrorStatus(this.state, formElement.name);
   let CodeMirrorProps = Object.assign({
     codeMirrorProps: {
       lineNumbers: true,
@@ -258,13 +259,12 @@ export function getFormCode(options) {
       style: {
         overflow: 'hidden',
         backgroundColor: 'white',
-        border: '1px solid #d3d6db',
+        border: (hasError) ? '1px solid #ed6c63' : '1px solid #d3d6db',
         borderRadius: 3,
         boxShadow: 'inset 0 1px 2px rgba(17,17,17,.1)',
       },
     },
   }, formElement.passProps);
-  let hasError = getErrorStatus(this.state, formElement.name);
 
   return (<FormItem key={i} {...formElement.layoutProps} >
     {getFormLabel(formElement)}  
@@ -334,7 +334,64 @@ export function getFormSubmit(options) {
   return (<FormItem key={i} {...formElement.layoutProps} >
     {getFormLabel(formElement)}  
     <Button {...formElement.passProps}
-      onClick={this.submitForm.bind(this)}>
+      onClick={() => { 
+        (formElement.confirmModal)
+          ? this.props.createModal(Object.assign({
+            title: 'Please Confirm',
+            text: {
+              component: 'div',
+              props: {
+                style: {
+                  textAlign:'center',
+                },
+              },
+              children: [
+                {
+                  component: 'div',
+                  children:formElement.confirmModal.textContent||'',
+                },
+                {
+                  component: 'div',
+                  children: [
+                    {
+                      component: 'ResponsiveButton',
+                      props: {
+                        style:{
+                          margin:10
+                        },
+                        buttonProps: {
+                          size:'isMedium',
+                          
+                          color:'isPrimary',
+                        },
+                        onClick: () => {
+                          this.props.hideModal('last');
+                          this.submitForm.call(this);
+                        },
+                        onclickProps:'last',
+                      },  
+                      children:'Yes' 
+                    },
+                    {
+                      component: 'ResponsiveButton',
+                      props: {
+                        style:{
+                          margin:10
+                        },
+                        buttonProps: {
+                          size:'isMedium',
+                        },
+                        onClick: 'func:this.props.hideModal',
+                        onclickProps:'last',
+                      },  
+                      children:'No',
+                    }
+                  ] 
+                }
+              ]
+          }},formElement.confirmModal))
+          : this.submitForm.call(this);
+      }}>
       {formElement.value}
     </Button>
   </FormItem>);

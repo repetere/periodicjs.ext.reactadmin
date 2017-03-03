@@ -502,6 +502,7 @@
                           "color":"isInfo",
                           "size":"isLarge"
                         },
+                        "confirmModal":{},
                         "value":"Debug Form"
                       }]
                     },
