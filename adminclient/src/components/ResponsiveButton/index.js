@@ -29,7 +29,7 @@ class ResponsiveButton extends Component {
   }
   handleOnClick(options) {
     // console.debug({ options });
-    let { clickprop, thisDotProp, clickThisProp, clickPropObject, clickBaseUrl, clickLinkParams, clickPassProps, clickFetchProps, clickSuccessProps  } = options;
+    let { clickprop, thisDotProp, clickThisProp, clickPropObject, clickBaseUrl, clickLinkParams, clickPassProps, clickFetchProps, clickSuccessProps, } = options;
     let onclickFunction = (data) => {
       console.debug('ResponsiveButton', { data, });
     };
@@ -50,8 +50,9 @@ class ResponsiveButton extends Component {
     } else if (typeof clickprop === 'function') {
       onclickFunction = clickprop;
     }
+    // onclickFunction = onclickFunction.bind(this);
     if (this.props.confirmModal) {
-      this.props.createModal(Object.assign({
+      return this.props.createModal(Object.assign({
         title: 'Please Confirm',
         text: {
           component: 'div',
@@ -72,7 +73,7 @@ class ResponsiveButton extends Component {
                   component: 'ResponsiveButton',
                   props: {
                     style: {
-                      margin: 10
+                      margin: 10,
                     },
                     buttonProps: {
                       size: 'isMedium',
@@ -80,18 +81,19 @@ class ResponsiveButton extends Component {
                       color: 'isPrimary',
                     },
                     onClick: () => {
+                      // console.debug('debugging this modal', this);
                       this.props.hideModal('last');
-                      onclickFunction(onclickProp, clickFetchProps, clickSuccessProps);
+                      onclickFunction.call(this, onclickProp, clickFetchProps, clickSuccessProps);
                     },
                     onclickProps: 'last',
                   },
-                  children: 'Yes'
+                  children: 'Yes',
                 },
                 {
                   component: 'ResponsiveButton',
                   props: {
                     style: {
-                      margin: 10
+                      margin: 10,
                     },
                     buttonProps: {
                       size: 'isMedium',
@@ -100,15 +102,15 @@ class ResponsiveButton extends Component {
                     onclickProps: 'last',
                   },
                   children: 'No',
-                }
-              ]
-            }
-          ]
-        }
+                },
+              ],
+            },
+          ],
+        },
       }, this.props.confirmModal));
-    }
-    else {
-      onclickFunction(onclickProp, clickFetchProps, clickSuccessProps);
+    } else {
+      // console.debug('debugging this regular onclick', this);
+      return onclickFunction.call(this, onclickProp, clickFetchProps, clickSuccessProps);
     }
   }
   handleSelect(event, selectProps) {

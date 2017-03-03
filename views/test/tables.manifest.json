@@ -149,6 +149,43 @@
                     }
                   },
                   {
+                    "component":"ResponsiveTable",
+                    "props":{
+                      "headers":[
+                        { "label": "#", "value":"--idx-ctr--" },
+                        { "label": "Email", "sortid":"email", "sortable":true },
+                        { "label":"Likes", "sortid":"likes", 
+                          "buttons":[
+                            {
+                              "IGNOREbaseUrl":"/r-admin/contentdata/users/:id",
+                              "children":"like",
+                              "passProps":{
+                                "onClick":"func:this.props.fetchAction","onclickBaseUrl":"/r-admin/contentdata/users/:id",
+                                "onclickLinkParams":[{"key":":id","val":"_id"}],
+                                "fetchProps":{
+                                  "method":"GET"
+                                },
+                                "successProps":{
+                                  "success":true
+                                },
+                                "confirmModal":{}
+                              }
+                            }
+                          ]
+                        }
+                      ],
+                      "limit":10,
+                      "IGNOREnumItems":20,
+                      "rows":[
+                        {
+                          "_id":"yaw",
+                          "email":"single@gmail.com",
+                          "likes":"3 likes"
+                        }
+                      ]
+                    }
+                  },
+                  {
                     "component": "RawOutput",
                     "props": {
                       "select": "userdata",  

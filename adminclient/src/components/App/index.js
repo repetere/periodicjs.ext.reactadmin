@@ -41,7 +41,10 @@ const reduxActions = {
   isLoggedIn: () => store.getState().user.isLoggedIn,
   getState: () => store.getState(), //.dispatch(actions.user.getUserStatus()),
   debug: (data) => { console.debug(data); }, //.dispatch(actions.user.getUserStatus()),
-  fetchAction: (pathname, fetchOptions, success) => { utilities.fetchAction(pathname, fetchOptions, success); }, //.dispatch(actions.user.getUserStatus()),
+  fetchAction: function (pathname, fetchOptions, success){
+    // console.debug('in redux actions this', this);
+    return utilities.fetchAction.call(this, pathname, fetchOptions, success);
+  }, //.dispatch(actions.user.getUserStatus()),
   getUserProfile: (jwt_token) => store.dispatch(actions.user.getUserProfile(jwt_token)),
   setNavLabel: (label) => store.dispatch(actions.ui.setNavLabel(label)),
   saveUserProfile: (url, response, json) => store.dispatch(actions.user.saveUserProfile(url, response, json)),

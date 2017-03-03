@@ -6,6 +6,7 @@ import utilities from '../../util';
 import qs from 'querystring';
 import debounce from 'debounce';
 import flatten from 'flat';
+import { getRenderedComponent, } from '../AppLayoutMap';
 
 // import styles from '../styles';
 
@@ -72,7 +73,7 @@ class ResponsiveTable extends Component {
       sortOrder: '',
     };
     this.searchFunction = debounce(this.updateTableData, 200);
-    // console.log('this.state', this.state);
+    this.getRenderedComponent = getRenderedComponent.bind(this);
   }
   componentWillReceiveProps(nextProps) {
     let rows = nextProps.rows || [];
@@ -188,6 +189,7 @@ class ResponsiveTable extends Component {
     let endIndex = (!this.props.baseUrl)
       ? ((this.state.limit * this.state.currentPage))
       : this.state.limit;
+    let displayRows = this.state.rows.slice(startIndex, endIndex);
     // console.debug({
     //   startIndex,
     //   endIndex,
@@ -329,7 +331,7 @@ class ResponsiveTable extends Component {
               </rb.Tr>
             </rb.Thead>
             <rb.Tbody>
-              {this.state.rows.slice(startIndex,endIndex).map((row, rowIndex) => (
+              {displayRows.map((row, rowIndex) => (
                 <rb.Tr key={`row${rowIndex}`}>
                   {this.state.headers.map((header, colIndex) => {
                     // console.log({header});
@@ -347,6 +349,34 @@ class ResponsiveTable extends Component {
                                 momentFormat: header.momentFormat,
                               })
                           }</Link>
+                        </rb.Td>
+                      );
+                    } else if (header.buttons && header.buttons.length) {
+                      console.debug({ row, header, });
+                      return (
+                        <rb.Td key={`row${rowIndex}col${colIndex}`} {...header.columnProps}>
+                          {
+                            header.buttons.map(button => {
+                              return this.getRenderedComponent(Object.assign({
+                                component: 'ResponsiveButton',
+                                props: Object.assign({
+                                  onclickPropObject: row,
+                                  buttonProps: {},
+                                }, button.passProps),
+                                children: this.formatValue(
+                                  (typeof row[ header.sortid ] !=='undefined')
+                                  ? row[ header.sortid ]
+                                  : header.value,
+                                  row,
+                                  {
+                                    idx: rowIndex+calcStartIndex,
+                                    momentFormat: header.momentFormat,
+                                  }) || '',
+                              }, button));
+                            })
+                            // Object.assign
+                            
+                          }
                         </rb.Td>
                       );
                     } else {
@@ -379,7 +409,7 @@ class ResponsiveTable extends Component {
         </div>  
 
           
-        {this.state.hasPagination ? footer : null}
+        {(this.state.hasPagination && displayRows.length >0) ? footer : null}
       </rb.Container>
     );
   }

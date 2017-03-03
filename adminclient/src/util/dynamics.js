@@ -161,11 +161,13 @@ export const fetchDynamicContent = function _fetchDynamicContent (_pathname, onS
   }
 };
 
-export const fetchAction = (pathname, fetchOptions, success) => {
+export const fetchAction = function _fetchAction (pathname, fetchOptions, success, customThis) {
+  console.debug('in fetch action this', this,{ pathname, fetchOptions, success, customThis, });
   let state = _getState.call(this)();
   let headers = (state.settings && state.settings.userprofile && state.settings.userprofile.options && state.settings.userprofile.options.headers)
     ? state.settings.userprofile.options.headers
     : {};
+  let successCallback = console.debug;
   delete headers.clientid_default;
   if (state.user && state.user.jwt_token) {
     headers[ 'x-access-token' ] = state.user.jwt_token;
@@ -185,13 +187,18 @@ export const fetchAction = (pathname, fetchOptions, success) => {
         }
       } 
       if (success.successCallback) {
-        let successCallback = this.props[success.successCallback.replace('func:this.props.', '')];
         res.json()
           .then(successData => {
+            let successCallbackProp = success.successCallback;
+            if (typeof successCallbackProp === 'string' && successCallbackProp.indexOf('func:this.props.reduxRouter') !== -1) { 
+              successCallback = this.props.reduxRouter[ successCallbackProp.replace('func:this.props.reduxRouter.', '') ];
+            } else if (typeof successCallbackProp === 'string' && successCallbackProp.indexOf('func:this.props') !== -1) { 
+              successCallback = this.props[ success.successCallback.replace('func:this.props.', '') ];
+            }
             successCallback(success.successProps || successData);
           });
       } else {
         return res.json();
       }
-    });
+    }).catch(this.props.errorNotification);
 };
