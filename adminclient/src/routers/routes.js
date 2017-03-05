@@ -10,7 +10,6 @@ function getRoutes(appContainer) {
     },
   }, {
     path: '*',
-    onEnter: utilities.requireAuth,
     component: containers.PageComponents.DynamicPage,
   }, ];
   return {

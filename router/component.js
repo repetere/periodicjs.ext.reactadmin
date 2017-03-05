@@ -10,6 +10,7 @@ module.exports = function (resources) {
   const mfaController = resources.app.controller.extension.login_mfa
 
   ReactAdminRouter.post('/manifest', ensureApiAuthenticated, uacController.loadUserRoles, reactadminController.loadManifest);
+  ReactAdminRouter.get('/public_manifest', reactadminController.loadUnauthenticatedManifest);
   ReactAdminRouter.post('/preferences', ensureApiAuthenticated, uacController.loadUserRoles, reactadminController.loadUserPreferences);
   ReactAdminRouter.post('/navigation', ensureApiAuthenticated, uacController.loadUserRoles, reactadminController.loadNavigation);
   ReactAdminRouter.post('/configurations', ensureApiAuthenticated, uacController.loadUserRoles, reactadminController.loadConfigurations);
