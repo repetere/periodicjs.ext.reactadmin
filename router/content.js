@@ -4,20 +4,14 @@ module.exports = function(resources) {
   const ensureApiAuthenticated = resources.app.controller.extension.oauth2server.auth.ensureApiAuthenticated;
   const ContentRouter = resources.express.Router();
   const assetController = resources.app.controller.native.asset;
-  ContentRouter.use((req, res, next) => {
-    // console.log('req.method', req.method);
-    if (req.method && typeof req.method==='string' && req.method.toUpperCase() === 'OPTIONS') {
-      res.send('ok preflight');
-      // res.sendStatus(200);
-    } else {
-      next();
-    }
-  });
+  const helperController = resources.app.controller.extension.reactadmin.controller.helper;
+
+  ContentRouter.use(helperController.approveOptionsRequest, ensureApiAuthenticated, helperController.fixCodeMirrorSubmit, helperController.fixFlattenedSubmit);
   // ContentRouter.use(ensureApiAuthenticated, resources.app.controller.native.account.router);
 
   Object.keys(resources.app.controller.native).forEach((nativeController) => {
     if (resources.app.controller.native[ nativeController ].router) {
-      ContentRouter.use( ensureApiAuthenticated, resources.app.controller.native[ nativeController ].router);
+      ContentRouter.use( resources.app.controller.native[ nativeController ].router);
     }
   });
 

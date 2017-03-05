@@ -20,7 +20,7 @@ import utilities from '../../util';
 let renderIndex = 0;
 
 export let AppLayoutMap = Object.assign({}, {
-  recharts, ResponsiveForm, RawOutput, FormItem, MenuAppLink, SubMenuLinks, ResponsiveTable, ResponsiveCard, ResponsiveBar, ResponsiveTabs, CodeMirror,/* Editor,*/
+  recharts, ResponsiveForm, RawOutput, FormItem, MenuAppLink, SubMenuLinks, ResponsiveTable, ResponsiveCard, ResponsiveBar, ResponsiveTabs, CodeMirror, /* Editor,*/
 }, React.DOM, rebulma, { Link, });
 
 // console.log({ AppLayoutMap });
@@ -54,9 +54,8 @@ export function getRenderedComponent(componentObject, resources, debug) {
     if (typeof componentObject.conditionalprops !== 'undefined' &&
       !Object.keys(utilities.traverse(componentObject.conditionalprops, renderedCompProps)).filter(key=>utilities.traverse(componentObject.conditionalprops, renderedCompProps)[key]).length) {
       return null;
-    }
-    else {
-       return createElement(
+    }    else {
+      return createElement(
         //element component
         (React.DOM[ componentObject.component ])
           ? componentObject.component
@@ -66,15 +65,17 @@ export function getRenderedComponent(componentObject, resources, debug) {
         //element props
         renderedCompProps,
         //props children
-        (Array.isArray(componentObject.children) && typeof componentObject.children !== 'string')
+        (componentObject.children && Array.isArray(componentObject.children) && typeof componentObject.children !== 'string')
           ? componentObject.children.map(childComponentObject => getRenderedComponent.call(this, childComponentObject, resources))
-          : componentObject.children
+          : (typeof componentObject.children === 'undefined')
+            ? null
+            : componentObject.children
       );
     }
    
   } catch (e) {
     console.error(e);
-    console.error({ componentObject, resources, },this);
+    console.error({ componentObject, resources, }, this);
     return createElement('div', {}, e.toString());
   }
 }

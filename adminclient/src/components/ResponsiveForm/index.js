@@ -10,7 +10,12 @@ import validate from 'validate.js';
 class ResponsiveForm extends Component{
   constructor(props) {
     super(props);
-    let formdata = (props.flattenFormData && props.formdata) ? flatten(props.formdata, props.flattenDataOptions) : props.formdata;
+    let formdata = Object.assign({}, (props.flattenFormData && props.formdata) ? flatten(props.formdata, props.flattenDataOptions) : props.formdata);
+    if (props.stringyFormData) {
+      formdata.genericdocjson = JSON.stringify(props.formdata, null, 2);
+    }
+    // console.debug({ formdata });
+    // console.debug('ResponsiveForm',{ props });
     this.state = Object.assign({
       formDataError: null,
       formDataErrors: {},
@@ -93,7 +98,7 @@ class ResponsiveForm extends Component{
             } else if (formElement.type === 'group') {
               if (formElement.groupElements && formElement.groupElements.length) formElement.groupElements.forEach(addNameToName);
             } else {
-               if (formElement.name) formElementFields.push(formElement.name);
+              if (formElement.name) formElementFields.push(formElement.name);
             }
           });
         }
@@ -263,7 +268,10 @@ class ResponsiveForm extends Component{
         key: i,
       }, formgroup.gridProps);
       let getFormElements = (formElement, j) => {
-        if (formElement.type === 'text' ) {
+        // console.debug({ formElement });
+        if (!formElement) {
+          return null;
+        } else if (formElement.type === 'text' ) {
           return this.getFormTextInputArea({ formElement,  i:j, formgroup, });
         } else if (formElement.type === 'textarea') {
           return this.getFormTextArea({ formElement,  i:j, formgroup, });
@@ -285,7 +293,7 @@ class ResponsiveForm extends Component{
         //   return this.getFormEditor({ formElement,  i:j, formgroup, }); 
         } else if (formElement.type === 'link') {
           return this.getFormLink({
-            formElement, i: j, button: this.getRenderedComponent(formElement.value,undefined,true),
+            formElement, i: j, button: this.getRenderedComponent(formElement.value, undefined, true),
           }); 
         } else if (formElement.type === 'select') {
           return this.getFormSelect({ formElement,  i:j, formgroup, }); 
@@ -296,7 +304,9 @@ class ResponsiveForm extends Component{
         } else if (formElement.type === 'group') {
           return this.getFormGroup({ formElement,  i:j, groupElements:formElement.groupElements.map(getFormElements), }); 
         } else {
-          return <Column key={j} {...formElement.layoutProps}>{`${formElement.label || formElement.name }(${formElement.type || 'unknown'}):${ this.state[formElement.name] || formElement.value }`}</Column>;
+          return this.getFormTextInputArea({ formElement,  i:j, formgroup, });
+
+          // return <Column key={j} {...formElement.layoutProps}>{`${formElement.label || formElement.name }(${formElement.type || 'unknown'}):${ this.state[formElement.name] || formElement.value }`}</Column>;
         }
       };
       /** If the formgroup is a card and has two columns, it will create a single card with two inputs split into two columns based on which ones are set in each column */
@@ -320,14 +330,16 @@ class ResponsiveForm extends Component{
       if (formgroup.card && formgroup.card.doubleCard) {
         keyValue++;
         keyValue += i;
+        let leftDoubleCardColumnProps = Object.assign({ size: 'isHalf', }, formgroup.card.leftDoubleCardColumn);
+        let rightDoubleCardColumnProps = Object.assign({ size: 'isHalf', }, formgroup.card.rightDoubleCardColumn);
         return (
           <Columns {...gridProps}>
-            <Column size="isHalf">
+            <Column {...leftDoubleCardColumnProps}>
               <ResponsiveCard {...formgroup.card.leftCardProps} key={keyValue++}>
                 {formgroup.formElements[0].formGroupCardLeft.map(getFormElements)}
               </ResponsiveCard>
             </Column>
-            <Column size="isHalf">
+            <Column {...rightDoubleCardColumnProps}>
               <ResponsiveCard {...formgroup.card.rightCardProps} key={keyValue++}>
                 {formgroup.formElements[0].formGroupCardRight.map(getFormElements)}
               </ResponsiveCard>

@@ -113,6 +113,7 @@ export function getFormTextInputArea(options) {
       icon={(hasError)?'fa fa-warning':undefined}
       onChange={onChange}
       onKeyPress={keyPress}
+      type={formElement.type||'text'}
       placeholder={formElement.placeholder}
       value={ initialValue } />
   </FormItem>);
@@ -248,6 +249,9 @@ export function getFormCode(options) {
       lineNumbers: true,
       value: getInitialValue(formElement, this.state), //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
       //value: this.state[ formElement.name ] || formElement.value,
+      style: {
+        minHeight:200,
+      },
       onChange: (!onValueChange) ? function (newvalue){
         // console.log({ newvalue });
         let updatedStateProp = {};
@@ -257,10 +261,11 @@ export function getFormCode(options) {
     },
     wrapperProps: {
       style: {
-        overflow: 'hidden',
+        overflow: 'auto',
         backgroundColor: 'white',
         border: (hasError) ? '1px solid #ed6c63' : '1px solid #d3d6db',
         borderRadius: 3,
+        height:500,
         boxShadow: 'inset 0 1px 2px rgba(17,17,17,.1)',
       },
     },

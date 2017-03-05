@@ -8,6 +8,9 @@ body {
   height:100%;
   overflow-x:hidden;
 }
+a{
+  color:#1fc8db;
+}
 .Medium-Speed{
   animation-duration: .25s;
 }
@@ -30,4 +33,10 @@ div[data-reactroot]{
 }
 .__re-bulma_modal.__re-bulma_is-active .__re-bulma_modal-background{
   display: none;
+}
+.__re-bulma_card-content {
+    padding: 5px;
+}
+.CodeMirror.cm-s-default{
+  height:100%;
 }

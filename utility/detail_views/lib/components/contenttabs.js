@@ -12,7 +12,7 @@ module.exports = function (schemas, label, options) {
       label:pluralize(capitalize(key)),
       location:pluralize(key),
     };
-   });
+  });
 
   function getTabComponent(tab, tabname) {
     return {
