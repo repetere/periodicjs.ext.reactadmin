@@ -49,7 +49,19 @@ const constructDetail = function (schema, label, options = {}) {
                 formdata: [helpers.getDetailLabel(label), label, ],
               },
               props: {
-                tabsType:'navBar',
+                tabsType: 'navBar',
+                tabsProps: {
+                  style: {
+                    border: 'none',
+                    fontSize: 14,
+                  },
+                },
+                tabgroupProps: {
+                  style: {
+                    border: 'none',
+                    fontSize: 14,
+                  },
+                },
                 tabs: [
                   {
                     name: 'Basic Editor',

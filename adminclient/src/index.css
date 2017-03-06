@@ -31,6 +31,9 @@ a{
 div[data-reactroot]{
   height:100%;
 }
+.__re-bulma_select, .__re-bulma_select select{
+  width:100%;
+}
 .__re-bulma_modal.__re-bulma_is-active .__re-bulma_modal-background{
   display: none;
 }

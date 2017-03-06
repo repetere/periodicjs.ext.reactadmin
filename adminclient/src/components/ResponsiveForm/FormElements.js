@@ -4,7 +4,7 @@ import RACodeMirror from '../RACodeMirror';
 // import RAEditor from '../RAEditor';
 // import ResponsiveButton from '../ResponsiveButton';
 // import { EditorState, } from 'draft-js';
-import { ControlLabel, Label, Input, Button, CardFooterItem, Select, Textarea, Group, } from 're-bulma'; 
+import { ControlLabel, Label, Input, Button, CardFooterItem, Select, Textarea, Group, Image, } from 're-bulma'; 
 import styles from '../../styles';
 
 export function getPropertyAttribute(options) {
@@ -205,6 +205,22 @@ export function getHiddenInput(options) {
   return <input key={i}  {...formElement.passProps}
     type="hidden"
     value={initialValue} />;
+}
+
+export function getImage(options) {
+  let { formElement, i, } = options;
+  let initialValue = getInitialValue(formElement, this.state);
+  let imageProps = Object.assign({
+    style: {
+      textAlign:'center',
+    },
+  }, formElement.passProps);
+  //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
+  return (<FormItem key={i} {...formElement.layoutProps} >
+    {getFormLabel(formElement)}  
+    <Image key={i}  {...imageProps}
+    src={initialValue} />
+  </FormItem>);
 }
 
 export function getFormLink(options) {

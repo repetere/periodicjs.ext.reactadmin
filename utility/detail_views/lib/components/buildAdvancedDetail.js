@@ -4,7 +4,7 @@ const capitalize = require('capitalize');
 const helpers = require('../helpers');
 const pluralize = require('pluralize');
 // const DICTIONARY = require('../dictionary');
-// const autoFormElements = require('./autoFormElements');
+const publishOptions = require('./publishOptions');
 pluralize.addIrregularRule('data', 'datas');
 
 const buildAdvancedDetail = function (schema, label, options = {}) {
@@ -35,156 +35,44 @@ const buildAdvancedDetail = function (schema, label, options = {}) {
         },
       ],
       footergroups: [],
-      formgroups: [ {
-        gridProps: {
-          isMultiline: false,
+      formgroups: [
+        {
+          gridProps: {
+            isMultiline: false,
+          },
+          card: {
+            doubleCard: true,
+            leftDoubleCardColumn: {
+              size: 'isTwoThirds',
+            },
+            rightDoubleCardColumn: {
+              size:'isOneThird',
+            },
+            leftCardProps: {
+              cardTitle: `${ capitalize(label) }`,
+            },
+            rightCardProps: {
+              cardTitle: 'Publish Options',
+            },
+          },
+          formElements: [
+            {
+              formGroupCardLeft: [
+                {
+                  type: 'code',
+                  name:'genericdocjson',
+                },
+              ],
+              formGroupCardRight: [
+                publishOptions.id(),
+                publishOptions.createdat(),
+                publishOptions.updatedat(),
+                publishOptions.publishButtons(schema, label, options),
+              ],	
+            },
+          ],
         },
-        card: {
-          doubleCard: true,
-          leftDoubleCardColumn: {
-            size: 'isTwoThirds',
-          },
-          rightDoubleCardColumn: {
-            size:'isOneThird',
-          },
-          leftCardProps: {
-            cardTitle: `${ capitalize(label) }`,
-          },
-          rightCardProps: {
-            cardTitle: 'Publish Options',
-          },
-        },
-        formElements: [
-          {
-            formGroupCardLeft: [
-              {
-                type: 'code',
-                name:'genericdocjson',
-              },
-            ],
-            formGroupCardRight: [
-              {
-                type: 'text',
-                name: '_id',
-                label: 'ID',
-                labelProps: {
-                  style: {
-                    flex:3,
-                  },
-                },
-                passProps: {
-                  state: 'isDisabled',
-                },
-                layoutProps:{
-                  horizontalform:true,
-                },
-              },
-              {
-                type: 'text',
-                name: 'createdat',
-                label: 'Created',
-                labelProps: {
-                  style: {
-                    flex:3,
-                  },
-                },
-                passProps: {
-                  state: 'isDisabled',
-                },
-                layoutProps:{
-                  horizontalform:true,
-                },
-              },
-              {
-                type: 'text',
-                name: 'updatedat',
-                label: 'Updated',
-                labelProps: {
-                  style: {
-                    flex:3,
-                  },
-                },
-                passProps: {
-                  state: 'isDisabled',
-                },
-                layoutProps:{
-                  horizontalform:true,
-                },
-              },
-              {
-                label: ' ',
-                type: 'group',
-                passProps: {
-                  style: {
-                    justifyContent:'center',
-                  },
-                },
-                groupElements:[
-                  {
-                    type: 'submit',
-                    value: 'Save Changes',
-                    passProps: {
-                      color:'isPrimary',
-                      // style: styles.buttons.primary,
-                    },
-                    'layoutProps':{
-                      'innerFormItem':true,
-                    },
-                  },
-                  {
-                    type: 'layout',
-                    'layoutProps':{
-                      'innerFormItem': true,
-                      
-                      style: {
-                        padding:0,  
-                      },
-                    },
-                    passProps: {
-                      style: {
-                        padding:0,  
-                      }
-                    },
-                    value: {
-                      component: 'ResponsiveButton',
-                      children: 'Delete',
-                      props: {
-                        onClick: 'func:this.props.fetchAction',
-                        onclickBaseUrl: `${options.extsettings.basename}/${usablePrefix}/${pluralize(label)}/:id?format=json`,
-                        onclickLinkParams: [
-                          {
-                            'key': ':id',
-                            'val': '_id',
-                          },
-                        ],
-                        onclickThisProp:'formdata',
-                        fetchProps:{
-                          method:'DELETE',
-                        },
-                        successProps:{
-                          success: {
-                            notification: {
-                              text: 'Deleted',
-                              timeout: 4000,
-                              type: 'success',
-                            },
-                          },
-                          successCallback: 'func:this.props.reduxRouter.push',
-                          successProps:`${manifestPrefix}/${pluralize(label)}`,
-                        },
-                        buttonProps: {
-                          color:'isDanger',
-                        },
-                        confirmModal:{},
-                      },
-                    },
-                  },
-                ],
-              },
-            ],	
-          },
-        ],
-      },],
+      ],
     },
   };
   // let formElements = top.props.formgroups[0].formElements;

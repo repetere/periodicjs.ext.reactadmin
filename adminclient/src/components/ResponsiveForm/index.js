@@ -3,7 +3,7 @@ import { Columns, Card, CardContent, CardFooter, CardFooterItem, Notification, C
 import ResponsiveCard from '../ResponsiveCard';
 import { getRenderedComponent, } from '../AppLayoutMap';
 import utilities from '../../util';
-import { getFormTextInputArea, getFormCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, getFormTextArea, /*getFormEditor,*/ getFormLink, getHiddenInput, getFormGroup, } from './FormElements';
+import { getFormTextInputArea, getFormCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, getFormTextArea, /*getFormEditor,*/ getFormLink, getHiddenInput, getFormGroup, getImage, } from './FormElements';
 import flatten from 'flat';
 import validate from 'validate.js';
 
@@ -38,6 +38,7 @@ class ResponsiveForm extends Component{
     // this.getFormEditor = getFormEditor.bind(this);
     this.getFormLink = getFormLink.bind(this);
     this.getFormGroup = getFormGroup.bind(this);
+    this.getImage = getImage.bind(this);
   }
   componentWillReceiveProps(nextProps) {
     let formdata = (nextProps.flattenFormData) ? flatten(nextProps.formdata, nextProps.flattenDataOptions) : nextProps.formdata;
@@ -61,7 +62,10 @@ class ResponsiveForm extends Component{
     let submitFormData = {};
     let formElementFields = [];
     let addNameToName = (formElm) => {
-      if (formElm.type === 'group') {
+      // console.debug({ formElm });
+      if (!formElm) {
+        //
+      } else if (formElm.type === 'group') {
         if (formElm.groupElements && formElm.groupElements.length) {
           formElm.groupElements.forEach(addNameToName);
         }
@@ -297,6 +301,8 @@ class ResponsiveForm extends Component{
           }); 
         } else if (formElement.type === 'select') {
           return this.getFormSelect({ formElement,  i:j, formgroup, }); 
+        } else if (formElement.type === 'image') {
+          return this.getImage({ formElement,  i:j, formgroup, }); 
         } else if (formElement.type === 'layout') {
           return (<Column key={j} {...formElement.layoutProps}>{this.getRenderedComponent(formElement.value)}</Column>);
         } else if (formElement.type === 'submit') {
@@ -330,8 +336,14 @@ class ResponsiveForm extends Component{
       if (formgroup.card && formgroup.card.doubleCard) {
         keyValue++;
         keyValue += i;
-        let leftDoubleCardColumnProps = Object.assign({ size: 'isHalf', }, formgroup.card.leftDoubleCardColumn);
-        let rightDoubleCardColumnProps = Object.assign({ size: 'isHalf', }, formgroup.card.rightDoubleCardColumn);
+        let leftDoubleCardColumnProps = Object.assign({
+          size: 'isHalf',
+          display: 'flex',
+        }, formgroup.card.leftDoubleCardColumn);
+        let rightDoubleCardColumnProps = Object.assign({
+          size: 'isHalf',
+          display: 'flex',
+        }, formgroup.card.rightDoubleCardColumn);
         return (
           <Columns {...gridProps}>
             <Column {...leftDoubleCardColumnProps}>

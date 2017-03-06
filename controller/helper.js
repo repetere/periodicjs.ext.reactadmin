@@ -1,10 +1,12 @@
 'use strict';
-const Promisie = require('promisie');
-const fs = Promisie.promisifyAll(require('fs-extra'));
-const path = require('path');
-const mongoose = require('mongoose');
-const capitalize = require('capitalize');
+
+// const Promisie = require('promisie');
+// const fs = Promisie.promisifyAll(require('fs-extra'));
+// const path = require('path');
+// const mongoose = require('mongoose');
+// const capitalize = require('capitalize');
 const str2json = require('string-to-json');
+let assetController;
 
 const approveOptionsRequest = (req, res, next) => {
   // console.log('req.method', req.method);
@@ -57,7 +59,51 @@ const fixFlattenedSubmit = function (req, res, next) {
   next();
 };
 
+const handleFileUpload = function(req, res, next){
+  if (req.query.handleupload) {
+    return [
+      assetController.multiupload(req, res, next),
+      assetController.create_assets_from_files(req, res, next),
+      handleFileResponse(req, res),
+    ];
+  } else {
+    next();
+  }
+};
+
+const handleControllerDataResponse = function (req, res) {
+  console.log('req.controllerData', req.controllerData);
+  console.log('req.body', req.body);
+  console.log('req.files', req.files);
+  //console.log('req.controllerData',req.controllerData);
+  delete req.controllerData.authorization_header;
+  res.send((req.controllerData.useSuccessWrapper) ? {
+    result: 'success',
+    data: req.controllerData,
+  } : req.controllerData);
+};
+
+const handleFileResponse = function (req, res, next) {
+  if (req.query.handleupload) {
+    console.log('req.controllerData', req.controllerData);
+    console.log('req.body', req.body);
+    console.log('req.files', req.files);
+    delete req.controllerData.authorization_header;
+    res.send(
+      (req.controllerData.useSuccessWrapper) 
+        ? {
+          result: 'success',
+          data: req.controllerData,
+        } 
+        : req.controllerData);
+  } else {
+    next();
+  }
+};
+
+
 module.exports = function (resources) {
+  assetController = resources.app.controller.native.asset;
   // periodic = resources;
   // appSettings = resources.settings;
   // themeSettings = resources.settings.themeSettings;
@@ -71,5 +117,8 @@ module.exports = function (resources) {
     approveOptionsRequest,
     fixCodeMirrorSubmit,
     fixFlattenedSubmit,
+    handleFileUpload,
+    handleControllerDataResponse,
+    handleFileResponse,
   };
 };
