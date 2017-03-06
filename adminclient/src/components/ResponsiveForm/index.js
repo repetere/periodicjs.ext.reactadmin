@@ -62,8 +62,13 @@ class ResponsiveForm extends Component{
     let submitFormData = {};
     let formElementFields = [];
     let addNameToName = (formElm) => {
-      // console.debug({ formElm });
-      if (!formElm) {
+      // console.debug('addNameToName','(formElm.passProps && formElm.passProps.state===isDisabled)',(formElm.passProps && formElm.passProps.state==='isDisabled'),{ formElm });
+      // skip if null, or disabled
+      if (!formElm
+        || formElm.disabled
+        || (formElm.passProps && formElm.passProps.state==='isDisabled')
+      ) {
+        // console.debug('skip', formElm);
         //
       } else if (formElm.type === 'group') {
         if (formElm.groupElements && formElm.groupElements.length) {
@@ -101,14 +106,22 @@ class ResponsiveForm extends Component{
               if (formGroupRight) formGroupRight.forEach(addNameToName);
             } else if (formElement.type === 'group') {
               if (formElement.groupElements && formElement.groupElements.length) formElement.groupElements.forEach(addNameToName);
+            } else if (!formElement
+              || formElement.disabled
+              || (formElement.passProps && formElement.passProps.state==='isDisabled')
+            ) { 
+              //skip if dsiabled
+              // console.debug('skip', formElement);
+
             } else {
+              // console.debug({ formElement });
               if (formElement.name) formElementFields.push(formElement.name);
             }
           });
         }
       });
     }
-    // console.debug({formElementFields})
+    // console.debug({ formElementFields });
     if (this.props.validations) {
       this.props.validations.forEach(validation => {
         // console.debug(formdata[ validation.name ], { validation, });

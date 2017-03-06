@@ -81,9 +81,9 @@ const handleFileAssets = function(req, res, next){
 };
 
 const handleControllerDataResponse = function (req, res) {
-  console.log('req.controllerData', req.controllerData);
-  console.log('req.body', req.body);
-  console.log('req.files', req.files);
+  // console.log('req.controllerData', req.controllerData);
+  // console.log('req.body', req.body);
+  // console.log('req.files', req.files);
   //console.log('req.controllerData',req.controllerData);
   delete req.controllerData.authorization_header;
   res.send((req.controllerData.useSuccessWrapper) ? {

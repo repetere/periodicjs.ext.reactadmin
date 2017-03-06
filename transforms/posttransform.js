@@ -1,11 +1,12 @@
 'use strict';
-// const item = require('./item');
+const helper = require('./helper');
+const asset = require('./asset');
 
 module.exports = (periodic) => {
   return {
     GET: {
-      '/dsa/application': [
-        // item.formatIndexTable,
+      [helper.getAdminPathname(periodic, '/contentdata/assets/:id')]: [
+        asset.formatAssetItem(periodic),
       ],
     },
   };

@@ -32,7 +32,7 @@ const entity_index_load = (req, res, next) =>{
 
 const create_entity = (req, res, next) =>{
   const entity = get_entity_options(req.params.entity_type);
-  return resources.app.controller.native[entity.name].controller_create(req, res, next);
+  return resources.app.controller.native[entity.name].ccreate(req, res, next);
 };
 
 const get_entity = (req, res, next) =>{
@@ -42,14 +42,26 @@ const get_entity = (req, res, next) =>{
 
 const update_entity = (req, res, next) =>{
   const entity = get_entity_options(req.params.entity_type);
-  return resources.app.controller.native[entity.name].controller_update(req, res, next);
+  // console.log('entity.name', entity.name, resources.app.controller.native[ entity.name ]);
+  return resources.app.controller.native[entity.name].update(req, res, next);
 };
 
 const delete_entity = (req, res, next) =>{
   const entity = get_entity_options(req.params.entity_type);
-  return resources.app.controller.native[entity.name].controller_remove(req, res, next);
+  return resources.app.controller.native[entity.name].remove(req, res, next);
 };
 
+const mergeControllerDataReqBody = (req, res, next) => {
+  const entity = get_entity_options(req.params.entity_type);
+  req.body = Object.assign({},
+    (req.controllerData[ entity.name ].toJSON())
+      ? req.controllerData[ entity.name ].toJSON()
+      : req.controllerData[ entity.name ],
+    req.body);
+  delete req.body.transform;
+  console.log('req.body', req.body);
+  next();
+};
 
 const controller = function (periodic) {
   resources = periodic;
@@ -62,6 +74,7 @@ const controller = function (periodic) {
     get_entity,
     update_entity,
     delete_entity,
+    mergeControllerDataReqBody,
   };
 };
 

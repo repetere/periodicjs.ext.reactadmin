@@ -178,10 +178,14 @@ function _getLine() {
 }
 
 function _assetField(fieldname, fieldlabel) {
+  // function getFieldName(fieldname) {
+  //   if(fieldname)
+  //   return fieldname;
+  // }
   return function () {
     return {
       type: 'text',
-      name: fieldname,
+      name: fieldname, //getFieldName(fieldname),
       label: fieldlabel || capitalize(fieldname),
       labelProps: {
         style: {
@@ -228,7 +232,7 @@ function _assetpreview() {
       //   padding: 0,
       // },
     },
-    name: 'fileurl',
+    name: 'transform.fileurl',
   };
 }
 
@@ -338,10 +342,10 @@ exports.publishBasic = function _publishBasic(schema, label, options = {}) {
       _name(),
       _status(),
       _getLine(),
-      _assetField('fileurl', 'File URL')(),
-      _assetField('size', 'File Size')(),
+      _assetField('transform.fileurl', 'File URL')(),
+      _assetField('transform.size', 'File Size')(),
       _assetField('locationtype', 'Location Type')(),
-      _assetField('attributes.encrypted_client_side', 'Encrypted')(),
+      _assetField('transform.encrypted', 'Encrypted')(),
       _assetField('attributes.periodicFilename', 'Periodic Filename')(),
       _publishButtons(schema, label, options),
     ];

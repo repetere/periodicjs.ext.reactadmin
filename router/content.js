@@ -9,16 +9,9 @@ module.exports = function(resources) {
   const contentdataController = resources.app.controller.extension.reactadmin.controller.contentdata;
 
   // ContentRouter.use(helperController.approveOptionsRequest, ensureApiAuthenticated, helperController.fixCodeMirrorSubmit, helperController.fixFlattenedSubmit);
-  ContentRouter.use(helperController.approveOptionsRequest, ensureApiAuthenticated);
-
-  // Object.keys(resources.app.controller.native).forEach((nativeController) => {
-  //   if (resources.app.controller.native[ nativeController ].router) {
-  //     ContentRouter.use( resources.app.controller.native[ nativeController ].router);
-  //   }
-  // });
-
-
   ContentRouter.get('/secure-asset/:id/:filename', assetController.loadAsset, assetController.decryptAsset);
+
+  ContentRouter.use(helperController.approveOptionsRequest, ensureApiAuthenticated);
 
   ContentRouter.get('/:entity_type', //get index
     transformController.pretransform,
@@ -44,9 +37,12 @@ module.exports = function(resources) {
     helperController.handleControllerDataResponse); 
   ContentRouter.put('/:entity_type/:id', //update single
 		helperController.handleFileUpload,
-		helperController.handleFileAssets,    helperController.fixCodeMirrorSubmit,
+    helperController.handleFileAssets,
+    helperController.fixCodeMirrorSubmit,
     helperController.fixFlattenedSubmit,
     transformController.pretransform,
+    contentdataController.get_entity,
+    contentdataController.mergeControllerDataReqBody,
     resources.core.controller.save_revision,
     contentdataController.update_entity,
     transformController.posttransform,

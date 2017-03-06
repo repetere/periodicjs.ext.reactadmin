@@ -1,5 +1,6 @@
 'use strict';
-// const item = require('./item');
+const helper = require('./helper');
+const asset = require('./asset');
 
 module.exports = (periodic) => {
   return {
@@ -9,9 +10,9 @@ module.exports = (periodic) => {
       ],
     },
     PUT: {
-      '/dsa/item/:id': [
-        // item.itemUpdate(periodic),
-      ],
+      // [helper.getAdminPathname(periodic, '/contentdata/assets/:id')]: [
+      //   asset.formatAssetUpdate(periodic),
+      // ],
     },
   };
 };
