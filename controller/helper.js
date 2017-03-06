@@ -61,11 +61,20 @@ const fixFlattenedSubmit = function (req, res, next) {
 
 const handleFileUpload = function(req, res, next){
   if (req.query.handleupload) {
-    return [
-      assetController.multiupload(req, res, next),
-      assetController.create_assets_from_files(req, res, next),
-      handleFileResponse(req, res),
-    ];
+    // return [
+    //   assetController.multiupload,
+    //   assetController.create_assets_from_files,
+    //   // handleFileResponse(req, res),
+    // ];
+    return assetController.multiupload(req, res, next);
+  } else {
+    next();
+  }
+};
+
+const handleFileAssets = function(req, res, next){
+  if (req.query.handleupload) {
+    return assetController.create_assets_from_files(req, res, next);
   } else {
     next();
   }
@@ -83,23 +92,23 @@ const handleControllerDataResponse = function (req, res) {
   } : req.controllerData);
 };
 
-const handleFileResponse = function (req, res, next) {
-  if (req.query.handleupload) {
-    console.log('req.controllerData', req.controllerData);
-    console.log('req.body', req.body);
-    console.log('req.files', req.files);
-    delete req.controllerData.authorization_header;
-    res.send(
-      (req.controllerData.useSuccessWrapper) 
-        ? {
-          result: 'success',
-          data: req.controllerData,
-        } 
-        : req.controllerData);
-  } else {
-    next();
-  }
-};
+// const handleFileResponse = function (req, res, next) {
+//   if (req.query.handleupload) {
+//     console.log('req.controllerData', req.controllerData);
+//     console.log('req.body', req.body);
+//     console.log('req.files', req.files);
+//     delete req.controllerData.authorization_header;
+//     res.send(
+//       (req.controllerData.useSuccessWrapper) 
+//         ? {
+//           result: 'success',
+//           data: req.controllerData,
+//         } 
+//         : req.controllerData);
+//   } else {
+//     next();
+//   }
+// };
 
 
 module.exports = function (resources) {
@@ -118,7 +127,8 @@ module.exports = function (resources) {
     fixCodeMirrorSubmit,
     fixFlattenedSubmit,
     handleFileUpload,
+    handleFileAssets,
     handleControllerDataResponse,
-    handleFileResponse,
+    // handleFileResponse,
   };
 };

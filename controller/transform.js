@@ -1,5 +1,5 @@
 'use strict';
-var utilities = require('../utility');
+var utilities;
 var logger;
 var transforms;
 const Promisie = require('promisie');
@@ -26,7 +26,7 @@ const pretransform = transformRequest('pre');
 
 const controller = function (resources) {
   logger = resources.logger;
-  // utilities = resources.app.themeconfig.utilities;
+  utilities = require('../utility')(resources);
   transforms = require('../transforms')(resources);
 
   return {
