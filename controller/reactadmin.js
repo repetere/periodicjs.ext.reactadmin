@@ -433,7 +433,6 @@ var loadUnauthenticatedManifest = function (req, res, next) {
         if (CORE_DATA_CONFIGURATIONS.unauthenticated_manifest) unauthenticated_manifest.containers = Object.assign({}, CORE_DATA_CONFIGURATIONS.unauthenticated_manifest, unauthenticated_manifest.containers);
       }
       if (res && typeof res.send === 'function') {
-        console.log({ unauthenticated_manifest })
         res.status(200).send({
           result: 'success',
           status: 200,

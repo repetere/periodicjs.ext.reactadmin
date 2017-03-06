@@ -14,8 +14,16 @@ const _handleComponentLifecycle = function () {
   let parentState = this.props.getState();
   let pathname = (this.props.location.pathname) ? this.props.location.pathname : window.location.href || window.location.pathname;
   let isAuthenticated = isLoggedIn();
-  if (!isAuthenticated && parentState.manifest && Array.isArray(parentState.manifest.unauthenticated_routes)) {
-    if (parentState.manifest.unauthenticated_routes.indexOf(pathname) !== -1) return this.fetchData();
+  if (!isAuthenticated) {
+    if (parentState.manifest && Array.isArray(parentState.manifest.unauthenticated_routes)) {
+      if (parentState.manifest.unauthenticated_routes.indexOf(pathname) !== -1) return this.fetchData();
+    }
+    return this.props.reduxRouter.replace({
+      pathname: (pathname.indexOf('p-admin')!==-1) ? `/p-admin/login?return_url=${pathname}` : `/login?return_url=${pathname}`,
+      state: {
+        nextPathname: pathname,
+      },
+    });
   }
   if (parentState.manifest && parentState.manifest.hasLoaded) {
     if (pathname === '/mfa' && window.location.pathname === '/mfa') return this.fetchData();
