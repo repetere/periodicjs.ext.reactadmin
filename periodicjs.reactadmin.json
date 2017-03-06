@@ -6,6 +6,9 @@
       "node_modules/periodicjs.ext.reactadmin/views/account/",
       "node_modules/periodicjs.ext.reactadmin/views/test/"
     ],
+    "unauthenticated_manifest":[
+      "node_modules/periodicjs.ext.reactadmin/views/unauth/"
+    ],
     "navigation":"node_modules/periodicjs.ext.reactadmin/adminclient/src/content/config/navigation.json",
     "components":{
       "login":"/content/themes/periodicjs.theme.default/views/auth/loginDISABLED.manifest.json",
