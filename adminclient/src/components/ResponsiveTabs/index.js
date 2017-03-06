@@ -61,7 +61,6 @@ class ResponsiveTabs extends Component {
   
 
   render() {
-    // console.debug('this.props', this.props);
     if (this.state.tabsType === 'pageToggle') {
       return (
       <div>

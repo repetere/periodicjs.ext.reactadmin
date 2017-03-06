@@ -640,7 +640,8 @@ module.exports = function (resources) {
       clearImmediate(task);
     });
   }
-  Promisie.all(pullConfigurationSettings(), pullComponentSettings());
+  Promisie.all(pullConfigurationSettings(), pullComponentSettings())
+    .then(logger.silly.bind(logger, 'settings loaded'));
 
   return { 
     index: admin_index,
