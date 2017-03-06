@@ -1,4 +1,4 @@
-
+'use strict';
 const Promisie = require('promisie');
 const fs = Promisie.promisifyAll(require('fs-extra'));
 const path = require('path');
@@ -33,6 +33,7 @@ var appenvironment;
 var CoreUtilities;
 var manifestSettings;
 var navigationSettings;
+var unauthenticatedManifestSettings;
 var periodic;
 var themeSettings;
 var extsettings;
@@ -228,14 +229,15 @@ var handleManifestCompilation = function (manifests) {
  * Gets manifest configuration file/directory paths from the periodic extensions list
  * @param  {Object} configuration The periodic extensions configuration object
  * @param {Object[]} configuration.extensions An array of extension configuration objects for periodic
+ * @param {Boolean} [isUnauthenticated=false] Denotes if "unauthenticated_manifests" property should be read in place of "manifests" property
  * @return {Object}               Aggregated manifest configurations specified by periodic extensions configuration
  */
-var pullManifestSettings = function (configuration) {
+var pullManifestSettings = function (configuration, isUnauthenticated = false) {
   let extensions = configuration.extensions || [];
   let filePaths = extensions.reduce((result, config) => {
-    if (config.enabled && config.periodicConfig && config.periodicConfig['periodicjs.ext.reactadmin'] && config.periodicConfig['periodicjs.ext.reactadmin'].manifests) {
-      if (Array.isArray(config.periodicConfig['periodicjs.ext.reactadmin'].manifests)) return result.concat(config.periodicConfig['periodicjs.ext.reactadmin'].manifests);
-      result.push(config.periodicConfig['periodicjs.ext.reactadmin'].manifests);
+    if (config.enabled && config.periodicConfig && config.periodicConfig['periodicjs.ext.reactadmin'] && config.periodicConfig['periodicjs.ext.reactadmin'][(isUnauthenticated) ? 'unauthenticated_manifests' : 'manifests']) {
+      if (Array.isArray(config.periodicConfig['periodicjs.ext.reactadmin'][(isUnauthenticated) ? 'unauthenticated_manifests' : 'manifests'])) return result.concat(config.periodicConfig['periodicjs.ext.reactadmin'][(isUnauthenticated) ? 'unauthenticated_manifests' : 'manifests']);
+      result.push(config.periodicConfig['periodicjs.ext.reactadmin'][(isUnauthenticated) ? 'unauthenticated_manifests' : 'manifests']);
     }
     return result;
   }, []);
@@ -293,24 +295,28 @@ var finalizeSettingsWithTheme = function (data) {
       result = result['periodicjs.ext.reactadmin'];
       return Promisie.parallel({
         manifests: readAndStoreConfigurations.bind(null, result.manifests || []),
+        unauthenticated_manifests: readAndStoreConfigurations.bind(null, result.unauthenticated_manifests || []),
         navigation: readAndStoreConfigurations.bind(null, result.navigation || []),
       });
     })
     .then(result => {
-      let { manifests, navigation, } = result;
+      let { manifests, navigation, unauthenticated_manifests, } = result;
       manifests = handleManifestCompilation(manifests);
       manifests.containers = Object.assign({}, (data.default_manifests) ? data.default_manifests.containers : {}, (data.manifests) ? data.manifests.containers : {}, manifests.containers);
+      unauthenticated_manifests = handleManifestCompilation(unauthenticated_manifests);
+      unauthenticated_manifests.containers = Object.assign({}, (data.default_unauthenticated_manifests) ? data.default_unauthenticated_manifests.containers : {}, (data.unauthenticated_manifests) ? data.unauthenticated_manifests.containers : {}, unauthenticated_manifests.containers);
       navigation = handleNavigationCompilation(navigation);
       let navigationChildren = (data.default_navigation && data.default_navigation.layout && Array.isArray(data.default_navigation.layout.children)) ? data.default_navigation.layout.children : [];
       navigation.wrapper = Object.assign({}, (data.default_navigation) ? data.default_navigation.wrapper : {}, (data.navigation) ? data.navigation.wrapper : {}, navigation.wrapper);
       navigation.container = Object.assign({}, (data.default_navigation) ? data.default_navigation.container : {}, (data.navigation) ? data.navigation.container : {}, navigation.container);
       navigation.layout = navigation.layout || Object.assign({ children: [], }, (data.default_navigation) ? data.default_navigation.layout : {}, (data.navigation) ? data.navigation.layout : {});
       navigation.layout.children = (!navigation.layout.children.length) ? navigationChildren.concat((data.navigation && data.navigation.layout && Array.isArray(data.navigation.layout.children)) ? data.navigation.layout.children : []) : navigation.layout.children;
-      return { manifest: manifests, navigation, };
+      return { manifest: manifests, navigation, unauthenticated_manifest: unauthenticated_manifests, };
     })
     .catch(e => {
       console.error(`There is not a reactadmin config for ${ appSettings.theme || appSettings.themename }`, e);
       let manifest = { containers: Object.assign({}, (data.default_manifests) ? data.default_manifests.containers : {}, (data.manifests) ? data.manifests.containers : {}), };
+      let unauthenticated_manifest = { containers: Object.assign({}, (data.default_unauthenticated_manifests) ? data.default_unauthenticated_manifests.containers : {}, (data.unauthenticated_manifests) ? data.unauthenticated_manifests.containers : {}), };
       let navigationChildren = (data.default_navigation && data.default_navigation.layout && Array.isArray(data.default_navigation.layout.children)) ? data.default_navigation.layout.children : [];
       let navigation = {
         wrapper: Object.assign({}, (data.default_navigation) ? data.default_navigation.wrapper : {}, (data.navigation) ? data.navigation.wrapper : {}),
@@ -319,7 +325,7 @@ var finalizeSettingsWithTheme = function (data) {
           children: navigationChildren.concat((data.navigation && data.navigation.layout && Array.isArray(data.navigation.layout.children)) ? data.navigation.layout.children : []), 
         }),
       };
-      return { manifest, navigation, };
+      return { manifest, navigation, unauthenticated_manifest, };
     });
 };
 
@@ -333,7 +339,7 @@ var finalizeSettingsWithTheme = function (data) {
  */
 var sanitizeConfigurations = function (data) {
   return Object.keys(data).reduce((result, key) => {
-    if (key === 'default_manifests') result[key] = handleManifestCompilation(data[key]);
+    if (key === 'default_manifests' || key === 'default_unauthenticated_manifests') result[key] = handleManifestCompilation(data[key]);
     else if (key === 'default_navigation') result[key] = handleNavigationCompilation(data[key]);
     else result[key] = data[key];
     return result;
@@ -345,7 +351,7 @@ var sanitizeConfigurations = function (data) {
  * @return {Object} Returns the fully aggregated configurations for manifests and and navigation
  */
 var pullConfigurationSettings = function (reload) {
-  if (manifestSettings && navigationSettings && !reload) return Promisie.resolve({ manifest: manifestSettings, navigation: navigationSettings, });
+  if (manifestSettings && navigationSettings && unauthenticatedManifestSettings && !reload) return Promisie.resolve({ manifest: manifestSettings, navigation: navigationSettings, unauthenticated: unauthenticatedManifestSettings });
   return Promisie.all(fs.readJsonAsync(path.join(__dirname, '../../../content/config/extensions.json')), fs.readJsonAsync(path.join(__dirname, '../periodicjs.reactadmin.json')))
     .then(configurationData => {
       let [configuration, adminExtSettings, ] = configurationData;
@@ -355,6 +361,12 @@ var pullConfigurationSettings = function (reload) {
         operations = Object.assign(operations, { 
           manifests: pullManifestSettings.bind(null, configuration), 
           default_manifests: readAndStoreConfigurations.bind(null, adminExtSettings.manifests || []), 
+        });
+      }
+      if (reload === 'unauthenticated' || reload === true || !unauthenticatedManifestSettings) {
+        operations = Object.assign({
+          unauthenticated_manifests: pullManifestSettings.bind(null, configuration, true),
+          default_unauthenticated_manifests: readAndStoreConfigurations.bind(null, adminExtSettings.unauthenticated_manifests || [])
         });
       }
       if (reload === 'navigation' || reload === true || !navigationSettings) {
@@ -368,9 +380,10 @@ var pullConfigurationSettings = function (reload) {
     .then(sanitizeConfigurations)
     .then(finalizeSettingsWithTheme)
     .then(result => {
-      let { manifest, navigation, } = result;
+      let { manifest, navigation, unauthenticated_manifest } = result;
       manifestSettings = (reload === 'manifest' || reload === true || !manifestSettings) ? manifest : manifestSettings;
       navigationSettings = (reload === 'navigation' || reload === true || !navigationSettings) ? navigation : navigationSettings;
+      unauthenticatedManifestSettings = (reload === 'unauthenticated' || reload === true || !unauthenticatedManifestSettings) ? unauthenticated_manifest : unauthenticatedManifestSettings;
       return result;
     })
     .catch(e => Promisie.reject(e));
@@ -392,7 +405,6 @@ var loadManifest = function (req, res, next) {
       if (extsettings && extsettings.includeCoreData && extsettings.includeCoreData.manifest) {
         setCoreDataConfigurations();
         if (CORE_DATA_CONFIGURATIONS.manifest) manifest.containers = Object.assign({}, CORE_DATA_CONFIGURATIONS.manifest, manifest.containers);
-        // logger.silly(manifest.containers);
       }
       manifest.containers = recursivePrivilegesFilter(Object.keys(req.session.userprivilegesdata), manifest.containers, true);
       if (res && typeof res.send === 'function') {
@@ -404,6 +416,36 @@ var loadManifest = function (req, res, next) {
           },
         });
       } else return manifest;
+    })
+    .catch(e => (typeof next === 'function') ? next(e) : Promisie.reject(e));
+};
+
+/**
+ * Loads unauthenticated manifest configuration data and sends response with settings
+ * @param  {Object}   req  express request
+ * @param  {Object}   res  express reponse
+ * @param {Function} next express next function
+ */
+var loadUnauthenticatedManifest = function (req, res, next) {
+  return pullConfigurationSettings((req.query && req.query.refresh) ? 'unauthenticated' : false)
+    .then(() => {
+      let unauthenticated_manifest = Object.assign({}, unauthenticatedManifestSettings);
+      if (req.query && req.query.refresh_log && req.query.refresh_log !== 'false') {
+        logger.silly('reloaded unauthenticated manifest', { unauthenticated_manifest, });
+      }
+      if (extsettings && extsettings.includeCoreData && extsettings.includeCoreData.unauthenticated_manifest) {
+        setCoreDataConfigurations();
+        if (CORE_DATA_CONFIGURATIONS.unauthenticated_manifest) unauthenticated_manifest.containers = Object.assign({}, CORE_DATA_CONFIGURATIONS.unauthenticated_manifest, unauthenticated_manifest.containers);
+      }
+      if (res && typeof res.send === 'function') {
+        res.status(200).send({
+          result: 'success',
+          status: 200,
+          data: {
+            settings: unauthenticated_manifest,
+          },
+        });
+      } else return unauthenticated_manifest;
     })
     .catch(e => (typeof next === 'function') ? next(e) : Promisie.reject(e));
 };
@@ -560,6 +602,7 @@ var loadConfigurations = function (req, res) {
       return Promisie.parallel({
         navigation: loadNavigation.bind(null, req),
         manifest: loadManifest.bind(null, req),
+        unauthenticated_manifest: loadUnauthenticatedManifest.bind(null, req),
         preferences: loadUserPreferences.bind(null, req),
       });
     })
@@ -606,5 +649,6 @@ module.exports = function (resources) {
     loadUserPreferences,
     loadNavigation,
     loadConfigurations,
+    loadUnauthenticatedManifest,
   };
 };

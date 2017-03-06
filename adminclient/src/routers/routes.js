@@ -1,5 +1,4 @@
 import containers from '../containers';
-import utilities from '../util';
 
 function getRoutes(appContainer) {
   let sharedChildRoutes = [{
@@ -10,7 +9,6 @@ function getRoutes(appContainer) {
     },
   }, {
     path: '*',
-    onEnter: utilities.requireAuth,
     component: containers.PageComponents.DynamicPage,
   }, ];
   return {
