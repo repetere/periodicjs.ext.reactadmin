@@ -60,7 +60,7 @@ const manifestReducer = (state, action) => {
       error: null,
       containers: Object.assign({}, state.containers, unauthenticatedSuccessPayload.containers),
       updatedAt: new Date(),
-      unauthenticated_routes: Object.keys(unauthenticatedSuccessPayload.containers)
+      unauthenticated_routes: Object.keys(unauthenticatedSuccessPayload.containers || {})
     });
   default:
     return Object.assign(initialState, state);

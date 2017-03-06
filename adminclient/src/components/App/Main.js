@@ -47,6 +47,7 @@ class MainApp extends Component{
       AsyncStorage.getItem(constants.jwt_token.PROFILE_JSON),
       this.props.fetchMainComponent(),
       this.props.fetchErrorComponents(),
+      this.props.fetchUnauthenticatedManifest(),
       AsyncStorage.getItem(constants.user.MFA_AUTHENTICATED)
       //AsyncStorage.getItem(constants.async_token.TABBAR_TOKEN),
     ])
