@@ -4,7 +4,7 @@ export const isLoggedIn = () => {
   return window && !!window.localStorage[ constants.jwt_token.TOKEN_NAME ];
 };
 
-export const requireAuth = (nextState, replaceState) => {
+export const requireAuth = function (nextState, replaceState) {
   // console.log({ nextState, replaceState });
   // console.log("nextState.location.pathname.indexOf('p-admin')!==-1",nextState.location.pathname.indexOf('p-admin')!==-1)
   if (!isLoggedIn()) {

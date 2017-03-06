@@ -2,12 +2,29 @@ import React, { Component, } from 'react';
 // import AppSectionLoading from '../components/AppSectionLoading';
 import AppSectionLoadingOverlay from '../components/AppSectionLoading/overlay';
 import { getRenderedComponent, } from '../components/AppLayoutMap';
+import constants from '../constants';
 import utilities from '../util';
+
+const isLoggedIn = function () {
+  return window && !!window.localStorage[constants.jwt_token.TOKEN_NAME];
+};
 
 const _handleComponentLifecycle = function () {
   this.setState({ ui_is_loaded: false, });
   let parentState = this.props.getState();
   let pathname = (this.props.location.pathname) ? this.props.location.pathname : window.location.href || window.location.pathname;
+  let isAuthenticated = isLoggedIn();
+  if (!isAuthenticated) {
+    if (parentState.manifest && Array.isArray(parentState.manifest.unauthenticated_routes)) {
+      if (parentState.manifest.unauthenticated_routes.indexOf(pathname) !== -1) return this.fetchData();
+    }
+    return this.props.reduxRouter.replace({
+      pathname: (pathname.indexOf('p-admin')!==-1) ? `/p-admin/login?return_url=${pathname}` : `/login?return_url=${pathname}`,
+      state: {
+        nextPathname: pathname,
+      },
+    });
+  }
   if (parentState.manifest && parentState.manifest.hasLoaded) {
     if (pathname === '/mfa' && window.location.pathname === '/mfa') return this.fetchData();
     else {
@@ -22,7 +39,6 @@ const _handleComponentLifecycle = function () {
       }, e => this.fetchDynamicErrorContent(pathname));
   }
 };
-
 
 class DynamicPage extends Component {
   constructor () {

@@ -1,7 +1,53 @@
 {
+  "_args": [
+    [
+      {
+        "raw": "periodicjs.ext.reactadmin@0.7.9",
+        "scope": null,
+        "escapedName": "periodicjs.ext.reactadmin",
+        "name": "periodicjs.ext.reactadmin",
+        "rawSpec": "0.7.9",
+        "spec": "0.7.9",
+        "type": "version"
+      },
+      "/Users/janbialostok/Developer/github/promise/promise-applications/promise-front-end-application"
+    ]
+  ],
+  "_from": "periodicjs.ext.reactadmin@0.7.9",
+  "_id": "periodicjs.ext.reactadmin@0.7.9",
+  "_inCache": true,
+  "_location": "/periodicjs.ext.reactadmin",
+  "_nodeVersion": "6.9.1",
+  "_npmOperationalInternal": {
+    "host": "packages-18-east.internal.npmjs.com",
+    "tmp": "tmp/periodicjs.ext.reactadmin-0.7.9.tgz_1488580195267_0.8357846990693361"
+  },
+  "_npmUser": {
+    "name": "yawetse",
+    "email": "yaw.etse@gmail.com"
+  },
+  "_npmVersion": "3.10.8",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "periodicjs.ext.reactadmin@0.7.9",
+    "scope": null,
+    "escapedName": "periodicjs.ext.reactadmin",
+    "name": "periodicjs.ext.reactadmin",
+    "rawSpec": "0.7.9",
+    "spec": "0.7.9",
+    "type": "version"
+  },
+  "_requiredBy": [
+    "#USER"
+  ],
+  "_resolved": "https://registry.npmjs.org/periodicjs.ext.reactadmin/-/periodicjs.ext.reactadmin-0.7.9.tgz",
+  "_shasum": "335743bb36f9f2e86aa15549da73209f65ae5d58",
+  "_shrinkwrap": null,
+  "_spec": "periodicjs.ext.reactadmin@0.7.9",
+  "_where": "/Users/janbialostok/Developer/github/promise/promise-applications/promise-front-end-application",
   "author": {
-    "email": "yaw.etse@gmail.com",
     "name": "Yaw Joseph Etse",
+    "email": "yaw.etse@gmail.com",
     "url": "http://about.me/yawjosephetse"
   },
   "bugs": {
@@ -9,23 +55,23 @@
   },
   "contributors": [
     {
-      "email": "hello@vishnu.io",
       "name": "Vishnu Ravi",
+      "email": "hello@vishnu.io",
       "url": "http://www.vishnu.io"
     },
     {
-      "email": "alandavidgarcia@gmail.com",
       "name": "Alan David Garcia",
+      "email": "alandavidgarcia@gmail.com",
       "url": "http://alangalan.tumblr.com"
     },
     {
-      "email": "ecasilla@icloud.com",
       "name": "Ernie Casilla",
+      "email": "ecasilla@icloud.com",
       "url": "http://www.erniecasilla.com"
     },
     {
-      "email": "janbialostok@gmail.com",
       "name": "Jan Bialostok",
+      "email": "janbialostok@gmail.com",
       "url": "https://github.com/janbialostok"
     }
   ],
@@ -66,6 +112,10 @@
     "uglifyify": "^3.0.1"
   },
   "directories": {},
+  "dist": {
+    "shasum": "335743bb36f9f2e86aa15549da73209f65ae5d58",
+    "tarball": "https://registry.npmjs.org/periodicjs.ext.reactadmin/-/periodicjs.ext.reactadmin-0.7.9.tgz"
+  },
   "engines": {
     "node": ">=6.x"
   },
@@ -85,8 +135,16 @@
   "main": "index.js",
   "maintainers": [
     {
-      "email": "yaw.etse@gmail.com",
-      "name": "yawetse"
+      "name": "janbialostok",
+      "email": "janbialostok@gmail.com"
+    },
+    {
+      "name": "markwaldron",
+      "email": "markewaldron@gmail.com"
+    },
+    {
+      "name": "yawetse",
+      "email": "yaw.etse@gmail.com"
     }
   ],
   "name": "periodicjs.ext.reactadmin",

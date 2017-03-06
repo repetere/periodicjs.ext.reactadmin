@@ -50,6 +50,9 @@ export default {
     MANIFEST_DATA_REQUEST:'manifest data request',
     MANIFEST_DATA_FAILURE:'manifest data failed',
     MANIFEST_DATA_SUCCESS:'manifest data succeeded',
+    UNAUTHENTICATED_MANIFEST_DATA_REQUEST: 'unauthenticated manifest data request',
+    UNAUTHENTICATED_MANIFEST_DATA_FAILURE: 'unauthenticated manifest data failed',
+    UNAUTHENTICATED_MANIFEST_DATA_SUCCESS: 'unauthenticated manifest data succeeded',
   },
   notification: {
     SHOW_TIMED_NOTIFICATION:'show timed notification',

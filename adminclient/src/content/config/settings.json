@@ -1,7 +1,6 @@
 {
   "name":"reactadmin",
   "basename": "http://localhost:8786",
-  "adminPath":"/r-admin",
   "routerHistory":"browserHistory",
   "includeCoreData": {
     "manifest": true,

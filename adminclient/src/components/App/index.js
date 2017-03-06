@@ -62,6 +62,7 @@ const reduxActions = {
   fetchLoginComponent: () => store.dispatch(actions.ui.fetchComponent(CONSTANTS.ui.LOGIN_COMPONENT)),
   fetchMainComponent: () => store.dispatch(actions.ui.fetchComponent(CONSTANTS.ui.MAIN_COMPONENT)),
   fetchErrorComponents: () => store.dispatch(actions.ui.fetchComponent(CONSTANTS.ui.ERROR_COMPONENTS)),
+  fetchUnauthenticatedManifest: () => store.dispatch(actions.manifest.fetchUnauthenticatedManifest()),
   setActiveNavLink: (id) => store.dispatch(actions.ui.setActiveNavItem(id)),
   enforceMFA: (noRedirect) => store.dispatch(actions.user.enforceMFA(noRedirect)),
   validateMFA: (jwt_token) => store.dispatch(actions.user.validateMFA(jwt_token)),
