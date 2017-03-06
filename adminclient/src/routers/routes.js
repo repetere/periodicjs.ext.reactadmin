@@ -1,5 +1,4 @@
 import containers from '../containers';
-import utilities from '../util';
 
 function getRoutes(appContainer) {
   let sharedChildRoutes = [{
