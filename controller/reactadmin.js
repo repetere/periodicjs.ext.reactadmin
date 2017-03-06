@@ -364,7 +364,7 @@ var pullConfigurationSettings = function (reload) {
         });
       }
       if (reload === 'unauthenticated' || reload === true || !unauthenticatedManifestSettings) {
-        operations = Object.assign({
+        operations = Object.assign(operations, {
           unauthenticated_manifests: pullManifestSettings.bind(null, configuration, true),
           default_unauthenticated_manifests: readAndStoreConfigurations.bind(null, adminExtSettings.unauthenticated_manifests || [])
         });
