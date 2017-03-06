@@ -641,7 +641,11 @@ module.exports = function (resources) {
     });
   }
   Promisie.all(pullConfigurationSettings(), pullComponentSettings())
-    .then(logger.silly.bind(logger, 'settings loaded'));
+    .then(() => {
+      logger.silly('MANIFEST SETTINGS LOADED');
+    },
+    logger.silly.bind(logger, 'settings error'));
+    
 
   return { 
     index: admin_index,
