@@ -12,7 +12,7 @@ module.exports = function (schemas, label, options) {
       label:pluralize(capitalize(key)),
       location:pluralize(key),
     };
-   });
+  });
 
   function getTabComponent(tab, tabname) {
     return {
@@ -29,7 +29,8 @@ module.exports = function (schemas, label, options) {
           onClick: 'func:this.props.reduxRouter.push',
           onclickProps: `${usablePrefix}/${tab.location}`,
           style: {
-            border:'none',
+            border: 'none',
+            fontSize: 14,
           },
         },
         children: tab.label,        
@@ -45,6 +46,12 @@ module.exports = function (schemas, label, options) {
       component: 'Container',
       children: [{
         component: 'Tabs',
+        props: {
+          style: {
+            border: 'none',
+            fontSize: 14,
+          },
+        },
         children: [
           {
             component: 'TabGroup',
@@ -52,6 +59,7 @@ module.exports = function (schemas, label, options) {
               return getTabComponent(tab, label);
             }),
             props: {
+            
             },
           },
         ],

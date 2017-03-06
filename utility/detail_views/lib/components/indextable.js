@@ -7,7 +7,7 @@ pluralize.addIrregularRule('data', 'datas');
 module.exports = function (schemas, label, options) {
 	let usablePrefix = helpers.getDataPrefix(options.prefix);
   let manifestPrefix = helpers.getManifestPathPrefix(options.prefix);
-  console.log({schemas, usablePrefix,manifestPrefix},'options.prefix',options.prefix)
+  // console.log({schemas, usablePrefix,manifestPrefix},'options.prefix',options.prefix)
   return [{
     component: 'ResponsiveCard',
     props: {

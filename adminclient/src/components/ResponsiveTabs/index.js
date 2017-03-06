@@ -29,7 +29,7 @@ const defaultProps = {
 class ResponsiveTabs extends Component {
   constructor(props) {
     super(props);
-    
+    // console.debug('responsiveTab',{props})
     this.state = {
       tabsType: props.tabsType,
       tabs: props.tabs,
@@ -45,6 +45,7 @@ class ResponsiveTabs extends Component {
 
   changeTab(tab) {
     let currentLayout = (tab.layout && (Object.keys(tab.layout).length >= 1)) ? this.getRenderedComponent(tab.layout) : '';
+    // window.location.hash = tab.name;
     this.setState({
       currentTab: tab,
       currentLayout,
@@ -60,9 +61,10 @@ class ResponsiveTabs extends Component {
   
 
   render() {
+    // console.debug('this.props', this.props);
     if (this.state.tabsType === 'pageToggle') {
       return (
-      <Container>
+      <div>
           <Tabs { ...this.state.tabsProps }>
             <TabGroup { ...this.state.tabgroupProps }>
               {this.state.tabs.map((tab) => {
@@ -78,13 +80,13 @@ class ResponsiveTabs extends Component {
           </TabGroup>
         </Tabs>
         {this.state.currentLayout}
-      </Container>  
+      </div>  
       );
     }
     
     if (this.state.tabsType === 'navBar') {
       return (
-        <Container>
+        <div>
           <Tabs { ...this.state.tabsProps }>
             <TabGroup { ...this.state.tabgroupProps }>
               {this.state.tabs.map((tab, idx) => {
@@ -96,7 +98,7 @@ class ResponsiveTabs extends Component {
           </TabGroup>
           </Tabs>
         {this.state.currentLayout}
-        </Container>  
+        </div>  
       );
     }
   }

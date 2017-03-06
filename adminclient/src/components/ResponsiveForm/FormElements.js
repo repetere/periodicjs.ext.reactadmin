@@ -4,7 +4,7 @@ import RACodeMirror from '../RACodeMirror';
 // import RAEditor from '../RAEditor';
 // import ResponsiveButton from '../ResponsiveButton';
 // import { EditorState, } from 'draft-js';
-import { ControlLabel, Label, Input, Button, CardFooterItem, Select, Textarea, Group, } from 're-bulma'; 
+import { ControlLabel, Label, Input, Button, CardFooterItem, Select, Textarea, Group, Image, } from 're-bulma'; 
 import styles from '../../styles';
 
 export function getPropertyAttribute(options) {
@@ -113,6 +113,7 @@ export function getFormTextInputArea(options) {
       icon={(hasError)?'fa fa-warning':undefined}
       onChange={onChange}
       onKeyPress={keyPress}
+      type={formElement.type||'text'}
       placeholder={formElement.placeholder}
       value={ initialValue } />
   </FormItem>);
@@ -206,6 +207,22 @@ export function getHiddenInput(options) {
     value={initialValue} />;
 }
 
+export function getImage(options) {
+  let { formElement, i, } = options;
+  let initialValue = getInitialValue(formElement, this.state);
+  let imageProps = Object.assign({
+    style: {
+      textAlign:'center',
+    },
+  }, formElement.passProps);
+  //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
+  return (<FormItem key={i} {...formElement.layoutProps} >
+    {getFormLabel(formElement)}  
+    <Image key={i}  {...imageProps}
+    src={initialValue} />
+  </FormItem>);
+}
+
 export function getFormLink(options) {
   let { formElement, i, button, } = options;
   let wrapperProps = Object.assign({
@@ -248,6 +265,9 @@ export function getFormCode(options) {
       lineNumbers: true,
       value: getInitialValue(formElement, this.state), //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
       //value: this.state[ formElement.name ] || formElement.value,
+      style: {
+        minHeight:200,
+      },
       onChange: (!onValueChange) ? function (newvalue){
         // console.log({ newvalue });
         let updatedStateProp = {};
@@ -257,10 +277,11 @@ export function getFormCode(options) {
     },
     wrapperProps: {
       style: {
-        overflow: 'hidden',
+        overflow: 'auto',
         backgroundColor: 'white',
         border: (hasError) ? '1px solid #ed6c63' : '1px solid #d3d6db',
         borderRadius: 3,
+        height:500,
         boxShadow: 'inset 0 1px 2px rgba(17,17,17,.1)',
       },
     },

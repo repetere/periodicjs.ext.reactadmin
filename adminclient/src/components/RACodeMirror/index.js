@@ -12,7 +12,11 @@ const defaultProps = {};
 
 class RACodeMirror extends Component {
   render() {
-    let options = Object.assign({ options: { lineNumbers: true, }, }, this.props.codeMirrorProps);
+    let options = Object.assign({
+      options: {
+        lineNumbers: true,
+      },
+    }, this.props.codeMirrorProps);
   
     return <div {...this.props.wrapperProps}><CodeMirror {...options}>{this.props.children}</CodeMirror></div>;
   }

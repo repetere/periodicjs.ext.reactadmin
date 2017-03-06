@@ -472,7 +472,7 @@
                       "component":"ResponsiveForm",
                       "props":{
                         "onSubmit":{
-                          "url":"http://localhost:8786/r-admin/contentdata/assetupload",
+                          "url":"http://localhost:8786/r-admin/contentdata/assetupload?handleupload=true",
                           "options":{
                             "method":"post"
                           },
@@ -528,7 +528,7 @@
                                 }
                               },
                               {
-                                "type":"text",
+                                "type":"file",
                                 "name":"assetfile",
                                 "label":"asset file",
                                 "passProps":{
