@@ -209,6 +209,14 @@ const user = {
     let preferencesAction = (dispatch, getState) => {
       dispatch(this.preferenceRequest());
       let state = getState();
+      let hasCached = (state.settings && state.settings.user && state.settings.user.preferences);
+      if (hasCached) {
+        dispatch(this.preferenceSuccessResponse({
+          data: {
+            settings: state.settings.user.preferences
+          }
+        }));
+      }
       let basename = (typeof state.settings.adminPath ==='string' && state.settings.adminPath !=='/') ? state.settings.basename+state.settings.adminPath : state.settings.basename;
       let headers = state.settings.userprofile.options.headers;
       delete headers.clientid_default;
@@ -217,7 +225,9 @@ const user = {
         .then(response => {
           dispatch(this.preferenceSuccessResponse(response));
           return response;
-        }, e => dispatch(this.preferenceErrorResponse(e)));
+        }, e => {
+          if (!hasCached) dispatch(this.preferenceErrorResponse(e))
+        });
     };
     return utilities.setCacheConfiguration(preferencesAction, 'user.preferences');
   },
@@ -225,6 +235,14 @@ const user = {
     let navigationAction = (dispatch, getState) => {
       dispatch(this.navigationRequest());
       let state = getState();
+      let hasCached = (state.settings && state.settings.user && state.settings.user.navigation);
+      if (hasCached) {
+        dispatch(this.navigationSuccessResponse({
+          data: {
+            settings: state.settings.user.navigation
+          }
+        }));
+      }
       let basename = (typeof state.settings.adminPath ==='string' && state.settings.adminPath !=='/') ? state.settings.basename+state.settings.adminPath : state.settings.basename;
       let headers = state.settings.userprofile.options.headers;
       delete headers.clientid_default;
@@ -234,7 +252,9 @@ const user = {
         .then(response => {
           dispatch(this.navigationSuccessResponse(response));
           return response;
-        }, e => dispatch(this.navigationErrorResponse(e)));
+        }, e => {
+          if (!hasCached) dispatch(this.navigationErrorResponse(e))
+        });
     };
     return utilities.setCacheConfiguration(navigationAction, 'user.navigation');
   },
