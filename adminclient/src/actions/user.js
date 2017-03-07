@@ -196,7 +196,7 @@ const user = {
     };
   },
   fetchPreferences (options = {}) {
-    return (dispatch, getState) => {
+    let preferencesAction = (dispatch, getState) => {
       dispatch(this.preferenceRequest());
       let state = getState();
       let basename = (typeof state.settings.adminPath ==='string' && state.settings.adminPath !=='/') ? state.settings.basename+state.settings.adminPath : state.settings.basename;
@@ -206,11 +206,13 @@ const user = {
       return utilities.fetchComponent(`${ basename }/load/preferences`, options)()
         .then(response => {
           dispatch(this.preferenceSuccessResponse(response));
+          return response;
         }, e => dispatch(this.preferenceErrorResponse(e)));
     };
+    return utilities.setCacheConfiguration(preferencesAction, 'user.preferences');
   },
   fetchNavigation (options = {}) {
-    return (dispatch, getState) => {
+    let navigationAction = (dispatch, getState) => {
       dispatch(this.navigationRequest());
       let state = getState();
       let basename = (typeof state.settings.adminPath ==='string' && state.settings.adminPath !=='/') ? state.settings.basename+state.settings.adminPath : state.settings.basename;
@@ -221,8 +223,10 @@ const user = {
       return utilities.fetchComponent(`${ basename }/load/navigation${(state.settings.ui.initialization.refresh_navigation)?'?refresh=true':''}`, options)()
         .then(response => {
           dispatch(this.navigationSuccessResponse(response));
+          return response;
         }, e => dispatch(this.navigationErrorResponse(e)));
     };
+    return utilities.setCacheConfiguration(navigationAction, 'user.navigation');
   },
   getUserProfile(jwt_token, responseFormatter) {
     return (dispatch, getState) => {
@@ -351,24 +355,37 @@ const user = {
         delete headers.clientid_default;
         options.headers = Object.assign({}, options.headers, headers);
         //add ?refresh=true to fetch route below to reload configurations
-        return utilities.fetchComponent(`${basename}/load/configurations${(state.settings.ui.initialization.refresh_components)?'?refresh=true':''}`, options)()
-          .then(response => {
-            if (response.result === 'error') return Promise.reject(new Error(response.data.error));
-            let responses = Object.keys(response.data.settings).reduce((result, key) => {
-              let data = Object.assign({}, response.data);
-              data.settings = response.data.settings[key];
-              result[key] = { data };
-              return result;
-            }, {});
-            dispatch(this.navigationSuccessResponse(responses.navigation));
-            dispatch(this.preferenceSuccessResponse(responses.preferences));
-            dispatch(manifest.receivedManifestData(responses.manifest.data.settings));
-          })
-          .catch(e => {
-            dispatch(this.navigationErrorResponse(e));
-            dispatch(this.preferenceErrorResponse(e));
-            dispatch(manifest.failedManifestRetrival(e));
-          });
+        return utilities.setCacheConfiguration(() => {
+          return utilities.fetchComponent(`${basename}/load/configurations${(state.settings.ui.initialization.refresh_components)?'?refresh=true':''}`, options)()
+            .then(response => {
+              if (response.result === 'error') return Promise.reject(new Error(response.data.error));
+              let responses = Object.keys(response.data.settings).reduce((result, key) => {
+                let data = Object.assign({}, response.data);
+                data.settings = response.data.settings[key];
+                result[key] = { data };
+                return result;
+              }, {});
+              dispatch(this.navigationSuccessResponse(responses.navigation));
+              dispatch(this.preferenceSuccessResponse(responses.preferences));
+              dispatch(manifest.receivedManifestData(responses.manifest.data.settings));
+              return {
+                data: {
+                  versions: response.data.versions,
+                  settings: responses
+                }
+              };
+            })
+            .catch(e => {
+              dispatch(this.navigationErrorResponse(e));
+              dispatch(this.preferenceErrorResponse(e));
+              dispatch(manifest.failedManifestRetrival(e));
+            });
+        }, {
+          navigation: 'user.navigation',
+          preferences: 'user.preferences',
+          manifest: 'manifest.authenticated',
+          unauthenticated_manifest: 'manifest.unauthenticated'
+        }, true)();
       }
     };
   },

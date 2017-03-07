@@ -39,7 +39,7 @@ const manifest = {
     };
   },
   fetchManifest (options = {}) {
-    return (dispatch, getState) => {
+    let manifestAction = (dispatch, getState) => {
       dispatch(this.manifestRequest());
       let state = getState();
       let basename = (typeof state.settings.adminPath ==='string' && state.settings.adminPath !=='/') ? state.settings.basename+state.settings.adminPath : state.settings.basename;
@@ -47,16 +47,16 @@ const manifest = {
       delete headers.clientid_default;
       options.headers = Object.assign({}, options.headers, headers);
       //add ?refresh=true to below route to reload manifest configuration
-      
       return utilities.fetchComponent(`${ basename }/load/manifest${(state.settings.ui.initialization.refresh_manifests)?'?refresh=true':''}`, options)()
         .then(response => {
           dispatch(this.receivedManifestData(response.data.settings));
           return response;
         }, e => dispatch(this.failedManifestRetrival(e)));
     };
+    return utilities.setCacheConfiguration(manifestAction, 'manifest.authenticated');
   },
   fetchUnauthenticatedManifest () {
-    return (dispatch, getState) => {
+    let unauthenticatedManifestAction = (dispatch, getState) => {
       dispatch(this.unauthenticatedManifestRequest());
       let state = getState();
       let basename = (typeof state.settings.adminPath ==='string' && state.settings.adminPath !=='/') ? state.settings.basename+state.settings.adminPath : state.settings.basename;
@@ -68,6 +68,7 @@ const manifest = {
           return response;
         }, e => dispatch(this.unauthenticatedFailedManifestRetrival(e)));
     };
+    return utilities.setCacheConfiguration(unauthenticatedManifestAction, 'manifest.unauthenticated');
   },
 };
 

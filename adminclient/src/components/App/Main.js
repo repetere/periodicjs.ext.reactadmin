@@ -23,16 +23,19 @@ class MainApp extends Component{
     this.setState(nextProps);
   }
   componentDidMount() {
-    Promise.all([
-      AsyncStorage.getItem(constants.jwt_token.TOKEN_NAME),
-      AsyncStorage.getItem(constants.jwt_token.TOKEN_DATA),
-      AsyncStorage.getItem(constants.jwt_token.PROFILE_JSON),
-      this.props.fetchMainComponent(),
-      this.props.fetchErrorComponents(),
-      this.props.fetchUnauthenticatedManifest(),
-      AsyncStorage.getItem(constants.user.MFA_AUTHENTICATED)
-      //AsyncStorage.getItem(constants.async_token.TABBAR_TOKEN),
-    ])
+    utilities.flushCacheConfiguration()
+      .then(() => {
+        return Promise.all([
+          AsyncStorage.getItem(constants.jwt_token.TOKEN_NAME),
+          AsyncStorage.getItem(constants.jwt_token.TOKEN_DATA),
+          AsyncStorage.getItem(constants.jwt_token.PROFILE_JSON),
+          this.props.fetchMainComponent(),
+          this.props.fetchErrorComponents(),
+          this.props.fetchUnauthenticatedManifest(),
+          AsyncStorage.getItem(constants.user.MFA_AUTHENTICATED)
+          //AsyncStorage.getItem(constants.async_token.TABBAR_TOKEN),
+        ])
+      })
       .then((results) => {
         try {
           utilities.getCacheConfiguration()
