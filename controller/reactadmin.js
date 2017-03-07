@@ -324,7 +324,7 @@ var finalizeSettingsWithTheme = function (data) {
       if (navigation && navigation.layout && navigation.layout.children && navigation.layout.children.length) {
         navigationChildren = Object.assign([], navigation.layout.children);
       } else {
-         navigationChildren = navigationChildren.concat((data.navigation && data.navigation.layout && Array.isArray(data.navigation.layout.children)) ? data.navigation.layout.children : []);
+        navigationChildren = navigationChildren.concat((data.navigation && data.navigation.layout && Array.isArray(data.navigation.layout.children)) ? data.navigation.layout.children : []);
       }
       navigation.layout = navigation.layout || Object.assign({ children: [], }, (data.default_navigation) ? data.default_navigation.layout : {}, (data.navigation) ? data.navigation.layout : {});
       navigation.layout.children = navigationChildren;
