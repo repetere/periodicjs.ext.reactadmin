@@ -3,6 +3,7 @@ import { traverse, } from './traverse';
 import { requireAuth, isLoggedIn, } from './routing';
 import { getParameterized, parameterize, setParameters, findMatchingRoute, } from './parameterize';
 import { fetchErrorContent, fetchSuccessContent, fetchDynamicContent, fetchAction, } from './dynamics';
+import { get404Error, } from './errors';
 
 export default {
   fetchComponent,
@@ -19,4 +20,5 @@ export default {
   fetchErrorContent,
   fetchSuccessContent,
   fetchDynamicContent,
+  get404Error,
 };

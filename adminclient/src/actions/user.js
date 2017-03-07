@@ -1,5 +1,5 @@
 import constants from '../constants';
-import { push, /* replace, go, goForward, goBack */ } from 'react-router-redux';
+import { replace, push, /*  go, goForward, goBack */ } from 'react-router-redux';
 import { AsyncStorage, } from 'react-native';
 import pageActions from './pages';
 import uiActions from './ui';
@@ -169,7 +169,9 @@ const user = {
     };
   },
   logoutUser() {
-    return (dispatch) => {
+    return (dispatch, getState) => {
+      let state = getState();
+      // console.debug({ state });
       dispatch(pageActions.resetAppLoadedState());
       Promise.all([
         AsyncStorage.removeItem(constants.jwt_token.TOKEN_NAME),
@@ -179,12 +181,16 @@ const user = {
         // AsyncStorage.removeItem(constants.pages.ASYNCSTORAGE_KEY),
       ])
         .then((/*results*/) => {
-          // console.log('logout user results', results);
+          // console.debug('logout user results', results);
           dispatch(this.logoutUserSuccess());
           dispatch(pageActions.initialAppLoaded());
           dispatch(uiActions.closeUISidebar());
           dispatch(this.authenticatedMFA(false));
           dispatch(push('/'));
+          let t = setTimeout(() => {
+            clearTimeout(t);
+            window.location.pathname = state.settings.auth.logged_out_path || '/';
+          }, 4000);
         })
         .catch(error => { 
           dispatch(notification.errorNotification(error));
@@ -192,6 +198,10 @@ const user = {
           dispatch(pageActions.initialAppLoaded());
           dispatch(uiActions.closeUISidebar());
           dispatch(push('/'));
+          let t = setTimeout(() => {
+            clearTimeout(t);
+            window.location.pathname = state.settings.auth.logged_out_path || '/';
+          }, 4000);
         });
     };
   },

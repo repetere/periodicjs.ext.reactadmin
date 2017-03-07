@@ -37,7 +37,12 @@ export function getRenderedComponent(componentObject, resources, debug) {
   try {
     let asyncprops = (componentObject.asyncprops && typeof componentObject.asyncprops === 'object') ? utilities.traverse(componentObject.asyncprops, resources) : {};
     let windowprops = (componentObject.windowprops && typeof componentObject.windowprops === 'object') ? utilities.traverse(componentObject.windowprops, window) : {};
-    let thisprops = (componentObject.thisprops && typeof componentObject.thisprops === 'object') ? utilities.traverse(componentObject.thisprops, this.props.getState()) : {};
+    let thisprops = (componentObject.thisprops && typeof componentObject.thisprops === 'object') ? utilities.traverse(componentObject.thisprops, Object.assign({
+      __reactadmin_manifest: {
+        _component: componentObject,
+        _resources: resources,
+      },
+    }, this.props.getState())) : {};
     let thisDotProps = (!React.DOM[ componentObject.component ] && !rebulma[ componentObject.component ]) ? this.props : null;
     // if (debug) {
     //   console.debug({
@@ -47,9 +52,12 @@ export function getRenderedComponent(componentObject, resources, debug) {
     // if(!React.DOM[ componentObject.component ] && !rebulma[ componentObject.component ]){
     //   console.log(componentObject.component,'is not in bulma or reactdom')
     // }
-    let renderedCompProps = Object.assign({ key: renderIndex, }, thisDotProps,
+    let renderedCompProps = Object.assign({
+      key: renderIndex,
+    }, thisDotProps,
       thisprops,
       componentObject.props, asyncprops, windowprops);
+    // console.debug({ renderedCompProps });
     //this loops through props assigned on component (wither from props obj or asyncprops, etc ) if filtered list length is all false, then dont display
     if (typeof componentObject.conditionalprops !== 'undefined' &&
       !Object.keys(utilities.traverse(componentObject.conditionalprops, renderedCompProps)).filter(key=>utilities.traverse(componentObject.conditionalprops, renderedCompProps)[key]).length) {
