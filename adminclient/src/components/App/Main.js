@@ -54,6 +54,7 @@ class MainApp extends Component{
             let currentTime = new Date();
             
             if (moment(jwt_token_data.expires).isBefore(currentTime)) {
+              this.props.logoutUser();
               let expiredTokenError = new Error(`Access Token Expired ${moment(jwt_token_data.expires).format('LLLL')}`);
               this.props.logoutUser();
               throw expiredTokenError;

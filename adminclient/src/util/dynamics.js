@@ -1,6 +1,6 @@
-import React from 'react';
+// import React from 'react';
 import utilities from './index';
-import AppError404 from '../components/AppError404';
+// import AppError404 from '../components/AppError404';
 
 /**
  * Because these dynamic data fetching functions are used in multiple locations this function standardizes access to the getState function
@@ -56,7 +56,7 @@ var _handleFetchPaths = function (layout, resources = {}, options = {}) {
       this.uiLayout = this.getRenderedComponent(layout, _resources);
       this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
     })
-    .catch((typeof options.onError === 'function') ? options.onError : e => {
+    .catch((typeof options.onError === 'function') ? e => options.onError( e, 'fetchResources', resources) : e => {
       // console.debug('USING FALLBACK ONERROR ');
       if (this.props && this.props.errorNotification) this.props.errorNotification(e);
       else console.error(e);
@@ -67,16 +67,25 @@ var _handleFetchPaths = function (layout, resources = {}, options = {}) {
 /**
  * Sets a configurable 404 error component or sets a default 404 component
  */
-export const fetchErrorContent = function _fetchErrorContent () {
-  // console.debug('fetchErrorContent')
+export const fetchErrorContent = function _fetchErrorContent (e, type, resources) {
+  console.debug('fetchErrorContent', { e, type, });
   let getState = _getState.call(this);
   let state = getState();
   let custom404Error;
   let componentData;
   let windowTitle;
   let navLabel;
+  let get404Error = utilities.get404Error.bind(this);
   let errorComponents = (state.ui && state.ui.components && state.ui.components.error) ? state.ui.components.error : false;
+  let errorCode = (type === 'fetchResources')
+    ? '400'
+    : '404';
   // console.debug({ errorComponents });
+
+  get404Error({
+    getState, _handleFetchPaths, /*state,*/ custom404Error, componentData, windowTitle, navLabel, errorComponents, errorCode, resources,
+  });
+  /*
   if (errorComponents && errorComponents['404']) {
     componentData = errorComponents[ '404' ];
     //TODO: Jan, this was broken because the custom error component had layout nested under settings
@@ -111,11 +120,13 @@ export const fetchErrorContent = function _fetchErrorContent () {
       }
     }
   }
+  /*
   // console.log({ custom404Error });
   this.uiLayout = (custom404Error) ? custom404Error : <AppError404/>;
   window.document.title = windowTitle;
   if (this.props && this.props.setNavLabel) this.props.setNavLabel(navLabel);
-  this.setState({ ui_is_loaded: true, });
+  this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
+  */
 };
 
 /**

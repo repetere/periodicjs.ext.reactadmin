@@ -27,10 +27,6 @@
                     "children":"PAGE NOT FOUND"
                   },
                   {
-                    "component":"div",
-                    "children":"Some dynamic content ;)"
-                  },
-                  {
                     "component":"RawOutput",
                     "props":{
                       "select":"locationdata",

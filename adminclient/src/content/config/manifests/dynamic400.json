@@ -1,0 +1,56 @@
+{
+  "layout":{
+    "component":"Hero",
+    "props":{
+      "size":"isFullheight"
+    },
+    "children":[
+      {
+        "component":"HeroBody",
+        "props":{
+        },
+        "children":[
+          {
+            "component":"Container",
+            "props":{
+
+            },
+            "children":[
+              {
+                "component":"Content",
+                "props":{
+
+                },
+                "children":[
+                  {
+                    "component":"h1",
+                    "children":"RESOURCE NOT FOUND"
+                  },
+                  {
+                    "component":"RawOutput",
+                    "props":{
+                      "select":"locationdata",
+                      "type":"block",
+                      "displaysssss":true
+                    },
+                    "thisprops":{
+                      "locationdata":[
+                        "__reactadmin_manifest","_resources"
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "resources":{},
+  "pageData":{
+    "title": "Resource Not Found",
+    "navLabel": "Error"
+  },
+  "onFinish":"render"
+}
