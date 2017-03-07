@@ -176,10 +176,10 @@ const user = {
         AsyncStorage.removeItem(constants.jwt_token.TOKEN_DATA),
         AsyncStorage.removeItem(constants.jwt_token.PROFILE_JSON),
         AsyncStorage.removeItem(constants.user.MFA_AUTHENTICATED),
+        utilities.flushCacheConfiguration(['manifest.authenticated', 'user.navigation', 'user.preferences']),
         // AsyncStorage.removeItem(constants.pages.ASYNCSTORAGE_KEY),
       ])
         .then((/*results*/) => {
-          // console.log('logout user results', results);
           dispatch(this.logoutUserSuccess());
           dispatch(pageActions.initialAppLoaded());
           dispatch(uiActions.closeUISidebar());
@@ -385,7 +385,7 @@ const user = {
           preferences: 'user.preferences',
           manifest: 'manifest.authenticated',
           unauthenticated_manifest: 'manifest.unauthenticated'
-        }, true)();
+        }, { multi: true })();
       }
     };
   },

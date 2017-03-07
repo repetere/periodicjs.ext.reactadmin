@@ -62,6 +62,14 @@ const reduxActions = {
   fetchLoginComponent: () => store.dispatch(utilities.setCacheConfiguration(actions.ui.fetchComponent(CONSTANTS.ui.LOGIN_COMPONENT), 'components.login')),
   fetchMainComponent: () => store.dispatch(utilities.setCacheConfiguration(actions.ui.fetchComponent(CONSTANTS.ui.MAIN_COMPONENT), 'components.main')),
   fetchErrorComponents: () => store.dispatch(utilities.setCacheConfiguration(actions.ui.fetchComponent(CONSTANTS.ui.ERROR_COMPONENTS), 'components.error')),
+  setLoginComponent: () => store.dispatch(actions.ui.handleFetchedComponent(CONSTANTS.ui.LOGIN_COMPONENT)),
+  setMainComponent: () => store.dispatch(actions.ui.handleFetchedComponent(CONSTANTS.ui.MAIN_COMPONENT)),
+  setErrorComponents: () => store.dispatch(actions.ui.handleFetchedComponent(CONSTANTS.ui.ERROR_COMPONENTS)),
+  setConfigurationFromCache: () => store.dispatch(utilities.getCacheConfiguration(Object.assign({}, actions, {
+    setLoginComponent: reduxActions.setLoginComponent,
+    setMainComponent: reduxActions.setMainComponent,
+    setErrorComponents: reduxActions.setErrorComponents
+  }))),
   fetchUnauthenticatedManifest: () => store.dispatch(actions.manifest.fetchUnauthenticatedManifest()),
   setActiveNavLink: (id) => store.dispatch(actions.ui.setActiveNavItem(id)),
   enforceMFA: (noRedirect) => store.dispatch(actions.user.enforceMFA(noRedirect)),

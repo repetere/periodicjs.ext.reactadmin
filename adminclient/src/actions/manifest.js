@@ -42,6 +42,9 @@ const manifest = {
     let manifestAction = (dispatch, getState) => {
       dispatch(this.manifestRequest());
       let state = getState();
+      if (state.manifest && state.manifest.containers && Object.keys(state.manifest.containers).length) {
+        dispatch(this.receivedManifestData(state.manifest));
+      } 
       let basename = (typeof state.settings.adminPath ==='string' && state.settings.adminPath !=='/') ? state.settings.basename+state.settings.adminPath : state.settings.basename;
       let headers = state.settings.userprofile.options.headers;
       delete headers.clientid_default;
@@ -59,6 +62,9 @@ const manifest = {
     let unauthenticatedManifestAction = (dispatch, getState) => {
       dispatch(this.unauthenticatedManifestRequest());
       let state = getState();
+      if (state.manifest && state.manifest.containers && Object.keys(state.manifest.containers).length) {
+        dispatch(this.unauthenticatedReceivedManifestData(state.manifest));
+      } 
       let basename = (typeof state.settings.adminPath ==='string' && state.settings.adminPath !=='/') ? state.settings.basename+state.settings.adminPath : state.settings.basename;
       //add ?refresh=true to below route to reload manifest configuration
       

@@ -23,24 +23,21 @@ class MainApp extends Component{
     this.setState(nextProps);
   }
   componentDidMount() {
-    utilities.flushCacheConfiguration()
-      .then(() => {
-        return Promise.all([
-          AsyncStorage.getItem(constants.jwt_token.TOKEN_NAME),
-          AsyncStorage.getItem(constants.jwt_token.TOKEN_DATA),
-          AsyncStorage.getItem(constants.jwt_token.PROFILE_JSON),
-          this.props.fetchMainComponent(),
-          this.props.fetchErrorComponents(),
-          this.props.fetchUnauthenticatedManifest(),
-          AsyncStorage.getItem(constants.user.MFA_AUTHENTICATED)
-          //AsyncStorage.getItem(constants.async_token.TABBAR_TOKEN),
-        ])
-      })
+    Promise.all([
+      AsyncStorage.getItem(constants.jwt_token.TOKEN_NAME),
+      AsyncStorage.getItem(constants.jwt_token.TOKEN_DATA),
+      AsyncStorage.getItem(constants.jwt_token.PROFILE_JSON),
+      this.props.setConfigurationFromCache(),
+      AsyncStorage.getItem(constants.user.MFA_AUTHENTICATED)
+      //AsyncStorage.getItem(constants.async_token.TABBAR_TOKEN),
+    ])
       .then((results) => {
         try {
-          utilities.getCacheConfiguration()
-            .then(console.log.bind(console, 'CACHED CONFIGURATIONS!!!!'))
-            .catch(console.error.bind(console, 'ERROR RETRIEVING CACHED CONFIGURATIONS!!!'));
+          Promise.all([
+            this.props.fetchMainComponent(),
+            this.props.fetchErrorComponents(),
+            this.props.fetchUnauthenticatedManifest(),
+          ]);
           if (results[results.length - 1] === 'true') this.props.authenticatedMFA();
           let jwt_token = results[ 0 ];
           let jwt_token_data = JSON.parse(results[ 1 ]);
