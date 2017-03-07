@@ -1,5 +1,5 @@
 import constants from '../constants';
-import { replace, push, /*  go, goForward, goBack */ } from 'react-router-redux';
+import {  push, /* replace, go, goForward, goBack */ } from 'react-router-redux';
 import { AsyncStorage, } from 'react-native';
 import pageActions from './pages';
 import uiActions from './ui';
