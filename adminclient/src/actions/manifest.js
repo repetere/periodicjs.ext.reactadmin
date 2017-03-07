@@ -51,6 +51,7 @@ const manifest = {
       return utilities.fetchComponent(`${ basename }/load/manifest${(state.settings.ui.initialization.refresh_manifests)?'?refresh=true':''}`, options)()
         .then(response => {
           dispatch(this.receivedManifestData(response.data.settings));
+          return response;
         }, e => dispatch(this.failedManifestRetrival(e)));
     };
   },
@@ -64,6 +65,7 @@ const manifest = {
       return utilities.fetchComponent(`${basename}/load/public_manifest`)()
         .then(response => {
           dispatch(this.unauthenticatedReceivedManifestData(response.data.settings));
+          return response;
         }, e => dispatch(this.unauthenticatedFailedManifestRetrival(e)));
     };
   },

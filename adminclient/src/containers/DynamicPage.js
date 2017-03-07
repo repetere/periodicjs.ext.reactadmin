@@ -10,7 +10,7 @@ const isLoggedIn = function () {
 };
 
 const _handleComponentLifecycle = function () {
-  this.setState({ ui_is_loaded: false, });
+  this.setState({ ui_is_loaded: false, async_data_is_loaded: false });
   let parentState = this.props.getState();
   let pathname = (this.props.location.pathname) ? this.props.location.pathname : window.location.href || window.location.pathname;
   let isAuthenticated = isLoggedIn();

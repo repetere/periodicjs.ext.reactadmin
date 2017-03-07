@@ -38,6 +38,7 @@ var periodic;
 var themeSettings;
 var extsettings;
 var utility;
+var versions;
 
 /**
  * Loads core data model detail views as manifest and navigation configurations
@@ -412,6 +413,7 @@ var loadManifest = function (req, res, next) {
           result: 'success',
           status: 200,
           data: {
+            versions,
             settings: manifest,
           },
         });
@@ -442,6 +444,7 @@ var loadUnauthenticatedManifest = function (req, res, next) {
           result: 'success',
           status: 200,
           data: {
+            versions,
             settings: unauthenticated_manifest,
           },
         });
@@ -534,6 +537,7 @@ var loadComponent = function (req, res, next) {
         result: 'success',
         status: 200,
         data: {
+          versions,
           settings: assignComponentStatus(component),
         },
       });
@@ -552,6 +556,7 @@ var loadUserPreferences = function (req, res) {
       result: 'success',
       status: 200,
       data: {
+        versions,
         settings: (req.user && req.user.extensionattributes && req.user.extensionattributes.preferences) ? req.user.extensionattributes.preferences : {},
       },
     });
@@ -587,6 +592,7 @@ var loadNavigation = function (req, res, next) {
           result: 'success',
           status: 200,
           data: {
+            versions,
             settings: navigation,
           },
         });
@@ -610,7 +616,7 @@ var loadConfigurations = function (req, res) {
       res.status(200).send({
         result: 'success',
         status: 200,
-        data: { settings, },
+        data: { settings, versions },
       });
     })
     .catch(e => {
@@ -634,6 +640,11 @@ module.exports = function (resources) {
   logger = resources.logger;
   extsettings = resources.app.locals.extension.reactadmin.settings;
   utility = require(path.join(__dirname, '../utility/index'))(resources);
+  `content/themes/${ appSettings.theme || appSettings.themename }/periodicjs.reactadmin.json`
+  versions = {
+    theme: fs.readJsonSync(path.join(__dirname, '../../../', `content/themes/${ appSettings.theme || appSettings.themename }/package.json`)).version,
+    reactadmin: fs.readJsonSync(path.join(__dirname, '../package.json')).version
+  };
   if (extsettings && extsettings.includeCoreData && extsettings.includeCoreData.manifest) {
     let task = setImmediate(() => {
       setCoreDataConfigurations();
