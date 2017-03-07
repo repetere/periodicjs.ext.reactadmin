@@ -249,16 +249,28 @@ var pullManifestSettings = function (configuration, isUnauthenticated = false) {
 /**
  * Merges navigation wrapper, container, layout and concats navigation links specified by periodic extensions configuration
  * @param  {Object[]} navigation An array of navigation configuration objects
+ * @param {Boolean} isExtension If true denotes that navigation configuration should be added to Extension navigation sub-element
  * @return {Object}            Fully merged navigation object
  */
-var handleNavigationCompilation = function (navigation) {
-  return navigation.reduce((result, nav) => {
+var handleNavigationCompilation = function (navigation, isExtension) {
+  let extensionsNav = [{
+    component: 'MenuLabel',
+    children: 'Extensions'
+  }, {
+    component: 'MenuList',
+    children: []
+  }];
+  let subLinks = extensionsNav[1];
+  let compiled = navigation.reduce((result, nav) => {
     result.wrapper = Object.assign(result.wrapper || {}, nav.wrapper);
     result.container = Object.assign(result.container || {}, nav.container);
     result.layout = result.layout || { children: [], };
-    result.layout = Object.assign(result.layout, nav.layout, { children: result.layout.children.concat(nav.layout.children), });
+    if (!isExtension) result.layout = Object.assign(result.layout, nav.layout, { children: result.layout.children.concat(nav.layout.children), });
+    else subLinks.children = subLinks.children.concat(nav.layout.children);
     return result;
   }, {});
+  if (subLinks.children.length) compiled.layout.children = compiled.layout.children.concat(extensionsNav);
+  return compiled;
 };
 
 /**
@@ -274,7 +286,7 @@ var pullNavigationSettings = function (configuration) {
     return result;
   }, []);
   return readAndStoreConfigurations(filePaths || [])
-    .then(handleNavigationCompilation)
+    .then(result => handleNavigationCompilation(result, true))
     .catch(e => Promisie.reject(e));
 };
 
@@ -309,8 +321,13 @@ var finalizeSettingsWithTheme = function (data) {
       let navigationChildren = (data.default_navigation && data.default_navigation.layout && Array.isArray(data.default_navigation.layout.children)) ? data.default_navigation.layout.children : [];
       navigation.wrapper = Object.assign({}, (data.default_navigation) ? data.default_navigation.wrapper : {}, (data.navigation) ? data.navigation.wrapper : {}, navigation.wrapper);
       navigation.container = Object.assign({}, (data.default_navigation) ? data.default_navigation.container : {}, (data.navigation) ? data.navigation.container : {}, navigation.container);
+      if (navigation && navigation.layout && navigation.layout.children && navigation.layout.children.length) {
+        navigationChildren = Object.assign([], navigation.layout.children);
+      } else {
+         navigationChildren = navigationChildren.concat((data.navigation && data.navigation.layout && Array.isArray(data.navigation.layout.children)) ? data.navigation.layout.children : []);
+      }
       navigation.layout = navigation.layout || Object.assign({ children: [], }, (data.default_navigation) ? data.default_navigation.layout : {}, (data.navigation) ? data.navigation.layout : {});
-      navigation.layout.children = (!navigation.layout.children.length) ? navigationChildren.concat((data.navigation && data.navigation.layout && Array.isArray(data.navigation.layout.children)) ? data.navigation.layout.children : []) : navigation.layout.children;
+      navigation.layout.children = navigationChildren;
       return { manifest: manifests, navigation, unauthenticated_manifest: unauthenticated_manifests, };
     })
     .catch(e => {
