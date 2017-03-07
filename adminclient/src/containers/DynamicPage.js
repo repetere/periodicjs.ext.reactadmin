@@ -62,7 +62,7 @@ class DynamicPage extends Component {
     this.handleComponentLifecycle();
   }
   render () {
-    return <div style={{
+    return (<div style={{
       width: '100%',
       height: '100%', }}>
         <AppSectionLoadingOverlay display={!this.state.ui_is_loaded} wrapperstyle={{
@@ -79,8 +79,7 @@ class DynamicPage extends Component {
       {
         (this.state.async_data_is_loaded && this.uiLayout) ? this.uiLayout : null
       }
-        
-    </div>
+    </div>);
   }
 }
 

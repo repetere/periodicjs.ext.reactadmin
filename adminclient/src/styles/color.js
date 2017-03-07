@@ -3,17 +3,17 @@ const colorStyles = {
     color:'#1fc8db',
   },
   isPrimaryBackground: {
-    backgroundColor: '#0C6FC0'
+    backgroundColor: '#0C6FC0',
   },
   isSecondary: {
-    color: '#BCD6ED'
+    color: '#BCD6ED',
   },  
   isSecondaryBackground: {
-    backgroundColor: '#BCD6ED'
+    backgroundColor: '#BCD6ED',
   },
   activeButton: {
-    backgroundColor: '#0C6FC0',
-    color: 'white'
+    backgroundColor: '#42afe3',
+    color: 'white',
   },
   isInfo: {
     color:'#42afe3',

@@ -9,7 +9,9 @@ body {
   overflow-x:hidden;
 }
 a{
-  color:#1fc8db;
+  color:#42afe3; 
+  /*color:#42afe3; info*/
+  /*color:#1fc8db; primary*/
 }
 .Medium-Speed{
   animation-duration: .25s;
@@ -42,4 +44,7 @@ div[data-reactroot]{
 }
 .CodeMirror.cm-s-default{
   height:100%;
+}
+.__reactadmin_icon_button .__re-bulma_icon:last-child{
+  margin-left: 0;
 }
