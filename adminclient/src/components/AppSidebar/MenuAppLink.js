@@ -1,5 +1,5 @@
 import React, { Component, } from 'react';
-import { MenuLink, } from 're-bulma'; //Icon
+// import { MenuLink, } from 're-bulma'; //Icon
 import { Link, } from 'react-router';
 import styles from '../../styles';
 class MenuAppLink extends Component {

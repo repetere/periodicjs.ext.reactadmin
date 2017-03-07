@@ -84,8 +84,11 @@ export function getFormTextInputArea(options) {
   };
   let fileClassname = `__reactadmin_file_${formElement.name}`;
   let hasError = getErrorStatus(this.state, formElement.name);
-  if (formElement.passProps && formElement.passProps.type === 'file') { 
-    formElement.passProps.className = fileClassname;
+  let passableProps = Object.assign({
+    type: formElement.type || 'text',
+  }, formElement.passProps);
+  if (passableProps && passableProps.type === 'file') { 
+    passableProps.className = fileClassname;
   } 
   if (typeof initialValue !== 'string') {
     initialValue = JSON.stringify(initialValue, null, 2);
@@ -94,7 +97,7 @@ export function getFormTextInputArea(options) {
     onChange = (event) => {
       let text = event.target.value;
       let updatedStateProp = {};
-      if (formElement.passProps && formElement.passProps.type === 'file') {
+      if (passableProps && passableProps.type === 'file') {
         updatedStateProp.formDataFiles = Object.assign({}, this.state.formDataFiles, {
           [ formElement.name ]: document.querySelector(`.${fileClassname} input`),
         });
@@ -107,13 +110,12 @@ export function getFormTextInputArea(options) {
 
   return (<FormItem key={i} {...formElement.layoutProps} >
     {getFormLabel(formElement)}  
-    <Input {...formElement.passProps}
+    <Input {...passableProps}
       help={getFormElementHelp(hasError, this.state, formElement.name)}
       color={(hasError)?'isDanger':undefined}
       icon={(hasError)?'fa fa-warning':undefined}
       onChange={onChange}
       onKeyPress={keyPress}
-      type={formElement.type||'text'}
       placeholder={formElement.placeholder}
       value={ initialValue } />
   </FormItem>);

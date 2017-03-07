@@ -24,19 +24,18 @@
                 "children":[
                   {
                     "component":"h1",
-                    "children":"PAGE NOT FOUND"
+                    "children":"RESOURCE NOT FOUND"
                   },
                   {
                     "component":"RawOutput",
                     "props":{
                       "select":"locationdata",
                       "type":"block",
-                      "display":true
+                      "displaysssss":true
                     },
-                    "windowprops":{
+                    "thisprops":{
                       "locationdata":[
-                        "location",
-                        "href"
+                        "__reactadmin_manifest","_resources"
                       ]
                     }
                   }
@@ -49,5 +48,9 @@
     ]
   },
   "resources":{},
+  "pageData":{
+    "title": "Resource Not Found",
+    "navLabel": "Error"
+  },
   "onFinish":"render"
 }
