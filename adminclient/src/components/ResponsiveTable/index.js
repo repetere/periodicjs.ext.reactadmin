@@ -125,6 +125,7 @@ class ResponsiveTable extends Component {
           ? `${newSortOptions.sortOrder}${newSortOptions.sortProp}`
           : undefined,
         search: options.search,
+        allowSpecialCharacters: true,
         pagenum: options.pagenum || 1,
       })}`;
       // console.log({ options, fetchURL, },options.search.value);
@@ -352,7 +353,7 @@ class ResponsiveTable extends Component {
                         </rb.Td>
                       );
                     } else if (header.buttons && header.buttons.length) {
-                      console.debug({ row, header, });
+                      // console.debug({ row, header, });
                       return (
                         <rb.Td key={`row${rowIndex}col${colIndex}`} {...header.columnProps}>
                           {
