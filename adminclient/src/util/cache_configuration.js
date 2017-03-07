@@ -13,7 +13,6 @@ var handleConfigurationAssigment = function (original, update) {
 };
 
 var handleConfigurationVersioning = function (data, type, multi) {
-	console.log({ data, type, multi });
 	let configuration;
 	try {
 		configuration = JSON.parse(data.configuration) || {};
