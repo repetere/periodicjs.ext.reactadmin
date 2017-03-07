@@ -48,6 +48,7 @@ const update_entity = (req, res, next) =>{
 
 const delete_entity = (req, res, next) =>{
   const entity = get_entity_options(req.params.entity_type);
+  // console.log('delete','req.controllerData',req.controllerData,{entity})
   return resources.app.controller.native[entity.name].remove(req, res, next);
 };
 
@@ -59,7 +60,7 @@ const mergeControllerDataReqBody = (req, res, next) => {
       : req.controllerData[ entity.name ],
     req.body);
   delete req.body.transform;
-  console.log('req.body', req.body);
+  // console.log('req.body', req.body);
   next();
 };
 

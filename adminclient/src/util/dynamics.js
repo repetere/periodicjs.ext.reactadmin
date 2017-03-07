@@ -57,6 +57,7 @@ var _handleFetchPaths = function (layout, resources = {}, options = {}) {
       this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
     })
     .catch((typeof options.onError === 'function') ? options.onError : e => {
+      // console.debug('USING FALLBACK ONERROR ');
       if (this.props && this.props.errorNotification) this.props.errorNotification(e);
       else console.error(e);
       this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
@@ -67,25 +68,38 @@ var _handleFetchPaths = function (layout, resources = {}, options = {}) {
  * Sets a configurable 404 error component or sets a default 404 component
  */
 export const fetchErrorContent = function _fetchErrorContent () {
+  // console.debug('fetchErrorContent')
   let getState = _getState.call(this);
   let state = getState();
   let custom404Error;
+  let componentData;
+  let windowTitle;
+  let navLabel;
   let errorComponents = (state.ui && state.ui.components && state.ui.components.error) ? state.ui.components.error : false;
   // console.debug({ errorComponents });
   if (errorComponents && errorComponents['404']) {
-    let componentData = errorComponents[ '404' ];
+    componentData = errorComponents[ '404' ];
     //TODO: Jan, this was broken because the custom error component had layout nested under settings
     if (!componentData.layout && componentData.settings) {
       componentData.layout = componentData.settings.layout;
       componentData.resources = componentData.settings.resources;
     }
     // console.debug({componentData})
+    windowTitle = (componentData && componentData.pageData&& componentData.pageData.title) 
+      ? componentData.pageData.title
+      : 'Page Not Found';
+    navLabel = (componentData && componentData.pageData&& componentData.pageData.navLabel) 
+      ? componentData.pageData.navLabel
+      : 'Error';
     if (typeof componentData.status === 'undefined' || componentData.status === 'undefined' || componentData.status === 'uninitialized') {
       custom404Error = false;
     } else {
       if (componentData.resources && Object.keys(componentData.resources).length) {
         return _handleFetchPaths.call(this, componentData.layout, componentData.resources, {
           onError: function (e) {
+            // console.debug('fetch call eror')
+            window.document.title = windowTitle;
+            if (this.props && this.props.setNavLabel) this.props.setNavLabel(navLabel);
             this.uiLayout = <AppError404 error={e}/>;
             this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
           }.bind(this),
@@ -99,8 +113,8 @@ export const fetchErrorContent = function _fetchErrorContent () {
   }
   // console.log({ custom404Error });
   this.uiLayout = (custom404Error) ? custom404Error : <AppError404/>;
-  window.document.title = 'Page Not Found';
-  if (this.props && this.props.setNavLabel) this.props.setNavLabel('Error');
+  window.document.title = windowTitle;
+  if (this.props && this.props.setNavLabel) this.props.setNavLabel(navLabel);
   this.setState({ ui_is_loaded: true, });
 };
 
@@ -122,7 +136,10 @@ export const fetchSuccessContent = function _fetchSuccessContent (pathname, hasP
       if (container.pageData && container.pageData.title) window.document.title = container.pageData.title;
       if (container.pageData && container.pageData.navLabel && this.props && this.props.setNavLabel) this.props.setNavLabel(container.pageData.navLabel);
       else if (this.props && this.props.setNavLabel) this.props.setNavLabel('');
-      return _handleFetchPaths.call(this, layout, resources, { getState, });
+      return _handleFetchPaths.call(this, layout, resources, { 
+        getState,
+        onError: fetchErrorContent.bind(this), 
+      });
     } else {
       this.uiLayout = this.getRenderedComponent(containers[pathname].layout);
       this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
@@ -144,10 +161,19 @@ export const fetchDynamicContent = function _fetchDynamicContent (_pathname, onS
   let pathname;
   let getState = _getState.call(this);
   let state = getState();
-  if (typeof _pathname === 'string') pathname = _pathname; 
-  else pathname = (window.location.pathname) ? window.location.pathname : this.props.location.pathname;
-  onSuccess = (typeof onSuccess === 'function') ? onSuccess : fetchSuccessContent.bind(this);
-  onError = (typeof onError === 'function') ? onError : fetchErrorContent.bind(this);
+  if (typeof _pathname === 'string'){ 
+    pathname = _pathname; 
+  } else {
+    pathname = (window.location.pathname) 
+      ? window.location.pathname
+      : this.props.location.pathname;
+  }
+  onSuccess = (typeof onSuccess === 'function') 
+    ? onSuccess 
+    : fetchSuccessContent.bind(this);
+  onError = (typeof onError === 'function') 
+    ? onError 
+    : fetchErrorContent.bind(this);
   // console.log({pathname}, onSuccess, onError)
   if (state.manifest.containers[pathname]) {
     return onSuccess(pathname);
