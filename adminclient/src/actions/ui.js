@@ -105,11 +105,11 @@ const ui = {
       return COMPONENTS[component](basename)()
         .then(response => {
           dispatch(this.handleFetchedComponent(component, response));
+          return response;
         }, e => {
           dispatch(this.handleFailedFetchComponent(component, e));
           e.message = e.message += '. Cannot load ' + component;
           dispatch(notification.errorNotification(e, 10000));
-
         });
     }.bind(this);
   },

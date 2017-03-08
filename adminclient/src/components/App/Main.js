@@ -10,26 +10,11 @@ import AppSidebar from '../AppSidebar';
 import FloatingNav from '../AppSidebar/FloatingNav';
 import AppSectionLoading from '../AppSectionLoading';
 import AppOverlay from '../AppOverlay';
-
-// let testNavigation = () => {
-//   // setTimeout(() => {
-//   //   this.props.reduxRouter.push('/blog/234');
-//   //   setTimeout(() => {
-//   //     this.props.reduxRouter.push('/documentation');
-//   //     setTimeout(() => {
-//   //       this.props.reduxRouter.goBack();
-//   //       setTimeout(() => {
-//   //         this.props.reduxRouter.goForward();
-//   //       }, 1000);
-//   //     }, 1000);
-//   //   }, 1000);
-//   // }, 1000);
-// }
+import utilities from '../../util';
 
 class MainApp extends Component{
   constructor(props/*, context*/) {
     super(props);
-    // console.log({ props, context });
     this.state = props;
     // this.previousRoute = {};
   }
@@ -38,28 +23,27 @@ class MainApp extends Component{
     this.setState(nextProps);
   }
   componentDidMount() {
-    // testNavigation();
-    // setLayoutHandler.call(this);
-    // console.log('componentDidMount this.props', this.props);
     Promise.all([
       AsyncStorage.getItem(constants.jwt_token.TOKEN_NAME),
       AsyncStorage.getItem(constants.jwt_token.TOKEN_DATA),
       AsyncStorage.getItem(constants.jwt_token.PROFILE_JSON),
-      this.props.fetchMainComponent(),
-      this.props.fetchErrorComponents(),
-      this.props.fetchUnauthenticatedManifest(),
+      this.props.setConfigurationFromCache(),
       AsyncStorage.getItem(constants.user.MFA_AUTHENTICATED)
       //AsyncStorage.getItem(constants.async_token.TABBAR_TOKEN),
     ])
       .then((results) => {
         try {
+          Promise.all([
+            this.props.fetchMainComponent(),
+            this.props.fetchErrorComponents(),
+            this.props.fetchUnauthenticatedManifest(),
+          ]);
           if (results[results.length - 1] === 'true') this.props.authenticatedMFA();
           let jwt_token = results[ 0 ];
           let jwt_token_data = JSON.parse(results[ 1 ]);
           let jwt_user_profile = JSON.parse(results[ 2 ]);
-          // console.log({ jwt_token, jwt_token_data, jwt_user_profile });
           if (jwt_token_data && jwt_user_profile) {
-            let url = '/api/jwt/token'; //AppLoginSettings[this.props.page.runtime.environment].login.url;
+            let url = '/api/jwt/token';
             let response = {};
             let json = {
               token: jwt_token_data.token,
@@ -70,21 +54,12 @@ class MainApp extends Component{
             let currentTime = new Date();
             
             if (moment(jwt_token_data.expires).isBefore(currentTime)) {
-              this.props.logoutUser();
               let expiredTokenError = new Error(`Access Token Expired ${moment(jwt_token_data.expires).format('LLLL')}`);
-              // let task = setTimeout(() => {
-              //   this.handleErrorNotification({ message: 'Access Token Expired' + expiredTokenError, }, expiredTokenError);
-              //   clearTimeout(task);
-              // }, 1000);
+              this.props.logoutUser();
               throw expiredTokenError;
             } else {
-              // console.log('saving logged in user', { json, });
               this.props.saveUserProfile(url, response, json);
               this.props.initializeAuthenticatedUser(json.token, false);
-              // this.props.createNotification({ text: 'welcome back', timeout:4000, });
-              // if (appTabs) {
-              //   this.props.setTabExtensions(appTabs);
-              // }
             }
           } else if (jwt_token) {
             this.props.getUserProfile(jwt_token);
@@ -108,15 +83,6 @@ class MainApp extends Component{
         this.props.setUILoadedState(true);
       });
   }
-  componentWillUnmount() {
-  }
-  // componentWillUpdate(nextProps, nextState) {
-  //   // console.log('COMPONENT WILL UPDATE');
-  //   // console.log('COMPONENT WILL UPDATE',{refs:this.refs}, { nextProps }, { nextState })
-  //   // this.loadExtensionRoute(nextProps.location.pathname);
-  //   // perform any preparations for an upcoming update
-
-  // }
   render() {
     // console.log('this.state', this.state);
     let fixedSider = (this.state.settings.ui.fixedSidebar) ? { position: 'fixed', zIndex:1000, } : {};

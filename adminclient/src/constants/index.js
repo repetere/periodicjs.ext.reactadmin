@@ -46,6 +46,9 @@ export default {
     TOKEN_DATA: `${AppConfigSettings.name}_jwt_token_data`,
     PROFILE_JSON: `${AppConfigSettings.name}_jwt_profile`,
   },
+  cache: {
+    CONFIGURATION_CACHE: `${ AppConfigSettings.name }_configuration`,
+  },
   manifest: {
     MANIFEST_DATA_REQUEST:'manifest data request',
     MANIFEST_DATA_FAILURE:'manifest data failed',

@@ -178,10 +178,10 @@ const user = {
         AsyncStorage.removeItem(constants.jwt_token.TOKEN_DATA),
         AsyncStorage.removeItem(constants.jwt_token.PROFILE_JSON),
         AsyncStorage.removeItem(constants.user.MFA_AUTHENTICATED),
+        utilities.flushCacheConfiguration(['manifest.authenticated', 'user.navigation', 'user.preferences']),
         // AsyncStorage.removeItem(constants.pages.ASYNCSTORAGE_KEY),
       ])
         .then((/*results*/) => {
-          // console.debug('logout user results', results);
           dispatch(this.logoutUserSuccess());
           dispatch(pageActions.initialAppLoaded());
           dispatch(uiActions.closeUISidebar());
@@ -206,9 +206,17 @@ const user = {
     };
   },
   fetchPreferences (options = {}) {
-    return (dispatch, getState) => {
+    let preferencesAction = (dispatch, getState) => {
       dispatch(this.preferenceRequest());
       let state = getState();
+      let hasCached = (state.settings && state.settings.user && state.settings.user.preferences);
+      if (hasCached) {
+        dispatch(this.preferenceSuccessResponse({
+          data: {
+            settings: state.settings.user.preferences
+          }
+        }));
+      }
       let basename = (typeof state.settings.adminPath ==='string' && state.settings.adminPath !=='/') ? state.settings.basename+state.settings.adminPath : state.settings.basename;
       let headers = state.settings.userprofile.options.headers;
       delete headers.clientid_default;
@@ -216,13 +224,25 @@ const user = {
       return utilities.fetchComponent(`${ basename }/load/preferences`, options)()
         .then(response => {
           dispatch(this.preferenceSuccessResponse(response));
-        }, e => dispatch(this.preferenceErrorResponse(e)));
+          return response;
+        }, e => {
+          if (!hasCached) dispatch(this.preferenceErrorResponse(e))
+        });
     };
+    return utilities.setCacheConfiguration(preferencesAction, 'user.preferences');
   },
   fetchNavigation (options = {}) {
-    return (dispatch, getState) => {
+    let navigationAction = (dispatch, getState) => {
       dispatch(this.navigationRequest());
       let state = getState();
+      let hasCached = (state.settings && state.settings.user && state.settings.user.navigation);
+      if (hasCached) {
+        dispatch(this.navigationSuccessResponse({
+          data: {
+            settings: state.settings.user.navigation
+          }
+        }));
+      }
       let basename = (typeof state.settings.adminPath ==='string' && state.settings.adminPath !=='/') ? state.settings.basename+state.settings.adminPath : state.settings.basename;
       let headers = state.settings.userprofile.options.headers;
       delete headers.clientid_default;
@@ -231,8 +251,12 @@ const user = {
       return utilities.fetchComponent(`${ basename }/load/navigation${(state.settings.ui.initialization.refresh_navigation)?'?refresh=true':''}`, options)()
         .then(response => {
           dispatch(this.navigationSuccessResponse(response));
-        }, e => dispatch(this.navigationErrorResponse(e)));
+          return response;
+        }, e => {
+          if (!hasCached) dispatch(this.navigationErrorResponse(e))
+        });
     };
+    return utilities.setCacheConfiguration(navigationAction, 'user.navigation');
   },
   getUserProfile(jwt_token, responseFormatter) {
     return (dispatch, getState) => {
@@ -361,24 +385,37 @@ const user = {
         delete headers.clientid_default;
         options.headers = Object.assign({}, options.headers, headers);
         //add ?refresh=true to fetch route below to reload configurations
-        return utilities.fetchComponent(`${basename}/load/configurations${(state.settings.ui.initialization.refresh_components)?'?refresh=true':''}`, options)()
-          .then(response => {
-            if (response.result === 'error') return Promise.reject(new Error(response.data.error));
-            let responses = Object.keys(response.data.settings).reduce((result, key) => {
-              let data = Object.assign({}, response.data);
-              data.settings = response.data.settings[key];
-              result[key] = { data };
-              return result;
-            }, {});
-            dispatch(this.navigationSuccessResponse(responses.navigation));
-            dispatch(this.preferenceSuccessResponse(responses.preferences));
-            dispatch(manifest.receivedManifestData(responses.manifest.data.settings));
-          })
-          .catch(e => {
-            dispatch(this.navigationErrorResponse(e));
-            dispatch(this.preferenceErrorResponse(e));
-            dispatch(manifest.failedManifestRetrival(e));
-          });
+        return utilities.setCacheConfiguration(() => {
+          return utilities.fetchComponent(`${basename}/load/configurations${(state.settings.ui.initialization.refresh_components)?'?refresh=true':''}`, options)()
+            .then(response => {
+              if (response.result === 'error') return Promise.reject(new Error(response.data.error));
+              let responses = Object.keys(response.data.settings).reduce((result, key) => {
+                let data = Object.assign({}, response.data);
+                data.settings = response.data.settings[key];
+                result[key] = { data };
+                return result;
+              }, {});
+              dispatch(this.navigationSuccessResponse(responses.navigation));
+              dispatch(this.preferenceSuccessResponse(responses.preferences));
+              dispatch(manifest.receivedManifestData(responses.manifest.data.settings));
+              return {
+                data: {
+                  versions: response.data.versions,
+                  settings: responses
+                }
+              };
+            })
+            .catch(e => {
+              dispatch(this.navigationErrorResponse(e));
+              dispatch(this.preferenceErrorResponse(e));
+              dispatch(manifest.failedManifestRetrival(e));
+            });
+        }, {
+          navigation: 'user.navigation',
+          preferences: 'user.preferences',
+          manifest: 'manifest.authenticated',
+          unauthenticated_manifest: 'manifest.unauthenticated'
+        }, { multi: true })();
       }
     };
   },
