@@ -27,17 +27,18 @@ export const fetchPaths = function (basename, data = {}, headers) {
     let val;
     if (typeof data[key] === 'string') val = [data[key], ];
     else val = [ data[ key ].url, data[ key ].options, ];
-    let additionalParams = (typeof window !== 'undefined')
+    let additionalParams = '';
+    additionalParams = (typeof window !== 'undefined' && Object.keys(window).length)
       ?  (window.location.search.charAt(0) === '?')
         ? window.location.search.substr(1)
         : window.location.search
       :''
-    let route = val[ 0 ];
+    let route = val[ 0 ]||'';
     // console.log({ data, key, val, },this);
     // console.log(qs.parse(additionalParams),val[0])
     let fetchOptions = Object.assign({}, val[ 1 ], { headers, });
     
-    return fetchComponent(`${ basename }${ route }&${additionalParams}`, fetchOptions)()
+    return fetchComponent(`${ basename }${ route }${ (route && route.indexOf('?')!==-1) ? '&' : '' }${additionalParams}`, fetchOptions)()
       .then(response => {
         result[key] = response;
       }, e => Promise.reject(e));

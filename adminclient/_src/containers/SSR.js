@@ -120,7 +120,7 @@ var SSR = function (_Component) {
       // console.log({ newThis });
       return _react2.default.createElement(
         'div',
-        null,
+        { style: { display: 'none' } },
         getRenderedComponent.call(newThis, this.props.layout, this.props.resources)
       );
     }

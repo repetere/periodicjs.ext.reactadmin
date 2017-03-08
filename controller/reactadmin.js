@@ -223,12 +223,13 @@ var admin_index = function (req, res, next) {
           let layoutPath = utility.findMatchingRoute(unauthenticatedManifestSettings.containers, req._parsedOriginalUrl.pathname);
           let manifest = (layoutPath)?unauthenticatedManifestSettings.containers[ layoutPath ]:false;
           // console.log({ layoutPath, manifest });
-          return utility.ssr_manifest(manifest); 
+          return utility.ssr_manifest({ layoutPath, manifest, req_url: req._parsedOriginalUrl.pathname, basename:extsettings.basename, });
         } else {
           return Promise.resolve({},{});
         }
       })
-      .then((body, pagedata) => {
+      .then((results) => {
+        let { body, pagedata } = results;
         console.log({ body, pagedata });
         viewdata = Object.assign({}, viewdata, {body}, {pagedata});
         CoreController.renderView(req, res, viewtemplate, viewdata);

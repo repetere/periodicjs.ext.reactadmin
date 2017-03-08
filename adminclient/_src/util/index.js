@@ -37,5 +37,6 @@ exports.default = {
   getCacheConfiguration: _cache_configuration.getCacheConfiguration,
   flushCacheConfiguration: _cache_configuration.flushCacheConfiguration,
   loadCacheConfigurations: _cache_configuration.loadCacheConfigurations,
-  get404Error: _errors.get404Error
+  get404Error: _errors.get404Error,
+  _handleDynamicParams: _dynamics._handleDynamicParams
 };

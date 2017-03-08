@@ -31,6 +31,7 @@
   ],
   "dependencies": {
     "capitalize": "^1.0.0",
+    "isomorphic-fetch": "^2.2.1",
     "path-to-regexp": "^1.7.0",
     "pluralize": "^3.1.0",
     "prettysize": "0.0.3",
@@ -114,8 +115,8 @@
     "postinstall": "node install.js",
     "postuninstall": "node uninstall.js",
     "test": "mocha",
-    "ssr_build":"babel adminclient/src -d adminclient/_src --ignore adminclient/src/components/RACodeMirror/",
-    "ssr":"babel utility/ssr_manifest_es6.js > utility/ssr_manifest.js && babel adminclient/src -d adminclient/_src --ignore adminclient/src/components/RACodeMirror/"
+    "ssr_build": "babel adminclient/src -d adminclient/_src --ignore adminclient/src/components/RACodeMirror/",
+    "ssr": "babel utility/ssr_manifest_es6.js > utility/ssr_manifest.js && babel adminclient/src -d adminclient/_src --ignore adminclient/src/components/RACodeMirror/"
   },
   "version": "0.8.2"
 }

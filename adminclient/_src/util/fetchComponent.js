@@ -56,13 +56,14 @@ var fetchPaths = exports.fetchPaths = function fetchPaths(basename) {
   var finished = (0, _keys2.default)(data).map(function (key) {
     var val = void 0;
     if (typeof data[key] === 'string') val = [data[key]];else val = [data[key].url, data[key].options];
-    var additionalParams = typeof window !== 'undefined' ? window.location.search.charAt(0) === '?' ? window.location.search.substr(1) : window.location.search : '';
-    var route = val[0];
+    var additionalParams = '';
+    additionalParams = typeof window !== 'undefined' && (0, _keys2.default)(window).length ? window.location.search.charAt(0) === '?' ? window.location.search.substr(1) : window.location.search : '';
+    var route = val[0] || '';
     // console.log({ data, key, val, },this);
     // console.log(qs.parse(additionalParams),val[0])
     var fetchOptions = (0, _assign2.default)({}, val[1], { headers: headers });
 
-    return fetchComponent('' + basename + route + '&' + additionalParams, fetchOptions)().then(function (response) {
+    return fetchComponent('' + basename + route + (route && route.indexOf('?') !== -1 ? '&' : '') + additionalParams, fetchOptions)().then(function (response) {
       result[key] = response;
     }, function (e) {
       return _promise2.default.reject(e);

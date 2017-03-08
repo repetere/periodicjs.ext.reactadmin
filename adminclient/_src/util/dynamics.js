@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.fetchAction = exports.fetchDynamicContent = exports.fetchSuccessContent = exports.fetchErrorContent = undefined;
+exports.fetchAction = exports.fetchDynamicContent = exports.fetchSuccessContent = exports.fetchErrorContent = exports._handleFetchPaths = exports._handleDynamicParams = undefined;
 
 var _typeof2 = require('babel-runtime/helpers/typeof');
 
@@ -41,7 +41,7 @@ var _getState = function _getState() {
  * @return {Object}           Returns the resource object with populated dynamic routes
  */
 // import React from 'react';
-var _handleDynamicParams = function _handleDynamicParams(pathname, resources, current) {
+var _handleDynamicParams = exports._handleDynamicParams = function _handleDynamicParams(pathname, resources, current) {
   var currentPathname = void 0;
   if (typeof current === 'string') currentPathname = current;else currentPathname = typeof window !== 'undefined' && window.location.pathname ? window.location.pathname : this.props.location.pathname;
   return (0, _keys2.default)(resources).reduce(function (result, key) {
@@ -64,7 +64,7 @@ var _handleDynamicParams = function _handleDynamicParams(pathname, resources, cu
  * @param {Function} [options.onSuccess] Optional success function
  * @param {Function} [options.onError] Optional error function
  */
-var _handleFetchPaths = function _handleFetchPaths(layout) {
+var _handleFetchPaths = exports._handleFetchPaths = function _handleFetchPaths(layout) {
   var _this = this;
 
   var resources = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
@@ -108,48 +108,6 @@ var fetchErrorContent = exports.fetchErrorContent = function _fetchErrorContent(
   get404Error({
     getState: getState, _handleFetchPaths: _handleFetchPaths, /*state,*/custom404Error: custom404Error, componentData: componentData, windowTitle: windowTitle, navLabel: navLabel, errorComponents: errorComponents, errorCode: errorCode, resources: resources
   });
-  /*
-  if (errorComponents && errorComponents['404']) {
-    componentData = errorComponents[ '404' ];
-    //TODO: Jan, this was broken because the custom error component had layout nested under settings
-    if (!componentData.layout && componentData.settings) {
-      componentData.layout = componentData.settings.layout;
-      componentData.resources = componentData.settings.resources;
-    }
-    // console.debug({componentData})
-    windowTitle = (componentData && componentData.pageData&& componentData.pageData.title) 
-      ? componentData.pageData.title
-      : 'Page Not Found';
-    navLabel = (componentData && componentData.pageData&& componentData.pageData.navLabel) 
-      ? componentData.pageData.navLabel
-      : 'Error';
-    if (typeof componentData.status === 'undefined' || componentData.status === 'undefined' || componentData.status === 'uninitialized') {
-      custom404Error = false;
-    } else {
-      if (componentData.resources && Object.keys(componentData.resources).length) {
-        return _handleFetchPaths.call(this, componentData.layout, componentData.resources, {
-          onError: function (e) {
-            // console.debug('fetch call eror')
-            window.document.title = windowTitle;
-            if (this.props && this.props.setNavLabel) this.props.setNavLabel(navLabel);
-            this.uiLayout = <AppError404 error={e}/>;
-            this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
-          }.bind(this),
-          getState,
-        });
-      } else {
-        // console.debug('error page has no resources')
-        custom404Error = this.getRenderedComponent(componentData.layout);
-      }
-    }
-  }
-  /*
-  // console.log({ custom404Error });
-  this.uiLayout = (custom404Error) ? custom404Error : <AppError404/>;
-  window.document.title = windowTitle;
-  if (this.props && this.props.setNavLabel) this.props.setNavLabel(navLabel);
-  this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
-  */
 };
 
 /**
