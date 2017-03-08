@@ -54,7 +54,6 @@ class MainApp extends Component{
             let currentTime = new Date();
             
             if (moment(jwt_token_data.expires).isBefore(currentTime)) {
-              this.props.logoutUser();
               let expiredTokenError = new Error(`Access Token Expired ${moment(jwt_token_data.expires).format('LLLL')}`);
               this.props.logoutUser();
               throw expiredTokenError;
@@ -78,7 +77,6 @@ class MainApp extends Component{
         
       })
       .catch((error) => {
-        console.log('ERORRRRRRR', error);
         this.props.errorNotification(error);
         // console.error('MAIN componentDidMount: JWT USER Login Error.', error);
         this.props.logoutUser();
