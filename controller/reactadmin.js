@@ -215,8 +215,8 @@ var admin_index = function (req, res, next) {
   if (extsettings.server_side_react) {
     return pullConfigurationSettings(false)
       .then(() => {
-        logger.silly('req._parsedOriginalUrl.pathname', req._parsedOriginalUrl.pathname);
-        logger.silly({ unauthenticatedManifestSettings });
+        // logger.silly('req._parsedOriginalUrl.pathname', req._parsedOriginalUrl.pathname);
+        // logger.silly({ unauthenticatedManifestSettings });
         if (unauthenticatedManifestSettings &&
           unauthenticatedManifestSettings.containers &&
           Object.keys(unauthenticatedManifestSettings.containers).length) {
