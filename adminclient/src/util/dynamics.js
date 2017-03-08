@@ -20,7 +20,7 @@ var _getState = function () {
 var _handleDynamicParams = function (pathname, resources, current) {
   let currentPathname;
   if (typeof current === 'string') currentPathname = current;
-  else currentPathname = (window.location.pathname) ? window.location.pathname : this.props.location.pathname;
+  else currentPathname = (typeof window!== 'undefined' && window.location.pathname) ? window.location.pathname : this.props.location.pathname;
   return Object.keys(resources).reduce((result, key) => {
     let updatedPath = utilities.setParameters({
       route: pathname,

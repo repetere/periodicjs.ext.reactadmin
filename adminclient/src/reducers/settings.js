@@ -2,7 +2,7 @@ import constants from '../constants';
 import appDefaultSettings from '../content/config/settings.json';
 import defaultUserNavigation from '../content/config/navigation.json';
 import packageJSON from '../../package.json';
-let windowState = (window && window.__padmin) ? window.__padmin : {};
+let windowState = (typeof window !=='undefined' && window.__padmin) ? window.__padmin : {};
 
 const initialState = Object.assign({ version: packageJSON.version, }, appDefaultSettings, windowState);
 initialState.user = Object.assign({

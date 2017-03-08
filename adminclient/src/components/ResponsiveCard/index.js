@@ -1,6 +1,6 @@
 import React, { Component, PropTypes, } from 'react';
 import { Card, CardHeader, CardHeaderIcon, CardContent, CardHeaderTitle, Image } from 're-bulma';
-import 'font-awesome/css/font-awesome.css';
+// import 'font-awesome/css/font-awesome.css';
 // import styles from '../../styles';
 
 const propTypes = {

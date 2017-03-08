@@ -1,5 +1,5 @@
 import qs from 'querystring';
-window.qs = qs;
+// window.qs = qs;
 export const checkStatus = function (response) {
   return new Promise((resolve, reject) => {
     if (response.status >= 200 && response.status < 300) {
@@ -27,9 +27,11 @@ export const fetchPaths = function (basename, data = {}, headers) {
     let val;
     if (typeof data[key] === 'string') val = [data[key], ];
     else val = [ data[ key ].url, data[ key ].options, ];
-    let additionalParams = (window.location.search.charAt(0) === '?')
-      ? window.location.search.substr(1)
-      : window.location.search;
+    let additionalParams = (typeof window !== 'undefined')
+      ?  (window.location.search.charAt(0) === '?')
+        ? window.location.search.substr(1)
+        : window.location.search
+      :''
     let route = val[ 0 ];
     // console.log({ data, key, val, },this);
     // console.log(qs.parse(additionalParams),val[0])

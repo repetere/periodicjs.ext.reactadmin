@@ -196,7 +196,7 @@ var recursivePrivilegesFilter = function (privileges, config = {}, isRoot = fals
  * @param  {object}   res  express reponse
  * @return {null}        does not return a value
  */
-var admin_index = function(req, res){
+var admin_index = function (req, res, next) {
   let viewtemplate = {
       viewname: 'admin/index',
       themefileext: appSettings.templatefileextension,
@@ -211,7 +211,32 @@ var admin_index = function(req, res){
       // adminPostRoute: adminPostRoute
     };
 
-  CoreController.renderView(req, res, viewtemplate, viewdata);
+
+  if (extsettings.server_side_react) {
+    return pullConfigurationSettings(false)
+      .then(() => {
+        logger.silly('req._parsedOriginalUrl.pathname', req._parsedOriginalUrl.pathname);
+        logger.silly({ unauthenticatedManifestSettings });
+        if (unauthenticatedManifestSettings &&
+          unauthenticatedManifestSettings.containers &&
+          Object.keys(unauthenticatedManifestSettings.containers).length) {
+          let layoutPath = utility.findMatchingRoute(unauthenticatedManifestSettings.containers, req._parsedOriginalUrl.pathname);
+          let manifest = (layoutPath)?unauthenticatedManifestSettings.containers[ layoutPath ]:false;
+          // console.log({ layoutPath, manifest });
+          return utility.ssr_manifest(manifest); 
+        } else {
+          return Promise.resolve({},{});
+        }
+      })
+      .then((body, pagedata) => {
+        console.log({ body, pagedata });
+        viewdata = Object.assign({}, viewdata, body, pagedata);
+        CoreController.renderView(req, res, viewtemplate, viewdata);
+      })
+      .catch(next);
+  } else {
+    CoreController.renderView(req, res, viewtemplate, viewdata);
+  }
 };
 
 /**

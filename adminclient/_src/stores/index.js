@@ -1,0 +1,128 @@
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _redux = require('redux');
+
+var _reduxThunk = require('redux-thunk');
+
+var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
+
+var _reducers = require('../reducers');
+
+var _reducers2 = _interopRequireDefault(_reducers);
+
+var _reactRouterRedux = require('react-router-redux');
+
+var _reactRouter = require('react-router');
+
+var _reduxLogger = require('redux-logger');
+
+var _reduxLogger2 = _interopRequireDefault(_reduxLogger);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var AppConfigSettings = {
+  name: 'reactadmin',
+  basename: 'http://localhost:8786',
+  adminPath: '/r-admin',
+  routerHistory: 'browserHistory',
+  includeCoreData: {
+    manifest: true,
+    navigation: true
+  },
+  allHistoryOptions: 'browserHistory|hashHistory|createMemoryHistory',
+  application: {
+    environment: 'development'
+  },
+  ui: {
+    initialization: {
+      show_header: false,
+      show_footer: false,
+      show_sidebar_overlay: true,
+      refresh_manifests: true,
+      refresh_navigation: true,
+      refresh_components: true
+    },
+    notifications: {
+      error_timeout: 10000,
+      timed_timeout: 10000
+    },
+    fixedSidebar: true,
+    sidebarBG: '#ffffff',
+    header: {
+      isBold: true,
+      color: 'isBlack',
+      buttonColor: 'isWhite',
+      useGlobalSearch: false,
+      useHeaderLogout: false,
+      customButton: false,
+      navLabelStyle: {},
+      containerStyle: {},
+      userNameStyle: {}
+    },
+    footer: {
+      navStyle: {}
+    },
+    sidebar: {
+      containerStyle: {},
+      use_floating_nav: false
+    }
+  },
+  auth: {
+    logged_in_homepage: '/home',
+    logged_out_path: '/login'
+  },
+  login: {
+    url: 'https://pas-dev.promisefinancial.net:8784/api/jwt/token',
+    devurl: 'https://pas-dev.promisefinancial.net:8784/api/jwt/token',
+    options: {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        clientid: 'fbff80bd23de5b1699cb595167370a1a',
+        entitytype: 'account'
+      }
+    }
+  },
+  userprofile: {
+    url: 'https://pas-dev.promisefinancial.net:8784/api/jwt/profile',
+    devurl: 'https://pas-dev.promisefinancial.net:8784/api/jwt/profile',
+    options: {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        clientid: 'fbff80bd23de5b1699cb595167370a1a',
+        clientid_default: 'clientIDNEEDED',
+        entitytype: 'account'
+      }
+    }
+  }
+}; // import promise from 'redux-promise';
+
+var logger = (0, _reduxLogger2.default)();
+// const logger = (store) => (next) => (action) => {
+//   console.log('dispatching: ', action,{store});
+//   return next(action);
+// };
+
+var getRouterHistoryType = function getRouterHistoryType(routerHistoryType) {
+  return routerHistoryType === 'browserHistory' ? _reactRouter.browserHistory : _reactRouter.hashHistory;
+};
+
+var AppReduxStore = (0, _redux.createStore)(_reducers2.default, (0, _redux.applyMiddleware)(_reduxThunk2.default, (0, _reactRouterRedux.routerMiddleware)(getRouterHistoryType(AppConfigSettings.routerHistory))
+// promise,
+, logger));
+
+if (module.hot) {
+  // Enable Webpack hot module replacement for reducers
+  module.hot.accept(_reducers2.default, function () {
+    var nextRootReducer = _reducers2.default;
+    AppReduxStore.replaceReducer(nextRootReducer);
+  });
+}
+
+exports.default = AppReduxStore;
