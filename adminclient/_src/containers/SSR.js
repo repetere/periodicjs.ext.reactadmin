@@ -40,6 +40,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
     global['window'] = {};
     global['document'] = {};
     global['navigator'] = {};
+    process.env.NODE_ENV = 'production';
   }
 })();
 
@@ -116,7 +117,7 @@ var SSR = function (_Component) {
       var newThis = (0, _assign2.default)({}, this, {
         props: (0, _assign2.default)({}, this.props, getPseudoRedux())
       });
-      console.log({ newThis: newThis });
+      // console.log({ newThis });
       return _react2.default.createElement(
         'div',
         null,

@@ -198,18 +198,18 @@ var recursivePrivilegesFilter = function (privileges, config = {}, isRoot = fals
  */
 var admin_index = function (req, res, next) {
   let viewtemplate = {
-      viewname: 'admin/index',
-      themefileext: appSettings.templatefileextension,
-      extname: 'periodicjs.ext.reactadmin',
+    viewname: 'admin/index',
+    themefileext: appSettings.templatefileextension,
+    extname: 'periodicjs.ext.reactadmin',
+  };
+  let viewdata = {
+    pagedata: {
+      title: 'React Admin',
+      // toplink: '&raquo; Multi-Factor Authenticator',
     },
-    viewdata = {
-      pagedata: {
-        title: 'React Admin',
-        // toplink: '&raquo; Multi-Factor Authenticator',
-      },
-      user: req.user,
-      // adminPostRoute: adminPostRoute
-    };
+    user: req.user,
+    // adminPostRoute: adminPostRoute
+  };
 
 
   if (extsettings.server_side_react) {
@@ -230,7 +230,7 @@ var admin_index = function (req, res, next) {
       })
       .then((body, pagedata) => {
         console.log({ body, pagedata });
-        viewdata = Object.assign({}, viewdata, body, pagedata);
+        viewdata = Object.assign({}, viewdata, {body}, {pagedata});
         CoreController.renderView(req, res, viewtemplate, viewdata);
       })
       .catch(next);

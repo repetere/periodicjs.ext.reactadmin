@@ -4,6 +4,7 @@
     global[ 'window' ] = {};
     global[ 'document' ] = {};
     global[ 'navigator' ] = {};
+    process.env.NODE_ENV = 'production';
   }
 })();
 
@@ -75,8 +76,8 @@ class SSR extends Component {
     let newThis = Object.assign({}, this, {
       props: Object.assign({}, this.props, getPseudoRedux())
     });
-    console.log({ newThis });
-    return <div>{getRenderedComponent.call(newThis,this.props.layout, this.props.resources)}</div>;
+    // console.log({ newThis });
+    return <div style={{display:'none'}}>{getRenderedComponent.call(newThis,this.props.layout, this.props.resources)}</div>;
   }
 }
 
