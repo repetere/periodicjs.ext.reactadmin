@@ -39,11 +39,13 @@ class MainApp extends Component{
       .then((results) => {
         try {
           Promise.all([
-            (!hasCache) ? this.props.fetchUnauthenticatedManifest() : null,
+            this.props.fetchUnauthenticatedManifest(),
             this.props.fetchMainComponent(),
             this.props.fetchErrorComponents(),
           ]);
-          if (results[results.length - 1] === 'true') this.props.authenticatedMFA();
+          if (results[ results.length - 1 ] === 'true') {
+            this.props.authenticatedMFA();
+          }
           let jwt_token = results[ 0 ];
           let jwt_token_data = JSON.parse(results[ 1 ]);
           let jwt_user_profile = JSON.parse(results[ 2 ]);
