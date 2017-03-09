@@ -10,7 +10,7 @@ import AppSidebar from '../AppSidebar';
 import FloatingNav from '../AppSidebar/FloatingNav';
 import AppSectionLoading from '../AppSectionLoading';
 import AppOverlay from '../AppOverlay';
-import utilities from '../../util';
+//import utilities from '../../util';
 
 class MainApp extends Component{
   constructor(props/*, context*/) {
@@ -23,14 +23,14 @@ class MainApp extends Component{
     this.setState(nextProps);
   }
   componentDidMount() {
-      Promise.all([
-        AsyncStorage.getItem(constants.jwt_token.TOKEN_NAME),
-        AsyncStorage.getItem(constants.jwt_token.TOKEN_DATA),
-        AsyncStorage.getItem(constants.jwt_token.PROFILE_JSON),
-        this.props.setConfigurationFromCache(),
-        AsyncStorage.getItem(constants.user.MFA_AUTHENTICATED),
-        //AsyncStorage.getItem(constants.async_token.TABBAR_TOKEN),
-      ])
+    Promise.all([
+      AsyncStorage.getItem(constants.jwt_token.TOKEN_NAME),
+      AsyncStorage.getItem(constants.jwt_token.TOKEN_DATA),
+      AsyncStorage.getItem(constants.jwt_token.PROFILE_JSON),
+      this.props.setConfigurationFromCache(),
+      AsyncStorage.getItem(constants.user.MFA_AUTHENTICATED),
+      //AsyncStorage.getItem(constants.async_token.TABBAR_TOKEN),
+    ])
       .then((results) => {
         try {
           Promise.all([
