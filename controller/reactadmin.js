@@ -1,4 +1,4 @@
-'use strict';
+
 const Promisie = require('promisie');
 const fs = Promisie.promisifyAll(require('fs-extra'));
 const path = require('path');
@@ -224,13 +224,13 @@ var admin_index = function (req, res, next) {
           // console.log({ layoutPath, manifest });
           return utility.ssr_manifest({ layoutPath, manifest, req_url: req._parsedOriginalUrl.pathname, basename:extsettings.basename, });
         } else {
-          return Promise.resolve({},{});
+          return Promise.resolve({}, {});
         }
       })
       .then((results) => {
-        let { body, pagedata } = results;
+        let { body, pagedata, } = results;
         // console.log({ body, pagedata });
-        viewdata = Object.assign({}, viewdata, {body}, {pagedata});
+        viewdata = Object.assign({}, viewdata, { body ,}, { pagedata ,});
         CoreController.renderView(req, res, viewtemplate, viewdata);
       })
       .catch(next);
@@ -281,11 +281,11 @@ var pullManifestSettings = function (configuration, isUnauthenticated = false) {
 var handleNavigationCompilation = function (navigation, isExtension) {
   let extensionsNav = [{
     component: 'MenuLabel',
-    children: 'Extensions'
+    children: 'Extensions',
   }, {
     component: 'MenuList',
-    children: []
-  }];
+    children: [],
+  },];
   let subLinks = extensionsNav[1];
   let compiled = navigation.reduce((result, nav) => {
     result.wrapper = Object.assign(result.wrapper || {}, nav.wrapper);
@@ -394,7 +394,7 @@ var sanitizeConfigurations = function (data) {
  * @return {Object} Returns the fully aggregated configurations for manifests and and navigation
  */
 var pullConfigurationSettings = function (reload) {
-  if (manifestSettings && navigationSettings && unauthenticatedManifestSettings && !reload) return Promisie.resolve({ manifest: manifestSettings, navigation: navigationSettings, unauthenticated: unauthenticatedManifestSettings });
+  if (manifestSettings && navigationSettings && unauthenticatedManifestSettings && !reload) return Promisie.resolve({ manifest: manifestSettings, navigation: navigationSettings, unauthenticated: unauthenticatedManifestSettings, });
   return Promisie.all(fs.readJsonAsync(path.join(__dirname, '../../../content/config/extensions.json')), fs.readJsonAsync(path.join(__dirname, '../periodicjs.reactadmin.json')))
     .then(configurationData => {
       let [configuration, adminExtSettings, ] = configurationData;
@@ -409,7 +409,7 @@ var pullConfigurationSettings = function (reload) {
       if (reload === 'unauthenticated' || reload === true || !unauthenticatedManifestSettings) {
         operations = Object.assign(operations, {
           unauthenticated_manifests: pullManifestSettings.bind(null, configuration, true),
-          default_unauthenticated_manifests: readAndStoreConfigurations.bind(null, adminExtSettings.unauthenticated_manifests || [])
+          default_unauthenticated_manifests: readAndStoreConfigurations.bind(null, adminExtSettings.unauthenticated_manifests || []),
         });
       }
       if (reload === 'navigation' || reload === true || !navigationSettings) {
@@ -423,7 +423,7 @@ var pullConfigurationSettings = function (reload) {
     .then(sanitizeConfigurations)
     .then(finalizeSettingsWithTheme)
     .then(result => {
-      let { manifest, navigation, unauthenticated_manifest } = result;
+      let { manifest, navigation, unauthenticated_manifest, } = result;
       manifestSettings = (reload === 'manifest' || reload === true || !manifestSettings) ? manifest : manifestSettings;
       navigationSettings = (reload === 'navigation' || reload === true || !navigationSettings) ? navigation : navigationSettings;
       unauthenticatedManifestSettings = (reload === 'unauthenticated' || reload === true || !unauthenticatedManifestSettings) ? unauthenticated_manifest : unauthenticatedManifestSettings;
@@ -658,7 +658,7 @@ var loadConfigurations = function (req, res) {
       res.status(200).send({
         result: 'success',
         status: 200,
-        data: { settings, versions },
+        data: { settings, versions, },
       });
     })
     .catch(e => {
@@ -682,11 +682,11 @@ module.exports = function (resources) {
   logger = resources.logger;
   extsettings = resources.app.locals.extension.reactadmin.settings;
   utility = require(path.join(__dirname, '../utility/index'))(resources);
-  `content/themes/${ appSettings.theme || appSettings.themename }/periodicjs.reactadmin.json`
-  versions = {
+  `content/themes/${ appSettings.theme || appSettings.themename }/periodicjs.reactadmin.json`;
+  versions = (extsettings.application.use_offline_cache) ? {
     theme: fs.readJsonSync(path.join(__dirname, '../../../', `content/themes/${ appSettings.theme || appSettings.themename }/package.json`)).version,
-    reactadmin: fs.readJsonSync(path.join(__dirname, '../package.json')).version
-  };
+    reactadmin: fs.readJsonSync(path.join(__dirname, '../package.json')).version,
+  } : false;
   if (extsettings && extsettings.includeCoreData && extsettings.includeCoreData.manifest) {
     let task = setImmediate(() => {
       setCoreDataConfigurations();

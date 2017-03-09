@@ -13,12 +13,12 @@ const initialState = {
     isFetching: false,
     hasLoaded: false,
     error: null,
-    updatedAt: new Date()
-  }
+    updatedAt: new Date(),
+  },
 };
 
 const manifestReducer = (state, action) => {
-  let unauthenticated;
+  // let unauthenticated;
   switch (action.type) {
   case constants.manifest.MANIFEST_DATA_REQUEST:
     return Object.assign({}, state, {
@@ -45,36 +45,36 @@ const manifestReducer = (state, action) => {
       updatedAt: new Date(),
     });
   case constants.manifest.UNAUTHENTICATED_MANIFEST_DATA_REQUEST:
-    unauthenticated = Object.assign({}, state.unauthenticated, {
+    var unauthenticated_req = Object.assign({}, state.unauthenticated, {
       isFetching: true,
       hasLoaded: false,
       error: null,
       updatedAt: new Date(),
     });
     return Object.assign({}, state, {
-      unauthenticated
+      unauthenticated_req,
     });
   case constants.manifest.UNAUTHENTICATED_MANIFEST_DATA_FAILURE:
     failurePayload = action.payload;
-    unauthenticated = Object.assign({}, state.unauthenticated, {
+    var unauthenticated_fail = Object.assign({}, state.unauthenticated, {
       isFetching: false,
       hasLoaded: false,
       error: failurePayload.error,
       updatedAt: new Date(),
     });
     return Object.assign({}, state, {
-      unauthenticated
+      unauthenticated_fail,
     });
   case constants.manifest.UNAUTHENTICATED_MANIFEST_DATA_SUCCESS:
-    let unauthenticatedSuccessPayload = action.payload;
-    unauthenticated = Object.assign({}, state.unauthenticated, {
+    var unauthenticatedSuccessPayload = action.payload;
+    var unauthenticated_success = Object.assign({}, state.unauthenticated, {
       isFetching: true,
       hasLoaded: true,
       error: null,
       updatedAt: new Date(),
     });
     return Object.assign({}, state, {
-      unauthenticated,
+      unauthenticated_success,
       containers: Object.assign({}, state.containers, unauthenticatedSuccessPayload.containers),
       unauthenticated_routes: Object.keys(unauthenticatedSuccessPayload.containers || {}),
     });

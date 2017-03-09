@@ -52,7 +52,8 @@
 	"routerHistory":"browserHistory",
 	"allHistoryOptions":"browserHistory|hashHistory|createMemoryHistory",
 	"application":{
-		"environment":"development"
+		"environment":"development",
+    "use_offline_cache":false
 	},
 	"login":{
 		"url":"http://localhost:8786/api/jwt/token",

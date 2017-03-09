@@ -38,6 +38,8 @@
     "pluralize": "^3.1.0",
     "prettysize": "0.0.3",
     "promisie": "~1.6.1",
+    "react": "15.3.2",
+    "react-dom": "15.3.2",
     "react-router": "^3.0.2",
     "recharts": "^0.21.2",
     "semver": "^5.3.0",

@@ -1,4 +1,4 @@
-import qs from 'querystring';
+// import qs from 'querystring';
 // window.qs = qs;
 export const checkStatus = function (response) {
   return new Promise((resolve, reject) => {
