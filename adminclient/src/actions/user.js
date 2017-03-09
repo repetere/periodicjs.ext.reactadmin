@@ -372,7 +372,6 @@ const user = {
   fetchConfigurations (options = {}) {
     return (dispatch, getState) => {
       let state = getState();
-      console.log('FETCH CONFIGURATIONS');
       // console.log({ state, });
       if ((state.manifest && state.manifest.hasLoaded) || (state.settings.user && state.settings.user.navigation && state.settings.user.navigation.hasLoaded) || (state.settings.user && state.settings.user.preferences && state.settings.user.preferences.hasLoaded)) {
         let operations = [];
@@ -386,7 +385,6 @@ const user = {
         }
         return Promise.all(operations);
       } else {
-        console.log('IN ELSE');
         dispatch(this.navigationRequest());
         dispatch(this.preferenceRequest());
         dispatch(manifest.manifestRequest());
