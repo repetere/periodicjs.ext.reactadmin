@@ -41,7 +41,7 @@ const manifestReducer = (state, action) => {
       isFetching: true,
       hasLoaded: true,
       error: null,
-      containers: manifestSuccessPayload.containers,
+      containers: Object.assign({}, state.containers, manifestSuccessPayload.containers),
       updatedAt: new Date(),
     });
   case constants.manifest.UNAUTHENTICATED_MANIFEST_DATA_REQUEST:
