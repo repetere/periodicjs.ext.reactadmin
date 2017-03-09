@@ -30,6 +30,7 @@ var handleConfigurationVersioning = function (data, type, options = {}) {
   } catch (e) {
     configuration = {};
   }
+  configuration = flatten(configuration || {}, { safe: true, maxDepth: options.depth || 2, });
   if (options.multi === true) {
     if (typeof type === 'string') {
       configuration[type] = Object.keys(data).reduce((result, key) => {
@@ -40,7 +41,7 @@ var handleConfigurationVersioning = function (data, type, options = {}) {
       configuration = Object.keys(data).reduce((result, key) => {
         if (type[key]) result[type[key]] = handleConfigurationAssigment(result[type[key]], Object.assign(data[key].data.settings, { versions: data.versions, }));
         return result;
-      }, flatten(configuration || {}, { safe: true, maxDepth: options.depth || 2, }));
+      }, configuration || {});
     }
   } else {
     configuration[type] = handleConfigurationAssigment(configuration[type], Object.assign(data.settings, { versions: data.versions, }));
