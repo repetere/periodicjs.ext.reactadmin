@@ -42,14 +42,18 @@ const manifest = {
     let manifestAction = (dispatch, getState) => {
       dispatch(this.manifestRequest());
       let state = getState();
-      let hasCached = (state.manifest && state.manifest.containers && state.manifest.hasLoaded);
-      if (hasCached) dispatch(this.receivedManifestData(state.manifest));
+      let hasCached;
       let basename = (typeof state.settings.adminPath ==='string' && state.settings.adminPath !=='/') ? state.settings.basename+state.settings.adminPath : state.settings.basename;
       let headers = state.settings.userprofile.options.headers;
       delete headers.clientid_default;
       options.headers = Object.assign({}, options.headers, headers);
       //add ?refresh=true to below route to reload manifest configuration
-      return utilities.fetchComponent(`${ basename }/load/manifest${(state.settings.ui.initialization.refresh_manifests)?'?refresh=true':''}`, options)()
+      return utilities.loadCacheConfigurations()
+        .then(result => {
+          hasCached = (result.manifest && result.manifest.authenticated);
+          if (hasCached) dispatch(this.receivedManifestData(result.manifest.authenticated));
+          return utilities.fetchComponent(`${ basename }/load/manifest${(state.settings.ui.initialization.refresh_manifests)?'?refresh=true':''}`, options)()
+        })
         .then(response => {
           dispatch(this.receivedManifestData(response.data.settings));
           return response;
@@ -63,11 +67,15 @@ const manifest = {
     let unauthenticatedManifestAction = (dispatch, getState) => {
       dispatch(this.unauthenticatedManifestRequest());
       let state = getState();
-      let hasCached = (state.manifest && state.manifest.containers && state.manifest.unauthenticated.hasLoaded);
-      if (hasCached) dispatch(this.unauthenticatedReceivedManifestData(state.manifest));
+      let hasCached;
       let basename = (typeof state.settings.adminPath ==='string' && state.settings.adminPath !=='/') ? state.settings.basename+state.settings.adminPath : state.settings.basename;
       //add ?refresh=true to below route to reload manifest configuration
-      return utilities.fetchComponent(`${basename}/load/public_manifest`)()
+      return utilities.loadCacheConfigurations()
+        .then(result => {
+          hasCached = (result.manifest && result.manifest.unauthenticated);
+          if (hasCached) dispatch(this.unauthenticatedReceivedManifestData(result.manifest.unauthenticated));
+          return utilities.fetchComponent(`${basename}/load/public_manifest`)()
+        })
         .then(response => {
           dispatch(this.unauthenticatedReceivedManifestData(response.data.settings));
           return response;

@@ -23,27 +23,19 @@ class MainApp extends Component{
     this.setState(nextProps);
   }
   componentDidMount() {
-    let hasCache;
-    utilities.loadCacheConfigurations()
-      .then(result => {
-        hasCache = Boolean(Object.keys(result).length);
-        return Promise.all([
-          AsyncStorage.getItem(constants.jwt_token.TOKEN_NAME),
-          AsyncStorage.getItem(constants.jwt_token.TOKEN_DATA),
-          AsyncStorage.getItem(constants.jwt_token.PROFILE_JSON),
-          (hasCache) ? this.props.setConfigurationFromCache() : this.props.fetchUnauthenticatedManifest(),
-          AsyncStorage.getItem(constants.user.MFA_AUTHENTICATED),
-          //AsyncStorage.getItem(constants.async_token.TABBAR_TOKEN),
-        ]);
-      })
+    Promise.all([
+      AsyncStorage.getItem(constants.jwt_token.TOKEN_NAME),
+      AsyncStorage.getItem(constants.jwt_token.TOKEN_DATA),
+      AsyncStorage.getItem(constants.jwt_token.PROFILE_JSON),
+      this.props.fetchMainComponent(),
+      this.props.fetchErrorComponents(),
+      this.props.fetchUnauthenticatedManifest(),
+      AsyncStorage.getItem(constants.user.MFA_AUTHENTICATED),
+      //AsyncStorage.getItem(constants.async_token.TABBAR_TOKEN),
+    ])
       .then((results) => {
         try {
-          Promise.all([
-            this.props.fetchUnauthenticatedManifest(),
-            this.props.fetchMainComponent(),
-            this.props.fetchErrorComponents(),
-          ]);
-          if (results[ results.length - 1 ] === 'true') {
+          if (results[results.length - 1] === 'true') {
             this.props.authenticatedMFA();
           }
           let jwt_token = results[ 0 ];
