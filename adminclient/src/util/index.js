@@ -3,7 +3,7 @@ import { traverse, } from './traverse';
 import { requireAuth, isLoggedIn, } from './routing';
 import { getParameterized, parameterize, setParameters, findMatchingRoute, } from './parameterize';
 import { fetchErrorContent, fetchSuccessContent, fetchDynamicContent, fetchAction, _handleDynamicParams, } from './dynamics';
-import { setCacheConfiguration, getCacheConfiguration, flushCacheConfiguration, loadCacheConfigurations } from './cache_configuration';
+import { setCacheConfiguration, getCacheConfiguration, flushCacheConfiguration, loadCacheConfigurations, } from './cache_configuration';
 import { get404Error, } from './errors';
 
 export default {

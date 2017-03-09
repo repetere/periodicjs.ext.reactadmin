@@ -68,7 +68,7 @@ const reduxActions = {
   setConfigurationFromCache: () => store.dispatch(utilities.getCacheConfiguration(Object.assign({}, actions, {
     setLoginComponent: reduxActions.setLoginComponent,
     setMainComponent: reduxActions.setMainComponent,
-    setErrorComponents: reduxActions.setErrorComponents
+    setErrorComponents: reduxActions.setErrorComponents,
   }))),
   fetchUnauthenticatedManifest: () => store.dispatch(actions.manifest.fetchUnauthenticatedManifest()),
   setActiveNavLink: (id) => store.dispatch(actions.ui.setActiveNavItem(id)),
