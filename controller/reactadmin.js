@@ -683,7 +683,7 @@ module.exports = function (resources) {
   extsettings = resources.app.locals.extension.reactadmin.settings;
   utility = require(path.join(__dirname, '../utility/index'))(resources);
   `content/themes/${ appSettings.theme || appSettings.themename }/periodicjs.reactadmin.json`;
-  versions = (extsettings.use_offline_cache) ? {
+  versions = (extsettings.application.use_offline_cache) ? {
     theme: fs.readJsonSync(path.join(__dirname, '../../../', `content/themes/${ appSettings.theme || appSettings.themename }/package.json`)).version,
     reactadmin: fs.readJsonSync(path.join(__dirname, '../package.json')).version,
   } : false;
