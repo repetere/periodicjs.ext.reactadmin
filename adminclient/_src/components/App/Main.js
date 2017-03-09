@@ -16,6 +16,10 @@ var _promise = require('babel-runtime/core-js/promise');
 
 var _promise2 = _interopRequireDefault(_promise);
 
+var _keys = require('babel-runtime/core-js/object/keys');
+
+var _keys2 = _interopRequireDefault(_keys);
+
 var _getPrototypeOf = require('babel-runtime/core-js/object/get-prototype-of');
 
 var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
@@ -80,9 +84,11 @@ var _AppOverlay = require('../AppOverlay');
 
 var _AppOverlay2 = _interopRequireDefault(_AppOverlay);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _util = require('../../util');
 
-//import utilities from '../../util';
+var _util2 = _interopRequireDefault(_util);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var MainApp = function (_Component) {
   (0, _inherits3.default)(MainApp, _Component);
@@ -108,9 +114,13 @@ var MainApp = function (_Component) {
     value: function componentDidMount() {
       var _this2 = this;
 
-      _promise2.default.all([_serverSideReactNative.AsyncStorage.getItem(_constants2.default.jwt_token.TOKEN_NAME), _serverSideReactNative.AsyncStorage.getItem(_constants2.default.jwt_token.TOKEN_DATA), _serverSideReactNative.AsyncStorage.getItem(_constants2.default.jwt_token.PROFILE_JSON), this.props.setConfigurationFromCache(), _serverSideReactNative.AsyncStorage.getItem(_constants2.default.user.MFA_AUTHENTICATED)]).then(function (results) {
+      var hasCache = void 0;
+      _util2.default.loadCacheConfigurations().then(function (result) {
+        hasCache = Boolean((0, _keys2.default)(result).length);
+        return _promise2.default.all([_serverSideReactNative.AsyncStorage.getItem(_constants2.default.jwt_token.TOKEN_NAME), _serverSideReactNative.AsyncStorage.getItem(_constants2.default.jwt_token.TOKEN_DATA), _serverSideReactNative.AsyncStorage.getItem(_constants2.default.jwt_token.PROFILE_JSON), hasCache ? _this2.props.setConfigurationFromCache() : _this2.props.fetchUnauthenticatedManifest(), _serverSideReactNative.AsyncStorage.getItem(_constants2.default.user.MFA_AUTHENTICATED)]);
+      }).then(function (results) {
         try {
-          _promise2.default.all([_this2.props.fetchMainComponent(), _this2.props.fetchErrorComponents(), _this2.props.fetchUnauthenticatedManifest()]);
+          _promise2.default.all([!hasCache ? _this2.props.fetchUnauthenticatedManifest() : null, _this2.props.fetchMainComponent(), _this2.props.fetchErrorComponents()]);
           if (results[results.length - 1] === 'true') _this2.props.authenticatedMFA();
           var jwt_token = results[0];
           var jwt_token_data = JSON.parse(results[1]);
