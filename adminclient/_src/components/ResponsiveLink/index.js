@@ -4,6 +4,10 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _extends2 = require('babel-runtime/helpers/extends');
+
+var _extends3 = _interopRequireDefault(_extends2);
+
 var _assign = require('babel-runtime/core-js/object/assign');
 
 var _assign2 = _interopRequireDefault(_assign);
@@ -59,10 +63,10 @@ var ResponsiveLink = function (_Component) {
 
       return _react2.default.createElement(
         'span',
-        { onClick: function onClick() {
+        (0, _extends3.default)({}, this.props.passProps, { onClick: function onClick() {
             // console.log('this.props.location', this.props.location);
             _this2.props.reduxRouter.push(_this2.props.location);
-          }, style: (0, _assign2.default)({ cursor: 'pointer' }, this.props.style) },
+          }, style: (0, _assign2.default)({ cursor: 'pointer' }, this.props.style) }),
         this.props.children
       );
     }

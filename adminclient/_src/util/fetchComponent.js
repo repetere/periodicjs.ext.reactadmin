@@ -17,12 +17,9 @@ var _promise = require('babel-runtime/core-js/promise');
 
 var _promise2 = _interopRequireDefault(_promise);
 
-var _querystring = require('querystring');
-
-var _querystring2 = _interopRequireDefault(_querystring);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// import qs from 'querystring';
 // window.qs = qs;
 var checkStatus = exports.checkStatus = function checkStatus(response) {
   return new _promise2.default(function (resolve, reject) {

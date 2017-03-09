@@ -80,11 +80,9 @@ var _AppOverlay = require('../AppOverlay');
 
 var _AppOverlay2 = _interopRequireDefault(_AppOverlay);
 
-var _util = require('../../util');
-
-var _util2 = _interopRequireDefault(_util);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+//import utilities from '../../util';
 
 var MainApp = function (_Component) {
   (0, _inherits3.default)(MainApp, _Component);
@@ -110,9 +108,7 @@ var MainApp = function (_Component) {
     value: function componentDidMount() {
       var _this2 = this;
 
-      _promise2.default.all([_serverSideReactNative.AsyncStorage.getItem(_constants2.default.jwt_token.TOKEN_NAME), _serverSideReactNative.AsyncStorage.getItem(_constants2.default.jwt_token.TOKEN_DATA), _serverSideReactNative.AsyncStorage.getItem(_constants2.default.jwt_token.PROFILE_JSON), this.props.setConfigurationFromCache(), _serverSideReactNative.AsyncStorage.getItem(_constants2.default.user.MFA_AUTHENTICATED)
-      //AsyncStorage.getItem(constants.async_token.TABBAR_TOKEN),
-      ]).then(function (results) {
+      _promise2.default.all([_serverSideReactNative.AsyncStorage.getItem(_constants2.default.jwt_token.TOKEN_NAME), _serverSideReactNative.AsyncStorage.getItem(_constants2.default.jwt_token.TOKEN_DATA), _serverSideReactNative.AsyncStorage.getItem(_constants2.default.jwt_token.PROFILE_JSON), this.props.setConfigurationFromCache(), _serverSideReactNative.AsyncStorage.getItem(_constants2.default.user.MFA_AUTHENTICATED)]).then(function (results) {
         try {
           _promise2.default.all([_this2.props.fetchMainComponent(), _this2.props.fetchErrorComponents(), _this2.props.fetchUnauthenticatedManifest()]);
           if (results[results.length - 1] === 'true') _this2.props.authenticatedMFA();

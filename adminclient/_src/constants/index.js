@@ -14,7 +14,8 @@ var AppConfigSettings = {
   },
   allHistoryOptions: 'browserHistory|hashHistory|createMemoryHistory',
   application: {
-    environment: 'development'
+    environment: 'development',
+    use_offline_cache: false
   },
   ui: {
     initialization: {

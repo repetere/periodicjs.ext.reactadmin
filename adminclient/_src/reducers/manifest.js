@@ -150,7 +150,7 @@ var initialState = {
 };
 
 var manifestReducer = function manifestReducer(state, action) {
-  var unauthenticated = void 0;
+  // let unauthenticated;
   switch (action.type) {
     case _constants2.default.manifest.MANIFEST_DATA_REQUEST:
       return (0, _assign2.default)({}, state, {
@@ -177,36 +177,36 @@ var manifestReducer = function manifestReducer(state, action) {
         updatedAt: new Date()
       });
     case _constants2.default.manifest.UNAUTHENTICATED_MANIFEST_DATA_REQUEST:
-      unauthenticated = (0, _assign2.default)({}, state.unauthenticated, {
+      var unauthenticated_req = (0, _assign2.default)({}, state.unauthenticated, {
         isFetching: true,
         hasLoaded: false,
         error: null,
         updatedAt: new Date()
       });
       return (0, _assign2.default)({}, state, {
-        unauthenticated: unauthenticated
+        unauthenticated_req: unauthenticated_req
       });
     case _constants2.default.manifest.UNAUTHENTICATED_MANIFEST_DATA_FAILURE:
       failurePayload = action.payload;
-      unauthenticated = (0, _assign2.default)({}, state.unauthenticated, {
+      var unauthenticated_fail = (0, _assign2.default)({}, state.unauthenticated, {
         isFetching: false,
         hasLoaded: false,
         error: failurePayload.error,
         updatedAt: new Date()
       });
       return (0, _assign2.default)({}, state, {
-        unauthenticated: unauthenticated
+        unauthenticated_fail: unauthenticated_fail
       });
     case _constants2.default.manifest.UNAUTHENTICATED_MANIFEST_DATA_SUCCESS:
       var unauthenticatedSuccessPayload = action.payload;
-      unauthenticated = (0, _assign2.default)({}, state.unauthenticated, {
+      var unauthenticated_success = (0, _assign2.default)({}, state.unauthenticated, {
         isFetching: true,
         hasLoaded: true,
         error: null,
         updatedAt: new Date()
       });
       return (0, _assign2.default)({}, state, {
-        unauthenticated: unauthenticated,
+        unauthenticated_success: unauthenticated_success,
         containers: (0, _assign2.default)({}, state.containers, unauthenticatedSuccessPayload.containers),
         unauthenticated_routes: (0, _keys2.default)(unauthenticatedSuccessPayload.containers || {})
       });
