@@ -1,0 +1,84 @@
+module.exports = {
+  'basename': 'http://localhost:8786',
+  'adminPath':'/r-admin',
+  'name':'Admin Panel',
+  'title':'Welcome',
+  'includeCoreData': {
+    'manifest': true,
+    'navigation': true,
+  },
+  'navigationLayout':{
+    'wrapper':{
+      'style':{},
+    },
+    'container':{
+      'style':{},
+    },
+  },
+  'ui':{
+    'initialization':{
+      'show_header':false,
+      'show_footer':false,
+      'show_sidebar_overlay':true,
+      'refresh_manifests':false,
+      'refresh_navigation':false,
+      'refresh_components':false,
+    },
+    'notifications':{
+      'error_timeout':10000,
+      'timed_timeout':10000,
+    },
+    'fixedSidebar':true,
+    'sidebarBG':'#ffffff',
+    'header':{
+      'isBold':true,
+      'color':'isBlack',
+      'buttonColor':'isWhite', 
+      'useGlobalSearch':false,
+      'useHeaderLogout':false,
+      'customButton':false,
+      'navLabelStyle':{},
+      'containerStyle':{},
+      'userNameStyle':{},
+    },
+    'footer':{
+      'navStyle':{},
+    },
+    'sidebar':{
+      'containerStyle':{},
+      'use_floating_nav':false,
+    },
+  },
+  'routerHistory':'browserHistory',
+  'allHistoryOptions':'browserHistory|hashHistory|createMemoryHistory',
+  'application':{
+    'environment':'development',
+    'use_offline_cache':false,
+  },
+  'login':{
+    'url':'http://localhost:8786/api/jwt/token',
+    'devurl':'http://localhost:8786/api/jwt/token',
+    'options':{
+      'method':'POST',
+      'headers':{
+        'Accept':'application/json',
+        'clientid':'fbff80bd23de5b1699cb595167370a1a',
+        'entitytype':'account',
+      },
+    },
+  },
+  'userprofile':{
+    'url':'http://localhost:8786/api/jwt/profile',
+    'devurl':'http://localhost:8786/api/jwt/profile',
+    'options':{
+      'method':'POST',
+      'headers':{
+        'Accept':'application/json',
+        'Content-Type':'application/json',
+        'clientid':'fbff80bd23de5b1699cb595167370a1a',
+        'clientid_default':'clientIDNEEDED',
+        'entitytype':'account',
+      },
+    },
+  },   
+};

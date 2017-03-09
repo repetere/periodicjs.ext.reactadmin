@@ -10,7 +10,7 @@ import AppSidebar from '../AppSidebar';
 import FloatingNav from '../AppSidebar/FloatingNav';
 import AppSectionLoading from '../AppSectionLoading';
 import AppOverlay from '../AppOverlay';
-import utilities from '../../util';
+// import utilities from '../../util';
 
 class MainApp extends Component{
   constructor(props/*, context*/) {

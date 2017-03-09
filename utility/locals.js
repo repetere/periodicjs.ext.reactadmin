@@ -1,14 +1,14 @@
 'use strict';
 
 const path = require('path');
-const Promisie = require('promisie');
-const fs = Promisie.promisifyAll(require('fs-extra'));
+// const Promisie = require('promisie');
+// const fs = Promisie.promisifyAll(require('fs-extra'));
 // const Errorie = require('errorie');
 
 module.exports = function(periodic) {
   let appenvironment = periodic.settings.application.environment;
-  let defaultConfig = fs.readJsonSync(path.join(__dirname, '../config/settings.json'));
-  let config = fs.readJsonSync(path.join(__dirname, '../../../content/config/extensions/periodicjs.ext.reactadmin/settings.json'));
+  let defaultConfig = require(path.join(__dirname, '../config/settings.js'));
+  let config = require(path.join(__dirname, '../../../content/config/extensions/periodicjs.ext.reactadmin/settings.js'));
   let extensionConfig = Object.assign({}, defaultConfig, { adminPath:'p-admin', }, config[appenvironment]);
   periodic.app.controller.extension.reactadmin = Object.assign({}, periodic.app.controller.extension.reactadmin, { settings:extensionConfig, });
 
