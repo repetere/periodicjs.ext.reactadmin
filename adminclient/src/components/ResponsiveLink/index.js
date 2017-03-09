@@ -12,7 +12,7 @@ const defaultProps = {
 
 class ResponsiveLink extends Component {
   render() {
-    return <span onClick={() => {
+    return <span {...this.props.passProps} onClick={() => {
       // console.log('this.props.location', this.props.location);
       this.props.reduxRouter.push(this.props.location);
     }} style={Object.assign({ cursor: 'pointer', }, this.props.style)}>{this.props.children}</span>;
