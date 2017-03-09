@@ -173,7 +173,7 @@ var manifestReducer = function manifestReducer(state, action) {
         isFetching: true,
         hasLoaded: true,
         error: null,
-        containers: manifestSuccessPayload.containers,
+        containers: (0, _assign2.default)({}, state.containers, manifestSuccessPayload.containers),
         updatedAt: new Date()
       });
     case _constants2.default.manifest.UNAUTHENTICATED_MANIFEST_DATA_REQUEST:
