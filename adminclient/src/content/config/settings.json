@@ -14,8 +14,8 @@
   },
   "ui":{
     "initialization":{
-      "show_header":true,
-      "show_footer":true,
+      "show_header":false,
+      "show_footer":false,
       "show_sidebar_overlay":true,
       "refresh_manifests":true,
       "refresh_navigation":true,
