@@ -209,19 +209,23 @@ const user = {
     let preferencesAction = (dispatch, getState) => {
       dispatch(this.preferenceRequest());
       let state = getState();
-      let hasCached = (state.settings && state.settings.user && state.settings.user.preferences);
-      if (hasCached) {
-        dispatch(this.preferenceSuccessResponse({
-          data: {
-            settings: state.settings.user.preferences
-          }
-        }));
-      }
+      let hasCached;
       let basename = (typeof state.settings.adminPath ==='string' && state.settings.adminPath !=='/') ? state.settings.basename+state.settings.adminPath : state.settings.basename;
       let headers = state.settings.userprofile.options.headers;
       delete headers.clientid_default;
       options.headers = Object.assign({}, options.headers, headers);
-      return utilities.fetchComponent(`${ basename }/load/preferences`, options)()
+      return utilities.loadCacheConfigurations()
+        .then(result => {
+          hasCached = (result.user && result.user.preferences);
+          if (hasCached) {
+            dispatch(this.preferenceSuccessResponse({
+              data: {
+                settings: result.user.preferences
+              }
+            }));
+          }
+          return utilities.fetchComponent(`${ basename }/load/preferences`, options)()
+        })
         .then(response => {
           dispatch(this.preferenceSuccessResponse(response));
           return response;
@@ -235,20 +239,24 @@ const user = {
     let navigationAction = (dispatch, getState) => {
       dispatch(this.navigationRequest());
       let state = getState();
-      let hasCached = (state.settings && state.settings.user && state.settings.user.navigation);
-      if (hasCached) {
-        dispatch(this.navigationSuccessResponse({
-          data: {
-            settings: state.settings.user.navigation
-          }
-        }));
-      }
+      let hasCached;
       let basename = (typeof state.settings.adminPath ==='string' && state.settings.adminPath !=='/') ? state.settings.basename+state.settings.adminPath : state.settings.basename;
       let headers = state.settings.userprofile.options.headers;
       delete headers.clientid_default;
       options.headers = Object.assign({}, options.headers, headers);
       //add ?refresh=true to fetch route below to reload navigtion configuration
-      return utilities.fetchComponent(`${ basename }/load/navigation${(state.settings.ui.initialization.refresh_navigation)?'?refresh=true':''}`, options)()
+      return utilities.loadCacheConfigurations()
+        .then(result => {
+          hasCached = (result.user && result.user.navigation);
+          if (hasCached) {
+            dispatch(this.navigationSuccessResponse({
+              data: {
+                settings: result.user.navigation
+              }
+            }));
+          }
+          return utilities.fetchComponent(`${ basename }/load/navigation${(state.settings.ui.initialization.refresh_navigation)?'?refresh=true':''}`, options)()
+        })
         .then(response => {
           dispatch(this.navigationSuccessResponse(response));
           return response;
@@ -302,7 +310,7 @@ const user = {
       let queryparams = qs.parse((window.location.search.charAt(0) === '?') ? window.location.search.substr(1, window.location.search.length) : window.location.search);
       let returnUrl = (queryparams.return_url) ? queryparams.return_url : false;
       // console.log({ returnUrl });
-      if (state.settings.auth.enforce_mfa || (extensionattributes && extensionattributes.login_mfa)) {
+      if (false) {
         if (state.user.isMFAAuthenticated) {
           if (!noRedirect) {
             if (state.user.isLoggedIn && returnUrl) dispatch(push(returnUrl));
@@ -312,7 +320,7 @@ const user = {
         } else {
           if (!state.manifest.containers || (state.manifest.containers && !state.manifest.containers['/mfa'])) {
             dispatch(notification.errorNotification(new Error('Multi-Factor Authentication not Properly Configured')));
-            this.logoutUser()(dispatch);
+            this.logoutUser()(dispatch, getState);
           } else dispatch(push(`/mfa${(returnUrl)?'?return_url='+returnUrl:''}`));
           return false;
         }
@@ -364,6 +372,7 @@ const user = {
   fetchConfigurations (options = {}) {
     return (dispatch, getState) => {
       let state = getState();
+      console.log('FETCH CONFIGURATIONS');
       // console.log({ state, });
       if ((state.manifest && state.manifest.hasLoaded) || (state.settings.user && state.settings.user.navigation && state.settings.user.navigation.hasLoaded) || (state.settings.user && state.settings.user.preferences && state.settings.user.preferences.hasLoaded)) {
         let operations = [];
@@ -377,6 +386,7 @@ const user = {
         }
         return Promise.all(operations);
       } else {
+        console.log('IN ELSE');
         dispatch(this.navigationRequest());
         dispatch(this.preferenceRequest());
         dispatch(manifest.manifestRequest());
@@ -384,38 +394,68 @@ const user = {
         let headers = state.settings.userprofile.options.headers;
         delete headers.clientid_default;
         options.headers = Object.assign({}, options.headers, headers);
-        //add ?refresh=true to fetch route below to reload configurations
-        return utilities.setCacheConfiguration(() => {
-          return utilities.fetchComponent(`${basename}/load/configurations${(state.settings.ui.initialization.refresh_components)?'?refresh=true':''}`, options)()
-            .then(response => {
-              if (response.result === 'error') return Promise.reject(new Error(response.data.error));
-              let responses = Object.keys(response.data.settings).reduce((result, key) => {
-                let data = Object.assign({}, response.data);
-                data.settings = response.data.settings[key];
-                result[key] = { data };
-                return result;
-              }, {});
-              dispatch(this.navigationSuccessResponse(responses.navigation));
-              dispatch(this.preferenceSuccessResponse(responses.preferences));
-              dispatch(manifest.receivedManifestData(responses.manifest.data.settings));
-              return {
-                data: {
-                  versions: response.data.versions,
-                  settings: responses
-                }
-              };
-            })
-            .catch(e => {
-              dispatch(this.navigationErrorResponse(e));
-              dispatch(this.preferenceErrorResponse(e));
-              dispatch(manifest.failedManifestRetrival(e));
-            });
-        }, {
-          navigation: 'user.navigation',
-          preferences: 'user.preferences',
-          manifest: 'manifest.authenticated',
-          unauthenticated_manifest: 'manifest.unauthenticated'
-        }, { multi: true })();
+        return utilities.loadCacheConfigurations()
+          .then(result => {
+            if (result.user) {
+              if (result.user.navigation) {
+                dispatch(this.navigationSuccessResponse({
+                  data: {
+                    settings: result.user.navigation
+                  }
+                }));
+              }
+              if (result.user.preferences) {
+                dispatch(this.preferenceSuccessResponse({
+                  data: {
+                    settings: result.user.preferences
+                  }
+                }));
+              }
+            }
+            if (result.manifest && result.manifest.authenticated) dispatch(manifest.receivedManifestData(result.manifest.authenticated));
+            return true;
+          })
+          .then(() => {
+            //add ?refresh=true to fetch route below to reload configurations
+            return utilities.setCacheConfiguration(() => {
+              return utilities.fetchComponent(`${basename}/load/configurations${(state.settings.ui.initialization.refresh_components)?'?refresh=true':''}`, options)()
+                .then(response => {
+                  if (response.result === 'error') return Promise.reject(new Error(response.data.error));
+                  let responses = Object.keys(response.data.settings).reduce((result, key) => {
+                    let data = Object.assign({}, response.data);
+                    data.settings = response.data.settings[key];
+                    result[key] = { data };
+                    return result;
+                  }, {});
+                  dispatch(this.navigationSuccessResponse(responses.navigation));
+                  dispatch(this.preferenceSuccessResponse(responses.preferences));
+                  dispatch(manifest.receivedManifestData(responses.manifest.data.settings));
+                  return {
+                    data: {
+                      versions: response.data.versions,
+                      settings: responses
+                    }
+                  };
+                })
+                .catch(e => {
+                  console.log('FAILED TO LOAD', e);
+                  dispatch(this.navigationErrorResponse(e));
+                  dispatch(this.preferenceErrorResponse(e));
+                  dispatch(manifest.failedManifestRetrival(e));
+                });
+            }, {
+              navigation: 'user.navigation',
+              preferences: 'user.preferences',
+              manifest: 'manifest.authenticated',
+              unauthenticated_manifest: 'manifest.unauthenticated'
+            }, { multi: true })();
+          })
+          .catch(e => {
+            console.log('OUTER FAILED', e);
+            dispatch(this.navigationErrorResponse(e));
+            dispatch(this.preferenceErrorResponse(e));
+            dispatch(manifest.failedManifestRetrival(e));
+          });
       }
     };
   },
