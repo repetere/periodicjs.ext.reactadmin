@@ -11,18 +11,19 @@ import SSR from '../adminclient/_src/containers/SSR';
 import utility from '../adminclient/_src/util';
 
 module.exports = function (options) {
-  let { layoutPath, manifest, req_url, basename } = options;
   return new Promise((resolve, reject) => {
     try {
+      let { layoutPath, manifest, req_url, basename } = options;
       if (manifest && manifest.layout) {
         if (Object.keys(manifest.resources).length) {
           let resources = utility._handleDynamicParams(layoutPath, manifest.resources, req_url);
+          // console.log({ resources,manifest });
 
           utility.fetchPaths(basename, resources, {})
             .then(_resources => {
-              console.log({ _resources });
-              manifest.resources = _resources;
-              const body = renderToString(<SSR {...manifest} />);
+              // console.log({ _resources });
+              let dyanmicManifest = Object.assign({}, manifest, { resources: _resources });
+              const body = renderToString(<SSR {...dyanmicManifest} />);
               resolve({ body, pagedata: manifest.pageData });
             })
             .catch((e) => {

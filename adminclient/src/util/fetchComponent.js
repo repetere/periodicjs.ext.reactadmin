@@ -22,6 +22,7 @@ export const fetchComponent = function (url, options = {}) {
 };
 
 export const fetchPaths = function (basename, data = {}, headers) {
+  // console.log('fetchPaths', { basename, data, headers });
   let result = {};
   let finished = Object.keys(data).map(key => {
     let val;
@@ -38,7 +39,7 @@ export const fetchPaths = function (basename, data = {}, headers) {
     // console.log(qs.parse(additionalParams),val[0])
     let fetchOptions = Object.assign({}, val[ 1 ], { headers, });
     
-    return fetchComponent(`${ basename }${ route }${ (route && route.indexOf('?')!==-1) ? '&' : '' }${additionalParams}`, fetchOptions)()
+    return fetchComponent(`${ basename }${ route }${ (route && route.indexOf('?')===-1) ? '?' : '' }${ (route && route.indexOf('?')!==-1) ? '&' : '' }${additionalParams}`, fetchOptions)()
       .then(response => {
         result[key] = response;
       }, e => Promise.reject(e));

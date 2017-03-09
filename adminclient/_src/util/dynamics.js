@@ -42,6 +42,7 @@ var _getState = function _getState() {
  */
 // import React from 'react';
 var _handleDynamicParams = exports._handleDynamicParams = function _handleDynamicParams(pathname, resources, current) {
+  // console.log('_handleDynamicParams',{ pathname, resources, current });
   var currentPathname = void 0;
   if (typeof current === 'string') currentPathname = current;else currentPathname = typeof window !== 'undefined' && window.location.pathname ? window.location.pathname : this.props.location.pathname;
   return (0, _keys2.default)(resources).reduce(function (result, key) {

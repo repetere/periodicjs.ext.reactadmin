@@ -64,21 +64,12 @@ function getPseudoRedux() {
   return Object.assign({}, reduxStore, reduxActions);
 }
 
-class SSR extends Component {
-  constructor(props) {
-    super(props);
-    // let thisprops = Object.assign({}, getPseudoRedux(), props);
-
-    // this.props = thisprops;
-    // this.getRenderedComponent = getRenderedComponent.bind(this);
-  }
-  render() {
-    let newThis = Object.assign({}, this, {
-      props: Object.assign({}, this.props, getPseudoRedux())
-    });
-    // console.log({ newThis });
-    return <div style={{display:'none'}}>{getRenderedComponent.call(newThis,this.props.layout, this.props.resources)}</div>;
-  }
+const SSR = (props) => {
+  let newThis = Object.assign({}, this, {
+    props: Object.assign({}, props, getPseudoRedux())
+  });
+  // console.log({ newThis });
+  return <div style={{display:'none'}}>{getRenderedComponent.call(newThis,props.layout, props.resources)}</div>;
 }
 
 export default SSR;

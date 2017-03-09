@@ -52,6 +52,7 @@ var fetchPaths = exports.fetchPaths = function fetchPaths(basename) {
   var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   var headers = arguments[2];
 
+  // console.log('fetchPaths', { basename, data, headers });
   var result = {};
   var finished = (0, _keys2.default)(data).map(function (key) {
     var val = void 0;
@@ -63,7 +64,7 @@ var fetchPaths = exports.fetchPaths = function fetchPaths(basename) {
     // console.log(qs.parse(additionalParams),val[0])
     var fetchOptions = (0, _assign2.default)({}, val[1], { headers: headers });
 
-    return fetchComponent('' + basename + route + (route && route.indexOf('?') !== -1 ? '&' : '') + additionalParams, fetchOptions)().then(function (response) {
+    return fetchComponent('' + basename + route + (route && route.indexOf('?') === -1 ? '?' : '') + (route && route.indexOf('?') !== -1 ? '&' : '') + additionalParams, fetchOptions)().then(function (response) {
       result[key] = response;
     }, function (e) {
       return _promise2.default.reject(e);

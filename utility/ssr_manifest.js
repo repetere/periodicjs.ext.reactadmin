@@ -5,6 +5,10 @@
 //babel utility/ssr_manifest_es6.js > utility/ssr_manifest.js
 //babel adminclient/src -d adminclient/_src --ignore adminclient/src/components/RACodeMirror/
 
+var _assign = require('babel-runtime/core-js/object/assign');
+
+var _assign2 = _interopRequireDefault(_assign);
+
 var _keys = require('babel-runtime/core-js/object/keys');
 
 var _keys2 = _interopRequireDefault(_keys);
@@ -33,21 +37,22 @@ require('isomorphic-fetch');
 
 
 module.exports = function (options) {
-  var layoutPath = options.layoutPath,
-      manifest = options.manifest,
-      req_url = options.req_url,
-      basename = options.basename;
-
   return new _promise2.default(function (resolve, reject) {
     try {
+      var layoutPath = options.layoutPath,
+          manifest = options.manifest,
+          req_url = options.req_url,
+          basename = options.basename;
+
       if (manifest && manifest.layout) {
         if ((0, _keys2.default)(manifest.resources).length) {
           var resources = _util2.default._handleDynamicParams(layoutPath, manifest.resources, req_url);
+          // console.log({ resources,manifest });
 
           _util2.default.fetchPaths(basename, resources, {}).then(function (_resources) {
-            console.log({ _resources: _resources });
-            manifest.resources = _resources;
-            var body = (0, _server.renderToString)(_react2.default.createElement(_SSR2.default, manifest));
+            // console.log({ _resources });
+            var dyanmicManifest = (0, _assign2.default)({}, manifest, { resources: _resources });
+            var body = (0, _server.renderToString)(_react2.default.createElement(_SSR2.default, dyanmicManifest));
             resolve({ body: body, pagedata: manifest.pageData });
           }).catch(function (e) {
             console.error(e);

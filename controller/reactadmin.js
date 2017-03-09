@@ -211,7 +211,6 @@ var admin_index = function (req, res, next) {
     // adminPostRoute: adminPostRoute
   };
 
-
   if (extsettings.server_side_react) {
     return pullConfigurationSettings(false)
       .then(() => {
@@ -230,7 +229,7 @@ var admin_index = function (req, res, next) {
       })
       .then((results) => {
         let { body, pagedata } = results;
-        console.log({ body, pagedata });
+        // console.log({ body, pagedata });
         viewdata = Object.assign({}, viewdata, {body}, {pagedata});
         CoreController.renderView(req, res, viewtemplate, viewdata);
       })

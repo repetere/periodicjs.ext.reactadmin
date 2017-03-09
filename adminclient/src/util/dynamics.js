@@ -18,6 +18,7 @@ var _getState = function () {
  * @return {Object}           Returns the resource object with populated dynamic routes
  */
 export const _handleDynamicParams = function (pathname, resources, current) {
+  // console.log('_handleDynamicParams',{ pathname, resources, current });
   let currentPathname;
   if (typeof current === 'string') currentPathname = current;
   else currentPathname = (typeof window!== 'undefined' && window.location.pathname) ? window.location.pathname : this.props.location.pathname;
