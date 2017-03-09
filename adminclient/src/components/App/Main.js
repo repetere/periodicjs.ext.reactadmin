@@ -27,15 +27,17 @@ class MainApp extends Component{
       AsyncStorage.getItem(constants.jwt_token.TOKEN_NAME),
       AsyncStorage.getItem(constants.jwt_token.TOKEN_DATA),
       AsyncStorage.getItem(constants.jwt_token.PROFILE_JSON),
-      AsyncStorage.getItem(constants.user.MFA_AUTHENTICATED),
       this.props.fetchMainComponent(),
       this.props.fetchErrorComponents(),
       this.props.fetchUnauthenticatedManifest(),
+      AsyncStorage.getItem(constants.user.MFA_AUTHENTICATED),
       //AsyncStorage.getItem(constants.async_token.TABBAR_TOKEN),
     ])
       .then((results) => {
         try {
-          if (results[results.length - 1] === 'true') this.props.authenticatedMFA();
+          if (results[results.length - 1] === 'true') {
+            this.props.authenticatedMFA();
+          }
           let jwt_token = results[ 0 ];
           let jwt_token_data = JSON.parse(results[ 1 ]);
           let jwt_user_profile = JSON.parse(results[ 2 ]);

@@ -310,7 +310,7 @@ const user = {
       let queryparams = qs.parse((window.location.search.charAt(0) === '?') ? window.location.search.substr(1, window.location.search.length) : window.location.search);
       let returnUrl = (queryparams.return_url) ? queryparams.return_url : false;
       // console.log({ returnUrl });
-      if (false) {
+      if (state.settings.auth.enforce_mfa || (extensionattributes && extensionattributes.login_mfa)) {
         if (state.user.isMFAAuthenticated) {
           if (!noRedirect) {
             if (state.user.isLoggedIn && returnUrl) dispatch(push(returnUrl));
