@@ -1,7 +1,7 @@
 import constants from '../constants';
 
 export const isLoggedIn = () => {
-  return window && !!window.localStorage[ constants.jwt_token.TOKEN_NAME ];
+  return typeof window !=='undefined' && !!window.localStorage[ constants.jwt_token.TOKEN_NAME ];
 };
 
 export const requireAuth = (nextState, replaceState) => {

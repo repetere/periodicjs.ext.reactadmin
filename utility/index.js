@@ -1,6 +1,7 @@
 'use strict';
 
 const PathRegExp = require('path-to-regexp');
+const ssr_manifest = require('./ssr_manifest');
 const ROUTE_MAP = new Map();
 
 const getParameterized = function (route) {
@@ -33,5 +34,6 @@ module.exports = function (resources){
     generateDetailManifests,
     findMatchingRoute,
     getParameterized,
+    ssr_manifest,
   };
 };

@@ -1,5 +1,4 @@
 'use strict';
-const Errorie = require('errorie');
 var ReactAdminRouter;
 
 module.exports = function (periodic) {
@@ -12,10 +11,7 @@ module.exports = function (periodic) {
 		periodic.app.use(ReactAdminRouter);
 	}
 	catch (e) {
-		throw new Errorie({
-			name: 'React Admin',
-			message: 'Config error - ' + e.message
-		});
+		throw e;
 	}
 
 	return periodic;

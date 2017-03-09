@@ -4,7 +4,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="/favicon.png">
-    <title><%- locals.extension.reactadmin.settings.title || locals.extension.reactadmin.settings.name || 'Welcome' %></title>
+    <title><%if(typeof pagedata!=='undefined' && pagedata.title){
+      %><%- pagedata.title %><%
+    } else if(locals.extension.reactadmin.settings.title){
+      %><%- locals.extension.reactadmin.settings.title %><%
+    } else if(locals.extension.reactadmin.settings.name){
+      %><%- locals.extension.reactadmin.settings.name %><%
+    } else{%>'Welcome'<%}%></title>
     <link href="/extensions/periodicjs.ext.reactadmin/static/css/main.c75eea6b.css" rel="stylesheet">
     <%- (locals.extension.reactadmin.settings.custom_css_stylesheet)?`<link href="${locals.extension.reactadmin.settings.custom_css_stylesheet}" rel="stylesheet">`:'' %>
     <script type="text/javascript">
@@ -12,7 +18,7 @@
     </script>
   </head>
   <body>
-    <div id="root"></div>
-    <script type="text/javascript" src="/extensions/periodicjs.ext.reactadmin/static/js/main.4d267213.js"></script>
+    <div id="root"><%- (typeof body!=='undefined')?body:'' %></div>
+    <script type="text/javascript" src="/extensions/periodicjs.ext.reactadmin/static/js/main.6f2bfb83.js"></script>
   </body>
 </html>

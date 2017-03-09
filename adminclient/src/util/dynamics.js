@@ -17,10 +17,11 @@ var _getState = function () {
  * @param  {string} [current]   The actual current window path. If this argument is not passed the window path will be pulled from the window object or from this.props
  * @return {Object}           Returns the resource object with populated dynamic routes
  */
-var _handleDynamicParams = function (pathname, resources, current) {
+export const _handleDynamicParams = function (pathname, resources, current) {
+  // console.log('_handleDynamicParams',{ pathname, resources, current });
   let currentPathname;
   if (typeof current === 'string') currentPathname = current;
-  else currentPathname = (window.location.pathname) ? window.location.pathname : this.props.location.pathname;
+  else currentPathname = (typeof window!== 'undefined' && window.location.pathname) ? window.location.pathname : this.props.location.pathname;
   return Object.keys(resources).reduce((result, key) => {
     let updatedPath = utilities.setParameters({
       route: pathname,
@@ -41,7 +42,7 @@ var _handleDynamicParams = function (pathname, resources, current) {
  * @param {Function} [options.onSuccess] Optional success function
  * @param {Function} [options.onError] Optional error function
  */
-var _handleFetchPaths = function (layout, resources = {}, options = {}) {
+export const _handleFetchPaths = function (layout, resources = {}, options = {}) {
   let state = _getState.call(this)();
   let headers = (state.settings && state.settings.userprofile && state.settings.userprofile.options && state.settings.userprofile.options.headers)
     ? state.settings.userprofile.options.headers
@@ -85,48 +86,6 @@ export const fetchErrorContent = function _fetchErrorContent (e, type, resources
   get404Error({
     getState, _handleFetchPaths, /*state,*/ custom404Error, componentData, windowTitle, navLabel, errorComponents, errorCode, resources,
   });
-  /*
-  if (errorComponents && errorComponents['404']) {
-    componentData = errorComponents[ '404' ];
-    //TODO: Jan, this was broken because the custom error component had layout nested under settings
-    if (!componentData.layout && componentData.settings) {
-      componentData.layout = componentData.settings.layout;
-      componentData.resources = componentData.settings.resources;
-    }
-    // console.debug({componentData})
-    windowTitle = (componentData && componentData.pageData&& componentData.pageData.title) 
-      ? componentData.pageData.title
-      : 'Page Not Found';
-    navLabel = (componentData && componentData.pageData&& componentData.pageData.navLabel) 
-      ? componentData.pageData.navLabel
-      : 'Error';
-    if (typeof componentData.status === 'undefined' || componentData.status === 'undefined' || componentData.status === 'uninitialized') {
-      custom404Error = false;
-    } else {
-      if (componentData.resources && Object.keys(componentData.resources).length) {
-        return _handleFetchPaths.call(this, componentData.layout, componentData.resources, {
-          onError: function (e) {
-            // console.debug('fetch call eror')
-            window.document.title = windowTitle;
-            if (this.props && this.props.setNavLabel) this.props.setNavLabel(navLabel);
-            this.uiLayout = <AppError404 error={e}/>;
-            this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
-          }.bind(this),
-          getState,
-        });
-      } else {
-        // console.debug('error page has no resources')
-        custom404Error = this.getRenderedComponent(componentData.layout);
-      }
-    }
-  }
-  /*
-  // console.log({ custom404Error });
-  this.uiLayout = (custom404Error) ? custom404Error : <AppError404/>;
-  window.document.title = windowTitle;
-  if (this.props && this.props.setNavLabel) this.props.setNavLabel(navLabel);
-  this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
-  */
 };
 
 /**

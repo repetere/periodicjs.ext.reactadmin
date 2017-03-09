@@ -196,22 +196,47 @@ var recursivePrivilegesFilter = function (privileges, config = {}, isRoot = fals
  * @param  {object}   res  express reponse
  * @return {null}        does not return a value
  */
-var admin_index = function(req, res){
+var admin_index = function (req, res, next) {
   let viewtemplate = {
-      viewname: 'admin/index',
-      themefileext: appSettings.templatefileextension,
-      extname: 'periodicjs.ext.reactadmin',
+    viewname: 'admin/index',
+    themefileext: appSettings.templatefileextension,
+    extname: 'periodicjs.ext.reactadmin',
+  };
+  let viewdata = {
+    pagedata: {
+      title: 'React Admin',
+      // toplink: '&raquo; Multi-Factor Authenticator',
     },
-    viewdata = {
-      pagedata: {
-        title: 'React Admin',
-        // toplink: '&raquo; Multi-Factor Authenticator',
-      },
-      user: req.user,
-      // adminPostRoute: adminPostRoute
-    };
+    user: req.user,
+    // adminPostRoute: adminPostRoute
+  };
 
-  CoreController.renderView(req, res, viewtemplate, viewdata);
+  if (extsettings.server_side_react) {
+    return pullConfigurationSettings(false)
+      .then(() => {
+        // logger.silly('req._parsedOriginalUrl.pathname', req._parsedOriginalUrl.pathname);
+        // logger.silly({ unauthenticatedManifestSettings });
+        if (unauthenticatedManifestSettings &&
+          unauthenticatedManifestSettings.containers &&
+          Object.keys(unauthenticatedManifestSettings.containers).length) {
+          let layoutPath = utility.findMatchingRoute(unauthenticatedManifestSettings.containers, req._parsedOriginalUrl.pathname);
+          let manifest = (layoutPath)?unauthenticatedManifestSettings.containers[ layoutPath ]:false;
+          // console.log({ layoutPath, manifest });
+          return utility.ssr_manifest({ layoutPath, manifest, req_url: req._parsedOriginalUrl.pathname, basename:extsettings.basename, });
+        } else {
+          return Promise.resolve({},{});
+        }
+      })
+      .then((results) => {
+        let { body, pagedata } = results;
+        // console.log({ body, pagedata });
+        viewdata = Object.assign({}, viewdata, {body}, {pagedata});
+        CoreController.renderView(req, res, viewtemplate, viewdata);
+      })
+      .catch(next);
+  } else {
+    CoreController.renderView(req, res, viewtemplate, viewdata);
+  }
 };
 
 /**

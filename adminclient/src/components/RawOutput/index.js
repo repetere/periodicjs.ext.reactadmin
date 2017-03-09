@@ -16,7 +16,9 @@ const RawOutput = (props) => {
     // console.debug({ props, displayData, displayProp, });
   }
   catch (e) {
-    console.error(e);
+    if (!global) {
+      console.error(e);
+    }
   }  
   switch (props.type) {
   case 'inline':
