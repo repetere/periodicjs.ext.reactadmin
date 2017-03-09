@@ -204,7 +204,7 @@ var admin_index = function (req, res, next) {
   };
   let viewdata = {
     pagedata: {
-      title: 'React Admin',
+      // title: 'React Admin',
       // toplink: '&raquo; Multi-Factor Authenticator',
     },
     user: req.user,
