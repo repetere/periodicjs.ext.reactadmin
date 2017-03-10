@@ -116,17 +116,28 @@ var removeNullIndexes = function (data) {
   return data;
 };
 
+var handleConfigurationReload = function (type) {
+  if (type.toLowerCase() === 'components') {
+    return pullComponentSettings.bind(null, true);
+  } else {
+    return pullConfigurationSettings.bind(null, type.toLowerCase());
+  }
+};
+
 /**
  * Reads a react admin configuration from a specified file path or from files that exist in a directory path (although this can read .js modules it is recommended you use json files as js files are cached and can not be reloaded)
  * @param  {string} filePath A file or directory path
  * @return {Object|Object[]}          Either a single react admin configuration or an array of configurations
  */
-var readConfigurations = function (filePath) {
+var readConfigurations = function (filePath, configurationType) {
   filePath = path.join(__dirname, '../../../', filePath);
   let _import = function (_path) {
     if (path.extname(_path) !== '.js' && path.extname(_path) !== '.json') return undefined;
-    if (path.extname(_path) === '.js') return Promisie.resolve(require(_path));
-    else return fs.readJsonAsync(_path);
+    if (extsettings.hot_reload) {
+      if (path.extname(_path) === '.js') return utility.reloader(_path, handleConfigurationReload(configurationType));
+      else return utility.reloader(_path, handleConfigurationReload(configurationType));
+    }
+    return (path.extname(_path) === '.js') ? Promisie.resolve(require(_path)) : fs.readJsonAsync(_path);
   };
   return fs.statAsync(filePath)
     .then(stats => {
@@ -150,10 +161,10 @@ var readConfigurations = function (filePath) {
  * @param  {string|string[]} paths A single file/directory path or an array of file/directory paths
  * @return {Object[]}       An array of configuration objects for any successfully resolved file reads
  */
-var readAndStoreConfigurations = function (paths) {
+var readAndStoreConfigurations = function (paths, type) {
   paths = (Array.isArray(paths)) ? paths : [paths, ];
   let reads = paths.map(_path => {
-    if (typeof _path === 'string') return readConfigurations.bind(null, _path);
+    if (typeof _path === 'string') return readConfigurations.bind(null, _path, type);
     return () => Promisie.reject(new Error('No path specified'));
   });
   return Promisie.settle(reads)
@@ -267,7 +278,7 @@ var pullManifestSettings = function (configuration, isUnauthenticated = false) {
     }
     return result;
   }, []);
-  return readAndStoreConfigurations(filePaths || [])
+  return readAndStoreConfigurations(filePaths || [], (isUnauthenticated) ? 'unauthenticated' : 'manifest')
     .then(handleManifestCompilation)
     .catch(e => Promisie.reject(e));
 };
@@ -311,7 +322,7 @@ var pullNavigationSettings = function (configuration) {
     if (config.enabled && config.periodicConfig && config.periodicConfig['periodicjs.ext.reactadmin'] && config.periodicConfig['periodicjs.ext.reactadmin'].navigation) result.push(config.periodicConfig['periodicjs.ext.reactadmin'].navigation);
     return result;
   }, []);
-  return readAndStoreConfigurations(filePaths || [])
+  return readAndStoreConfigurations(filePaths || [], 'navigation')
     .then(result => handleNavigationCompilation(result, true))
     .catch(e => Promisie.reject(e));
 };
@@ -332,9 +343,9 @@ var finalizeSettingsWithTheme = function (data) {
     .then(result => {
       result = result['periodicjs.ext.reactadmin'];
       return Promisie.parallel({
-        manifests: readAndStoreConfigurations.bind(null, result.manifests || []),
-        unauthenticated_manifests: readAndStoreConfigurations.bind(null, result.unauthenticated_manifests || []),
-        navigation: readAndStoreConfigurations.bind(null, result.navigation || []),
+        manifests: readAndStoreConfigurations.bind(null, result.manifests || [], 'manifest'),
+        unauthenticated_manifests: readAndStoreConfigurations.bind(null, result.unauthenticated_manifests || [], 'unauthenticated'),
+        navigation: readAndStoreConfigurations.bind(null, result.navigation || [], 'navigation'),
       });
     })
     .then(result => {
@@ -403,19 +414,19 @@ var pullConfigurationSettings = function (reload) {
       if (reload === 'manifest' || reload === true || !manifestSettings) {
         operations = Object.assign(operations, { 
           manifests: pullManifestSettings.bind(null, configuration), 
-          default_manifests: readAndStoreConfigurations.bind(null, adminExtSettings.manifests || []), 
+          default_manifests: readAndStoreConfigurations.bind(null, adminExtSettings.manifests || [], 'manifest'),
         });
       }
       if (reload === 'unauthenticated' || reload === true || !unauthenticatedManifestSettings) {
         operations = Object.assign(operations, {
           unauthenticated_manifests: pullManifestSettings.bind(null, configuration, true),
-          default_unauthenticated_manifests: readAndStoreConfigurations.bind(null, adminExtSettings.unauthenticated_manifests || []),
+          default_unauthenticated_manifests: readAndStoreConfigurations.bind(null, adminExtSettings.unauthenticated_manifests || [], 'unauthenticated'),
         });
       }
       if (reload === 'navigation' || reload === true || !navigationSettings) {
         operations = Object.assign(operations, { 
           navigation: pullNavigationSettings.bind(null, configuration), 
-          default_navigation: readAndStoreConfigurations.bind(null, adminExtSettings.navigation || []), 
+          default_navigation: readAndStoreConfigurations.bind(null, adminExtSettings.navigation || [], 'navigation'), 
         });
       }
       return Promisie.parallel(operations);
@@ -505,7 +516,7 @@ var generateComponentOperations = function (data, defaults) {
   return Object.keys(data).reduce((result, key) => {
     if (typeof data[key] === 'string') {
       result[key] = function () {
-        return readAndStoreConfigurations([data[key], ])
+        return readAndStoreConfigurations([data[key], ], 'components')
           .then(result => {
             if (result.length) return result[0];
             return Promisie.reject('unable to read property resetting to default value');
@@ -541,7 +552,7 @@ var assignComponentStatus = function (component) {
  */
 var pullComponentSettings = function (refresh) {
   if (components && !refresh) return Promisie.resolve(components);
-  return readAndStoreConfigurations(['node_modules/periodicjs.ext.reactadmin/periodicjs.reactadmin.json', `content/themes/${ appSettings.theme || appSettings.themename }/periodicjs.reactadmin.json`, ])
+  return readAndStoreConfigurations(['node_modules/periodicjs.ext.reactadmin/periodicjs.reactadmin.json', `content/themes/${ appSettings.theme || appSettings.themename }/periodicjs.reactadmin.json`, ], 'components')
     .then(results => {
       switch (Object.keys(results).length.toString()) {
       case '1':

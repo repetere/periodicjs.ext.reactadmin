@@ -2,6 +2,7 @@
 
 function getReactAdminConfig(options, overwrites){
   return Object.assign({
+    'hot_reload': false,
     'custom_css_stylesheet':false,
     'basename': options.basename,
     'skip_catch_all_route':false,
