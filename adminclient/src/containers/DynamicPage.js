@@ -39,7 +39,6 @@ const _handleComponentLifecycle = function () {
     });
   };
   if (!isAuthenticated) {
-    if (pathname === '/') return loginRedirect();
     if (parentState.manifest && parentState.manifest.containers) {
       let isDynamicRoute = determineDynamicRouteAccess(parentState, pathname);
       if (!isDynamicRoute) {
@@ -49,6 +48,7 @@ const _handleComponentLifecycle = function () {
         if (parentState.manifest && parentState.manifest.containers && Object.keys(parentState.manifest.containers).indexOf(pathname) !== -1) {
           return loginRedirect();
         }
+        if (pathname === '/') return loginRedirect();
         return this.fetchDynamicErrorContent();
       } else {
         if (isDynamicRoute.unauthenticated) return this.fetchData();
@@ -57,10 +57,9 @@ const _handleComponentLifecycle = function () {
       }
     }
     return this.fetchDynamicErrorContent();
-  }
-  if (parentState.manifest && parentState.manifest.hasLoaded) {
-    if (pathname === '/mfa' && window.location.pathname === '/mfa') return this.fetchData();
-    else {
+  } else if (parentState.manifest && parentState.manifest.hasLoaded) {
+    if (pathname === '/mfa' && window.location.pathname === '/mfa'){       return this.fetchData();
+    } else {
       let isValid = this.props.enforceMFA(true);
       if (isValid) this.fetchData();
     }
