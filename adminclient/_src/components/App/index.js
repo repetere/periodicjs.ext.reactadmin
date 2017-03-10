@@ -72,7 +72,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // import { Nav, NavGroup, NavItem, Button, Icon, NavToggle, } from 're-bulma';
 // import { createStore, } from 'redux';
 var AppConfigSettings = {
-  name: 'reactadmin',
+  name: 'Admin Panel',
   basename: 'http://localhost:8786',
   adminPath: '/r-admin',
   routerHistory: 'browserHistory',

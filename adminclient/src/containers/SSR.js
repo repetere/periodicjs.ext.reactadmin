@@ -69,7 +69,7 @@ const SSR = (props) => {
     props: Object.assign({}, props, getPseudoRedux())
   });
   // console.log({ newThis });
-  return <div style={{display:'none'}}>{getRenderedComponent.call(newThis,props.layout, props.resources)}</div>;
+  return <div className='ssr-index'>{getRenderedComponent.call(newThis,props.layout, props.resources)}</div>;
 }
 
 export default SSR;

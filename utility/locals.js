@@ -7,9 +7,10 @@ const path = require('path');
 
 module.exports = function(periodic) {
   let appenvironment = periodic.settings.application.environment;
-  let defaultConfig = require(path.join(__dirname, '../config/settings.js'));
+  let defaultConfig = require(path.join(__dirname, '../config/settings.js')).development;
   let config = require(path.join(__dirname, '../../../content/config/extensions/periodicjs.ext.reactadmin/settings.js'));
-  let extensionConfig = Object.assign({}, defaultConfig, { adminPath:'p-admin', }, config[appenvironment]);
+  let extensionConfig = Object.assign({}, defaultConfig, { adminPath: 'p-admin', }, config[ appenvironment ]);
+  
   periodic.app.controller.extension.reactadmin = Object.assign({}, periodic.app.controller.extension.reactadmin, { settings:extensionConfig, });
 
     // periodic.app.controller.extension.reactadmin.settings.getDBConnection = mongooseLogger.getDBConnection;

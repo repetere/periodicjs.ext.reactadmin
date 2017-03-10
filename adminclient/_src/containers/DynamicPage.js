@@ -24,6 +24,10 @@ var _inherits2 = require('babel-runtime/helpers/inherits');
 
 var _inherits3 = _interopRequireDefault(_inherits2);
 
+var _keys = require('babel-runtime/core-js/object/keys');
+
+var _keys2 = _interopRequireDefault(_keys);
+
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
@@ -49,6 +53,22 @@ var isLoggedIn = function isLoggedIn() {
   return window && !!window.localStorage[_constants2.default.jwt_token.TOKEN_NAME];
 };
 
+var determineDynamicRouteAccess = function determineDynamicRouteAccess(state, pathname) {
+  if (state.manifest && state.manifest.containers) {
+    var unauthRoutes = void 0;
+    if (state.manifest.unauthenticated_routes) {
+      unauthRoutes = state.manifest.unauthenticated_routes.reduce(function (expanded, key) {
+        expanded[key] = null;
+        return expanded;
+      }, {});
+      unauthRoutes = _util2.default.findMatchingRoute(unauthRoutes, state.settings.auth.admin_path ? pathname.replace(state.settings.auth.admin_path, '') : pathname);
+    }
+    var hasDynamicRoute = Boolean(_util2.default.findMatchingRoute(state.manifest.containers, state.settings.auth.admin_path ? pathname.replace(state.settings.auth.admin_path, '') : pathname));
+    return { authenticated: hasDynamicRoute, unauthenticated: Boolean(unauthRoutes) };
+  }
+  return false;
+};
+
 var _handleComponentLifecycle = function _handleComponentLifecycle() {
   var _this = this;
 
@@ -56,19 +76,37 @@ var _handleComponentLifecycle = function _handleComponentLifecycle() {
   var parentState = this.props.getState();
   var pathname = this.props.location.pathname ? this.props.location.pathname : window.location.href || window.location.pathname;
   var isAuthenticated = isLoggedIn();
-  if (!isAuthenticated) {
-    if (parentState.manifest && Array.isArray(parentState.manifest.unauthenticated_routes)) {
-      if (parentState.manifest.unauthenticated_routes.indexOf(pathname) !== -1) return this.fetchData();
-    }
-    return this.props.reduxRouter.replace({
+  var loginRedirect = function loginRedirect() {
+    return _this.props.reduxRouter.replace({
       pathname: pathname.indexOf('p-admin') !== -1 ? '/p-admin/login?return_url=' + pathname : '/login?return_url=' + pathname,
       state: {
         nextPathname: pathname
       }
     });
-  }
-  if (parentState.manifest && parentState.manifest.hasLoaded) {
-    if (pathname === '/mfa' && window.location.pathname === '/mfa') return this.fetchData();else {
+  };
+  if (!isAuthenticated) {
+    if (parentState.manifest && parentState.manifest.containers) {
+      var isDynamicRoute = determineDynamicRouteAccess(parentState, pathname);
+      if (!isDynamicRoute) {
+        if (parentState.manifest && Array.isArray(parentState.manifest.unauthenticated_routes) && parentState.manifest.unauthenticated_routes.indexOf(pathname) !== -1) {
+          return this.fetchData();
+        }
+        if (parentState.manifest && parentState.manifest.containers && (0, _keys2.default)(parentState.manifest.containers).indexOf(pathname) !== -1) {
+          return loginRedirect();
+        }
+        if (pathname === '/') return loginRedirect();
+        return this.fetchDynamicErrorContent();
+      } else {
+        if (isDynamicRoute.unauthenticated) return this.fetchData();
+        if (isDynamicRoute.authenticated) return loginRedirect();
+        return this.fetchDynamicErrorContent();
+      }
+    }
+    return this.fetchDynamicErrorContent();
+  } else if (parentState.manifest && parentState.manifest.hasLoaded) {
+    if (pathname === '/mfa' && window.location.pathname === '/mfa') {
+      return this.fetchData();
+    } else {
       var isValid = this.props.enforceMFA(true);
       if (isValid) this.fetchData();
     }

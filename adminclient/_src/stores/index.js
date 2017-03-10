@@ -25,7 +25,7 @@ var _reduxLogger2 = _interopRequireDefault(_reduxLogger);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var AppConfigSettings = {
-  name: 'reactadmin',
+  name: 'Admin Panel',
   basename: 'http://localhost:8786',
   adminPath: '/r-admin',
   routerHistory: 'browserHistory',

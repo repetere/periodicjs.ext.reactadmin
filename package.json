@@ -127,5 +127,5 @@
     "ssr_build": "babel adminclient/src -d adminclient/_src --ignore adminclient/src/components/RACodeMirror/",
     "ssr": "babel utility/ssr_manifest_es6.js > utility/ssr_manifest.js && babel adminclient/src -d adminclient/_src --ignore adminclient/src/components/RACodeMirror/"
   },
-  "version": "0.9.2"
+  "version": "0.9.5"
 }

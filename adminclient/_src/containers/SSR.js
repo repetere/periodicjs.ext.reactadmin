@@ -86,7 +86,7 @@ var SSR = function SSR(props) {
   // console.log({ newThis });
   return _react2.default.createElement(
     'div',
-    { style: { display: 'none' } },
+    { className: 'ssr-index' },
     getRenderedComponent.call(newThis, props.layout, props.resources)
   );
 };

@@ -15,7 +15,7 @@ var _constants2 = _interopRequireDefault(_constants);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var appDefaultSettings = {
-  name: 'reactadmin',
+  name: 'Admin Panel',
   basename: 'http://localhost:8786',
   adminPath: '/r-admin',
   routerHistory: 'browserHistory',

@@ -48,3 +48,6 @@ div[data-reactroot]{
 .__reactadmin_icon_button .__re-bulma_icon:last-child{
   margin-left: 0;
 }
+.ssr-index{
+  visibility: hidden;
+}

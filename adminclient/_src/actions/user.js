@@ -259,19 +259,22 @@ var user = {
     var preferencesAction = function preferencesAction(dispatch, getState) {
       dispatch(_this2.preferenceRequest());
       var state = getState();
-      var hasCached = state.settings && state.settings.user && state.settings.user.preferences;
-      if (hasCached) {
-        dispatch(_this2.preferenceSuccessResponse({
-          data: {
-            settings: state.settings.user.preferences
-          }
-        }));
-      }
+      var hasCached = void 0;
       var basename = typeof state.settings.adminPath === 'string' && state.settings.adminPath !== '/' ? state.settings.basename + state.settings.adminPath : state.settings.basename;
       var headers = state.settings.userprofile.options.headers;
       delete headers.clientid_default;
       options.headers = (0, _assign2.default)({}, options.headers, headers);
-      return _util2.default.fetchComponent(basename + '/load/preferences', options)().then(function (response) {
+      return _util2.default.loadCacheConfigurations().then(function (result) {
+        hasCached = result.user && result.user.preferences;
+        if (hasCached) {
+          dispatch(_this2.preferenceSuccessResponse({
+            data: {
+              settings: result.user.preferences
+            }
+          }));
+        }
+        return _util2.default.fetchComponent(basename + '/load/preferences', options)();
+      }).then(function (response) {
         dispatch(_this2.preferenceSuccessResponse(response));
         return response;
       }, function (e) {
@@ -288,20 +291,23 @@ var user = {
     var navigationAction = function navigationAction(dispatch, getState) {
       dispatch(_this3.navigationRequest());
       var state = getState();
-      var hasCached = state.settings && state.settings.user && state.settings.user.navigation;
-      if (hasCached) {
-        dispatch(_this3.navigationSuccessResponse({
-          data: {
-            settings: state.settings.user.navigation
-          }
-        }));
-      }
+      var hasCached = void 0;
       var basename = typeof state.settings.adminPath === 'string' && state.settings.adminPath !== '/' ? state.settings.basename + state.settings.adminPath : state.settings.basename;
       var headers = state.settings.userprofile.options.headers;
       delete headers.clientid_default;
       options.headers = (0, _assign2.default)({}, options.headers, headers);
       //add ?refresh=true to fetch route below to reload navigtion configuration
-      return _util2.default.fetchComponent(basename + '/load/navigation' + (state.settings.ui.initialization.refresh_navigation ? '?refresh=true' : ''), options)().then(function (response) {
+      return _util2.default.loadCacheConfigurations().then(function (result) {
+        hasCached = result.user && result.user.navigation;
+        if (hasCached) {
+          dispatch(_this3.navigationSuccessResponse({
+            data: {
+              settings: result.user.navigation
+            }
+          }));
+        }
+        return _util2.default.fetchComponent(basename + '/load/navigation' + (state.settings.ui.initialization.refresh_navigation ? '?refresh=true' : ''), options)();
+      }).then(function (response) {
         dispatch(_this3.navigationSuccessResponse(response));
         return response;
       }, function (e) {
@@ -363,7 +369,7 @@ var user = {
         } else {
           if (!state.manifest.containers || state.manifest.containers && !state.manifest.containers['/mfa']) {
             dispatch(_notification2.default.errorNotification(new Error('Multi-Factor Authentication not Properly Configured')));
-            _this5.logoutUser()(dispatch);
+            _this5.logoutUser()(dispatch, getState);
           } else dispatch((0, _reactRouterRedux.push)('/mfa' + (returnUrl ? '?return_url=' + returnUrl : '')));
           return false;
         }
@@ -442,36 +448,63 @@ var user = {
         var headers = state.settings.userprofile.options.headers;
         delete headers.clientid_default;
         options.headers = (0, _assign2.default)({}, options.headers, headers);
-        //add ?refresh=true to fetch route below to reload configurations
-        return _util2.default.setCacheConfiguration(function () {
-          return _util2.default.fetchComponent(basename + '/load/configurations' + (state.settings.ui.initialization.refresh_components ? '?refresh=true' : ''), options)().then(function (response) {
-            if (response.result === 'error') return _promise2.default.reject(new Error(response.data.error));
-            var responses = (0, _keys2.default)(response.data.settings).reduce(function (result, key) {
-              var data = (0, _assign2.default)({}, response.data);
-              data.settings = response.data.settings[key];
-              result[key] = { data: data };
-              return result;
-            }, {});
-            dispatch(_this7.navigationSuccessResponse(responses.navigation));
-            dispatch(_this7.preferenceSuccessResponse(responses.preferences));
-            dispatch(_manifest2.default.receivedManifestData(responses.manifest.data.settings));
-            return {
-              data: {
-                versions: response.data.versions,
-                settings: responses
-              }
-            };
-          }).catch(function (e) {
-            dispatch(_this7.navigationErrorResponse(e));
-            dispatch(_this7.preferenceErrorResponse(e));
-            dispatch(_manifest2.default.failedManifestRetrival(e));
-          });
-        }, {
-          navigation: 'user.navigation',
-          preferences: 'user.preferences',
-          manifest: 'manifest.authenticated',
-          unauthenticated_manifest: 'manifest.unauthenticated'
-        }, { multi: true })();
+        return _util2.default.loadCacheConfigurations().then(function (result) {
+          if (result.user) {
+            if (result.user.navigation) {
+              dispatch(_this7.navigationSuccessResponse({
+                data: {
+                  settings: result.user.navigation
+                }
+              }));
+            }
+            if (result.user.preferences) {
+              dispatch(_this7.preferenceSuccessResponse({
+                data: {
+                  settings: result.user.preferences
+                }
+              }));
+            }
+          }
+          if (result.manifest && result.manifest.authenticated) dispatch(_manifest2.default.receivedManifestData(result.manifest.authenticated));
+          return true;
+        }).then(function () {
+          //add ?refresh=true to fetch route below to reload configurations
+          return _util2.default.setCacheConfiguration(function () {
+            return _util2.default.fetchComponent(basename + '/load/configurations' + (state.settings.ui.initialization.refresh_components ? '?refresh=true' : ''), options)().then(function (response) {
+              if (response.result === 'error') return _promise2.default.reject(new Error(response.data.error));
+              var responses = (0, _keys2.default)(response.data.settings).reduce(function (result, key) {
+                var data = (0, _assign2.default)({}, response.data);
+                data.settings = response.data.settings[key];
+                result[key] = { data: data };
+                return result;
+              }, {});
+              dispatch(_this7.navigationSuccessResponse(responses.navigation));
+              dispatch(_this7.preferenceSuccessResponse(responses.preferences));
+              dispatch(_manifest2.default.receivedManifestData(responses.manifest.data.settings));
+              return {
+                data: {
+                  versions: response.data.versions,
+                  settings: responses
+                }
+              };
+            }).catch(function (e) {
+              console.log('FAILED TO LOAD', e);
+              dispatch(_this7.navigationErrorResponse(e));
+              dispatch(_this7.preferenceErrorResponse(e));
+              dispatch(_manifest2.default.failedManifestRetrival(e));
+            });
+          }, {
+            navigation: 'user.navigation',
+            preferences: 'user.preferences',
+            manifest: 'manifest.authenticated',
+            unauthenticated_manifest: 'manifest.unauthenticated'
+          }, { multi: true })();
+        }).catch(function (e) {
+          console.log('OUTER FAILED', e);
+          dispatch(_this7.navigationErrorResponse(e));
+          dispatch(_this7.preferenceErrorResponse(e));
+          dispatch(_manifest2.default.failedManifestRetrival(e));
+        });
       }
     };
   },
