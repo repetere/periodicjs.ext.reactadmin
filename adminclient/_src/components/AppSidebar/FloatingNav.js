@@ -76,10 +76,12 @@ var FloatingNav = function (_Component) {
       var navigationLayout = {};
       var navigationWrapper = {};
       var navigationContainer = {};
+      var navigationFloatingContainer = {};
       if (this.props.settings && this.props.settings.user && this.props.settings.user.navigation && this.props.settings.user.navigation) {
         navigationLayout = this.props.settings.user.navigation.layout || {};
         navigationWrapper = this.props.settings.user.navigation.wrapper || {};
         navigationContainer = this.props.settings.user.navigation.container || {};
+        navigationFloatingContainer = this.props.settings.user.navigation.floatingContainer || {};
       }
       return _react2.default.createElement(
         'div',
@@ -95,7 +97,7 @@ var FloatingNav = function (_Component) {
         },
         _react2.default.createElement(
           _reBulma.Container,
-          null,
+          navigationFloatingContainer,
           _react2.default.createElement(
             'div',
             { style: (0, _assign2.default)({

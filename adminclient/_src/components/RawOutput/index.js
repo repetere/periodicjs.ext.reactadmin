@@ -40,19 +40,19 @@ var RawOutput = function RawOutput(props) {
     case 'inline':
       return _react2.default.createElement(
         'span',
-        null,
+        { style: props.style },
         displayData
       );
     case 'block':
       return _react2.default.createElement(
         'div',
-        null,
+        { style: props.style },
         displayData
       );
     default:
       return _react2.default.createElement(
         'pre',
-        null,
+        { style: props.style },
         displayData
       );
   }

@@ -19,6 +19,7 @@ var appDefaultSettings = {
   basename: 'http://localhost:8786',
   adminPath: '/r-admin',
   routerHistory: 'browserHistory',
+  hot_reload: false,
   includeCoreData: {
     manifest: true,
     navigation: true
@@ -152,8 +153,15 @@ var defaultUserNavigation = {
         }, {
           component: 'MenuAppLink',
           props: {
-            href: '/blog/21090',
-            label: 'Plugins',
+            href: '/r-admin/content/testcharts',
+            label: 'Test Charts',
+            id: 'plugins'
+          }
+        }, {
+          component: 'MenuAppLink',
+          props: {
+            href: '/r-admin/content/testtables',
+            label: 'Test Tables',
             id: 'plugins'
           }
         }, {
@@ -265,6 +273,7 @@ var packageJSON = {
     'react-codemirror': '^0.3.0',
     'react-dom': '15.3.2',
     'react-draft-wysiwyg': '^1.7.6',
+    'react-slider': '^0.7.0',
     'validate.js': '^0.11.1'
   },
   scripts: {

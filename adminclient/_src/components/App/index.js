@@ -76,6 +76,7 @@ var AppConfigSettings = {
   basename: 'http://localhost:8786',
   adminPath: '/r-admin',
   routerHistory: 'browserHistory',
+  hot_reload: false,
   includeCoreData: {
     manifest: true,
     navigation: true
@@ -161,6 +162,7 @@ var history = (0, _history.getHistory)(_history.historySettings, AppConfigSettin
 
 var mapStateToProps = function mapStateToProps(state) {
   return {
+    dynamic: state.dynamic,
     page: state.page,
     settings: state.settings,
     ui: state.ui,
@@ -224,6 +226,9 @@ var reduxActions = {
   },
   logoutUser: function logoutUser() {
     return _stores2.default.dispatch(_actions2.default.user.logoutUser());
+  },
+  setDynamicData: function setDynamicData(prop, val) {
+    return _stores2.default.dispatch(_actions2.default.dynamic.setDynamicData(prop, val));
   },
   fetchLoginComponent: function fetchLoginComponent() {
     return _stores2.default.dispatch(_util2.default.setCacheConfiguration(_actions2.default.ui.fetchComponent(_index2.default.ui.LOGIN_COMPONENT), 'components.login'));

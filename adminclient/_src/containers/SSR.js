@@ -30,6 +30,7 @@ function getPseudoRedux() {
   var state = {};
   var reducer = function reducer() {};
   var reduxStore = {
+    dynamic: state.dynamic,
     page: state.page,
     settings: state.settings,
     ui: state.ui,

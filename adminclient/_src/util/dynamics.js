@@ -203,7 +203,11 @@ var fetchAction = exports.fetchAction = function _fetchAction(pathname, fetchOpt
         } else if (typeof successCallbackProp === 'string' && successCallbackProp.indexOf('func:this.props') !== -1) {
           successCallback = _this2.props[success.successCallback.replace('func:this.props.', '')];
         }
-        successCallback(success.successProps || successData);
+        if (fetchOptions.successCallback === 'func:this.props.setDynamicData') {
+          _this2.props.setDynamicData(success.dynamicField, success.successProps || successData);
+        } else {
+          successCallback(success.successProps || successData);
+        }
       });
     } else {
       return res.json();

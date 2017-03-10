@@ -114,9 +114,9 @@ var ResponsiveTable = function (_Component) {
   function ResponsiveTable(props) {
     (0, _classCallCheck3.default)(this, ResponsiveTable);
 
-    // console.debug({ props });
     var _this = (0, _possibleConstructorReturn3.default)(this, (ResponsiveTable.__proto__ || (0, _getPrototypeOf2.default)(ResponsiveTable)).call(this, props));
 
+    console.debug('this.props.getState()', _this.props.getState());
     var rows = props.rows || [];
     if (props.flattenRowData) {
       rows = rows.map(function (row) {

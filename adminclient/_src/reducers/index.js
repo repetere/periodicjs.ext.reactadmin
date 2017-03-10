@@ -6,6 +6,10 @@ Object.defineProperty(exports, "__esModule", {
 
 var _redux = require('redux');
 
+var _dynamic = require('./dynamic');
+
+var _dynamic2 = _interopRequireDefault(_dynamic);
+
 var _manifest = require('./manifest');
 
 var _manifest2 = _interopRequireDefault(_manifest);
@@ -30,16 +34,8 @@ var _reactRouterRedux = require('react-router-redux');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// import pageReducer from './pages';
-// import fetchDataReducer from './fetchData';
-// import messageBarReducer from './messageBar';
-// import clientCacheDataReducer from './pages';
-var NativeCMSReducer = (0, _redux.combineReducers)({
-  // page: pageReducer,
-  // tabBarExtensions: tabBarExtensionReducer,
-  // fetchData: fetchDataReducer,
-  // messageBar: messageBarReducer,
-  // clientCacheData: clientCacheDataReducer,
+var ReactAdminReducer = (0, _redux.combineReducers)({
+  dynamic: _dynamic2.default,
   routing: _reactRouterRedux.routerReducer,
   settings: _settings2.default,
   ui: _ui2.default,
@@ -48,4 +44,4 @@ var NativeCMSReducer = (0, _redux.combineReducers)({
   notification: _notification2.default
 });
 
-exports.default = NativeCMSReducer;
+exports.default = ReactAdminReducer;

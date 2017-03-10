@@ -29,6 +29,7 @@ var AppConfigSettings = {
   basename: 'http://localhost:8786',
   adminPath: '/r-admin',
   routerHistory: 'browserHistory',
+  hot_reload: false,
   includeCoreData: {
     manifest: true,
     navigation: true

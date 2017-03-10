@@ -8,6 +8,7 @@ var AppConfigSettings = {
   basename: 'http://localhost:8786',
   adminPath: '/r-admin',
   routerHistory: 'browserHistory',
+  hot_reload: false,
   includeCoreData: {
     manifest: true,
     navigation: true
@@ -119,9 +120,8 @@ exports.default = {
     CLIENT_CACHE_DATA_FAILURE: 'client cache data failed',
     CLIENT_CACHE_DATA_SUCCESS: 'client cache data succeeded'
   },
-  messageBar: {
-    SHOW_INFO: 'show info notification',
-    SHOW_ERROR: 'show error notification'
+  dynamic: {
+    SET_DYNAMIC_DATA: 'set dynamic data'
   },
   jwt_token: {
     TOKEN_NAME: AppConfigSettings.name + '_jwt_token',

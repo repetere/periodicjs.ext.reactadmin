@@ -223,7 +223,12 @@ var ResponsiveForm = function (_Component) {
       } else if (typeof this.props.onSubmit === 'string' && this.props.onSubmit.indexOf('func:this.props') !== -1) {
         delete formdata.formDataFiles;
         delete formdata.formDataErrors;
-        this.props[this.props.onSubmit.replace('func:this.props.', '')](submitFormData);
+        if (this.props.onSubmit === 'func:this.props.setDynamicData') {
+          // console.debug('this.props', this.props);
+          this.props.setDynamicData(this.props.dynamicField, submitFormData);
+        } else {
+          this.props[this.props.onSubmit.replace('func:this.props.', '')](submitFormData);
+        }
       } else if (typeof this.props.onSubmit !== 'function') {
         var fetchOptions = this.props.onSubmit;
         var formBody = new FormData();
@@ -269,7 +274,11 @@ var ResponsiveForm = function (_Component) {
           if (fetchOptions.successCallback) {
             var successCallback = typeof fetchOptions.successCallback === 'string' && fetchOptions.successCallback.indexOf('func:this.props.reduxRouter') !== -1 ? _this2.props[fetchOptions.successCallback.replace('func:this.props.reduxRouter.', '')] : _this2.props[fetchOptions.successCallback.replace('func:this.props.', '')];
             res.json().then(function (successData) {
-              successCallback(fetchOptions.successProps || successData, submitFormData);
+              if (fetchOptions.successCallback === 'func:this.props.setDynamicData') {
+                _this2.props.setDynamicData(_this2.props.dynamicField, submitFormData);
+              } else {
+                successCallback(fetchOptions.successProps || successData, submitFormData);
+              }
             });
           } else {
             return res.json();
