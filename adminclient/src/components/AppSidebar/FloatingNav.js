@@ -20,10 +20,12 @@ class FloatingNav extends Component {
     let navigationLayout = {};
     let navigationWrapper = {};
     let navigationContainer = {};
+    let navigationFloatingContainer = {};
     if (this.props.settings && this.props.settings.user && this.props.settings.user.navigation && this.props.settings.user.navigation) {
       navigationLayout = this.props.settings.user.navigation.layout || {};
       navigationWrapper = this.props.settings.user.navigation.wrapper || {};
       navigationContainer = this.props.settings.user.navigation.container || {};
+      navigationFloatingContainer = this.props.settings.user.navigation.floatingContainer || {};
     }
     return (
       <div style={Object.assign({
@@ -36,7 +38,7 @@ class FloatingNav extends Component {
         className={(this.props.ui.sidebar_is_open) ? 'animated fadeInDown Nav-Sidebar-Speed' : 'animated slideOutUp Nav-Sidebar-Speed'}
       onClick={this.props.toggleUISidebar}
       >
-        <Container>
+        <Container {...navigationFloatingContainer}>
           <div style={Object.assign({
             overflow: 'hidden',
             overflowY: 'auto',
