@@ -1,4 +1,6 @@
-{
+'use strict';
+
+module.exports = {
 	"periodicjs.ext.reactadmin": {
     "manifests":[
       "node_modules/periodicjs.ext.reactadmin/adminclient/src/content/config/manifest.json",

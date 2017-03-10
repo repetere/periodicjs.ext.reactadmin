@@ -1,4 +1,4 @@
-
+'use strict';
 const Promisie = require('promisie');
 const fs = Promisie.promisifyAll(require('fs-extra'));
 const path = require('path');
@@ -116,6 +116,28 @@ var removeNullIndexes = function (data) {
   return data;
 };
 
+/**
+ * Used for reading the periodicjs.reactadmin.json configuration as it can be either a json or js file
+ * @param  {string} filepath Path toe the reactadmin configuration file
+ * @return {Object}          Resolved configuration object
+ */
+var handleAmbiguousExtensionType = function (filepath) {
+  try { 
+    let dirname = path.dirname(filepath);
+    let extname = path.extname(filepath);
+    let basename = path.basename(filepath, extname);
+    let configuration = require(`${ dirname }/${ basename }.js`);
+    return Promisie.resolve(configuration);
+  } catch (e) {
+    return fs.readJsonAsync(filepath);
+  }
+};
+
+/**
+ * Returns a bound copy of pull component settings with a pre-defined refresh argument so that it can be correctly called by the utility.reloader function
+ * @param  {string} type The type of configuration that is being reloaded  
+ * @return {Function}      Bound copy of pullConfigurationSettings function
+ */
 var handleConfigurationReload = function (type) {
   if (type.toLowerCase() === 'components') {
     return pullComponentSettings.bind(null, true);
@@ -145,10 +167,13 @@ var readConfigurations = function (filePath, configurationType) {
       else if (stats.isDirectory()) {
         return fs.readdirAsync(filePath)
           .then(files => {
-            return Promisie.map(files, file => {
-              let fullPath = path.join(filePath, file);
-              return _import(fullPath);
-            });
+            if (files.length) {
+              return Promisie.map(files, file => {
+                let fullPath = path.join(filePath, file);
+                return _import(fullPath);
+              });
+            }
+            return [];
           })
           .catch(e => Promisie.reject(e));
       } else return Promisie.reject(new TypeError('Configuration path is not a file or directory'));
@@ -165,10 +190,12 @@ var readAndStoreConfigurations = function (paths, type) {
   paths = (Array.isArray(paths)) ? paths : [paths, ];
   let reads = paths.map(_path => {
     if (typeof _path === 'string') return readConfigurations.bind(null, _path, type);
+    if (typeof _path === 'function') return _path;
     return () => Promisie.reject(new Error('No path specified'));
   });
   return Promisie.settle(reads)
     .then(result => {
+      if (result.rejected.length) logger.error('Invalid Manifest', result.rejected);
       let { fulfilled, } = result;
       fulfilled = fulfilled.map(data => data.value);
       let flatten = function (result, data) {
@@ -231,7 +258,7 @@ var admin_index = function (req, res, next) {
           unauthenticatedManifestSettings.containers &&
           Object.keys(unauthenticatedManifestSettings.containers).length) {
           let layoutPath = utility.findMatchingRoute(unauthenticatedManifestSettings.containers, req._parsedOriginalUrl.pathname);
-          let manifest = (layoutPath)?unauthenticatedManifestSettings.containers[ layoutPath ]:false;
+          let manifest = (layoutPath) ? unauthenticatedManifestSettings.containers[ layoutPath ] :false;
           // console.log({ layoutPath, manifest });
           return utility.ssr_manifest({ layoutPath, manifest, req_url: req._parsedOriginalUrl.pathname, basename:extsettings.basename, });
         } else {
@@ -338,8 +365,7 @@ var pullNavigationSettings = function (configuration) {
  */
 var finalizeSettingsWithTheme = function (data) {
   let filePath = path.join(__dirname, '../../../content/themes', appSettings.theme || appSettings.themename, 'periodicjs.reactadmin.json');
-  return fs.accessAsync(filePath)
-    .then(() => fs.readJsonAsync(filePath))
+  return handleAmbiguousExtensionType(filePath)
     .then(result => {
       result = result['periodicjs.ext.reactadmin'];
       return Promisie.parallel({
@@ -406,7 +432,7 @@ var sanitizeConfigurations = function (data) {
  */
 var pullConfigurationSettings = function (reload) {
   if (manifestSettings && navigationSettings && unauthenticatedManifestSettings && !reload) return Promisie.resolve({ manifest: manifestSettings, navigation: navigationSettings, unauthenticated: unauthenticatedManifestSettings, });
-  return Promisie.all(fs.readJsonAsync(path.join(__dirname, '../../../content/config/extensions.json')), fs.readJsonAsync(path.join(__dirname, '../periodicjs.reactadmin.json')))
+  return Promisie.all(fs.readJsonAsync(path.join(__dirname, '../../../content/config/extensions.json')), handleAmbiguousExtensionType(path.join(__dirname, '../periodicjs.reactadmin.json')))
     .then(configurationData => {
       let [configuration, adminExtSettings, ] = configurationData;
       adminExtSettings = adminExtSettings['periodicjs.ext.reactadmin'];
@@ -552,7 +578,7 @@ var assignComponentStatus = function (component) {
  */
 var pullComponentSettings = function (refresh) {
   if (components && !refresh) return Promisie.resolve(components);
-  return readAndStoreConfigurations(['node_modules/periodicjs.ext.reactadmin/periodicjs.reactadmin.json', `content/themes/${ appSettings.theme || appSettings.themename }/periodicjs.reactadmin.json`, ], 'components')
+  return readAndStoreConfigurations([handleAmbiguousExtensionType.bind(null, path.join(__dirname, '../periodicjs.reactadmin.json')), handleAmbiguousExtensionType.bind(null, path.join(__dirname, `../../../content/themes/${ appSettings.theme || appSettings.themename }/periodicjs.reactadmin.json`)), ])
     .then(results => {
       switch (Object.keys(results).length.toString()) {
       case '1':
@@ -693,7 +719,6 @@ module.exports = function (resources) {
   logger = resources.logger;
   extsettings = resources.app.locals.extension.reactadmin.settings;
   utility = require(path.join(__dirname, '../utility/index'))(resources);
-  `content/themes/${ appSettings.theme || appSettings.themename }/periodicjs.reactadmin.json`;
   versions = (extsettings.application.use_offline_cache) ? {
     theme: fs.readJsonSync(path.join(__dirname, '../../../', `content/themes/${ appSettings.theme || appSettings.themename }/package.json`)).version,
     reactadmin: fs.readJsonSync(path.join(__dirname, '../package.json')).version,

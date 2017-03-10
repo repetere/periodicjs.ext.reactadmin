@@ -1,6 +1,6 @@
 'use strict';
 
-function getReactAdminConfig(options, overwrites){
+function getReactAdminConfig (options, overwrites) {
   return Object.assign({
     'hot_reload': false,
     'custom_css_stylesheet':false,
