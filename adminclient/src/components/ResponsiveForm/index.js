@@ -150,7 +150,12 @@ class ResponsiveForm extends Component{
     } else if (typeof this.props.onSubmit === 'string' && this.props.onSubmit.indexOf('func:this.props') !== -1) {
       delete formdata.formDataFiles;
       delete formdata.formDataErrors;
-      this.props[this.props.onSubmit.replace('func:this.props.', '')](submitFormData);
+      if (this.props.onSubmit === 'func:this.props.setDynamicData') {
+        // console.debug('this.props', this.props);
+        this.props.setDynamicData(this.props.dynamicField, submitFormData);
+      } else {
+        this.props[this.props.onSubmit.replace('func:this.props.', '')](submitFormData);
+      }
     } else if (typeof this.props.onSubmit !== 'function') {
       let fetchOptions = this.props.onSubmit;
       let formBody = new FormData();
@@ -206,7 +211,11 @@ class ResponsiveForm extends Component{
               : this.props[ fetchOptions.successCallback.replace('func:this.props.', '') ];
             res.json()
               .then(successData => {
-                successCallback(fetchOptions.successProps || successData, submitFormData);
+                if (fetchOptions.successCallback === 'func:this.props.setDynamicData') {
+                  this.props.setDynamicData(this.props.dynamicField, submitFormData);
+                } else {
+                  successCallback(fetchOptions.successProps || successData, submitFormData);
+                }
               });
           } else {
             return res.json();

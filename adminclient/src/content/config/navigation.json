@@ -71,8 +71,16 @@
               {
                 "component":"MenuAppLink",
                 "props":{
-                  "href":"/blog/21090",
-                  "label":"Plugins",
+                  "href":"/r-admin/content/testcharts",
+                  "label":"Test Charts",
+                  "id": "plugins"
+                }
+              },
+              {
+                "component":"MenuAppLink",
+                "props":{
+                  "href":"/r-admin/content/testtables",
+                  "label":"Test Tables",
                   "id": "plugins"
                 }
               },

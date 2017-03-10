@@ -33,6 +33,7 @@
     "react-codemirror": "^0.3.0",
     "react-dom": "15.3.2",
     "react-draft-wysiwyg": "^1.7.6",
+    "react-slider": "^0.7.0",
     "validate.js": "^0.11.1"
   },
   "scripts": {

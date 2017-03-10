@@ -1,8 +1,5 @@
 import { combineReducers, } from 'redux';
-// import pageReducer from './pages';
-// import fetchDataReducer from './fetchData';
-// import messageBarReducer from './messageBar';
-// import clientCacheDataReducer from './pages';
+import dynamicReducer from './dynamic';
 import manifestReducer from './manifest';
 import notificationReducer from './notification';
 import userReducer from './user';
@@ -10,12 +7,8 @@ import uiReducer from './ui';
 import settingsReducer from './settings';
 import { routerReducer, } from 'react-router-redux';
 
-const NativeCMSReducer = combineReducers({
-  // page: pageReducer,
-  // tabBarExtensions: tabBarExtensionReducer,
-  // fetchData: fetchDataReducer,
-  // messageBar: messageBarReducer,
-  // clientCacheData: clientCacheDataReducer,
+const ReactAdminReducer = combineReducers({
+  dynamic: dynamicReducer,
   routing: routerReducer,
   settings: settingsReducer,
   ui: uiReducer,
@@ -24,4 +17,4 @@ const NativeCMSReducer = combineReducers({
   notification: notificationReducer,
 });
 
-export default NativeCMSReducer;
+export default ReactAdminReducer;

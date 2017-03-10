@@ -191,7 +191,11 @@ export const fetchAction = function _fetchAction (pathname, fetchOptions, succes
             } else if (typeof successCallbackProp === 'string' && successCallbackProp.indexOf('func:this.props') !== -1) { 
               successCallback = this.props[ success.successCallback.replace('func:this.props.', '') ];
             }
-            successCallback(success.successProps || successData);
+            if (fetchOptions.successCallback === 'func:this.props.setDynamicData') {
+              this.props.setDynamicData(success.dynamicField, success.successProps || successData);
+            } else {
+              successCallback(success.successProps || successData);
+            }
           });
       } else {
         return res.json();

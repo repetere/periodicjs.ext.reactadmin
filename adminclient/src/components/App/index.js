@@ -25,6 +25,7 @@ const history = getHistory(historySettings, AppConfigSettings, store);
 
 const mapStateToProps = (state) => {
   return {
+    dynamic: state.dynamic,
     page: state.page,
     settings: state.settings,
     ui: state.ui,
@@ -59,6 +60,7 @@ const reduxActions = {
   toggleUISidebar: () => store.dispatch(actions.ui.toggleUISidebar()),
   setUILoadedState: (loaded) => store.dispatch(actions.ui.setUILoadedState(loaded)),
   logoutUser: () => store.dispatch(actions.user.logoutUser()),
+  setDynamicData: (prop, val) => store.dispatch(actions.dynamic.setDynamicData(prop, val)),
   fetchLoginComponent: () => store.dispatch(utilities.setCacheConfiguration(actions.ui.fetchComponent(CONSTANTS.ui.LOGIN_COMPONENT), 'components.login')),
   fetchMainComponent: () => store.dispatch(utilities.setCacheConfiguration(actions.ui.fetchComponent(CONSTANTS.ui.MAIN_COMPONENT), 'components.main')),
   fetchErrorComponents: () => store.dispatch(utilities.setCacheConfiguration(actions.ui.fetchComponent(CONSTANTS.ui.ERROR_COMPONENTS), 'components.error')),

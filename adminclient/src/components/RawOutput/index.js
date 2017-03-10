@@ -23,15 +23,15 @@ const RawOutput = (props) => {
   switch (props.type) {
   case 'inline':
     return (
-      <span>{displayData}</span>
+      <span style={props.style}>{displayData}</span>
     );
   case 'block':
     return (
-      <div>{displayData}</div>
+      <div style={props.style}>{displayData}</div>
     );
   default:
     return (
-      <pre>{displayData}</pre>
+      <pre style={props.style}>{displayData}</pre>
     );
   }
 };

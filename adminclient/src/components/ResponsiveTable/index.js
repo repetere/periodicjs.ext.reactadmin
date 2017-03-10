@@ -52,7 +52,7 @@ const defaultProps = {
 class ResponsiveTable extends Component {
   constructor(props) {
     super(props);
-    // console.debug({ props });
+    console.debug('this.props.getState()',this.props.getState());
     let rows = props.rows || [];
     if (props.flattenRowData) {
       rows = rows.map(row => flatten(row, props.flattenRowDataOptions));
