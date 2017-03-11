@@ -1,5 +1,7 @@
 'use strict';
 
+const data_tables = require('./data_tables');
+
 function getReactAdminConfig (options, overwrites) {
   return Object.assign({
     'server_side_react':true,
@@ -76,6 +78,9 @@ function getReactAdminConfig (options, overwrites) {
         'headers':options.profileheaders,
       },
     },   
+    data_tables: {
+      periodic: data_tables,
+    },
   }, overwrites);
 }
 

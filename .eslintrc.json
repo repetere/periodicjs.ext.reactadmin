@@ -26,8 +26,7 @@
     "no-cond-assign": ["warn", "always"],
     "no-unused-vars": "warn",
     "no-console": "warn",
-    "brace-style": ["warn", "1tbs"],
-    "strict": ["error", "safe"]
+    "brace-style": ["warn", "1tbs"]
   },
   "env": {
     "browser": true,

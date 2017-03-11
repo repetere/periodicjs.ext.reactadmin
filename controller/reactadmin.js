@@ -48,6 +48,7 @@ var setCoreDataConfigurations = function () {
   if (!CORE_DATA_CONFIGURATIONS.manifest || !CORE_DATA_CONFIGURATIONS.navigation) {
     if (CORE_DATA_CONFIGURATIONS.manifest === null) {
       let generated = utility.generateDetailManifests(mongoose, {
+        dbname:'periodic',
         extsettings,
         prefix: (typeof periodic.app.locals.adminPath==='string' && periodic.app.locals.adminPath!=='/' && periodic.app.locals.adminPath) ? `${(periodic.app.locals.adminPath.charAt(0)==='/')?periodic.app.locals.adminPath.slice(1):periodic.app.locals.adminPath}/content`:'content',
       });

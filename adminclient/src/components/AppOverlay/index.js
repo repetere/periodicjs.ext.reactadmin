@@ -79,7 +79,7 @@ class ModalUI extends Component {
             footerContent={footerContent}
             isActive={true}
             onCloseRequest={this.props.hide}
-            className={`animated ${(this.props.animation? this.props.animation: 'zoomIn')} Slow-Speed`}
+            className={`animated ${(this.props.animation? this.props.animation: 'zoomIn')} Medium-Speed`}
             showOverlayCloseButton={false}
             >
             <Content>
