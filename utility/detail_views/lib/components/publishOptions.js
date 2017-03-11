@@ -64,11 +64,12 @@ function _updatedat() {
   };
 }
 
-function _name () {
+function _name(schema, label, options) {
+  let namefield = (schema.username) ? 'username' : 'name';
   return {
     type: 'text',
-    name: 'name',
-    label: 'Name',
+    name: namefield,
+    label: capitalize(namefield),
     labelProps: {
       style: {
         flex: 1,
@@ -322,7 +323,7 @@ function _publishButtons (schema, label, options = {}) {
 function getPublishOptions(schema, label, options) {
   let pubOptions = [
     _id(),
-    _name(),
+    _name(schema, label, options),
   ];
   if (schema.status) {
     pubOptions.push(_status());

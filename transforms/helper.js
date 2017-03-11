@@ -23,8 +23,10 @@ function _getAdminPathname (periodic, pathname) {
 exports.getAdminPathname = _getAdminPathname;
 
 exports.getFileURL = function (options) {
-  let { periodic, req, asset, } = options;
-  if (asset.attributes.encrypted_client_side) {
+  let { periodic, req, asset, skip_decryption, } = options;
+  if (skip_decryption && asset.attributes && asset.attributes.encrypted_client_side){
+    return '/extensions/periodicjs.ext.reactadmin/img/icons/key167.svg';
+  } else if (asset.attributes && asset.attributes.encrypted_client_side) {
     let decryptedFilePath = _getAdminPathname(periodic, `/securecontent/secure-asset/${ asset._id 
 }/${ asset.attributes.periodicFilename }`);
     // asset.fileurl_encrypted = asset.fileurl;

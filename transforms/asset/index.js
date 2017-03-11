@@ -8,6 +8,44 @@ const path = require('path');
 const dms2dec = require('dms2dec');
 const ExifImage = require('exif').ExifImage;
 
+exports.formatAssetIndex = (periodic) => (req) => {
+  return new Promise((resolve, reject) => {
+    try {
+      req.controllerData.assets = req.controllerData.assets.map(asset => {
+        asset = helper.getControllerDataEntity(asset);
+        asset.transform = Object.assign({}, asset.transform);
+        asset.transform.attributes = [];
+        if (asset.assettype.match('image')) {
+          asset.transform.exif = (asset.attributes && asset.attributes.exif_data)
+            ? (asset.attributes.exif_data && asset.attributes.exif_data.gps && Object.keys(asset.attributes.exif_data.gps).length)
+              ? 'fa fa-map'
+              :false
+            : 'fa fa-map-o';
+        }
+        asset.transform.encrypted = (asset.attributes && asset.attributes.encrypted_client_side) ? 'fa fa-lock' : false;
+        asset.transform.fileurl = helper.getFileURL({ asset, periodic, req, skip_decryption:true, });
+        let assetpreviewImg = helper.getAssetPreview(asset);
+        asset.transform.preview = `${
+          (req.headers.origin === 'http://localhost:3000' && assetpreviewImg.indexOf('http') === -1)
+            ? 'http://localhost:8786'
+            : ''}${assetpreviewImg}`;
+        asset.transform.size = prettysize(asset.size);
+        if (asset.transform.exif) {
+          asset.transform.attributes.push(asset.transform.exif);
+        }
+        if (asset.transform.encrypted) {
+          asset.transform.attributes.push(asset.transform.encrypted);
+        }  
+        // console.log({ asset });
+        return asset;
+      });  
+      resolve(req);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 exports.formatAssetItem = (periodic) => (req) => {
   return new Promise((resolve, reject) => {
     try {
@@ -15,7 +53,7 @@ exports.formatAssetItem = (periodic) => (req) => {
       let asset = helper.getControllerDataEntity(req.controllerData.asset);
       asset.transform = Object.assign({}, asset.transform);
       // console.log({ asset },' prettysize(asset.size)', prettysize(asset.size));
-      asset.transform.encrypted = (asset.attributes.encrypted_client_side) ? true : false;
+      asset.transform.encrypted = (asset.attributes.encrypted_client_side) ? 'true' : 'false';
       asset.transform.fileurl = helper.getFileURL({ asset, periodic, req, });
 
       let assetpreviewImg = helper.getAssetPreview(asset);
@@ -33,7 +71,7 @@ exports.formatAssetItem = (periodic) => (req) => {
   });
 };
 
-exports.get_file_meta_info = (periodic) => (req) => {
+exports.getFileMetaInfo = (periodic) => (req) => {
   var exifDataJSON;
   return new Promise((resolve, reject) => {
     try {

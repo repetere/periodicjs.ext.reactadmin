@@ -40,7 +40,7 @@ var handleTable = function (label, data) {
   };
 };
 
-var buildInputComponent = function (label, type) {
+var buildInputComponent = function (label, type, schema, options) {
   let input = {
     type: (['text', 'boolean', 'id', '_id', ].indexOf(type) !== -1) ? 'text' : type,
     label: capitalize.words(label.replace(/_/g, ' ')),
@@ -49,11 +49,19 @@ var buildInputComponent = function (label, type) {
         flex:3,
       },
     },
-    name: (type==='_id') ? '_id': label.replace(/\s/g, '.'),
+    name: (type==='_id' &&(label==='id'||label==='_id')) ? '_id': label.replace(/\s/g, '.'),
     layoutProps: {
       horizontalform: true,
     },
   };
+  if (type === '_id' || type==='array') {
+    input.type = 'datalist';
+    input.datalist = {
+      selector: '_id',
+      displayfield: 'title',
+      multi: (type === 'array') ? true : false,
+    };
+  }
   if (type === 'boolean') {
     input.type = 'select';
     input.options = [

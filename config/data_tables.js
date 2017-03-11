@@ -83,7 +83,7 @@ module.exports = {
         maxWidth: 150,
         // overflow: 'hidden',
         // textOverflow: 'ellipsis',
-      }
+      },
     }),
     data_tables.tableField({
       title: 'Privilege ID',
@@ -96,6 +96,48 @@ module.exports = {
     data_tables.tableField({
       title: 'Description',
       field: 'description',
+    }),
+    data_tables.tableOptions,
+  ],
+  asset: [
+    data_tables.tableField({
+      field: 'name',
+      link: true,
+      headerStyle: {
+        maxWidth: 150,
+        // overflow: 'hidden',
+        // textOverflow: 'ellipsis',
+      },
+      columnStyle: {
+        maxWidth: 150,
+        // overflow: 'hidden',
+        // textOverflow: 'ellipsis',
+      },
+    }),
+    data_tables.tableCreatedDate,
+    data_tables.tableField({
+      title: 'Size',
+      field: 'transform.size',
+    }),
+    data_tables.tableField({
+      title: 'Attributes',
+      icon: true,
+      field: 'transform.attributes',
+    }),
+    // data_tables.tableField({
+    //   title: 'Encrypted',
+    //   icon: true,
+    //   field: 'transform.encrypted',
+    // }),
+    // data_tables.tableField({
+    //   title: 'Exif',
+    //   icon: true,
+    //   field: 'transform.exif',
+    // }),
+    data_tables.tableField({
+      title: 'Preview',
+      image: true,
+      field: 'transform.preview',
     }),
     data_tables.tableOptions,
   ],

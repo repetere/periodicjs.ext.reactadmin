@@ -12,6 +12,19 @@ const tableField = function (headingOptions) {
       label: title || capitalize(field || label),
       sortid: field || label,
       sortable: true,
+      image: headingOptions.image,
+      imageProps: {
+        style: {
+          maxHeight:'4rem',
+          maxWidth: '4rem',
+          overflow:'hidden',
+        },
+        alt: title || capitalize(field || label),
+      },
+      icon: headingOptions.icon,
+      iconProps: {
+        title: title || capitalize(field || label),
+      },
       'link': (link)
         ? {
           'baseUrl': `${manifestPrefix}/${pluralize(label)}/:id`,

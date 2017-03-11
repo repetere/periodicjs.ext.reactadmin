@@ -52,7 +52,7 @@ const defaultProps = {
 class ResponsiveTable extends Component {
   constructor(props) {
     super(props);
-    console.debug('this.props.getState()',this.props.getState());
+    // console.debug('this.props.getState()',this.props.getState());
     let rows = props.rows || [];
     if (props.flattenRowData) {
       rows = rows.map(row => flatten(row, props.flattenRowDataOptions));
@@ -160,7 +160,7 @@ class ResponsiveTable extends Component {
     }
   }
   formatValue(value, row, options) {
-    // console.log({ value, row, options });
+    // console.info({ value, row, options });
     let returnValue = value;
     if (typeof options.idx !=='undefined' && typeof returnValue==='string' && returnValue.indexOf('--idx--')!==-1) {
       returnValue = returnValue.replace('--idx--', options.idx);
@@ -170,6 +170,21 @@ class ResponsiveTable extends Component {
     }
     if (options.momentFormat) {
       returnValue = moment(value).format(options.momentFormat);
+    } else if (options.icon && value) {
+        // console.debug({value})
+      if (typeof value !== 'string' && Array.isArray(value)) {
+        let icons = value.map((val, i) => <rb.Icon key={i+Math.random()} {...options.iconProps} icon={val} />);
+        return icons;
+      } else {
+        return <rb.Icon {...options.iconProps} icon={value} />
+      }
+    } else if (options.image && value) {
+      if (typeof value !== 'string' && Array.isArray(value)) {
+        let images = value.map((val, i) => <rb.Image key={i} {...options.imageProps} src={val} />);
+        return {images}
+      } else {
+        return <rb.Image {...options.imageProps} src={value} />
+      }
     }
     return returnValue;
   }
@@ -191,11 +206,6 @@ class ResponsiveTable extends Component {
       ? ((this.state.limit * this.state.currentPage))
       : this.state.limit;
     let displayRows = this.state.rows.slice(startIndex, endIndex);
-    // console.debug({
-    //   startIndex,
-    //   endIndex,
-    // });
-    // console.debug('this.state',this.state);
     const { numPages, currentPage, } = this.state;
     const pageButtons = [];
     const lastIndex = numPages - 1;
@@ -348,6 +358,10 @@ class ResponsiveTable extends Component {
                               {
                                 idx: rowIndex+calcStartIndex,
                                 momentFormat: header.momentFormat,
+                                image: header.image,
+                                imageProps: header.imageProps,
+                                icon: header.icon,
+                                iconProps: header.iconProps,
                               })
                           }</Link>
                         </rb.Td>
@@ -372,6 +386,10 @@ class ResponsiveTable extends Component {
                                   {
                                     idx: rowIndex+calcStartIndex,
                                     momentFormat: header.momentFormat,
+                                    image: header.image,
+                                    imageProps: header.imageProps,
+                                    icon: header.icon,
+                                    iconProps: header.iconProps,
                                   }) || '',
                               }, button));
                             })
@@ -392,6 +410,10 @@ class ResponsiveTable extends Component {
                               {
                                 idx: rowIndex+calcStartIndex,
                                 momentFormat: header.momentFormat,
+                                image: header.image,
+                                imageProps: header.imageProps,
+                                icon: header.icon,
+                                iconProps: header.iconProps,
                               })
                           }
                         </rb.Td>

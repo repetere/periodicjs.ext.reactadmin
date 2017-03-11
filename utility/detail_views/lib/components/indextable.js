@@ -71,6 +71,14 @@ const getTableHeader = function _getTableHeader(schemas, label, options) {
   }
 };
 
+const getTableProps = function _getTableProps(schemas, label, options) {
+  if(options.extsettings.data_table_props && options.extsettings.data_table_props[options.dbname] && options.extsettings.data_table_props[options.dbname][label]) {
+    return options.extsettings.data_table_props[ options.dbname ][ label ];
+  } else {
+    return {};
+  }
+};
+
 module.exports = function (schemas, label, options) {
   let usablePrefix = helpers.getDataPrefix(options.prefix);
   return [
@@ -86,7 +94,7 @@ module.exports = function (schemas, label, options) {
       children: [
         {
           component: 'ResponsiveTable',
-          props: {
+          props: Object.assign({
             style: {
               wordWrap: 'break-word',
             },
@@ -113,7 +121,7 @@ module.exports = function (schemas, label, options) {
               },
             },
             headers: getTableHeader(schemas, label, options),
-          },
+          }, getTableProps(schemas, label, options)),
           asyncprops:{
             'rows': [
               helpers.getIndexLabel(label), `${pluralize(label)}`,
