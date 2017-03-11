@@ -66,16 +66,12 @@ var buildInputComponent = function (label, type) {
         'value': 'false',
       },
     ];
-                          // passProps:{
-                          //   style:{
-                          //     width:'100%',
-                          //   },
-                          // },
-                          
   }
-  // if (label === '_id' || label === 'id') {
-  //   console.log({ label, type, input, });
-  // }
+  if (label === 'entitytype') {
+    input.passProps = {
+      state: 'isDisabled',
+    };
+  }
   return input;
 };
 

@@ -59,7 +59,7 @@ const buildDetail = function (schema, label, options = {}) {
       ? schema[ key ].type
       : schema[ key ];
     let type = DICTIONARY[ Symbol.for(data) ];
-    if ([ '_id', 'id', 'content', 'title', 'name', 'status', ].indexOf(key) !== -1) {
+    if ([ '_id', 'id', 'content', 'title', 'name', 'status', 'description', ].indexOf(key) !== -1) {
       // console.log({ key, schema });
     } else if (type && type !== 'array' && !Array.isArray(data)) {
       formElements[ 0 ][

@@ -219,8 +219,10 @@ export function getImage(options) {
   //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
   return (<FormItem key={i} {...formElement.layoutProps} >
     {getFormLabel(formElement)}  
-    <Image key={i}  {...imageProps}
-    src={initialValue} />
+    {(formElement.link)
+      ? (<a href={initialValue} target="_blank"><Image key={i}  {...imageProps} src={this.state[formElement.preview]||initialValue} /></a>)
+      : <Image key={i}  {...imageProps} src={this.state[formElement.preview]||initialValue} />
+    }
   </FormItem>);
 }
 

@@ -96,11 +96,11 @@ function _title () {
   };
 }
 
-function _content () {
+function _content (type = 'content') {
   return {
     type: 'textarea',
-    name: 'content',
-    label: 'Content',
+    name: type,
+    label: capitalize(type),
     labelProps: {
       style: {
         flex: 1,
@@ -221,6 +221,7 @@ function _dateday () {
 function _assetpreview() {
   return {
     type: 'image',
+    link:true,
     'layoutProps': {
       // 'innerFormItem': true,
       // style: {
@@ -233,6 +234,7 @@ function _assetpreview() {
       // },
     },
     name: 'transform.fileurl',
+    preview: 'transform.previewimage',
   };
 }
 
@@ -317,39 +319,57 @@ function _publishButtons (schema, label, options = {}) {
   };
 }
 
-exports.publishBasic = function _publishBasic(schema, label, options = {}) {
-  // console.log({ schema });
-  let contentItems = [
-    _title(),
-    _content(),
-  ];
+function getPublishOptions(schema, label, options) {
   let pubOptions = [
     _id(),
     _name(),
-    _status(),
-    _dateday(),
-    _datetime(),
-    _publishButtons(schema, label, options),
   ];
+  if (schema.status) {
+    pubOptions.push(_status());
+  }
+  if (schema.publishat) {
+    pubOptions = pubOptions.concat([
+      _dateday(),
+      _datetime(),
+    ]);
+  }
   if (schema.fileurl) {
-    contentItems = [
-      _assetpreview(),
-      _title(),
-      _content(),
-    ];
-    pubOptions = [
-      _id(),
-      _name(),
-      _status(),
+    pubOptions = pubOptions.concat([
       _getLine(),
       _assetField('transform.fileurl', 'File URL')(),
       _assetField('transform.size', 'File Size')(),
       _assetField('locationtype', 'Location Type')(),
       _assetField('transform.encrypted', 'Encrypted')(),
-      _assetField('attributes.periodicFilename', 'Periodic Filename')(),
-      _publishButtons(schema, label, options),
-    ];
+      _assetField('attributes.periodicFilename', 'Periodic Filename')()
+    ]);
   }
+  pubOptions.push(_publishButtons(schema, label, options));
+
+  return pubOptions;
+}
+
+function getContentOptions(schema, label, options) {
+  let contentItems = [];
+  if (schema.fileurl) {
+    contentItems.push(_assetpreview(schema, label, options));
+  }
+  if (schema.title) {
+    contentItems.push(_title());
+  }
+  if (schema.content) {
+    contentItems.push(_content());
+  }
+  if (schema.description) {
+    contentItems.push(_content('description'));
+  }
+  return contentItems;
+}
+
+exports.publishBasic = function _publishBasic(schema, label, options = {}) {
+  // console.log({ schema });
+  let contentItems = getContentOptions(schema, label, options);
+  let pubOptions = getPublishOptions(schema, label, options);
+
   let publishBasic = {
     gridProps: {
       isMultiline: false,

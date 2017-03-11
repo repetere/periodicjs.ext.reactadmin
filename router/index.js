@@ -1,6 +1,7 @@
 const path = require('path');
 
 module.exports = function(periodic) {
+  console.log(periodic.app.controller.native.asset)
   const ExtensionRouter = periodic.express.Router();
   const ReactAdminRouter = require(path.resolve(__dirname, './reactadmin'))(periodic);
   const ComponentRouter = require(path.resolve(__dirname, './component'))(periodic);

@@ -70,4 +70,33 @@ module.exports = {
     }),
     data_tables.tableOptions,
   ],
+  userprivilege: [
+    data_tables.tableField({
+      field: 'name',
+      link: true,
+      headerStyle: {
+        maxWidth: 150,
+        // overflow: 'hidden',
+        // textOverflow: 'ellipsis',
+      },
+      columnStyle: {
+        maxWidth: 150,
+        // overflow: 'hidden',
+        // textOverflow: 'ellipsis',
+      }
+    }),
+    data_tables.tableField({
+      title: 'Privilege ID',
+      field: 'userprivilegeid',
+    }),
+    data_tables.tableField({
+      title: 'Label',
+      field: 'label',
+    }),
+    data_tables.tableField({
+      title: 'Description',
+      field: 'description',
+    }),
+    data_tables.tableOptions,
+  ],
 };
