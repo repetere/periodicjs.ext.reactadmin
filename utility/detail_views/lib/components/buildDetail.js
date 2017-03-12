@@ -60,7 +60,7 @@ const buildDetail = function (schema, label, options = {}) {
       ? schema[ key ].type
       : schema[ key ];
     let type = DICTIONARY[ Symbol.for(data) ];
-    elems.push({key,label,type,data});
+    elems.push({ key, label, type, data, });
     if ([ '_id', 'id', 'content', 'title', 'name', 'status', 'description', ].indexOf(key) !== -1) {
       // console.log({ key, schema });
     } else if (type || (data && Array.isArray(data))) {
@@ -73,7 +73,7 @@ const buildDetail = function (schema, label, options = {}) {
           : 'formGroupElementsRight'
       ].push(autoFormElements.buildInputComponent(key, type, schema, options));
     } else if (data && typeof data === 'object' && !Array.isArray(data)) {
-      top.props.formgroups.push(autoFormElements.buildFormGroup(key, data, true));
+      top.props.formgroups.push(autoFormElements.buildFormGroup(key, data, true, schema, options));
     } else if (Array.isArray(data)) {
       result.push(autoFormElements.handleTable(key, data));
     }

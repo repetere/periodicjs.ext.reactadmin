@@ -10,6 +10,7 @@ import RawStateOutput from '../RawOutput/RawStateOutput';
 import MenuAppLink from '../AppSidebar/MenuAppLink';
 import SubMenuLinks from '../AppSidebar/SubMenuLinks';
 import CodeMirror from '../RACodeMirror';
+import ResponsiveDatalist from '../ResponsiveDatalist';
 // import Editor from '../RAEditor';
 import ResponsiveTable from '../ResponsiveTable';
 import ResponsiveCard from '../ResponsiveCard';
@@ -24,7 +25,7 @@ import utilities from '../../util';
 let renderIndex = 0;
 
 export let AppLayoutMap = Object.assign({}, {
-  recharts, ResponsiveForm, RawOutput, RawStateOutput, FormItem, MenuAppLink, SubMenuLinks, ResponsiveTable, ResponsiveCard, ResponsiveChart, ResponsiveBar, ResponsiveTabs, CodeMirror, ReactSlider, GoogleMap, /* Editor,*/
+  recharts, ResponsiveForm, RawOutput, RawStateOutput, FormItem, MenuAppLink, SubMenuLinks, ResponsiveTable, ResponsiveCard, ResponsiveChart, ResponsiveBar, ResponsiveTabs, ResponsiveDatalist, CodeMirror, ReactSlider, GoogleMap, /* Editor,*/
 }, React.DOM, rebulma, { Link, });
 
 // console.log({ AppLayoutMap });

@@ -54,12 +54,32 @@ var buildInputComponent = function (label, type, schema, options) {
       horizontalform: true,
     },
   };
-  if (type === '_id' || type==='array') {
+  if ((type === '_id' || type==='array') && (schema && schema[label])) {
+
+    let usablePrefix = helpers.getDataPrefix(options.prefix);
+    // let manifestPrefix = helpers.getManifestPathPrefix(options.prefix);
+    // console.log('-----','-----','-----','-----');
+    // if(!schema || !schema[label]){
+    //   console.log('missing label schema',label,schema);
+    // }
+    // console.log('schema[label]',schema[label]);
+    let entity = label;
+    if(schema[label] && Array.isArray(schema[label]) &&schema[label].length && schema[label][0].ref ){
+      entity = schema[label][0].ref;
+    } else if(schema[label] && schema[label].ref){
+      entity = schema[label].ref;
+    }
+    // console.log(label,'entity',entity,'schema[label].length',schema[label].length,'schema[label]',schema[label]);
+
+
     input.type = 'datalist';
+    input.placeholder=`${capitalize(label)} › ${entity}`;
     input.datalist = {
       selector: '_id',
-      displayfield: 'title',
+      displayField: 'title',
       multi: (type === 'array') ? true : false,
+      field:label,
+      resourceUrl: `${options.extsettings.basename}/${usablePrefix}/${pluralize(entity.toLowerCase())}/?format=json`,
     };
   }
   if (type === 'boolean') {
@@ -83,15 +103,15 @@ var buildInputComponent = function (label, type, schema, options) {
   return input;
 };
 
-var handleFormElements = function (label, value) {
+var handleFormElements = function (label, value, schema, options) {
   value = (value && value.type && DICTIONARY[Symbol.for(value.type)]) ? value.type : value;
   let type = DICTIONARY[Symbol.for(value)];
-  if (type && type !== 'array' && !Array.isArray(value)) return buildInputComponent(label, type);
+  if (type && type !== 'array' && !Array.isArray(value)) return buildInputComponent(label, type, schema, options);
   else if (value && typeof value === 'object' && !Array.isArray(value)) return buildFormGroup(label, value); 
   else if (Array.isArray(value)) return handleTable(label, value);
 };
 
-var buildFormGroup = function (label, data, isRoot = false) {
+var buildFormGroup = function (label, data, isRoot = false, schema, options) {
   return {
     card: {
       twoColumns: isRoot,
@@ -104,11 +124,11 @@ var buildFormGroup = function (label, data, isRoot = false) {
         formGroupElementsLeft: [],
         formGroupElementsRight: [],
       };
-      let elem = handleFormElements(`${ label } ${ key }`, data[key]);
+      let elem = handleFormElements(`${ label } ${ key }`, data[key], schema, options);
       result[0][(index % 2 === 0) ? 'formGroupElementsLeft' : 'formGroupElementsRight'].push(elem);
       return result;
     }, []) : Object.keys(data).reduce((result, key) => {
-      let elem = handleFormElements(`${ label } ${ key }`, data[key]);
+      let elem = handleFormElements(`${ label } ${ key }`, data[key], schema, options);
       result.push(elem);
       return result;
     }, []),
