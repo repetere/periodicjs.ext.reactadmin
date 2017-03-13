@@ -8,6 +8,7 @@ module.exports = function buildManifest (schemas, options = {}) {
   let manifestPrefix = helpers.getManifestPathPrefix(options.prefix);
   return Object.keys(schemas).reduce((result, key) => {
     result[`${manifestPrefix}/${pluralize(key)}`] = components.constructIndex(schemas[ key ], key, options);
+    result[`${manifestPrefix}/${pluralize(key)}/new`] = components.constructDetail(schemas[ key ], key, options, true);
     result[`${manifestPrefix}/${pluralize(key)}/:id`] = components.constructDetail(schemas[ key ], key, options);
     return result;
   }, {});

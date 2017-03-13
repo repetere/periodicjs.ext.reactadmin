@@ -9,7 +9,7 @@ const autoFormElements = require('./autoFormElements');
 const publishOptions = require('./publishOptions');
 pluralize.addIrregularRule('data', 'datas');
 
-const buildDetail = function (schema, label, options = {}) {
+const buildDetail = function (schema, label, options = {}, newEntity) {
   let elems = [];
   let usablePrefix = helpers.getDataPrefix(options.prefix);
   let top = {
@@ -19,12 +19,14 @@ const buildDetail = function (schema, label, options = {}) {
     },
     props: {
       onSubmit:{
-        url: `${options.extsettings.basename}/${usablePrefix}/${pluralize(label)}/:id?format=json&unflatten=true`,
-        params: [
+        url: (newEntity)
+          ?`${options.extsettings.basename}/${usablePrefix}/${pluralize(label)}?format=json&unflatten=true`
+          :`${options.extsettings.basename}/${usablePrefix}/${pluralize(label)}/:id?format=json&unflatten=true`,
+        params: (newEntity)?undefined:[
           { 'key': ':id', 'val': '_id', },
         ],
         options:{
-          method:'PUT',
+          method:(newEntity)?'POST':'PUT',
         },
         success: true,
       },
@@ -80,7 +82,7 @@ const buildDetail = function (schema, label, options = {}) {
       result.push(autoFormElements.handleTable(key, data));
     }
   }
-  result[ 0 ].props.formgroups.splice(0, 0, publishOptions.publishBasic(schema, label, options));
+  result[ 0 ].props.formgroups.splice(0, 0, publishOptions.publishBasic(schema, label, options, newEntity));
   result[ 0 ].props.formgroups.push(publishOptions.publishAttributes(schema, label, options));
 
   // result.push(

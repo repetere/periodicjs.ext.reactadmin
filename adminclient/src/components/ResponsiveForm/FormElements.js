@@ -430,7 +430,7 @@ export function getFormSubmit(options) {
                   children: [
                     {
                       component: 'ResponsiveButton',
-                      props: {
+                      props: Object.assign({
                         style:{
                           margin:10
                         },
@@ -444,12 +444,12 @@ export function getFormSubmit(options) {
                           this.submitForm.call(this);
                         },
                         onclickProps:'last',
-                      },  
-                      children:'Yes' 
+                      },formElement.confirmModal.yesButtonProps),  
+                      children:formElement.confirmModal.yesButtonText||'Yes' 
                     },
                     {
                       component: 'ResponsiveButton',
-                      props: {
+                      props: Object.assign({
                         style:{
                           margin:10
                         },
@@ -458,8 +458,8 @@ export function getFormSubmit(options) {
                         },
                         onClick: 'func:this.props.hideModal',
                         onclickProps:'last',
-                      },  
-                      children:'No',
+                      },formElement.confirmModal.noButtonProps),  
+                      children:formElement.confirmModal.noButtonText||'No',
                     }
                   ] 
                 }

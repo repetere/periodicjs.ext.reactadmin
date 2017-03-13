@@ -17,10 +17,10 @@ pluralize.addIrregularRule('data', 'datas');
  * @param {*} label 
  * @param {*} options 
  */
-const constructDetail = function (schema, label, options = {}) {
+const constructDetail = function (schema, label, options = {}, newEntity) {
   let usablePrefix = helpers.getDataPrefix(options.prefix);
   return {
-    resources: {
+    resources: (newEntity)?undefined: {
       [ helpers.getDetailLabel(label) ]: `/${usablePrefix}/${pluralize(label)}/:id?format=json`,
     },
     onFinish:'render',
@@ -67,14 +67,14 @@ const constructDetail = function (schema, label, options = {}) {
                     name: 'Basic Editor',
                     layout: {
                       component: 'div',
-                      children: buildDetail(schema, label, options),
+                      children: buildDetail(schema, label, options, newEntity),
                     },
                   },
                   {
                     name: 'Advanced Editor',
                     layout: {
                       component: 'div',
-                      children: buildAdvancedDetail(schema, label, options),
+                      children: buildAdvancedDetail(schema, label, options, newEntity),
                     },
                   },
                 ],
@@ -149,7 +149,7 @@ const constructIndex = function (schema, label, options = {}) {
                   children: `Create ${capitalize(label)}`,  
                   props: {
                     onClick: 'func:this.props.reduxRouter.push',
-                    onclickProps: `${manifestPrefix}/${pluralize(label)}`,
+                    onclickProps: `${manifestPrefix}/${pluralize(label)}/new`,
                     buttonProps: {
                       size: 'isMedium',
                       color:'isPrimary',

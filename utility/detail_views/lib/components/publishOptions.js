@@ -27,6 +27,7 @@ function _id() {
 function _dataList(schema, label, options, type) {
   let entity = helpers.getSchemaEntity({ schema, label, });
   let usablePrefix = helpers.getDataPrefix(options.prefix);
+  let manifestPrefix = helpers.getManifestPathPrefix(options.prefix);
 
   return {
     type: 'datalist',
@@ -46,6 +47,7 @@ function _dataList(schema, label, options, type) {
       field:label,
       entity: entity.toLowerCase(),
       dbname: options.dbname ||'periodic',
+      resourcePreview: `${manifestPrefix}/${pluralize(entity.toLowerCase())}`,
       resourceUrl: `${options.extsettings.basename}/${usablePrefix}/${pluralize(entity.toLowerCase())}/?format=json`,
     },
   };
@@ -65,9 +67,9 @@ function _createdat () {
     passProps: {
       state: 'isDisabled',
     },
-    layoutProps: {
-      horizontalform: true,
-    },
+    // layoutProps: {
+    //   horizontalform: true,
+    // },
   };
 }
 
@@ -84,9 +86,9 @@ function _updatedat() {
     passProps: {
       state: 'isDisabled',
     },
-    layoutProps: {
-      horizontalform: true,
-    },
+    // layoutProps: {
+    //   horizontalform: true,
+    // },
   };
 }
 
@@ -271,7 +273,7 @@ exports.datetime = _datetime;
 exports.title = _title;
 exports.content = _content;
 
-function _publishButtons (schema, label, options = {}) {
+function _publishButtons (schema, label, options = {}, newEntity) {
   let usablePrefix = helpers.getDataPrefix(options.prefix);
   let manifestPrefix = helpers.getManifestPathPrefix(options.prefix);
   return {
@@ -285,7 +287,7 @@ function _publishButtons (schema, label, options = {}) {
     groupElements: [
       {
         type: 'submit',
-        value: 'Save Changes',
+        value: (newEntity)?`Create ${capitalize(label)}`:'Save Changes',
         passProps: {
           color: 'isPrimary',
           // style: styles.buttons.primary,
@@ -337,6 +339,7 @@ function _publishButtons (schema, label, options = {}) {
             },
             buttonProps: {
               color: 'isDanger',
+              state: (newEntity)?'isDisabled':undefined,
             },
             confirmModal: {},
           },
@@ -346,7 +349,7 @@ function _publishButtons (schema, label, options = {}) {
   };
 }
 
-function getPublishOptions(schema, label, options) {
+function getPublishOptions(schema, label, options, newEntity) {
   let pubOptions = [
     _id(),
     _name(schema, label, options),
@@ -381,7 +384,7 @@ function getPublishOptions(schema, label, options) {
       _assetField('attributes.periodicFilename', 'Periodic Filename')(),
     ]);
   }
-  pubOptions.push(_publishButtons(schema, label, options));
+  pubOptions.push(_publishButtons(schema, label, options, newEntity));
 
   return pubOptions;
 }
@@ -415,10 +418,10 @@ function getContentOptions(schema, label, options) {
   return contentItems;
 }
 
-exports.publishBasic = function _publishBasic(schema, label, options = {}) {
+exports.publishBasic = function _publishBasic(schema, label, options = {}, newEntity) {
   // console.log({ schema });
   let contentItems = getContentOptions(schema, label, options);
-  let pubOptions = getPublishOptions(schema, label, options);
+  let pubOptions = getPublishOptions(schema, label, options, newEntity);
 
   let publishBasic = {
     gridProps: {
@@ -508,13 +511,16 @@ exports.publishAttributes = function _publishAtrributes(schema, label, options =
           {
             type: 'code',
             name: 'attributes',
-            stringify:true,
+            stringify: true,
+            value: {},
           },
         ],
         formGroupCardRight: [
           {
             type: 'code',
             name:'extensionattributes',
+            stringify: true,
+            value: {},
           },
         ],
       },
