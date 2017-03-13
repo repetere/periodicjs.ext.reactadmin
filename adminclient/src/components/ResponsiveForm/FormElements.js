@@ -100,6 +100,12 @@ export function getFormDatalist(options){
           width:'100%'
         }
       },
+      // onChange:(val)=>{
+      //   console.debug('getFDL',{val});
+      //   let updatedStateProp = {};
+      //   updatedStateProp[ formElement.name ] = val;
+      //   this.setState(updatedStateProp);
+      // },
     },
     formElement.datalist,);
     // console.debug({formElement,initialValue, },'this.state',this.state);
@@ -107,7 +113,7 @@ export function getFormDatalist(options){
   {getFormLabel(formElement)}  
     <ResponsiveDatalist {...passedProps}
       onChange={(newvalue)=>{
-        // console.log({ newvalue });
+        console.debug({ newvalue });
         let updatedStateProp = {};
         updatedStateProp[ formElement.name ] = newvalue;
         this.setState(updatedStateProp);

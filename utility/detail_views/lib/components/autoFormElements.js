@@ -79,6 +79,7 @@ var buildInputComponent = function (label, type, schema, options) {
       displayField: 'title',
       multi: (type === 'array') ? true : false,
       field:label,
+      entity:entity.toLowerCase(),
       resourceUrl: `${options.extsettings.basename}/${usablePrefix}/${pluralize(entity.toLowerCase())}/?format=json`,
     };
   }

@@ -1,8 +1,10 @@
 import React, { Component, PropTypes, } from 'react';
-import flatten from 'flat';
+// import flatten from 'flat';
+import qs from 'querystring';
 import * as rb from 're-bulma';
 import debounce from 'debounce';
 import utilities from '../../util';
+import pluralize from 'pluralize';
 
 const propTypes = {
   disabled: PropTypes.bool,
@@ -18,6 +20,7 @@ const propTypes = {
   selectedData: PropTypes.object,
   value: PropTypes.any,
   onChange: PropTypes.func,
+  limit: PropTypes.number,
 };
 
 const defaultProps = {
@@ -30,6 +33,7 @@ const defaultProps = {
   flattenDataListOptions: {},
   selector:'_id',
   displayField:'title',
+  limit:10,
   onChange:(data)=>{console.debug('ResponsiveDatalist onChange',{data})}
 };
 
@@ -40,9 +44,10 @@ class ResponsiveDatalist extends Component {
       disabled: props.disabled,
       data: props.data,
       value: props.value,
-      selectedData: props.selectedData || props.value,
+      selectedData: props.selectedData,
+      isSearching:false,
     };
-    // console.debug({props});
+    this.inputProps = Object.assign({},this.props.passableProps);
     this.searchFunction = debounce(this.updateDataList, 200);
 
   }
@@ -51,24 +56,74 @@ class ResponsiveDatalist extends Component {
     // this.setState(Object.assign({}, nextProps, this.props.getState()));
     // // console.log('this.state', this.state);
   }
-  onChangeHandler(event){
-
+  updateDataList(options){
+    if(this.props.resourceUrl){
+      this.setState({ isSearching: true, });
+      let stateProps = this.props.getState();
+      let fetchURL = `${this.props.resourceUrl}&${qs.stringify({
+        limit: this.props.limit,
+        // sort: (newSortOptions.sortProp)
+        //   ? `${newSortOptions.sortOrder}${newSortOptions.sortProp}`
+        //   : undefined,
+        search: options.search,
+        allowSpecialCharacters: true,
+        // pagenum: options.pagenum || 1,
+      })}`;
+      let headers = Object.assign({
+        'x-access-token': stateProps.user.jwt_token,
+      }, stateProps.settings.userprofile.options.headers);
+      utilities.fetchComponent(fetchURL, { headers, })()
+        .then(response => { 
+          let updatedState = {};
+          updatedState.selectedData = response[pluralize(this.props.entity)];
+          updatedState.isSearching = false;
+          // console.debug({updatedState,response});
+          this.setState(updatedState);
+        }, e => {
+          this.props.errorNotification(e);
+        });
+    } else{
+      console.debug({options});
+    }
   }
-  onKeyPressHandler(event){
+  onChangeHandler(event){
+    this.searchFunction({ search: event.target.value, });
+  }
+  // onKeyPressHandler(event){
 
+  // }
+  getDatalistDisplay(options){
+    let {displayField, selector, datum} = options;
+    return (<span>
+      {
+        (datum && datum.fileurl && datum.transform && datum.transform.preview)
+          ?<rb.Image src={datum.transform.preview} size='is24X24' style={{float:'left', marginRight:'5px'}}/>
+          :null
+      }
+      {datum[displayField]||datum[selector]}
+    </span>);
   }
   render() {
+                // console.debug('this.state.value',this.state.value);
+
     let notificationStyle={
       marginBottom: '5px', 
       padding:'5px', 
       border:'1px solid lightgrey',
     };
+    let notificationCloseStyle={
+      margin: '0px 0px 0px 20px',
+      borderRadius: '19px',
+    }
     let selectData = (this.props.multi) 
       ? (this.state.value && this.state.value.length ) 
         ? (this.state.value.map(selected=>{
           return (<rb.Notification
             enableCloseButton
-            closeButtonProps={{ onClick: () => console.debug('clicked') }}
+            closeButtonProps={{ 
+              onClick: () => console.debug('clicked'),
+              style: notificationCloseStyle,
+            }}
             style={notificationStyle}
           >
             {selected[this.props.displayField]||selected[this.props.selector]}
@@ -80,33 +135,72 @@ class ResponsiveDatalist extends Component {
             enableCloseButton
             closeButtonProps={{ 
               onClick: () => console.debug('clicked'),
-              style:{
-                margin:'-6px -5px 0 20px'
-              }
+              style: notificationCloseStyle,
             }}
             style={notificationStyle}
           >
-            {this.state.value[this.props.displayField]||this.state.value[this.props.selector]}
+
+            {this.getDatalistDisplay({
+              datum:this.state.value,
+              displayField: this.props.displayField,
+              selector: this.props.selector,
+            })}
           </rb.Notification>)
         : null;
-    let displayOptions = (this.state.data && this.state.data.length)
-      ? this.state.data.map(datum=>{
+    let displayOptions = (this.state.selectedData && this.state.selectedData.length)
+      ? this.state.selectedData.map((datum,k)=>{
         return (
           <rb.Notification
-            color="isInfo"
-            enableCloseButton
-            closeButtonProps={{ onClick: () => console.debug('clicked') }}
+            key={k}
+            color="isWhite"
             style={notificationStyle}
           >
-            {datum[this.props.displayField]||datum[this.props.selector]}
+            <rb.Button 
+              icon='fa fa-plus' 
+              size='isSmall' 
+              style={{
+                alignSelf:'flex-end',
+                borderRadius:'20px',
+                float: 'right',
+                paddingRight: '0px',
+              }}
+              onClick={()=>{
+                // console.debug('clicked onclick',this.props);
+                if(this.props.multi){
+                  let newValue = (this.state.value && Array.isArray(this.state.value) && this.state.value.length)
+                    ? this.state.value.concat([datum])
+                    : [datum];
+                  this.setState({
+                    value:newValue,
+                    selectedData: false,
+                  });
+                }
+                else{
+                  this.setState({
+                    value:datum,
+                    selectedData: false,
+                  });
+                }
+                console.debug('this.textInput',this.textInput);
+                console.debug('this.state.value',this.state.value);
+                // console.debug('this.refs',this.refs);
+                // this.inputProps.value='';
+                this.props.onChange(this.state.value);
+              }}/>
+            {this.getDatalistDisplay({
+              datum,
+              displayField: this.props.displayField,
+              selector: this.props.selector,
+            })}
           </rb.Notification>)
         })
       : null;
     return(<div {...this.props.wrapperProps}>
       <div style={{width:'100%'}}>
-        <rb.Input {...this.props.passableProps}
+        <rb.Input {...this.inputProps}
+          state={this.state.isSearching}
           onChange={this.onChangeHandler.bind(this)}
-          onKeyPress={this.onKeyPressHandler.bind(this)}
+          ref={(input)=>{ this.textInput = input; }}
         />
       </div>
       <div> { displayOptions }</div>
