@@ -109,9 +109,32 @@ class ResponsiveDatalist extends Component {
       {datum[displayField]||datum.title||datum.name||datum.username||datum.email||datum[selector]}
     </span>);
   }
+  removeDatalistItem(index) {
+    console.debug('clicked datalist',{index});
+    // console.debug('clicked onclick',this.props);
+    if(this.props.multi){
+      let newValue = [].concat(this.state.value);
+      newValue.splice(index, 1);
+      let oldValue = this.state.value;
+      console.debug({ oldValue, newValue });
+      this.setState({
+        value:newValue,
+        selectedData: false,
+      });
+      this.props.onChange(newValue);
+    }
+    else {
+      let datum = undefined;
+      this.setState({
+        value:datum,
+        selectedData: false,
+      });
+      console.debug({ datum });
+      this.props.onChange(datum);
+    }
+  }
   render() {
-                // console.debug('this.state.value',this.state.value);
-
+    // console.debug('this.state.value',this.state.value);
     let notificationStyle={
       marginBottom: '5px', 
       padding:'5px', 
@@ -128,7 +151,7 @@ class ResponsiveDatalist extends Component {
           key={k}
             enableCloseButton
             closeButtonProps={{ 
-              onClick: () => console.debug('clicked'),
+              onClick: this.removeDatalistItem.bind(this,k),
               style: notificationCloseStyle,
             }}
             style={notificationStyle}
@@ -145,7 +168,7 @@ class ResponsiveDatalist extends Component {
         ?(<rb.Notification
             enableCloseButton
             closeButtonProps={{ 
-              onClick: () => console.debug('clicked'),
+              onClick: this.removeDatalistItem.bind(this),
               style: notificationCloseStyle,
             }}
             style={notificationStyle}
@@ -206,7 +229,7 @@ class ResponsiveDatalist extends Component {
     return(<div {...this.props.wrapperProps}>
       <div style={{width:'100%'}}>
         <rb.Input {...this.inputProps}
-          state={this.state.isSearching}
+          state={this.state.isSearching||undefined}
           onChange={this.onChangeHandler.bind(this)}
           ref={(input)=>{ this.textInput = input; }}
         />

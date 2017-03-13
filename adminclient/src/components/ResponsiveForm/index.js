@@ -78,13 +78,13 @@ class ResponsiveForm extends Component{
       } else if (formElm.name) {
         formElementFields.push(formElm.name);
         if(formElm.type==='datalist'){
-          console.debug('before',{formElm,formdata});
+          // console.debug('before',{formElm,formdata});
           if(formElm.datalist.multi && formdata[formElm.name] && formdata[formElm.name].length){
             formdata[formElm.name] = formdata[formElm.name].map(datum=>datum[formElm.datalist.selector||'_id']);
-          } else if(Object.keys(formdata[formElm.name]).length){
+          } else if(formdata[formElm.name] && Object.keys(formdata[formElm.name]).length){
             formdata[formElm.name] = formdata[formElm.name][formElm.datalist.selector||'_id'];
           }
-          console.debug('after',{formElm,formdata});
+          // console.debug('after',{formElm,formdata});
         }
       }
     };
