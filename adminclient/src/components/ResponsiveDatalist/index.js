@@ -94,13 +94,19 @@ class ResponsiveDatalist extends Component {
   // }
   getDatalistDisplay(options){
     let {displayField, selector, datum} = options;
-    return (<span>
+    return (<span style={{
+      wordBreak: 'break-all',
+      textOverflow: 'ellipsis',
+      overflow: 'hidden',
+      whiteSpace: 'pre-wrap',
+      wordWrap: 'break-word',
+    }}>
       {
         (datum && datum.fileurl && datum.transform && datum.transform.preview)
           ?<rb.Image src={datum.transform.preview} size='is24X24' style={{float:'left', marginRight:'5px'}}/>
           :null
       }
-      {datum[displayField]||datum[selector]}
+      {datum[displayField]||datum.title||datum.name||datum.username||datum.email||datum[selector]}
     </span>);
   }
   render() {
@@ -117,8 +123,9 @@ class ResponsiveDatalist extends Component {
     }
     let selectData = (this.props.multi) 
       ? (this.state.value && this.state.value.length ) 
-        ? (this.state.value.map(selected=>{
+        ? (this.state.value.map((selected,k)=>{
           return (<rb.Notification
+          key={k}
             enableCloseButton
             closeButtonProps={{ 
               onClick: () => console.debug('clicked'),
@@ -126,7 +133,11 @@ class ResponsiveDatalist extends Component {
             }}
             style={notificationStyle}
           >
-            {selected[this.props.displayField]||selected[this.props.selector]}
+            {this.getDatalistDisplay({
+              datum:selected,
+              displayField: this.props.displayField,
+              selector: this.props.selector,
+            })}
           </rb.Notification>)
         }))
         : null
@@ -174,18 +185,15 @@ class ResponsiveDatalist extends Component {
                     value:newValue,
                     selectedData: false,
                   });
+                  this.props.onChange(newValue);
                 }
                 else{
                   this.setState({
                     value:datum,
                     selectedData: false,
                   });
+                  this.props.onChange(datum);
                 }
-                console.debug('this.textInput',this.textInput);
-                console.debug('this.state.value',this.state.value);
-                // console.debug('this.refs',this.refs);
-                // this.inputProps.value='';
-                this.props.onChange(this.state.value);
               }}/>
             {this.getDatalistDisplay({
               datum,

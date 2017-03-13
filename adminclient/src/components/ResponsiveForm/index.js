@@ -77,6 +77,15 @@ class ResponsiveForm extends Component{
         }
       } else if (formElm.name) {
         formElementFields.push(formElm.name);
+        if(formElm.type==='datalist'){
+          console.debug('before',{formElm,formdata});
+          if(formElm.datalist.multi && formdata[formElm.name] && formdata[formElm.name].length){
+            formdata[formElm.name] = formdata[formElm.name].map(datum=>datum[formElm.datalist.selector||'_id']);
+          } else if(Object.keys(formdata[formElm.name]).length){
+            formdata[formElm.name] = formdata[formElm.name][formElm.datalist.selector||'_id'];
+          }
+          console.debug('after',{formElm,formdata});
+        }
       }
     };
     delete formdata.formDataLists;
@@ -237,54 +246,6 @@ class ResponsiveForm extends Component{
   componentWillUpdate(prevProps, prevState) {
     if (this.props.onChange) {
       this.props.onChange(prevState);
-    }
-  }
-  removeFromSingleItemProp(options) {
-    let { value, attribute, } = options;
-    let attrArray = attribute.split('.');
-    let arrayToSet = Object.assign([], this.state[ attrArray[ 0 ] ][ attrArray[ 1 ] ]);
-    // let removedItem = arrayToSet.splice(value, 1);
-    arrayToSet.splice(value, 1);
-
-    this.setFormSingleProp({ value: arrayToSet, attribute, });    
-    // console.log('remove prop form state', { value, attribute, arrayToSet, removedItem, });
-  }
-  addSingleItemProp(options) {
-    // console.log('addSingleItemProp');
-    let { value, attribute, } = options;
-    let attrArray = attribute.split('.');
-    if (!this.state[ attrArray[ 0 ] ]) {
-      // this.state[ attrArray[ 0 ] ] = {};
-      this.setState({ [ attrArray[ 0 ] ]: {}, });
-    }
-    let arrayToSet = Object.assign([], this.state[ attrArray[ 0 ] ][ attrArray[ 1 ] ]);
-    // let removedItem = arrayToSet.splice(value, 1);
-    arrayToSet.push(value);
-
-    this.setFormSingleProp({ value: arrayToSet, attribute, });    
-    // console.log('remove prop form state', { value, attribute, arrayToSet, removedItem, });
-  }
-  setFormSingleProp(options) {
-    // console.log('setFormSingleProp');
-    let { value, attribute, } = options;
-    let updatedStateProp = {};
-    // console.log('setFormSingleProp prop form state', { value, attribute, }, 'this.state.formDataLists', this.state.formDataLists);
-    let updatedFormData = Object.assign({}, this.state.formDataLists);
-    updatedFormData[ attribute ].data = [];
-    // let dataFromState = this.state.formDataLists[ formElement.name ].data;
-
-    if (attribute.indexOf('.') === -1) {
-      updatedStateProp[ attribute ] = value;
-      updatedStateProp.formDataLists = updatedFormData;
-      this.setState(updatedStateProp);
-    } else {
-      let attrArray = attribute.split('.');
-      let stateToSet = Object.assign({}, this.state[ attrArray[ 0 ] ]);
-      stateToSet[attrArray[1]]=value;
-      this.setState({
-        [ attrArray[ 0 ] ]: stateToSet,
-        formDataLists: updatedFormData,
-      });
     }
   }
   render() {

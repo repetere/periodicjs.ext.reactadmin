@@ -79,6 +79,7 @@ const buildDetail = function (schema, label, options = {}) {
     }
   }
   result[ 0 ].props.formgroups.splice(0, 0, publishOptions.publishBasic(schema, label, options));
+  /*
   result.push(
     {
       component: 'pre',
@@ -108,6 +109,7 @@ const buildDetail = function (schema, label, options = {}) {
       children: 'elems: '+JSON.stringify(elems, null, 2),
     }
   );
+  */
   return result;
 };
 
