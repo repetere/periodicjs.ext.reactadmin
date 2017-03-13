@@ -5,11 +5,11 @@ const asset = require('./asset');
 module.exports = (periodic) => {
   return {
     GET: {
-      [helper.getAdminPathname(periodic, '/contentdata/assets/:id')]: [
+      [helper.getAdminPathname(periodic, '/contentdata/periodic/assets/:id')]: [
         asset.formatAssetItem(periodic),
         asset.getFileMetaInfo(periodic),
       ],
-      [ helper.getAdminPathname(periodic, '/contentdata/assets') ]: [
+      [ helper.getAdminPathname(periodic, '/contentdata/periodic/assets') ]: [
         asset.formatAssetIndex(periodic),
       ],
     },

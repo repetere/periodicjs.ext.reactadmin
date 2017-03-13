@@ -57,18 +57,13 @@ var buildInputComponent = function (label, type, schema, options) {
   if ((type === '_id' || type==='array') && (schema && schema[label])) {
 
     let usablePrefix = helpers.getDataPrefix(options.prefix);
-    // let manifestPrefix = helpers.getManifestPathPrefix(options.prefix);
+    let manifestPrefix = helpers.getManifestPathPrefix(options.prefix);
     // console.log('-----','-----','-----','-----');
     // if(!schema || !schema[label]){
     //   console.log('missing label schema',label,schema);
     // }
     // console.log('schema[label]',schema[label]);
-    let entity = label;
-    if(schema[label] && Array.isArray(schema[label]) &&schema[label].length && schema[label][0].ref ){
-      entity = schema[label][0].ref;
-    } else if(schema[label] && schema[label].ref){
-      entity = schema[label].ref;
-    }
+    let entity = helpers.getSchemaEntity({ schema, label, });
     // console.log(label,'entity',entity,'schema[label].length',schema[label].length,'schema[label]',schema[label]);
 
 
@@ -79,7 +74,9 @@ var buildInputComponent = function (label, type, schema, options) {
       displayField: 'title',
       multi: (type === 'array') ? true : false,
       field:label,
-      entity:entity.toLowerCase(),
+      dbname: options.dbname ||'periodic',
+      entity: entity.toLowerCase(),
+      resourcePreview: `${manifestPrefix}/${pluralize(entity.toLowerCase())}`,
       resourceUrl: `${options.extsettings.basename}/${usablePrefix}/${pluralize(entity.toLowerCase())}/?format=json`,
     };
   }

@@ -39,6 +39,9 @@ class RACodeMirror extends Component {
     let options = Object.assign({
       options: {
         lineNumbers: true,
+        lineWrapping: true,
+        foldGutter: true,
+        gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
       },
     }, this.props.codeMirrorProps);
   

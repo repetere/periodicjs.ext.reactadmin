@@ -312,14 +312,16 @@ export function getFormGroup(options) {
 export function getFormCode(options) {
   let { formElement, i, onValueChange, } = options;
   let hasError = getErrorStatus(this.state, formElement.name);
+  let initialVal = getInitialValue(formElement, this.state);
   let CodeMirrorProps = Object.assign({
     codeMirrorProps: {
       lineNumbers: true,
-      value: getInitialValue(formElement, this.state), //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
+      value: (formElement.stringify)?JSON.stringify(initialVal,null,2):initialVal, //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
       //value: this.state[ formElement.name ] || formElement.value,
       style: {
         minHeight:200,
       },
+      lineWrapping:true,
       onChange: (!onValueChange) ? function (newvalue){
         // console.log({ newvalue });
         let updatedStateProp = {};
@@ -333,7 +335,7 @@ export function getFormCode(options) {
         backgroundColor: 'white',
         border: (hasError) ? '1px solid #ed6c63' : '1px solid #d3d6db',
         borderRadius: 3,
-        height:500,
+        height:'auto',
         boxShadow: 'inset 0 1px 2px rgba(17,17,17,.1)',
       },
     },

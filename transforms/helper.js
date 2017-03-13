@@ -27,7 +27,7 @@ exports.getFileURL = function (options) {
   if (skip_decryption && asset.attributes && asset.attributes.encrypted_client_side){
     return '/extensions/periodicjs.ext.reactadmin/img/icons/key167.svg';
   } else if (asset.attributes && asset.attributes.encrypted_client_side) {
-    let decryptedFilePath = _getAdminPathname(periodic, `/securecontent/secure-asset/${ asset._id 
+    let decryptedFilePath = _getAdminPathname(periodic, `/periodic/securecontent/secure-asset/${ asset._id 
 }/${ asset.attributes.periodicFilename }`);
     // asset.fileurl_encrypted = asset.fileurl;
     return (req.headers.origin === 'http://localhost:3000')

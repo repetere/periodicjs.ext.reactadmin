@@ -4,9 +4,7 @@ const capitalize = require('capitalize');
 const helpers = require('../helpers');
 
 module.exports = function (schemas, label, options) {
-  let usablePrefix = (options.prefix)
-    ? `/${options.prefix}`
-    : '';
+  let manifestPrefix = helpers.getManifestPathPrefix(options.prefix);
   let tabs = Object.keys(options.allSchemas).map(key => {
     return {
       label:pluralize(capitalize(key)),
@@ -27,7 +25,7 @@ module.exports = function (schemas, label, options) {
         component: 'ResponsiveButton',
         props: {
           onClick: 'func:this.props.reduxRouter.push',
-          onclickProps: `${usablePrefix}/${tab.location}`,
+          onclickProps: `${manifestPrefix}/${tab.location}`,
           style: {
             border: 'none',
             fontSize: 14,

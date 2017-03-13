@@ -7,7 +7,7 @@ const helpers = require('../helpers');
 const pluralize = require('pluralize');
 pluralize.addIrregularRule('data', 'datas');
 
-function _id () {
+function _id() {
   return {
     type: 'text',
     name: '_id',
@@ -20,11 +20,37 @@ function _id () {
     passProps: {
       state: 'isDisabled',
     },
-    layoutProps:{
-      horizontalform:true,
+    layoutProps:{},
+  };
+}
+
+function _dataList(schema, label, options, type) {
+  let entity = helpers.getSchemaEntity({ schema, label, });
+  let usablePrefix = helpers.getDataPrefix(options.prefix);
+
+  return {
+    type: 'datalist',
+    placeholder:`${capitalize(label)} › ${entity}`,
+    name: label,
+    label: `${capitalize(label)}`,
+    labelProps: {
+      style: {
+        flex:1,
+      },
+    },
+    layoutProps:{},
+    datalist : {
+      selector: '_id',
+      displayField: 'title',
+      multi: (type === 'array') ? true : false,
+      field:label,
+      entity: entity.toLowerCase(),
+      dbname: options.dbname ||'periodic',
+      resourceUrl: `${options.extsettings.basename}/${usablePrefix}/${pluralize(entity.toLowerCase())}/?format=json`,
     },
   };
 }
+
 
 function _createdat () {
   return {
@@ -75,9 +101,9 @@ function _name(schema, label, options) {
         flex: 1,
       },
     },
-    layoutProps: {
-      horizontalform: true,
-    },
+    // layoutProps: {
+    //   horizontalform: true,
+    // },
   };
 }
 
@@ -128,9 +154,9 @@ function _status () {
         width: '100%',
       },
     },
-    layoutProps: {
-      horizontalform: true,
-    },
+    // layoutProps: {
+    //   horizontalform: true,
+    // },
     options :[
       {
         'label': 'Draft',
@@ -166,9 +192,9 @@ function _datetime () {
         flex: 1,
       },
     },
-    layoutProps: {
-      horizontalform: true,
-    },
+    // layoutProps: {
+    //   horizontalform: true,
+    // },
   };
 }
 
@@ -213,9 +239,9 @@ function _dateday () {
         flex: 1,
       },
     },
-    layoutProps: {
-      horizontalform: true,
-    },
+    // layoutProps: {
+    //   horizontalform: true,
+    // },
   };
 }
 
@@ -334,6 +360,17 @@ function getPublishOptions(schema, label, options) {
       _datetime(),
     ]);
   }
+  if (schema.author||schema.primaryauthor) {
+    pubOptions.push(_getLine());
+  }
+  if (schema.primaryauthor) {
+    pubOptions.push(_dataList(schema, 'primaryauthor', options, '_id'));
+  }
+  if (schema.authors) {
+    pubOptions = pubOptions.concat([
+      _dataList(schema, 'authors', options, 'array'),
+    ]);
+  }
   if (schema.fileurl) {
     pubOptions = pubOptions.concat([
       _getLine(),
@@ -341,7 +378,7 @@ function getPublishOptions(schema, label, options) {
       _assetField('transform.size', 'File Size')(),
       _assetField('locationtype', 'Location Type')(),
       _assetField('transform.encrypted', 'Encrypted')(),
-      _assetField('attributes.periodicFilename', 'Periodic Filename')()
+      _assetField('attributes.periodicFilename', 'Periodic Filename')(),
     ]);
   }
   pubOptions.push(_publishButtons(schema, label, options));
@@ -360,8 +397,20 @@ function getContentOptions(schema, label, options) {
   if (schema.content) {
     contentItems.push(_content());
   }
-  if (schema.description) {
-    contentItems.push(_content('description'));
+  if (schema.tags) {
+    contentItems.push(_dataList(schema, 'tags', options, 'array', true));
+  }
+  if (schema.categories) {
+    contentItems.push(_dataList(schema, 'categories', options, 'array', true));
+  }
+  if (schema.contenttypes) {
+    contentItems.push(_dataList(schema, 'contenttypes', options, 'array', true));
+  }
+  if (schema.primaryasset) {
+    contentItems.push(_dataList(schema, 'primaryasset', options, '_id', true));
+  }
+  if (schema.assets) {
+    contentItems.push(_dataList(schema, 'assets', options, 'array', true));
   }
   return contentItems;
 }
@@ -415,6 +464,64 @@ exports.publishBasic = function _publishBasic(schema, label, options = {}) {
   };
 
   return publishBasic;
+};
+exports.publishAttributes = function _publishAtrributes(schema, label, options = {}) {
+
+  let publishAttributesBasic = {
+    gridProps: {
+      isMultiline: false,
+    },
+    card: {
+      doubleCard: true,
+      leftDoubleCardColumn: {
+        size: 'isHalf',
+        style: {
+          display:'flex',
+        },
+      },
+      rightDoubleCardColumn: {
+        size: 'isHalf',
+        style: {
+          display:'flex',
+        },
+      },
+      leftCardProps: {
+        cardTitle: 'Attributes',
+        cardStyle: {
+          style: {
+            marginBottom:0,
+          },
+        },
+      },
+      rightCardProps: {
+        cardTitle: 'Extension Attributes',
+        cardStyle: {
+          style: {
+            marginBottom:0,
+          },
+        },
+      },
+    },
+    formElements: [
+      {
+        formGroupCardLeft: [
+          {
+            type: 'code',
+            name: 'attributes',
+            stringify:true,
+          },
+        ],
+        formGroupCardRight: [
+          {
+            type: 'code',
+            name:'extensionattributes',
+          },
+        ],
+      },
+    ],
+  };
+
+  return publishAttributesBasic;
 };
 
 exports.id = _id;

@@ -10,10 +10,14 @@ import validate from 'validate.js';
 class ResponsiveForm extends Component{
   constructor(props) {
     super(props);
-    let formdata = Object.assign({}, (props.flattenFormData && props.formdata) ? flatten(props.formdata, props.flattenDataOptions) : props.formdata);
+    let formdata = Object.assign({},
+      (props.flattenFormData && props.formdata) 
+        ? flatten(props.formdata, props.flattenDataOptions)
+        : props.formdata);
     if (props.stringyFormData) {
       formdata.genericdocjson = JSON.stringify(props.formdata, null, 2);
     }
+    let customPropsFormdata = Object.assign({},props.formdata,formdata);
     // console.debug({ formdata });
     // console.debug('ResponsiveForm',{ props });
     this.state = Object.assign({
@@ -23,7 +27,9 @@ class ResponsiveForm extends Component{
       formDataLists:{},
       formDataTables:{},
       formDataFiles:{},
-    }, formdata);
+    },
+      // customProps.formdata,
+      customPropsFormdata);
     this.datalists = {};
 
     this.getRenderedComponent = getRenderedComponent.bind(this);

@@ -1,4 +1,5 @@
 import React, { Component, PropTypes, } from 'react';
+import { Link, } from 'react-router';
 // import flatten from 'flat';
 import qs from 'querystring';
 import * as rb from 're-bulma';
@@ -10,6 +11,7 @@ const propTypes = {
   disabled: PropTypes.bool,
   selector: PropTypes.string,
   displayfield: PropTypes.string,
+  dbname: PropTypes.string,
   multi: PropTypes.bool,
   createable: PropTypes.bool,
   flattenDataList: PropTypes.bool,
@@ -33,6 +35,7 @@ const defaultProps = {
   flattenDataListOptions: {},
   selector:'_id',
   displayField:'title',
+  dbname:'periodic',
   limit:10,
   onChange:(data)=>{console.debug('ResponsiveDatalist onChange',{data})}
 };
@@ -89,11 +92,9 @@ class ResponsiveDatalist extends Component {
   onChangeHandler(event){
     this.searchFunction({ search: event.target.value, });
   }
-  // onKeyPressHandler(event){
-
-  // }
   getDatalistDisplay(options){
-    let {displayField, selector, datum} = options;
+    let { displayField, selector, datum } = options;
+    let displayText = datum[ displayField ] || datum.title || datum.name || datum.username || datum.email || datum[ selector ];
     return (<span style={{
       wordBreak: 'break-all',
       textOverflow: 'ellipsis',
@@ -106,17 +107,21 @@ class ResponsiveDatalist extends Component {
           ?<rb.Image src={datum.transform.preview} size='is24X24' style={{float:'left', marginRight:'5px'}}/>
           :null
       }
-      {datum[displayField]||datum.title||datum.name||datum.username||datum.email||datum[selector]}
+      {
+        (this.props.resourcePreview)
+          ? <Link to={`${this.props.resourcePreview}/${datum[selector]}`}>{displayText}</Link>
+          : displayText
+      }
     </span>);
   }
   removeDatalistItem(index) {
-    console.debug('clicked datalist',{index});
+    // console.debug('clicked datalist',{index});
     // console.debug('clicked onclick',this.props);
     if(this.props.multi){
       let newValue = [].concat(this.state.value);
       newValue.splice(index, 1);
       let oldValue = this.state.value;
-      console.debug({ oldValue, newValue });
+      // console.debug({ oldValue, newValue });
       this.setState({
         value:newValue,
         selectedData: false,
@@ -129,7 +134,7 @@ class ResponsiveDatalist extends Component {
         value:datum,
         selectedData: false,
       });
-      console.debug({ datum });
+      // console.debug({ datum });
       this.props.onChange(datum);
     }
   }
