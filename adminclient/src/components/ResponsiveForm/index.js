@@ -230,6 +230,9 @@ class ResponsiveForm extends Component{
                 if (fetchOptions.successCallback === 'func:this.props.setDynamicData') {
                   this.props.setDynamicData(this.props.dynamicField, submitFormData);
                 } else {
+                  if(fetchOptions.setDynamicData){
+                    this.props.setDynamicData(this.props.dynamicField, submitFormData);
+                  }
                   successCallback(fetchOptions.successProps || successData, submitFormData);
                 }
               });

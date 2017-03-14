@@ -5,6 +5,7 @@ import { Link, } from 'react-router';
 import ReactSlider from 'react-slider';
 import GoogleMap from 'google-map-react';
 import ResponsiveForm from '../ResponsiveForm';
+import DynamicForm from '../DynamicForm';
 import RawOutput from '../RawOutput';
 import RawStateOutput from '../RawOutput/RawStateOutput';
 import MenuAppLink from '../AppSidebar/MenuAppLink';
@@ -14,7 +15,7 @@ import ResponsiveDatalist from '../ResponsiveDatalist';
 // import Editor from '../RAEditor';
 import ResponsiveTable from '../ResponsiveTable';
 import ResponsiveCard from '../ResponsiveCard';
-import ResponsiveChart from '../ResponsiveChart';
+import DynamicChart from '../DynamicChart';
 import ResponsiveTabs from '../ResponsiveTabs';
 import ResponsiveBar from '../ResponsiveBar';
 import ResponsiveLink from '../ResponsiveLink';
@@ -25,7 +26,7 @@ import utilities from '../../util';
 let renderIndex = 0;
 
 export let AppLayoutMap = Object.assign({}, {
-  recharts, ResponsiveForm, RawOutput, RawStateOutput, FormItem, MenuAppLink, SubMenuLinks, ResponsiveTable, ResponsiveCard, ResponsiveChart, ResponsiveBar, ResponsiveTabs, ResponsiveDatalist, CodeMirror, ReactSlider, GoogleMap, /* Editor,*/
+  recharts, ResponsiveForm, DynamicForm, RawOutput, RawStateOutput, FormItem, MenuAppLink, SubMenuLinks, ResponsiveTable, ResponsiveCard, DynamicChart, ResponsiveBar, ResponsiveTabs, ResponsiveDatalist, CodeMirror, ReactSlider, GoogleMap, /* Editor,*/
 }, React.DOM, rebulma, { Link, });
 
 // console.log({ AppLayoutMap });
@@ -81,7 +82,7 @@ export function getRenderedComponent(componentObject, resources, debug) {
         (componentObject.children && Array.isArray(componentObject.children) && typeof componentObject.children !== 'string')
           ? componentObject.children.map(childComponentObject => getRenderedComponent.call(this, childComponentObject, resources))
           : (typeof componentObject.children === 'undefined')
-            ? null
+            ? (renderedCompProps && renderedCompProps.children && typeof renderedCompProps.children==='string') ? renderedCompProps.children : null
             : componentObject.children
       );
     }
