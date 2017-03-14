@@ -187,7 +187,7 @@ function _status () {
 function _datetime () {
   return {
     type: 'time',
-    name: 'time',
+    name: 'publishtime',
     label: 'Time',
     labelProps: {
       style: {
@@ -234,7 +234,7 @@ function _assetField(fieldname, fieldlabel) {
 function _dateday () {
   return {
     type: 'date',
-    name: 'date',
+    name: 'publishdate',
     label: 'Date',
     labelProps: {
       style: {

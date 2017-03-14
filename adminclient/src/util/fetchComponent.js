@@ -7,7 +7,24 @@ export const checkStatus = function (response) {
     } else {
       let error = new Error(response.statusText);
       error.response = response;
-      reject(error);
+      try{
+      // console.debug({response})
+        response.json()
+          .then(res=>{
+            if(res.data.error){
+              reject(res.data.error);
+            } else if(res.data){
+              reject(JSON.stringify(res.data));
+            } else{
+              reject(error);
+            }
+          })
+          .catch(()=>{
+            reject(error);
+          })
+      } catch(e){
+        reject(error);
+      }
     }
   });
 };

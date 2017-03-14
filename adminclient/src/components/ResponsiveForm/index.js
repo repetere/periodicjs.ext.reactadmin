@@ -223,7 +223,7 @@ class ResponsiveForm extends Component{
           } 
           if (fetchOptions.successCallback) {
             let successCallback = (typeof fetchOptions.successCallback === 'string' && fetchOptions.successCallback.indexOf('func:this.props.reduxRouter') !== -1)
-              ? this.props[ fetchOptions.successCallback.replace('func:this.props.reduxRouter.', '') ]
+              ? this.props.reduxRouter[ fetchOptions.successCallback.replace('func:this.props.reduxRouter.', '') ]
               : this.props[ fetchOptions.successCallback.replace('func:this.props.', '') ];
             res.json()
               .then(successData => {

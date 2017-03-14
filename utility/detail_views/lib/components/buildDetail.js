@@ -12,6 +12,7 @@ pluralize.addIrregularRule('data', 'datas');
 const buildDetail = function (schema, label, options = {}, newEntity) {
   let elems = [];
   let usablePrefix = helpers.getDataPrefix(options.prefix);
+  let manifestPrefix = helpers.getManifestPathPrefix(options.prefix);
   let top = {
     component: 'ResponsiveForm',
     asyncprops: {
@@ -20,7 +21,7 @@ const buildDetail = function (schema, label, options = {}, newEntity) {
     props: {
       onSubmit:{
         url: (newEntity)
-          ?`${options.extsettings.basename}/${usablePrefix}/${pluralize(label)}?format=json&unflatten=true`
+          ?`${options.extsettings.basename}/${usablePrefix}/${pluralize(label)}?format=json`
           :`${options.extsettings.basename}/${usablePrefix}/${pluralize(label)}/:id?format=json&unflatten=true`,
         params: (newEntity)?undefined:[
           { 'key': ':id', 'val': '_id', },
@@ -29,6 +30,8 @@ const buildDetail = function (schema, label, options = {}, newEntity) {
           method:(newEntity)?'POST':'PUT',
         },
         success: true,
+        successCallback:(newEntity)?'func:this.props.reduxRouter.push':undefined,
+        successProps:(newEntity)?`${manifestPrefix}/${pluralize(label)}`:undefined,
       },
       'hiddenFields': [
         {
@@ -85,35 +88,35 @@ const buildDetail = function (schema, label, options = {}, newEntity) {
   result[ 0 ].props.formgroups.splice(0, 0, publishOptions.publishBasic(schema, label, options, newEntity));
   result[ 0 ].props.formgroups.push(publishOptions.publishAttributes(schema, label, options));
 
-  // result.push(
-  //   // {
-  //   //   component: 'pre',
-  //   //   props: {
-  //   //     style: {
-  //   //       border: '1px solid black',
-  //   //     },
-  //   //   },
-  //   //   children: 'label: '+JSON.stringify(label, null, 2),
-  //   // },
-  //   {
-  //     component: 'pre',
-  //     props: {
-  //       style: {
-  //         border: '1px solid black',
-  //       },
-  //     },
-  //     children: 'schema: '+JSON.stringify(schema, null, 2),
-  //   }
-  //   // {
-  //   //   component: 'pre',
-  //   //   props: {
-  //   //     style: {
-  //   //       border: '1px solid black',
-  //   //     },
-  //   //   },
-  //   //   children: 'elems: '+JSON.stringify(elems, null, 2),
-  //   // }
-  // );
+  result.push(
+    // {
+    //   component: 'pre',
+    //   props: {
+    //     style: {
+    //       border: '1px solid black',
+    //     },
+    //   },
+    //   children: 'label: '+JSON.stringify(label, null, 2),
+    // },
+    {
+      component: 'pre',
+      props: {
+        style: {
+          border: '1px solid black',
+        },
+      },
+      children: 'schema: '+JSON.stringify(schema, null, 2),
+    }
+    // {
+    //   component: 'pre',
+    //   props: {
+    //     style: {
+    //       border: '1px solid black',
+    //     },
+    //   },
+    //   children: 'elems: '+JSON.stringify(elems, null, 2),
+    // }
+  );
   
   return result;
 };

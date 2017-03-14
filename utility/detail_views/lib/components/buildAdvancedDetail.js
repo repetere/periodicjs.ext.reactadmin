@@ -9,7 +9,7 @@ pluralize.addIrregularRule('data', 'datas');
 
 const buildAdvancedDetail = function (schema, label, options = {},newEntity) {
   let usablePrefix = helpers.getDataPrefix(options.prefix);
-  let manifestPrefix = helpers.getManifestPathPrefix(options.prefix);
+  // let manifestPrefix = helpers.getManifestPathPrefix(options.prefix);
   let top = {
     component: 'ResponsiveForm',
     asyncprops: {

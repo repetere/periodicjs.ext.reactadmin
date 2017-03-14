@@ -93,10 +93,21 @@ var buildInputComponent = function (label, type, schema, options) {
       },
     ];
   }
+  if (label === 'entitytype' || label === 'createdat' || label === 'updatedat' || label === 'publishat') {
+    input.passProps = {
+      state: 'isDisabled',
+    };
+  }
   if (label === 'entitytype') {
     input.passProps = {
       state: 'isDisabled',
     };
+  }
+  if(schema && label && schema[label] && schema[label].default){
+    input.value = schema[label].default;
+  }
+  if(schema && label && schema[label] && label === 'entitytype' ){
+    console.log('schema[label]',schema[label],schema[label].default);
   }
   return input;
 };

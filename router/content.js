@@ -33,6 +33,7 @@ module.exports = function(resources) {
   ContentRouter.get('/:dbname/:entity_type/:id', //get single
     transformController.pretransform,
     contentdataController.get_entity,
+    contentdataController.entity_content_pretransform,
     transformController.posttransform,
     helperController.handleControllerDataResponse); 
   ContentRouter.put('/:dbname/:entity_type/:id', //update single
@@ -42,7 +43,8 @@ module.exports = function(resources) {
     helperController.fixFlattenedSubmit,
     transformController.pretransform,
     contentdataController.get_entity,
-    contentdataController.mergeControllerDataReqBody,
+    contentdataController.merge_controller_data_req_body,
+    contentdataController.entity_content_posttransform,
     resources.core.controller.save_revision,
     contentdataController.update_entity,
     transformController.posttransform,

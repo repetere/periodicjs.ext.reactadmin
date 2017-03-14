@@ -139,7 +139,6 @@ class ResponsiveDatalist extends Component {
     }
   }
   render() {
-    // console.debug('this.state.value',this.state.value);
     let notificationStyle={
       marginBottom: '5px', 
       padding:'5px', 
