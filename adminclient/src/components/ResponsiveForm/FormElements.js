@@ -6,6 +6,7 @@ import ResponsiveDatalist from '../ResponsiveDatalist';
 // import ResponsiveButton from '../ResponsiveButton';
 // import { EditorState, } from 'draft-js';
 import { ControlLabel, Label, Input, Button, CardFooterItem, Select, Textarea, Group, Image, } from 're-bulma'; 
+import moment from 'moment';
 import { unflatten, } from 'flat';
 import styles from '../../styles';
 
@@ -68,11 +69,14 @@ function getFormLabel(formElement) {
 }
 
 function getInitialValue(formElement, state) {
-  // console.debug('state[ formElement.name ]', state[ formElement.name ],'typeof state[ formElement.name ] ',typeof state[ formElement.name ] );
-  if (state[ formElement.name ] === null || formElement.value === null || formElement.value === 'null' ) return '';
+  let formElementValue = formElement.value;
+  if (formElement.momentFormat) {
+    formElementValue = moment(formElementValue).format(formElement.momentFormat);
+  }
+  if (state[ formElement.name ] === null || formElementValue === null || formElementValue === 'null' ) return '';
   else return (typeof state[ formElement.name ] !== 'undefined' )
     ? state[ formElement.name ]
-    : formElement.value;
+    : formElementValue;
 }
 
 export function getFormDatalist(options){

@@ -88,35 +88,35 @@ const buildDetail = function (schema, label, options = {}, newEntity) {
   result[ 0 ].props.formgroups.splice(0, 0, publishOptions.publishBasic(schema, label, options, newEntity));
   result[ 0 ].props.formgroups.push(publishOptions.publishAttributes(schema, label, options));
 
-  result.push(
-    // {
-    //   component: 'pre',
-    //   props: {
-    //     style: {
-    //       border: '1px solid black',
-    //     },
-    //   },
-    //   children: 'label: '+JSON.stringify(label, null, 2),
-    // },
-    {
-      component: 'pre',
-      props: {
-        style: {
-          border: '1px solid black',
-        },
-      },
-      children: 'schema: '+JSON.stringify(schema, null, 2),
-    }
-    // {
-    //   component: 'pre',
-    //   props: {
-    //     style: {
-    //       border: '1px solid black',
-    //     },
-    //   },
-    //   children: 'elems: '+JSON.stringify(elems, null, 2),
-    // }
-  );
+//   result.push(
+//     // {
+//     //   component: 'pre',
+//     //   props: {
+//     //     style: {
+//     //       border: '1px solid black',
+//     //     },
+//     //   },
+//     //   children: 'label: '+JSON.stringify(label, null, 2),
+//     // },
+//     {
+//       component: 'pre',
+//       props: {
+//         style: {
+//           border: '1px solid black',
+//         },
+//       },
+//       children: 'schema: '+JSON.stringify(schema, null, 2),
+//     }
+//     // {
+//     //   component: 'pre',
+//     //   props: {
+//     //     style: {
+//     //       border: '1px solid black',
+//     //     },
+//     //   },
+//     //   children: 'elems: '+JSON.stringify(elems, null, 2),
+//     // }
+//   );
   
   return result;
 };

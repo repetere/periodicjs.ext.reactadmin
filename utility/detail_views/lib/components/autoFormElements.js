@@ -106,9 +106,9 @@ var buildInputComponent = function (label, type, schema, options) {
   if(schema && label && schema[label] && schema[label].default){
     input.value = schema[label].default;
   }
-  if(schema && label && schema[label] && label === 'entitytype' ){
-    console.log('schema[label]',schema[label],schema[label].default);
-  }
+  // if(schema && label && schema[label] && label === 'entitytype' ){
+  //   console.log('schema[label]',schema[label],schema[label].default);
+  // }
   return input;
 };
 
