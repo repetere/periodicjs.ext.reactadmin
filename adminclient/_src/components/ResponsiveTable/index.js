@@ -114,9 +114,9 @@ var ResponsiveTable = function (_Component) {
   function ResponsiveTable(props) {
     (0, _classCallCheck3.default)(this, ResponsiveTable);
 
+    // console.debug('this.props.getState()',this.props.getState());
     var _this = (0, _possibleConstructorReturn3.default)(this, (ResponsiveTable.__proto__ || (0, _getPrototypeOf2.default)(ResponsiveTable)).call(this, props));
 
-    console.debug('this.props.getState()', _this.props.getState());
     var rows = props.rows || [];
     if (props.flattenRowData) {
       rows = rows.map(function (row) {
@@ -236,7 +236,7 @@ var ResponsiveTable = function (_Component) {
   }, {
     key: 'formatValue',
     value: function formatValue(value, row, options) {
-      // console.log({ value, row, options });
+      // console.info({ value, row, options });
       var returnValue = value;
       if (typeof options.idx !== 'undefined' && typeof returnValue === 'string' && returnValue.indexOf('--idx--') !== -1) {
         returnValue = returnValue.replace('--idx--', options.idx);
@@ -246,6 +246,25 @@ var ResponsiveTable = function (_Component) {
       }
       if (options.momentFormat) {
         returnValue = (0, _moment2.default)(value).format(options.momentFormat);
+      } else if (options.icon && value) {
+        // console.debug({value})
+        if (typeof value !== 'string' && Array.isArray(value)) {
+          var icons = value.map(function (val, i) {
+            return _react2.default.createElement(rb.Icon, (0, _extends3.default)({ key: i + Math.random() }, options.iconProps, { icon: val }));
+          });
+          return icons;
+        } else {
+          return _react2.default.createElement(rb.Icon, (0, _extends3.default)({}, options.iconProps, { icon: value }));
+        }
+      } else if (options.image && value) {
+        if (typeof value !== 'string' && Array.isArray(value)) {
+          var images = value.map(function (val, i) {
+            return _react2.default.createElement(rb.Image, (0, _extends3.default)({ key: i }, options.imageProps, { src: val }));
+          });
+          return { images: images };
+        } else {
+          return _react2.default.createElement(rb.Image, (0, _extends3.default)({}, options.imageProps, { src: value }));
+        }
       }
       return returnValue;
     }
@@ -269,11 +288,6 @@ var ResponsiveTable = function (_Component) {
       var startIndex = !this.props.baseUrl ? calcStartIndex : 0;
       var endIndex = !this.props.baseUrl ? this.state.limit * this.state.currentPage : this.state.limit;
       var displayRows = this.state.rows.slice(startIndex, endIndex);
-      // console.debug({
-      //   startIndex,
-      //   endIndex,
-      // });
-      // console.debug('this.state',this.state);
       var _state = this.state,
           numPages = _state.numPages,
           currentPage = _state.currentPage;
@@ -503,7 +517,11 @@ var ResponsiveTable = function (_Component) {
                           (0, _extends3.default)({}, header.linkProps, { to: _this3.getHeaderLinkURL(header.link, row) }),
                           _this3.formatValue(typeof row[header.sortid] !== 'undefined' ? row[header.sortid] : header.value, row, {
                             idx: rowIndex + calcStartIndex,
-                            momentFormat: header.momentFormat
+                            momentFormat: header.momentFormat,
+                            image: header.image,
+                            imageProps: header.imageProps,
+                            icon: header.icon,
+                            iconProps: header.iconProps
                           })
                         )
                       );
@@ -521,7 +539,11 @@ var ResponsiveTable = function (_Component) {
                             }, button.passProps),
                             children: _this3.formatValue(typeof row[header.sortid] !== 'undefined' ? row[header.sortid] : header.value, row, {
                               idx: rowIndex + calcStartIndex,
-                              momentFormat: header.momentFormat
+                              momentFormat: header.momentFormat,
+                              image: header.image,
+                              imageProps: header.imageProps,
+                              icon: header.icon,
+                              iconProps: header.iconProps
                             }) || ''
                           }, button));
                         })
@@ -534,7 +556,11 @@ var ResponsiveTable = function (_Component) {
                         (0, _extends3.default)({ key: 'row' + rowIndex + 'col' + colIndex }, header.columnProps),
                         _this3.formatValue(typeof row[header.sortid] !== 'undefined' ? row[header.sortid] : header.value, row, {
                           idx: rowIndex + calcStartIndex,
-                          momentFormat: header.momentFormat
+                          momentFormat: header.momentFormat,
+                          image: header.image,
+                          imageProps: header.imageProps,
+                          icon: header.icon,
+                          iconProps: header.iconProps
                         })
                       );
                       // return (

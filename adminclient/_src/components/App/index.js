@@ -125,8 +125,8 @@ var AppConfigSettings = {
     logged_out_path: '/login'
   },
   login: {
-    url: 'https://pas-dev.promisefinancial.net:8784/api/jwt/token',
-    devurl: 'https://pas-dev.promisefinancial.net:8784/api/jwt/token',
+    url: 'http://localhost:8786/api/jwt/token',
+    devurl: 'http://localhost:8786/api/jwt/token',
     options: {
       method: 'POST',
       headers: {
@@ -137,8 +137,8 @@ var AppConfigSettings = {
     }
   },
   userprofile: {
-    url: 'https://pas-dev.promisefinancial.net:8784/api/jwt/profile',
-    devurl: 'https://pas-dev.promisefinancial.net:8784/api/jwt/profile',
+    url: 'http://localhost:8786/api/jwt/profile',
+    devurl: 'http://localhost:8786/api/jwt/profile',
     options: {
       method: 'POST',
       headers: {
@@ -171,7 +171,10 @@ var mapStateToProps = function mapStateToProps(state) {
     notification: state.notification
   };
 };
-
+window.__reactadmin = (0, _assign2.default)({}, window.__reactadmin);
+window.__reactadmin.setDynamicData = function (prop, val) {
+  return _stores2.default.dispatch(_actions2.default.dynamic.setDynamicData(prop, val));
+};
 var reduxActions = {
   isLoggedIn: function isLoggedIn() {
     return _stores2.default.getState().user.isLoggedIn;

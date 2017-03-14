@@ -37,9 +37,17 @@ var _reactSlider = require('react-slider');
 
 var _reactSlider2 = _interopRequireDefault(_reactSlider);
 
+var _googleMapReact = require('google-map-react');
+
+var _googleMapReact2 = _interopRequireDefault(_googleMapReact);
+
 var _ResponsiveForm = require('../ResponsiveForm');
 
 var _ResponsiveForm2 = _interopRequireDefault(_ResponsiveForm);
+
+var _DynamicForm = require('../DynamicForm');
+
+var _DynamicForm2 = _interopRequireDefault(_DynamicForm);
 
 var _RawOutput = require('../RawOutput');
 
@@ -61,6 +69,10 @@ var _RACodeMirror = require('../RACodeMirror');
 
 var _RACodeMirror2 = _interopRequireDefault(_RACodeMirror);
 
+var _ResponsiveDatalist = require('../ResponsiveDatalist');
+
+var _ResponsiveDatalist2 = _interopRequireDefault(_ResponsiveDatalist);
+
 var _ResponsiveTable = require('../ResponsiveTable');
 
 var _ResponsiveTable2 = _interopRequireDefault(_ResponsiveTable);
@@ -69,9 +81,9 @@ var _ResponsiveCard = require('../ResponsiveCard');
 
 var _ResponsiveCard2 = _interopRequireDefault(_ResponsiveCard);
 
-var _ResponsiveChart = require('../ResponsiveChart');
+var _DynamicChart = require('../DynamicChart');
 
-var _ResponsiveChart2 = _interopRequireDefault(_ResponsiveChart);
+var _DynamicChart2 = _interopRequireDefault(_DynamicChart);
 
 var _ResponsiveTabs = require('../ResponsiveTabs');
 
@@ -104,7 +116,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var renderIndex = 0;
 // import Editor from '../RAEditor';
 var AppLayoutMap = exports.AppLayoutMap = (0, _assign2.default)({}, {
-  recharts: recharts, ResponsiveForm: _ResponsiveForm2.default, RawOutput: _RawOutput2.default, RawStateOutput: _RawStateOutput2.default, FormItem: _FormItem2.default, MenuAppLink: _MenuAppLink2.default, SubMenuLinks: _SubMenuLinks2.default, ResponsiveTable: _ResponsiveTable2.default, ResponsiveCard: _ResponsiveCard2.default, ResponsiveChart: _ResponsiveChart2.default, ResponsiveBar: _ResponsiveBar2.default, ResponsiveTabs: _ResponsiveTabs2.default, CodeMirror: _RACodeMirror2.default, ReactSlider: _reactSlider2.default }, _react2.default.DOM, rebulma, { Link: _reactRouter.Link });
+  recharts: recharts, ResponsiveForm: _ResponsiveForm2.default, DynamicForm: _DynamicForm2.default, RawOutput: _RawOutput2.default, RawStateOutput: _RawStateOutput2.default, FormItem: _FormItem2.default, MenuAppLink: _MenuAppLink2.default, SubMenuLinks: _SubMenuLinks2.default, ResponsiveTable: _ResponsiveTable2.default, ResponsiveCard: _ResponsiveCard2.default, DynamicChart: _DynamicChart2.default, ResponsiveBar: _ResponsiveBar2.default, ResponsiveTabs: _ResponsiveTabs2.default, ResponsiveDatalist: _ResponsiveDatalist2.default, CodeMirror: _RACodeMirror2.default, ReactSlider: _reactSlider2.default, GoogleMap: _googleMapReact2.default }, _react2.default.DOM, rebulma, { Link: _reactRouter.Link });
 
 // console.log({ AppLayoutMap });
 // console.log({ ReactDOM: React.DOM['div'] });
@@ -155,7 +167,7 @@ function getRenderedComponent(componentObject, resources, debug) {
       //props children
       componentObject.children && Array.isArray(componentObject.children) && typeof componentObject.children !== 'string' ? componentObject.children.map(function (childComponentObject) {
         return getRenderedComponent.call(_this, childComponentObject, resources);
-      }) : typeof componentObject.children === 'undefined' ? null : componentObject.children);
+      }) : typeof componentObject.children === 'undefined' ? renderedCompProps && renderedCompProps.children && typeof renderedCompProps.children === 'string' ? renderedCompProps.children : null : componentObject.children);
     }
   } catch (e) {
     console.error(e);

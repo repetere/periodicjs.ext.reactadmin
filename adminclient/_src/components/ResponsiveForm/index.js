@@ -8,13 +8,13 @@ var _extends2 = require('babel-runtime/helpers/extends');
 
 var _extends3 = _interopRequireDefault(_extends2);
 
-var _keys = require('babel-runtime/core-js/object/keys');
-
-var _keys2 = _interopRequireDefault(_keys);
-
 var _defineProperty2 = require('babel-runtime/helpers/defineProperty');
 
 var _defineProperty3 = _interopRequireDefault(_defineProperty2);
+
+var _keys = require('babel-runtime/core-js/object/keys');
+
+var _keys2 = _interopRequireDefault(_keys);
 
 var _stringify = require('babel-runtime/core-js/json/stringify');
 
@@ -84,6 +84,7 @@ var ResponsiveForm = function (_Component) {
     if (props.stringyFormData) {
       formdata.genericdocjson = (0, _stringify2.default)(props.formdata, null, 2);
     }
+    var customPropsFormdata = (0, _assign2.default)({}, props.formdata, formdata);
     // console.debug({ formdata });
     // console.debug('ResponsiveForm',{ props });
     _this.state = (0, _assign2.default)({
@@ -93,11 +94,14 @@ var ResponsiveForm = function (_Component) {
       formDataLists: {},
       formDataTables: {},
       formDataFiles: {}
-    }, formdata);
+    },
+    // customProps.formdata,
+    customPropsFormdata);
     _this.datalists = {};
 
     _this.getRenderedComponent = _AppLayoutMap.getRenderedComponent.bind(_this);
     _this.getFormSubmit = _FormElements.getFormSubmit.bind(_this);
+    _this.getFormDatalist = _FormElements.getFormDatalist.bind(_this);
     _this.getFormCode = _FormElements.getFormCode.bind(_this);
     _this.getFormTextInputArea = _FormElements.getFormTextInputArea.bind(_this);
     _this.getFormTextArea = _FormElements.getFormTextArea.bind(_this);
@@ -153,6 +157,17 @@ var ResponsiveForm = function (_Component) {
           }
         } else if (formElm.name) {
           formElementFields.push(formElm.name);
+          if (formElm.type === 'datalist') {
+            // console.debug('before',{formElm,formdata});
+            if (formElm.datalist.multi && formdata[formElm.name] && formdata[formElm.name].length) {
+              formdata[formElm.name] = formdata[formElm.name].map(function (datum) {
+                return datum[formElm.datalist.selector || '_id'];
+              });
+            } else if (formdata[formElm.name] && (0, _keys2.default)(formdata[formElm.name]).length) {
+              formdata[formElm.name] = formdata[formElm.name][formElm.datalist.selector || '_id'];
+            }
+            // console.debug('after',{formElm,formdata});
+          }
         }
       };
       delete formdata.formDataLists;
@@ -272,11 +287,14 @@ var ResponsiveForm = function (_Component) {
             }
           }
           if (fetchOptions.successCallback) {
-            var successCallback = typeof fetchOptions.successCallback === 'string' && fetchOptions.successCallback.indexOf('func:this.props.reduxRouter') !== -1 ? _this2.props[fetchOptions.successCallback.replace('func:this.props.reduxRouter.', '')] : _this2.props[fetchOptions.successCallback.replace('func:this.props.', '')];
+            var successCallback = typeof fetchOptions.successCallback === 'string' && fetchOptions.successCallback.indexOf('func:this.props.reduxRouter') !== -1 ? _this2.props.reduxRouter[fetchOptions.successCallback.replace('func:this.props.reduxRouter.', '')] : _this2.props[fetchOptions.successCallback.replace('func:this.props.', '')];
             res.json().then(function (successData) {
               if (fetchOptions.successCallback === 'func:this.props.setDynamicData') {
                 _this2.props.setDynamicData(_this2.props.dynamicField, submitFormData);
               } else {
+                if (fetchOptions.setDynamicData) {
+                  _this2.props.setDynamicData(_this2.props.dynamicField, submitFormData);
+                }
                 successCallback(fetchOptions.successProps || successData, submitFormData);
               }
             });
@@ -303,65 +321,6 @@ var ResponsiveForm = function (_Component) {
       }
     }
   }, {
-    key: 'removeFromSingleItemProp',
-    value: function removeFromSingleItemProp(options) {
-      var value = options.value,
-          attribute = options.attribute;
-
-      var attrArray = attribute.split('.');
-      var arrayToSet = (0, _assign2.default)([], this.state[attrArray[0]][attrArray[1]]);
-      // let removedItem = arrayToSet.splice(value, 1);
-      arrayToSet.splice(value, 1);
-
-      this.setFormSingleProp({ value: arrayToSet, attribute: attribute });
-      // console.log('remove prop form state', { value, attribute, arrayToSet, removedItem, });
-    }
-  }, {
-    key: 'addSingleItemProp',
-    value: function addSingleItemProp(options) {
-      // console.log('addSingleItemProp');
-      var value = options.value,
-          attribute = options.attribute;
-
-      var attrArray = attribute.split('.');
-      if (!this.state[attrArray[0]]) {
-        // this.state[ attrArray[ 0 ] ] = {};
-        this.setState((0, _defineProperty3.default)({}, attrArray[0], {}));
-      }
-      var arrayToSet = (0, _assign2.default)([], this.state[attrArray[0]][attrArray[1]]);
-      // let removedItem = arrayToSet.splice(value, 1);
-      arrayToSet.push(value);
-
-      this.setFormSingleProp({ value: arrayToSet, attribute: attribute });
-      // console.log('remove prop form state', { value, attribute, arrayToSet, removedItem, });
-    }
-  }, {
-    key: 'setFormSingleProp',
-    value: function setFormSingleProp(options) {
-      // console.log('setFormSingleProp');
-      var value = options.value,
-          attribute = options.attribute;
-
-      var updatedStateProp = {};
-      // console.log('setFormSingleProp prop form state', { value, attribute, }, 'this.state.formDataLists', this.state.formDataLists);
-      var updatedFormData = (0, _assign2.default)({}, this.state.formDataLists);
-      updatedFormData[attribute].data = [];
-      // let dataFromState = this.state.formDataLists[ formElement.name ].data;
-
-      if (attribute.indexOf('.') === -1) {
-        updatedStateProp[attribute] = value;
-        updatedStateProp.formDataLists = updatedFormData;
-        this.setState(updatedStateProp);
-      } else {
-        var _setState2;
-
-        var attrArray = attribute.split('.');
-        var stateToSet = (0, _assign2.default)({}, this.state[attrArray[0]]);
-        stateToSet[attrArray[1]] = value;
-        this.setState((_setState2 = {}, (0, _defineProperty3.default)(_setState2, attrArray[0], stateToSet), (0, _defineProperty3.default)(_setState2, 'formDataLists', updatedFormData), _setState2));
-      }
-    }
-  }, {
     key: 'render',
     value: function render() {
       var _this3 = this;
@@ -382,6 +341,8 @@ var ResponsiveForm = function (_Component) {
             return _this3.getFormTextArea({ formElement: formElement, i: j, formgroup: formgroup });
           } else if (formElement.type === 'hidden') {
             return _this3.getHiddenInput({ formElement: formElement, i: j, formgroup: formgroup });
+          } else if (formElement.type === 'datalist') {
+            return _this3.getFormDatalist({ formElement: formElement, i: j, formgroup: formgroup });
           } else if (formElement.type === 'checkbox' || formElement.type === 'radio') {
             return _this3.getFormCheckbox({ formElement: formElement, i: j, formgroup: formgroup });
           } else if (formElement.type === 'label') {

@@ -68,8 +68,8 @@ var appDefaultSettings = {
     logged_out_path: '/login'
   },
   login: {
-    url: 'https://pas-dev.promisefinancial.net:8784/api/jwt/token',
-    devurl: 'https://pas-dev.promisefinancial.net:8784/api/jwt/token',
+    url: 'http://localhost:8786/api/jwt/token',
+    devurl: 'http://localhost:8786/api/jwt/token',
     options: {
       method: 'POST',
       headers: {
@@ -80,8 +80,8 @@ var appDefaultSettings = {
     }
   },
   userprofile: {
-    url: 'https://pas-dev.promisefinancial.net:8784/api/jwt/profile',
-    devurl: 'https://pas-dev.promisefinancial.net:8784/api/jwt/profile',
+    url: 'http://localhost:8786/api/jwt/profile',
+    devurl: 'http://localhost:8786/api/jwt/profile',
     options: {
       method: 'POST',
       headers: {

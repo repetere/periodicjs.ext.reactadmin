@@ -13,6 +13,10 @@ var _assign = require('babel-runtime/core-js/object/assign');
 
 var _assign2 = _interopRequireDefault(_assign);
 
+var _stringify = require('babel-runtime/core-js/json/stringify');
+
+var _stringify2 = _interopRequireDefault(_stringify);
+
 var _promise = require('babel-runtime/core-js/promise');
 
 var _promise2 = _interopRequireDefault(_promise);
@@ -28,7 +32,22 @@ var checkStatus = exports.checkStatus = function checkStatus(response) {
     } else {
       var error = new Error(response.statusText);
       error.response = response;
-      reject(error);
+      try {
+        // console.debug({response})
+        response.json().then(function (res) {
+          if (res.data.error) {
+            reject(res.data.error);
+          } else if (res.data) {
+            reject((0, _stringify2.default)(res.data));
+          } else {
+            reject(error);
+          }
+        }).catch(function () {
+          reject(error);
+        });
+      } catch (e) {
+        reject(error);
+      }
     }
   });
 };

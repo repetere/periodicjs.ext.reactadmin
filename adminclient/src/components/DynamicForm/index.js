@@ -1,7 +1,7 @@
 import React, { Component, } from 'react';
-import { Columns, Card, CardContent, CardFooter, CardFooterItem, Notification, Column, Label, } from 're-bulma'; 
+import { Columns, Column, Label, } from 're-bulma'; 
 import { getRenderedComponent, } from '../AppLayoutMap';
-import utilities from '../../util';
+// import utilities from '../../util';
 import { getFormTextInputArea, getFormCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, getFormTextArea, /*getFormEditor,*/ getFormLink, getHiddenInput, getFormGroup, getImage, getFormDatalist, } from '../ResponsiveForm/FormElements';
 import flatten from 'flat';
 
@@ -53,7 +53,7 @@ class DynamicForm extends Component{
     }
   }
   render() {
-    let keyValue = 0;
+    // let keyValue = 0;
     let formGroupData = this.props.formgroups.map((formgroup, i) => {
       let gridProps = Object.assign({
         isMultiline: true,

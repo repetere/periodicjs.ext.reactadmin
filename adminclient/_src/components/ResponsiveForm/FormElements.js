@@ -4,10 +4,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _extends2 = require('babel-runtime/helpers/extends');
-
-var _extends3 = _interopRequireDefault(_extends2);
-
 var _defineProperty2 = require('babel-runtime/helpers/defineProperty');
 
 var _defineProperty3 = _interopRequireDefault(_defineProperty2);
@@ -16,11 +12,16 @@ var _stringify = require('babel-runtime/core-js/json/stringify');
 
 var _stringify2 = _interopRequireDefault(_stringify);
 
+var _extends2 = require('babel-runtime/helpers/extends');
+
+var _extends3 = _interopRequireDefault(_extends2);
+
 var _assign = require('babel-runtime/core-js/object/assign');
 
 var _assign2 = _interopRequireDefault(_assign);
 
 exports.getPropertyAttribute = getPropertyAttribute;
+exports.getFormDatalist = getFormDatalist;
 exports.getFormTextInputArea = getFormTextInputArea;
 exports.getFormTextArea = getFormTextArea;
 exports.getFormSelect = getFormSelect;
@@ -45,7 +46,17 @@ var _RACodeMirror = require('../RACodeMirror');
 
 var _RACodeMirror2 = _interopRequireDefault(_RACodeMirror);
 
+var _ResponsiveDatalist = require('../ResponsiveDatalist');
+
+var _ResponsiveDatalist2 = _interopRequireDefault(_ResponsiveDatalist);
+
 var _reBulma = require('re-bulma');
+
+var _moment = require('moment');
+
+var _moment2 = _interopRequireDefault(_moment);
+
+var _flat = require('flat');
 
 var _styles = require('../../styles');
 
@@ -125,13 +136,59 @@ function getFormLabel(formElement) {
 }
 
 function getInitialValue(formElement, state) {
-  // console.debug('state[ formElement.name ]', state[ formElement.name ],'typeof state[ formElement.name ] ',typeof state[ formElement.name ] );
-  // console.debug('formElement.value', formElement.value,'typeof formElement.value',typeof formElement.value);
-  if (state[formElement.name] === null || formElement.value === null || formElement.value === 'null') return '';else return typeof state[formElement.name] !== 'undefined' ? state[formElement.name] : formElement.value;
+  var formElementValue = formElement.value;
+  if (formElement.momentFormat) {
+    formElementValue = (0, _moment2.default)(formElementValue).format(formElement.momentFormat);
+  }
+  if (state[formElement.name] === null || formElementValue === null || formElementValue === 'null') return '';else return typeof state[formElement.name] !== 'undefined' ? state[formElement.name] : formElementValue;
+}
+
+function getFormDatalist(options) {
+  var _this2 = this;
+
+  var formElement = options.formElement,
+      i = options.i;
+
+  var initialValue = getInitialValue(formElement, (0, _assign2.default)({}, this.state, (0, _flat.unflatten)(this.state)));
+  var hasError = getErrorStatus(this.state, formElement.name);
+  var passedProps = (0, _assign2.default)({}, this.props, {
+    wrapperProps: {
+      style: {
+        display: 'flex',
+        width: '100%',
+        flex: '5',
+        alignItems: 'stretch',
+        flexDirection: 'column'
+      }
+    },
+    passableProps: {
+      help: getFormElementHelp(hasError, this.state, formElement.name),
+      color: hasError ? 'isDanger' : undefined,
+      icon: hasError ? 'fa fa-warning' : undefined,
+      placeholder: formElement.placeholder,
+      style: {
+        width: '100%'
+      }
+    }
+  }, formElement.datalist);
+  // console.debug({formElement,initialValue, },'this.state',this.state);
+  return _react2.default.createElement(
+    _FormItem2.default,
+    (0, _extends3.default)({ key: i }, formElement.layoutProps),
+    getFormLabel(formElement),
+    _react2.default.createElement(_ResponsiveDatalist2.default, (0, _extends3.default)({}, passedProps, {
+      onChange: function onChange(newvalue) {
+        console.debug({ newvalue: newvalue });
+        var updatedStateProp = {};
+        updatedStateProp[formElement.name] = newvalue;
+        _this2.setState(updatedStateProp);
+      },
+      value: initialValue }))
+  );
 }
 
 function getFormTextInputArea(options) {
-  var _this2 = this;
+  var _this3 = this;
 
   var formElement = options.formElement,
       i = options.i,
@@ -140,7 +197,7 @@ function getFormTextInputArea(options) {
   var initialValue = getInitialValue(formElement, this.state); //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
   var keyPress = function keyPress(e) {
     if (formElement.submitOnEnter && (e.key === 'Enter' || e.which === 13)) {
-      _this2.submitForm();
+      _this3.submitForm();
     }
   };
   var fileClassname = '__reactadmin_file_' + formElement.name;
@@ -159,11 +216,11 @@ function getFormTextInputArea(options) {
       var text = event.target.value;
       var updatedStateProp = {};
       if (passableProps && passableProps.type === 'file') {
-        updatedStateProp.formDataFiles = (0, _assign2.default)({}, _this2.state.formDataFiles, (0, _defineProperty3.default)({}, formElement.name, document.querySelector('.' + fileClassname + ' input')));
+        updatedStateProp.formDataFiles = (0, _assign2.default)({}, _this3.state.formDataFiles, (0, _defineProperty3.default)({}, formElement.name, document.querySelector('.' + fileClassname + ' input')));
       } else {
         updatedStateProp[formElement.name] = text;
       }
-      _this2.setState(updatedStateProp);
+      _this3.setState(updatedStateProp);
     };
   }
 
@@ -255,7 +312,7 @@ function getFormSelect(options) {
 }
 
 function getFormCheckbox(options) {
-  var _this3 = this;
+  var _this4 = this;
 
   var formElement = options.formElement,
       i = options.i,
@@ -267,9 +324,9 @@ function getFormCheckbox(options) {
     onValueChange = function onValueChange() /*event*/{
       // let text = event.target.value;
       var updatedStateProp = {};
-      updatedStateProp[formElement.name] = _this3.state[formElement.name] ? false : 'on';
+      updatedStateProp[formElement.name] = _this4.state[formElement.name] ? false : 'on';
       // console.log({ updatedStateProp });
-      _this3.setState(updatedStateProp);
+      _this4.setState(updatedStateProp);
     };
   }
 
@@ -317,8 +374,11 @@ function getImage(options) {
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps),
     getFormLabel(formElement),
-    _react2.default.createElement(_reBulma.Image, (0, _extends3.default)({ key: i }, imageProps, {
-      src: initialValue }))
+    formElement.link ? _react2.default.createElement(
+      'a',
+      { href: initialValue, target: '_blank' },
+      _react2.default.createElement(_reBulma.Image, (0, _extends3.default)({ key: i }, imageProps, { src: this.state[formElement.preview] || initialValue }))
+    ) : _react2.default.createElement(_reBulma.Image, (0, _extends3.default)({ key: i }, imageProps, { src: this.state[formElement.preview] || initialValue }))
   );
 }
 
@@ -377,14 +437,16 @@ function getFormCode(options) {
       onValueChange = options.onValueChange;
 
   var hasError = getErrorStatus(this.state, formElement.name);
+  var initialVal = getInitialValue(formElement, this.state);
   var CodeMirrorProps = (0, _assign2.default)({
     codeMirrorProps: {
       lineNumbers: true,
-      value: getInitialValue(formElement, this.state), //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
+      value: formElement.stringify ? (0, _stringify2.default)(initialVal, null, 2) : initialVal, //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
       //value: this.state[ formElement.name ] || formElement.value,
       style: {
         minHeight: 200
       },
+      lineWrapping: true,
       onChange: !onValueChange ? function (newvalue) {
         // console.log({ newvalue });
         var updatedStateProp = {};
@@ -398,7 +460,7 @@ function getFormCode(options) {
         backgroundColor: 'white',
         border: hasError ? '1px solid #ed6c63' : '1px solid #d3d6db',
         borderRadius: 3,
-        height: 500,
+        height: 'auto',
         boxShadow: 'inset 0 1px 2px rgba(17,17,17,.1)'
       }
     }
@@ -469,7 +531,7 @@ export function getFormEditor(options) {
 
 */
 function getFormSubmit(options) {
-  var _this4 = this;
+  var _this5 = this;
 
   var formElement = options.formElement,
       i = options.i;
@@ -482,7 +544,7 @@ function getFormSubmit(options) {
       _reBulma.Button,
       (0, _extends3.default)({}, formElement.passProps, {
         onClick: function onClick() {
-          formElement.confirmModal ? _this4.props.createModal((0, _assign2.default)({
+          formElement.confirmModal ? _this5.props.createModal((0, _assign2.default)({
             title: 'Please Confirm',
             text: {
               component: 'div',
@@ -498,7 +560,7 @@ function getFormSubmit(options) {
                 component: 'div',
                 children: [{
                   component: 'ResponsiveButton',
-                  props: {
+                  props: (0, _assign2.default)({
                     style: {
                       margin: 10
                     },
@@ -508,15 +570,15 @@ function getFormSubmit(options) {
                       color: 'isPrimary'
                     },
                     onClick: function onClick() {
-                      _this4.props.hideModal('last');
-                      _this4.submitForm.call(_this4);
+                      _this5.props.hideModal('last');
+                      _this5.submitForm.call(_this5);
                     },
                     onclickProps: 'last'
-                  },
-                  children: 'Yes'
+                  }, formElement.confirmModal.yesButtonProps),
+                  children: formElement.confirmModal.yesButtonText || 'Yes'
                 }, {
                   component: 'ResponsiveButton',
-                  props: {
+                  props: (0, _assign2.default)({
                     style: {
                       margin: 10
                     },
@@ -525,11 +587,11 @@ function getFormSubmit(options) {
                     },
                     onClick: 'func:this.props.hideModal',
                     onclickProps: 'last'
-                  },
-                  children: 'No'
+                  }, formElement.confirmModal.noButtonProps),
+                  children: formElement.confirmModal.noButtonText || 'No'
                 }]
               }]
-            } }, formElement.confirmModal)) : _this4.submitForm.call(_this4);
+            } }, formElement.confirmModal)) : _this5.submitForm.call(_this5);
         } }),
       formElement.value
     )

@@ -131,7 +131,7 @@ var ResponsiveButton = function (_Component) {
               component: 'div',
               children: [{
                 component: 'ResponsiveButton',
-                props: {
+                props: (0, _assign2.default)({
                   style: {
                     margin: 10
                   },
@@ -146,11 +146,11 @@ var ResponsiveButton = function (_Component) {
                     onclickFunction.call(_this2, onclickProp, clickFetchProps, clickSuccessProps);
                   },
                   onclickProps: 'last'
-                },
-                children: 'Yes'
+                }, this.props.confirmModal.yesButtonProps),
+                children: this.props.confirmModal.yesButtonText || 'Yes'
               }, {
                 component: 'ResponsiveButton',
-                props: {
+                props: (0, _assign2.default)({
                   style: {
                     margin: 10
                   },
@@ -159,8 +159,8 @@ var ResponsiveButton = function (_Component) {
                   },
                   onClick: 'func:this.props.hideModal',
                   onclickProps: 'last'
-                },
-                children: 'No'
+                }, this.props.confirmModal.noButtonProps),
+                children: this.props.confirmModal.noButtonText || 'No'
               }]
             }]
           }

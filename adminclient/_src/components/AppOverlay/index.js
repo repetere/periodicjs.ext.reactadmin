@@ -161,7 +161,7 @@ var ModalUI = function (_Component2) {
               footerContent: footerContent,
               isActive: true,
               onCloseRequest: _this3.props.hide,
-              className: 'animated ' + (_this3.props.animation ? _this3.props.animation : 'zoomIn') + ' Slow-Speed',
+              className: 'animated ' + (_this3.props.animation ? _this3.props.animation : 'zoomIn') + ' Medium-Speed',
               showOverlayCloseButton: false
             },
             _react2.default.createElement(

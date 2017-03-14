@@ -183,15 +183,6 @@ function getLoginLayout(options) {
                       }
                     }
                   }
-                }, {
-                  name: 'rememberme',
-                  'constraints': {
-                    'rememberme': {
-                      presence: {
-                        message: 'is required'
-                      }
-                    }
-                  }
                 }]
               }
             }]

@@ -11,7 +11,7 @@
     } else if(locals.extension.reactadmin.settings.name){
       %><%- locals.extension.reactadmin.settings.name %><%
     } else{%>'Welcome'<%}%></title>
-    <link href="/extensions/periodicjs.ext.reactadmin/static/css/main.4eb95376.css" rel="stylesheet">
+    <link href="/extensions/periodicjs.ext.reactadmin/static/css/main.4bfa9d30.css" rel="stylesheet">
     <%- (locals.extension.reactadmin.settings.custom_css_stylesheet)?`<link href="${locals.extension.reactadmin.settings.custom_css_stylesheet}" rel="stylesheet">`:'' %>
     <% if(locals.extension.reactadmin.settings.application.additional_header){ %><%- include(`../../../../content/themes/${locals.theme_name}/views/shared/reactadmin/header`,{locals}) ;%><% } %>
   </head>
@@ -20,7 +20,7 @@
     <script type="text/javascript">
       <%- locals.viewhelper.passObjToClient(locals.extension.reactadmin.settings,"__padmin") %>
     </script>
-    <script type="text/javascript" src="/extensions/periodicjs.ext.reactadmin/static/js/main.c4d5ec5a.js"></script>
+    <script type="text/javascript" src="/extensions/periodicjs.ext.reactadmin/static/js/main.a14c1798.js"></script>
     <% if(locals.extension.reactadmin.settings.application.additional_footer){ %><%- include(`../../../../content/themes/${locals.theme_name}/views/shared/reactadmin/footer`,{locals}) ;%><% } %>
   </body>
 </html>
