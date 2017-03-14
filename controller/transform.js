@@ -24,7 +24,6 @@ const transformRequest = (type) => (req, res, next) => {
 const posttransform = transformRequest('post');
 const pretransform = transformRequest('pre');
 
-
 const controller = function (resources) {
   // logger = resources.logger;
   utilities = require('../utility')(resources);

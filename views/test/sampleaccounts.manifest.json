@@ -230,7 +230,7 @@
                           "presence":"true",
                           "length":{
                             "minimum":3,
-                            "message":"has to be an email and is  required"
+                            "message":"THIS has to be an email and is  required"
                           }
                         }
                       }
@@ -279,7 +279,9 @@
                       "name":"samplecheck",
                       "constraints":{
                         "samplecheck":{
-                          "presence":"true"
+                          "presence":{
+                            "message":"^THIS true"
+                            }
                         }
                       }
                     }],

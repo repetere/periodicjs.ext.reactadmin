@@ -37,7 +37,8 @@ const mapStateToProps = (state) => {
     // messageBar: state.messageBar,
   };
 };
-
+window.__reactadmin = Object.assign({},window.__reactadmin);
+window.__reactadmin.setDynamicData = (prop, val) => store.dispatch(actions.dynamic.setDynamicData(prop, val));
 const reduxActions = {
   isLoggedIn: () => store.getState().user.isLoggedIn,
   getState: () => store.getState(), //.dispatch(actions.user.getUserStatus()),

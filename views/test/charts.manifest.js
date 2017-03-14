@@ -61,7 +61,7 @@ module.exports = {
         props: {
           style: {
             padding:'5rem 0',
-          }
+          },
         },
         // props: { size: 'isFullheight', },
         children: [ {
@@ -73,8 +73,8 @@ module.exports = {
               props:{},
               children:[
                 {
-                  component: 'div',
-                  children: 'div text',
+                  component: 'Title',
+                  children: 'Chart Test',
                 },
                 // {
                 //   component: 'RawOutput',
@@ -112,18 +112,32 @@ module.exports = {
                           {
                             type: 'layout',
                             value: {
-                              component: 'RawStateOutput',
-                              props: {
-                                select:'dynamic',
-                                style: {
-                                  border: '1px solid black',
-                                  padding: 5,
-                                  margin: 5,
+                              component:'div',
+                              children:[
+                                {
+                                  component: 'RawStateOutput',
+                                  props: {
+                                    select:'dynamic',
+                                    style: {
+                                      border: '1px solid black',
+                                      padding: 5,
+                                      margin: 5,
+                                    },
+                                  },
+                                  // thisprops: {
+                                  //   dynamics:[ 'dynamic', ],
+                                  // },
                                 },
-                              },
-                              // thisprops: {
-                              //   dynamics:[ 'dynamic', ],
-                              // },
+                                {
+                                  component:'Title',
+                                  props:{
+                                    // children:'title from prop',
+                                  },
+                                  thisprops:{
+                                    children:['dynamic', 'chartdata', 'testData', ],
+                                  },
+                                },
+                              ],
                             },
                           },
                           {
@@ -134,6 +148,31 @@ module.exports = {
                           {
                             type: 'submit',
                             value: 'update',
+                          },
+                        ],
+                      },
+                      {
+                        formElements: [
+                          // {},
+                          {
+                            type:'layout',
+                            value: {
+                              component:'DynamicForm',
+                              props:{
+                                flattenData:true,
+                                formgroups:[
+                                  {
+                                    formElements:[
+                                      {
+                                        type:'text',
+                                        label:'chart data',
+                                        name: 'chartdata.testData',
+                                      },
+                                    ],
+                                  },
+                                ],
+                              },
+                            },
                           },
                         ],
                       },

@@ -1,5 +1,6 @@
 'use strict';
 
+const flatten = require('flat');
 const capitalize = require('capitalize');
 const helpers = require('../helpers');
 const pluralize = require('pluralize');
@@ -8,9 +9,10 @@ const autoFormElements = require('./autoFormElements');
 const publishOptions = require('./publishOptions');
 pluralize.addIrregularRule('data', 'datas');
 
-const buildDetail = function (schema, label, options = {}) {
+const buildDetail = function (schema, label, options = {}, newEntity) {
   let elems = [];
   let usablePrefix = helpers.getDataPrefix(options.prefix);
+  let manifestPrefix = helpers.getManifestPathPrefix(options.prefix);
   let top = {
     component: 'ResponsiveForm',
     asyncprops: {
@@ -18,14 +20,18 @@ const buildDetail = function (schema, label, options = {}) {
     },
     props: {
       onSubmit:{
-        url: `${options.extsettings.basename}/${usablePrefix}/${pluralize(label)}/:id?format=json&unflatten=true`,
-        params: [
+        url: (newEntity)
+          ?`${options.extsettings.basename}/${usablePrefix}/${pluralize(label)}?format=json`
+          :`${options.extsettings.basename}/${usablePrefix}/${pluralize(label)}/:id?format=json&unflatten=true`,
+        params: (newEntity)?undefined:[
           { 'key': ':id', 'val': '_id', },
         ],
         options:{
-          method:'PUT',
+          method:(newEntity)?'POST':'PUT',
         },
         success: true,
+        successCallback:(newEntity)?'func:this.props.reduxRouter.push':undefined,
+        successProps:(newEntity)?`${manifestPrefix}/${pluralize(label)}`:undefined,
       },
       'hiddenFields': [
         {
@@ -55,13 +61,14 @@ const buildDetail = function (schema, label, options = {}) {
   let formElements = top.props.formgroups[0].formElements;
   let result = [ top, ];
   let index = 0;
+  let flattenedSchema = flatten(schema,{maxDepth:2});
   for (let key in schema) {
     let data = (schema[ key ] && schema[ key ].type && DICTIONARY[ Symbol.for(schema[ key ].type) ])
       ? schema[ key ].type
       : schema[ key ];
     let type = DICTIONARY[ Symbol.for(data) ];
     elems.push({ key, label, type, data, });
-    if ([ '_id', 'id', 'content', 'title', 'name', 'status', 'description', ].indexOf(key) !== -1) {
+    if ([ '_id', 'id', 'content', 'title', 'name', 'authors', 'primaryauthor', 'status', 'description', 'changes', 'tags', 'categories', 'contenttypes','assets','primaryasset', ].indexOf(key) !== -1) {
       // console.log({ key, schema });
     } else if (type || (data && Array.isArray(data))) {
       if(data && Array.isArray(data)) {
@@ -78,38 +85,39 @@ const buildDetail = function (schema, label, options = {}) {
       result.push(autoFormElements.handleTable(key, data));
     }
   }
-  result[ 0 ].props.formgroups.splice(0, 0, publishOptions.publishBasic(schema, label, options));
-  /*
-  result.push(
-    {
-      component: 'pre',
-      props: {
-        style: {
-          border: '1px solid black',
-        },
-      },
-      children: 'label: '+JSON.stringify(label, null, 2),
-    },
-    {
-      component: 'pre',
-      props: {
-        style: {
-          border: '1px solid black',
-        },
-      },
-      children: 'schema: '+JSON.stringify(schema, null, 2),
-    },
-    {
-      component: 'pre',
-      props: {
-        style: {
-          border: '1px solid black',
-        },
-      },
-      children: 'elems: '+JSON.stringify(elems, null, 2),
-    }
-  );
-  */
+  result[ 0 ].props.formgroups.splice(0, 0, publishOptions.publishBasic(schema, label, options, newEntity));
+  result[ 0 ].props.formgroups.push(publishOptions.publishAttributes(schema, label, options));
+
+//   result.push(
+//     // {
+//     //   component: 'pre',
+//     //   props: {
+//     //     style: {
+//     //       border: '1px solid black',
+//     //     },
+//     //   },
+//     //   children: 'label: '+JSON.stringify(label, null, 2),
+//     // },
+//     {
+//       component: 'pre',
+//       props: {
+//         style: {
+//           border: '1px solid black',
+//         },
+//       },
+//       children: 'schema: '+JSON.stringify(schema, null, 2),
+//     }
+//     // {
+//     //   component: 'pre',
+//     //   props: {
+//     //     style: {
+//     //       border: '1px solid black',
+//     //     },
+//     //   },
+//     //   children: 'elems: '+JSON.stringify(elems, null, 2),
+//     // }
+//   );
+  
   return result;
 };
 

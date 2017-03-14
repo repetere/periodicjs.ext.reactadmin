@@ -6,6 +6,7 @@ import ResponsiveDatalist from '../ResponsiveDatalist';
 // import ResponsiveButton from '../ResponsiveButton';
 // import { EditorState, } from 'draft-js';
 import { ControlLabel, Label, Input, Button, CardFooterItem, Select, Textarea, Group, Image, } from 're-bulma'; 
+import moment from 'moment';
 import { unflatten, } from 'flat';
 import styles from '../../styles';
 
@@ -68,11 +69,14 @@ function getFormLabel(formElement) {
 }
 
 function getInitialValue(formElement, state) {
-  // console.debug('state[ formElement.name ]', state[ formElement.name ],'typeof state[ formElement.name ] ',typeof state[ formElement.name ] );
-  if (state[ formElement.name ] === null || formElement.value === null || formElement.value === 'null' ) return '';
+  let formElementValue = formElement.value;
+  if (formElement.momentFormat) {
+    formElementValue = moment(formElementValue).format(formElement.momentFormat);
+  }
+  if (state[ formElement.name ] === null || formElementValue === null || formElementValue === 'null' ) return '';
   else return (typeof state[ formElement.name ] !== 'undefined' )
     ? state[ formElement.name ]
-    : formElement.value;
+    : formElementValue;
 }
 
 export function getFormDatalist(options){
@@ -312,14 +316,16 @@ export function getFormGroup(options) {
 export function getFormCode(options) {
   let { formElement, i, onValueChange, } = options;
   let hasError = getErrorStatus(this.state, formElement.name);
+  let initialVal = getInitialValue(formElement, this.state);
   let CodeMirrorProps = Object.assign({
     codeMirrorProps: {
       lineNumbers: true,
-      value: getInitialValue(formElement, this.state), //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
+      value: (formElement.stringify)?JSON.stringify(initialVal,null,2):initialVal, //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
       //value: this.state[ formElement.name ] || formElement.value,
       style: {
         minHeight:200,
       },
+      lineWrapping:true,
       onChange: (!onValueChange) ? function (newvalue){
         // console.log({ newvalue });
         let updatedStateProp = {};
@@ -333,7 +339,7 @@ export function getFormCode(options) {
         backgroundColor: 'white',
         border: (hasError) ? '1px solid #ed6c63' : '1px solid #d3d6db',
         borderRadius: 3,
-        height:500,
+        height:'auto',
         boxShadow: 'inset 0 1px 2px rgba(17,17,17,.1)',
       },
     },
@@ -428,7 +434,7 @@ export function getFormSubmit(options) {
                   children: [
                     {
                       component: 'ResponsiveButton',
-                      props: {
+                      props: Object.assign({
                         style:{
                           margin:10
                         },
@@ -442,12 +448,12 @@ export function getFormSubmit(options) {
                           this.submitForm.call(this);
                         },
                         onclickProps:'last',
-                      },  
-                      children:'Yes' 
+                      },formElement.confirmModal.yesButtonProps),  
+                      children:formElement.confirmModal.yesButtonText||'Yes' 
                     },
                     {
                       component: 'ResponsiveButton',
-                      props: {
+                      props: Object.assign({
                         style:{
                           margin:10
                         },
@@ -456,8 +462,8 @@ export function getFormSubmit(options) {
                         },
                         onClick: 'func:this.props.hideModal',
                         onclickProps:'last',
-                      },  
-                      children:'No',
+                      },formElement.confirmModal.noButtonProps),  
+                      children:formElement.confirmModal.noButtonText||'No',
                     }
                   ] 
                 }

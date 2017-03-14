@@ -72,7 +72,7 @@ class ResponsiveButton extends Component {
               children: [
                 {
                   component: 'ResponsiveButton',
-                  props: {
+                  props: Object.assign({
                     style: {
                       margin: 10,
                     },
@@ -87,12 +87,12 @@ class ResponsiveButton extends Component {
                       onclickFunction.call(this, onclickProp, clickFetchProps, clickSuccessProps);
                     },
                     onclickProps: 'last',
-                  },
-                  children: 'Yes',
+                  },this.props.confirmModal.yesButtonProps),
+                  children: this.props.confirmModal.yesButtonText||'Yes',
                 },
                 {
                   component: 'ResponsiveButton',
-                  props: {
+                  props: Object.assign({
                     style: {
                       margin: 10,
                     },
@@ -101,8 +101,8 @@ class ResponsiveButton extends Component {
                     },
                     onClick: 'func:this.props.hideModal',
                     onclickProps: 'last',
-                  },
-                  children: 'No',
+                  },this.props.confirmModal.noButtonProps),
+                  children: this.props.confirmModal.noButtonText||'No',
                 },
               ],
             },

@@ -7,9 +7,9 @@ const pluralize = require('pluralize');
 const publishOptions = require('./publishOptions');
 pluralize.addIrregularRule('data', 'datas');
 
-const buildAdvancedDetail = function (schema, label, options = {}) {
+const buildAdvancedDetail = function (schema, label, options = {},newEntity) {
   let usablePrefix = helpers.getDataPrefix(options.prefix);
-  let manifestPrefix = helpers.getManifestPathPrefix(options.prefix);
+  // let manifestPrefix = helpers.getManifestPathPrefix(options.prefix);
   let top = {
     component: 'ResponsiveForm',
     asyncprops: {
@@ -19,12 +19,18 @@ const buildAdvancedDetail = function (schema, label, options = {}) {
       stringyFormData:true,
       marginBottom: 30,
       onSubmit:{
-        url: `${options.extsettings.basename}/${usablePrefix}/${pluralize(label)}/:id?format=json&unflatten=true`,
-        params: [
-          { 'key': ':id', 'val': '_id', },
-        ],
+        url: (newEntity)
+          ?`${options.extsettings.basename}/${usablePrefix}/${pluralize(label)}/?format=json&unflatten=true`
+          :`${options.extsettings.basename}/${usablePrefix}/${pluralize(label)}/:id?format=json&unflatten=true`,
+        params: (newEntity)
+          ? undefined
+          : [
+            { 'key': ':id', 'val': '_id', },
+          ],
         options:{
-          method:'PUT',
+          method: (newEntity)
+            ? 'POST'
+            : 'PUT',
         },
         success: true,
       },
@@ -67,7 +73,7 @@ const buildAdvancedDetail = function (schema, label, options = {}) {
                 publishOptions.id(),
                 publishOptions.createdat(),
                 publishOptions.updatedat(),
-                publishOptions.publishButtons(schema, label, options),
+                publishOptions.publishButtons(schema, label, options, newEntity),
               ],	
             },
           ],
