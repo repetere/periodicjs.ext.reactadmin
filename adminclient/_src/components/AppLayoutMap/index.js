@@ -161,9 +161,9 @@ function getRenderedComponent(componentObject, resources, debug) {
         // console.debug({ opscompares });
         if (opscompares.operation === 'eq') {
           return opscompares.left == opscompares.right;
-        } else if (opscompares.operation === 'dne') {
+        } else if (opscompares.operation === 'dneq') {
           return opscompares.left != opscompares.right;
-        } else if (opscompares.operation === 'dnse') {
+        } else if (opscompares.operation === 'dnseq') {
           return opscompares.left !== opscompares.right;
         } else if (opscompares.operation === 'seq') {
           return opscompares.left === opscompares.right;
@@ -175,9 +175,11 @@ function getRenderedComponent(componentObject, resources, debug) {
           return opscompares.left > opscompares.right;
         } else if (opscompares.operation === 'gte') {
           return opscompares.left >= opscompares.right;
+        } else if (opscompares.operation === 'dne') {
+          return opscompares.left === undefined || opscompares.left === null;
         } else {
           //'exists'
-          return opscompares.left !== undefined;
+          return opscompares.left !== undefined || opscompares.left !== null;
         }
       });
       // console.debug({ comparisons });

@@ -314,6 +314,15 @@ var Main = function (_Component) {
   }
 
   (0, _createClass3.default)(Main, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      if (document && document.body && document.body.classList && document.body.classList.add) {
+        document.body.classList.add('__reactadmin_body_loaded');
+      } else if (document && document.body && document.body.className) {
+        document.body.className = document.body.className += ' __reactadmin_body_loaded';
+      }
+    }
+  }, {
     key: 'render',
     value: function render() {
       // console.log('initial store',{store})
