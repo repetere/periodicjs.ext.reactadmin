@@ -18,7 +18,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
   if (global) {
     global['__DEV__'] = false;
     global['window'] = {};
-    global['document'] = {};
+    global['document'] = {
+      createElement: function createElement() {
+        return {
+          style: {}
+        };
+      }
+    };
     global['navigator'] = {};
     process.env.NODE_ENV = 'production';
   }

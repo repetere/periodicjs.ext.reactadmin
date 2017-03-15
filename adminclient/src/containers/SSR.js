@@ -2,7 +2,13 @@
   if (global) {
     global[ '__DEV__' ] = false;
     global[ 'window' ] = {};
-    global[ 'document' ] = {};
+    global[ 'document' ] = {
+      createElement: () => {
+        return {
+          style: {}
+        };
+      }
+    };
     global[ 'navigator' ] = {};
     process.env.NODE_ENV = 'production';
   }
