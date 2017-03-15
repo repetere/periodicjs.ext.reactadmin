@@ -96,6 +96,13 @@ const useExtraProps = {
   renderRouteComponent: child => React.cloneElement(child, Object.assign({}, reduxActions)),
 };
 class Main extends Component{
+  componentDidMount() {
+    if (document && document.body && document.body.classList && document.body.classList.add) {
+      document.body.classList.add('__reactadmin_body_loaded');
+    } else if (document && document.body && document.body.className) {
+      document.body.className = document.body.className += ' __reactadmin_body_loaded';
+    }
+  }
   render() {
     // console.log('initial store',{store})
     return (
