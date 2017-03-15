@@ -63,7 +63,7 @@ class ModalUI extends Component {
       let footerContent = (this.footer)
         ? ((typeof this.footer === 'object')? this.props.dynamicRenderComponent(this.footer) : <div style={{ padding: '20px', }} >{this.footer}</div>)
           : undefined; 
-      return (<div style={{
+      return (<div style={Object.assign({
         position: 'fixed',
         height: '100%',
         width: '100%',
@@ -71,8 +71,8 @@ class ModalUI extends Component {
         bottom: 0,
         left: 0,
         right: 0,
-        backgroundColor: 'rgba(17,17,17,.86)',
-      }}>
+        backgroundColor: 'rgba(17,17,17,.6)',
+      },this.props.overlayProps)}>
           <Modal
             type="card"
             headerContent={(typeof this.title === 'object')? this.props.dynamicRenderComponent(this.title) : this.title}

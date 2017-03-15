@@ -330,6 +330,9 @@ const user = {
           else dispatch(push(state.settings.auth.logged_in_homepage));
         }
         if (state.user.isLoggedIn && returnUrl) dispatch(push(returnUrl));
+        if (state.settings.auth.closeModal) {
+          dispatch(notification.hideModal('last'));
+        }
         return true;
       } 
     };

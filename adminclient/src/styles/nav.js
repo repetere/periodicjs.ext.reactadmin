@@ -32,7 +32,7 @@ const navStyles = {
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: 'rgba(17,17,17,.86)',
+    backgroundColor: 'rgba(17,17,17,.6)',
     zIndex:100,
   },
 };

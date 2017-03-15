@@ -46,7 +46,7 @@ class ResponsiveButton extends Component {
     } else if (typeof clickprop === 'string' && clickprop.indexOf('func:this.funcs') !== -1) { 
       onclickFunction = this.funcs[ clickprop.replace('func:this.funcs.', '') ];
     } else if (typeof clickprop === 'string' && clickprop.indexOf('func:window') !== -1) { 
-      onclickFunction = window[ clickprop.replace('func:window.', '') ];
+      onclickFunction = window[ clickprop.replace('func:window.', '') ].bind(this);
     } else if (typeof clickprop === 'string' && clickprop.indexOf('func:this.props') !== -1) { 
       // console.debug('this.props', this.props);
       onclickFunction = this.props[ clickprop.replace('func:this.props.', '') ];

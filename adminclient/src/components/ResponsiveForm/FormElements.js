@@ -45,10 +45,10 @@ function getFormElementHelp(hasError, state, name) {
 
 function getCustomErrorLabel(hasError, state, formelement) {
   return (hasError) ? (
-    <div style={{
+    <div style={Object.assign({
       fontSize: 11,
       color:formelement.errorColor||'#ed6c63',
-    }}>{state.formDataErrors[ formelement.name ][ 0 ]}</div>
+    },formelement.customErrorProps)}>{state.formDataErrors[ formelement.name ][ 0 ]}</div>
   ): null;
 }
 
@@ -131,11 +131,7 @@ export function getFormDatalist(options){
 export function getFormTextInputArea(options) {
   let { formElement, i, /*formgroup, width,*/ onChange, } = options;
   let initialValue = getInitialValue(formElement, this.state); //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
-  let keyPress = (e) => {
-    if (formElement.submitOnEnter && (e.key === 'Enter' || e.which === 13)) {
-      this.submitForm();
-    }
-  };
+  
   let fileClassname = `__reactadmin_file_${formElement.name}`;
   let hasError = getErrorStatus(this.state, formElement.name);
   let passableProps = Object.assign({
@@ -161,6 +157,30 @@ export function getFormTextInputArea(options) {
       this.setState(updatedStateProp);
     };
   }
+  if (formElement.keyPress) {
+    let customKeyPress;
+    if (formElement.keyPress.indexOf('func:this.props') !== -1) {
+      customKeyPress= this.props[ formElement.keyPress.replace('func:this.props.', '') ];
+    } else if (formElement.keyPress.indexOf('func:window') !== -1) {
+      customKeyPress= window[ formElement.keyPress.replace('func:window.', '') ].bind(this);
+    } 
+    passableProps.keyPress = customKeyPress;
+  } else if(formElement.submitOnEnter){
+    passableProps.keyPress = (e) => {
+      if (formElement.submitOnEnter && (e.key === 'Enter' || e.which === 13)) {
+        this.submitForm();
+      }
+    };
+  }
+  if (formElement.onBlur) {
+    let customonBlur;
+    if (formElement.onBlur.indexOf('func:this.props') !== -1) {
+      customonBlur= this.props[ formElement.onBlur.replace('func:this.props.', '') ];
+    } else if (formElement.onBlur.indexOf('func:window') !== -1) {
+      customonBlur= window[ formElement.onBlur.replace('func:window.', '') ].bind(this);
+    } 
+    passableProps.onBlur = customonBlur;
+  }
 
   return (<FormItem key={i} {...formElement.layoutProps} >
     {getFormLabel(formElement)}  
@@ -169,7 +189,6 @@ export function getFormTextInputArea(options) {
       color={(hasError)?'isDanger':undefined}
       icon={(hasError)?'fa fa-warning':undefined}
       onChange={onChange}
-      onKeyPress={keyPress}
       placeholder={formElement.placeholder}
       value={ initialValue } />
   </FormItem>);
@@ -179,6 +198,8 @@ export function getFormTextArea(options) {
   let { formElement, i, /*formgroup, width,*/ onChange, } = options;
   let initialValue = getInitialValue(formElement, this.state); //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
   let hasError = getErrorStatus(this.state, formElement.name);
+  let passableProps = Object.assign({
+  }, formElement.passProps);
 
   if (typeof initialValue !== 'string') {
     initialValue = JSON.stringify(initialValue, null, 2);
@@ -186,10 +207,19 @@ export function getFormTextArea(options) {
   if (!onChange) {
     onChange = valueChangeHandler.bind(this, formElement);
   }
+  if (formElement.onBlur) {
+    let customonBlur;
+    if (formElement.onBlur.indexOf('func:this.props') !== -1) {
+      customonBlur= this.props[ formElement.onBlur.replace('func:this.props.', '') ];
+    } else if (formElement.onBlur.indexOf('func:window') !== -1) {
+      customonBlur= window[ formElement.onBlur.replace('func:window.', '') ].bind(this);
+    } 
+    passableProps.onBlur = customonBlur;
+  }
 
   return (<FormItem key={i} {...formElement.layoutProps} >
     {getFormLabel(formElement)}  
-    <Textarea {...formElement.passProps}
+    <Textarea {...passableProps}
       onChange={(event)=>onChange()(event)}
       help={getFormElementHelp(hasError, this.state, formElement.name)}
       icon={(hasError)?'fa fa-warning':undefined}
@@ -330,7 +360,7 @@ export function getSliderInput(options) {
     if (formElement.customOnChange.indexOf('func:this.props') !== -1) {
       customCallbackfunction= this.props[ formElement.customOnChange.replace('func:this.props.', '') ];
     } else if (formElement.customOnChange.indexOf('func:window') !== -1) {
-      customCallbackfunction= window[ formElement.customOnChange.replace('func:window.', '') ];
+      customCallbackfunction= window[ formElement.customOnChange.replace('func:window.', '') ].bind(this);
     } 
     passableProps.onAfterChange = customCallbackfunction;
   }
