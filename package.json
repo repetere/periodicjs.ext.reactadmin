@@ -30,6 +30,7 @@
     }
   ],
   "dependencies": {
+    "babel-polyfill": "^6.23.0",
     "capitalize": "^1.0.0",
     "debounce": "^1.0.0",
     "dms2dec": "^1.1.0",
@@ -51,7 +52,8 @@
     "semver": "^5.3.0",
     "socket.io": "^1.3.5",
     "socket.io-client": "^1.4.0",
-    "validate.js": "^0.11.1"
+    "validate.js": "^0.11.1",
+    "whatwg-fetch": "^2.0.3"
   },
   "description": "An authentication extension for periodicjs that uses passport to authenticate user sessions.",
   "devDependencies": {
@@ -130,7 +132,7 @@
     "postuninstall": "node uninstall.js",
     "test": "mocha",
     "ssr_build": "babel adminclient/src -d adminclient/_src --ignore adminclient/src/components/RACodeMirror/",
-    "ssr": "babel utility/ssr_manifest_es6.js > utility/ssr_manifest.js && babel adminclient/src -d adminclient/_src --ignore adminclient/src/components/RACodeMirror/"
+    "ssr": "babel utility/ssr_manifest_es6.js > utility/ssr_manifest.js && babel adminclient/src -d adminclient/_src --ignore adminclient/src/components/RACodeMirror/,adminclient/src/index.js"
   },
-  "version": "0.9.8"
+  "version": "0.9.90"
 }

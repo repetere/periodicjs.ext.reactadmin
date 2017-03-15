@@ -94,7 +94,7 @@ module.exports = {
                     },
                     {
                       left:[ 'screensize', ],
-                      operation: 'lt',
+                      operation: 'lte',
                       right:1080,
                     },
                   ],

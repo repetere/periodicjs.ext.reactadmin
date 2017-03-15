@@ -264,17 +264,20 @@ var packageJSON = {
     'redux-thunk': '^2.1.0'
   },
   dependencies: {
+    'babel-polyfill': '^6.23.0',
     debounce: '^1.0.0',
     'draft-js': '^0.10.0',
     eslint: '^3.14.1',
     'eslint-plugin-react': '^6.9.0',
     flat: '^2.0.1',
+    'rc-slider': '^6.2.0',
     react: '15.3.2',
     'react-codemirror': '^0.3.0',
     'react-dom': '15.3.2',
     'react-draft-wysiwyg': '^1.7.6',
-    'react-slider': '^0.7.0',
-    'validate.js': '^0.11.1'
+    'react-responsive-carousel': '^3.1.3',
+    'validate.js': '^0.11.1',
+    'whatwg-fetch': '^2.0.3'
   },
   scripts: {
     start: 'react-scripts start',

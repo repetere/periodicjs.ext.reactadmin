@@ -233,17 +233,17 @@ var user = {
         dispatch(_pages2.default.initialAppLoaded());
         dispatch(_ui2.default.closeUISidebar());
         dispatch(_this.authenticatedMFA(false));
-        dispatch((0, _reactRouterRedux.push)('/'));
-        var t = setTimeout(function () {
-          clearTimeout(t);
-          window.location.pathname = state.settings.auth.logged_out_path || '/';
-        }, 4000);
+        dispatch((0, _reactRouterRedux.push)(state.settings.auth.logged_out_path || '/'));
+        // let t = setTimeout(() => {
+        //   clearTimeout(t);
+        //   window.location.pathname = state.settings.auth.logged_out_path || '/';
+        // }, 4000);
       }).catch(function (error) {
         dispatch(_notification2.default.errorNotification(error));
         dispatch(_this.failedLogoutRequest(error));
         dispatch(_pages2.default.initialAppLoaded());
         dispatch(_ui2.default.closeUISidebar());
-        dispatch((0, _reactRouterRedux.push)('/'));
+        dispatch((0, _reactRouterRedux.push)(state.settings.auth.logged_out_path || '/'));
         var t = setTimeout(function () {
           clearTimeout(t);
           window.location.pathname = state.settings.auth.logged_out_path || '/';

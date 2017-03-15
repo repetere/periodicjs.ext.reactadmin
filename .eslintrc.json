@@ -22,7 +22,6 @@
     "comma-dangle": ["warn", "always"],
     "comma-spacing": "warn",
     "object-curly-spacing": ["error", "always"],
-    "eqeqeq": "warn",
     "no-cond-assign": ["warn", "always"],
     "no-unused-vars": "warn",
     "no-console": "warn",

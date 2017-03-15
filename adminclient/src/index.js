@@ -1,5 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import 'whatwg-fetch';
+import 'babel-polyfill';
 import App from './components/App/index';
 import 'font-awesome/css/font-awesome.css';
 import 'animate.css/animate.css';

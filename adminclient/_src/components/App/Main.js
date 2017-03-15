@@ -173,7 +173,7 @@ var MainApp = function (_Component) {
       return this.state.ui.ui_is_loaded === false ? _react2.default.createElement(
         _AppSectionLoading2.default,
         null,
-        _react2.default.createElement(_AppOverlay2.default, this.state)
+        _react2.default.createElement(_AppOverlay2.default, (0, _extends3.default)({ className: 'reactadmin__app_overlay' }, this.state))
       ) : _react2.default.createElement(
         'div',
         { className: 'reactadmin__app_div_content' },

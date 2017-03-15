@@ -69,37 +69,26 @@ export function getRenderedComponent(componentObject, resources, debug) {
         let propcompares = utilities.traverse(compares, renderedCompProps);
         let opscompares = Object.assign({}, comp, propcompares);
         // console.debug({ opscompares });
-        switch (opscompares.operation) {
-          case 'eq':
-            return opscompares.left == opscompares.right;  
-            break;  
-          case 'dne':
-            return opscompares.left != opscompares.right;  
-            break;  
-          case 'dnse':
-            return opscompares.left !== opscompares.right;  
-            break;  
-          case 'seq':
-            return opscompares.left === opscompares.right;  
-            break;
-          case 'lt':
-            return opscompares.left < opscompares.right;  
-            break;
-          case 'lte':
-            return opscompares.left <= opscompares.right;  
-            break;
-          case 'gt':
-            return opscompares.left > opscompares.right;  
-            break;
-          case 'gte':
-            return opscompares.left >= opscompares.right;  
-            break;  
-          case 'exists':
-          default:
-            return opscompares.left !== undefined;  
-            break;  
+        if (opscompares.operation === 'eq') {
+          return opscompares.left == opscompares.right;
+        } else if (opscompares.operation === 'dne') {
+          return opscompares.left != opscompares.right;
+        } else if (opscompares.operation === 'dnse') {
+          return opscompares.left !== opscompares.right;
+        } else if (opscompares.operation === 'seq') {
+          return opscompares.left === opscompares.right;
+        } else if (opscompares.operation === 'lt') {
+          return opscompares.left < opscompares.right;
+        } else if (opscompares.operation === 'lte') {
+          return opscompares.left <= opscompares.right;
+        } else if (opscompares.operation === 'gt') {
+          return opscompares.left > opscompares.right;
+        } else if (opscompares.operation === 'gte') {
+          return opscompares.left >= opscompares.right;
+        } else { //'exists'
+          return opscompares.left !== undefined;
         }
-      })
+      });
       // console.debug({ comparisons });
       // console.debug(comparisons.filter(comp => comp === true).length);
     }

@@ -62,7 +62,7 @@ var DynamicForm = function (_Component) {
     var dynamicData = props.getState().dynamic;
     var formElementData = (0, _assign2.default)({}, initialData, dynamicData);
     var flattenedData = props.flattenData ? (0, _flat2.default)(formElementData, props.flattenDataOptions) : {};
-    var initialState = (0, _assign2.default)({}, formElementData, flattenedData);
+    var initialState = (0, _assign2.default)({}, props.useDynamicData ? props.dynamic.formdata : {}, formElementData, flattenedData);
     // console.debug({props,initialState});
     _this.state = initialState;
 
@@ -89,7 +89,7 @@ var DynamicForm = function (_Component) {
       console.debug('getting next props');
       var initialData = this.props.initialData;
       var dynamicData = nextProps.getState().dynamic;
-      var formElementData = (0, _assign2.default)({}, initialData, dynamicData);
+      var formElementData = (0, _assign2.default)({}, nextProps.useDynamicData ? nextProps.dynamic.formdata : {}, initialData, dynamicData);
       var flattenedData = this.props.flattenData ? (0, _flat2.default)(formElementData, this.props.flattenDataOptions) : {};
 
       var newState = (0, _assign2.default)({}, formElementData, flattenedData);

@@ -26,6 +26,8 @@ exports.getFormTextInputArea = getFormTextInputArea;
 exports.getFormTextArea = getFormTextArea;
 exports.getFormSelect = getFormSelect;
 exports.getFormCheckbox = getFormCheckbox;
+exports.getRawInput = getRawInput;
+exports.getSliderInput = getSliderInput;
 exports.getHiddenInput = getHiddenInput;
 exports.getImage = getImage;
 exports.getFormLink = getFormLink;
@@ -50,11 +52,19 @@ var _ResponsiveDatalist = require('../ResponsiveDatalist');
 
 var _ResponsiveDatalist2 = _interopRequireDefault(_ResponsiveDatalist);
 
+var _rcSlider = require('rc-slider');
+
+var _rcSlider2 = _interopRequireDefault(_rcSlider);
+
 var _reBulma = require('re-bulma');
 
 var _moment = require('moment');
 
 var _moment2 = _interopRequireDefault(_moment);
+
+var _numeral = require('numeral');
+
+var _numeral2 = _interopRequireDefault(_numeral);
 
 var _flat = require('flat');
 
@@ -348,6 +358,132 @@ function getFormCheckbox(options) {
   );
 }
 
+function getRawInput(options) {
+  var _this5 = this;
+
+  var formElement = options.formElement,
+      i = options.i,
+      onValueChange = options.onValueChange;
+
+  var hasError = getErrorStatus(this.state, formElement.name);
+  var wrapperProps = (0, _assign2.default)({
+    style: {
+      overflow: 'auto',
+      backgroundColor: 'white',
+      border: hasError ? '1px solid #ed6c63' : '1px solid #d3d6db',
+      borderRadius: 3,
+      height: 'auto',
+      boxShadow: 'inset 0 1px 2px rgba(17,17,17,.1)'
+    }
+  }, formElement.wrapperProps);
+  if (!onValueChange) {
+    onValueChange = function onValueChange() /*event*/{
+      // let text = event.target.value;
+      var updatedStateProp = {};
+      updatedStateProp[formElement.name] = _this5.state[formElement.name] ? false : 'on';
+      // console.log({ updatedStateProp });
+      _this5.setState(updatedStateProp);
+    };
+  }
+
+  return _react2.default.createElement(
+    _FormItem2.default,
+    (0, _extends3.default)({ key: i }, formElement.layoutProps),
+    getFormLabel(formElement),
+    _react2.default.createElement(
+      'div',
+      wrapperProps,
+      _react2.default.createElement('input', (0, _extends3.default)({}, formElement.passProps, {
+        type: formElement.type,
+        checked: this.state[formElement.name],
+        onChange: onValueChange
+      })),
+      getCustomErrorLabel(hasError, this.state, formElement)
+    )
+  );
+}
+
+function getSliderInput(options) {
+  var _this6 = this;
+
+  var formElement = options.formElement,
+      i = options.i,
+      onValueChange = options.onValueChange;
+  // const Handle = (
+  // );
+
+  var hasError = getErrorStatus(this.state, formElement.name);
+  var wrapperProps = (0, _assign2.default)({
+    style: {
+      overflow: 'auto',
+      backgroundColor: 'white',
+      border: hasError ? '1px solid #ed6c63' : '1px solid #d3d6db',
+      borderRadius: 3,
+      height: 'auto',
+      boxShadow: 'inset 0 1px 2px rgba(17,17,17,.1)'
+    }
+  }, formElement.wrapperProps);
+  var passableProps = (0, _assign2.default)({}, formElement.passProps);
+  if (formElement.handle) {
+    passableProps.handle = function (_ref) {
+      var value = _ref.value,
+          offset = _ref.offset;
+      return _react2.default.createElement(
+        'div',
+        { style: { left: offset + '%' }, className: '__reactadmin_slider__handle' },
+        _react2.default.createElement('span', { className: '__reactadmin_arrow-left' }),
+        formElement.numeralFormat ? (0, _numeral2.default)(value).format(formElement.numeralFormat) : value,
+        _react2.default.createElement('span', { className: '__reactadmin_arrow-right' })
+      );
+    };
+  }
+  if (!onValueChange) {
+    onValueChange = function onValueChange(val) {
+      // console.debug({ val });
+      var updatedStateProp = {};
+      updatedStateProp[formElement.name] = val;
+      // console.log({ updatedStateProp });
+      _this6.setState(updatedStateProp);
+    };
+  }
+  if (formElement.customOnChange) {
+    var customCallbackfunction = void 0;
+    if (formElement.customOnChange.indexOf('func:this.props') !== -1) {
+      customCallbackfunction = this.props[formElement.customOnChange.replace('func:this.props.', '')];
+    } else if (formElement.customOnChange.indexOf('func:window') !== -1) {
+      customCallbackfunction = window[formElement.customOnChange.replace('func:window.', '')];
+    }
+    passableProps.onAfterChange = customCallbackfunction;
+  }
+
+  return _react2.default.createElement(
+    _FormItem2.default,
+    (0, _extends3.default)({ key: i }, formElement.layoutProps),
+    getFormLabel(formElement),
+    _react2.default.createElement(
+      'div',
+      wrapperProps,
+      _react2.default.createElement(
+        _rcSlider2.default,
+        (0, _extends3.default)({}, passableProps, {
+          onChange: onValueChange
+        }),
+        formElement.leftLabel ? _react2.default.createElement(
+          'span',
+          { className: '__reactadmin_slider__label __reactadmin_slider__label_left' },
+          formElement.leftLabel
+        ) : null,
+        formElement.rightLabel ? _react2.default.createElement(
+          'span',
+          { className: '__reactadmin_slider__label __reactadmin_slider__label_right' },
+          formElement.rightLabel
+        ) : null
+      ),
+      getCustomErrorLabel(hasError, this.state, formElement)
+    )
+  );
+}
+
 function getHiddenInput(options) {
   var formElement = options.formElement,
       i = options.i;
@@ -531,7 +667,7 @@ export function getFormEditor(options) {
 
 */
 function getFormSubmit(options) {
-  var _this5 = this;
+  var _this7 = this;
 
   var formElement = options.formElement,
       i = options.i;
@@ -544,7 +680,7 @@ function getFormSubmit(options) {
       _reBulma.Button,
       (0, _extends3.default)({}, formElement.passProps, {
         onClick: function onClick() {
-          formElement.confirmModal ? _this5.props.createModal((0, _assign2.default)({
+          formElement.confirmModal ? _this7.props.createModal((0, _assign2.default)({
             title: 'Please Confirm',
             text: {
               component: 'div',
@@ -570,8 +706,8 @@ function getFormSubmit(options) {
                       color: 'isPrimary'
                     },
                     onClick: function onClick() {
-                      _this5.props.hideModal('last');
-                      _this5.submitForm.call(_this5);
+                      _this7.props.hideModal('last');
+                      _this7.submitForm.call(_this7);
                     },
                     onclickProps: 'last'
                   }, formElement.confirmModal.yesButtonProps),
@@ -591,7 +727,7 @@ function getFormSubmit(options) {
                   children: formElement.confirmModal.noButtonText || 'No'
                 }]
               }]
-            } }, formElement.confirmModal)) : _this5.submitForm.call(_this5);
+            } }, formElement.confirmModal)) : _this7.submitForm.call(_this7);
         } }),
       formElement.value
     )

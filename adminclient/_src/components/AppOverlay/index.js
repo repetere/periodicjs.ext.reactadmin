@@ -214,7 +214,7 @@ var Overlay = function (_Component3) {
         dynamicRenderComponent: this.getRenderedComponent })) : null;
       return _react2.default.createElement(
         'div',
-        { style: { position: 'fixed', bottom: 0, width: 'auto', zIndex: 100000 } },
+        { className: '__reactadmin_overlay', style: { position: 'fixed', bottom: 0, width: 'auto', zIndex: 100000 } },
         modal,
         notices
       );

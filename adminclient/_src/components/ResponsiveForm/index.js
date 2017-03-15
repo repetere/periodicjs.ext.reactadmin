@@ -84,7 +84,7 @@ var ResponsiveForm = function (_Component) {
     if (props.stringyFormData) {
       formdata.genericdocjson = (0, _stringify2.default)(props.formdata, null, 2);
     }
-    var customPropsFormdata = (0, _assign2.default)({}, props.formdata, formdata);
+    var customPropsFormdata = (0, _assign2.default)({}, props.useDynamicData ? props.dynamic.formdata : {}, props.formdata, formdata);
     // console.debug({ formdata });
     // console.debug('ResponsiveForm',{ props });
     _this.state = (0, _assign2.default)({
@@ -108,6 +108,8 @@ var ResponsiveForm = function (_Component) {
     _this.getFormCheckbox = _FormElements.getFormCheckbox.bind(_this);
     _this.getCardFooterItem = _FormElements.getCardFooterItem.bind(_this);
     _this.getFormSelect = _FormElements.getFormSelect.bind(_this);
+    _this.getRawInput = _FormElements.getRawInput.bind(_this);
+    _this.getSliderInput = _FormElements.getSliderInput.bind(_this);
     _this.getHiddenInput = _FormElements.getHiddenInput.bind(_this);
     // this.getFormEditor = getFormEditor.bind(this);
     _this.getFormLink = _FormElements.getFormLink.bind(_this);
@@ -120,6 +122,7 @@ var ResponsiveForm = function (_Component) {
     key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps(nextProps) {
       var formdata = nextProps.flattenFormData ? (0, _flat2.default)(nextProps.formdata, nextProps.flattenDataOptions) : nextProps.formdata;
+      formdata = (0, _assign2.default)({}, nextProps.useDynamicData ? nextProps.dynamic.formdata : {}, formdata);
       this.setState(formdata);
     }
   }, {
@@ -244,6 +247,10 @@ var ResponsiveForm = function (_Component) {
         } else {
           this.props[this.props.onSubmit.replace('func:this.props.', '')](submitFormData);
         }
+      } else if (typeof this.props.onSubmit === 'string' && this.props.onSubmit.indexOf('func:window') !== -1) {
+        delete formdata.formDataFiles;
+        delete formdata.formDataErrors;
+        window[this.props.onSubmit.replace('func:this.props.', '')](submitFormData);
       } else if (typeof this.props.onSubmit !== 'function') {
         var fetchOptions = this.props.onSubmit;
         var formBody = new FormData();
@@ -337,6 +344,8 @@ var ResponsiveForm = function (_Component) {
             return null;
           } else if (formElement.type === 'text') {
             return _this3.getFormTextInputArea({ formElement: formElement, i: j, formgroup: formgroup });
+          } else if (formElement.type === 'input') {
+            return _this3.getRawInput({ formElement: formElement, i: j, formgroup: formgroup });
           } else if (formElement.type === 'textarea') {
             return _this3.getFormTextArea({ formElement: formElement, i: j, formgroup: formgroup });
           } else if (formElement.type === 'hidden') {
@@ -373,6 +382,8 @@ var ResponsiveForm = function (_Component) {
             return _this3.getFormSelect({ formElement: formElement, i: j, formgroup: formgroup });
           } else if (formElement.type === 'image') {
             return _this3.getImage({ formElement: formElement, i: j, formgroup: formgroup });
+          } else if (formElement.type === 'slider') {
+            return _this3.getSliderInput({ formElement: formElement, i: j, formgroup: formgroup });
           } else if (formElement.type === 'layout') {
             return _react2.default.createElement(
               _reBulma.Column,

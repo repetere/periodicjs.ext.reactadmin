@@ -33,9 +33,11 @@ var recharts = _interopRequireWildcard(_recharts);
 
 var _reactRouter = require('react-router');
 
-var _reactSlider = require('react-slider');
+var _rcSlider = require('rc-slider');
 
-var _reactSlider2 = _interopRequireDefault(_reactSlider);
+var _rcSlider2 = _interopRequireDefault(_rcSlider);
+
+var _reactResponsiveCarousel = require('react-responsive-carousel');
 
 var _googleMapReact = require('google-map-react');
 
@@ -116,7 +118,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var renderIndex = 0;
 // import Editor from '../RAEditor';
 var AppLayoutMap = exports.AppLayoutMap = (0, _assign2.default)({}, {
-  recharts: recharts, ResponsiveForm: _ResponsiveForm2.default, DynamicForm: _DynamicForm2.default, RawOutput: _RawOutput2.default, RawStateOutput: _RawStateOutput2.default, FormItem: _FormItem2.default, MenuAppLink: _MenuAppLink2.default, SubMenuLinks: _SubMenuLinks2.default, ResponsiveTable: _ResponsiveTable2.default, ResponsiveCard: _ResponsiveCard2.default, DynamicChart: _DynamicChart2.default, ResponsiveBar: _ResponsiveBar2.default, ResponsiveTabs: _ResponsiveTabs2.default, ResponsiveDatalist: _ResponsiveDatalist2.default, CodeMirror: _RACodeMirror2.default, ReactSlider: _reactSlider2.default, GoogleMap: _googleMapReact2.default }, _react2.default.DOM, rebulma, { Link: _reactRouter.Link });
+  recharts: recharts, ResponsiveForm: _ResponsiveForm2.default, DynamicForm: _DynamicForm2.default, RawOutput: _RawOutput2.default, RawStateOutput: _RawStateOutput2.default, FormItem: _FormItem2.default, MenuAppLink: _MenuAppLink2.default, SubMenuLinks: _SubMenuLinks2.default, ResponsiveTable: _ResponsiveTable2.default, ResponsiveCard: _ResponsiveCard2.default, DynamicChart: _DynamicChart2.default, ResponsiveBar: _ResponsiveBar2.default, ResponsiveTabs: _ResponsiveTabs2.default, ResponsiveDatalist: _ResponsiveDatalist2.default, CodeMirror: _RACodeMirror2.default, Range: _rcSlider.Range, Slider: _rcSlider2.default, GoogleMap: _googleMapReact2.default, Carousel: _reactResponsiveCarousel.Carousel }, _react2.default.DOM, rebulma, { Link: _reactRouter.Link });
 
 // console.log({ AppLayoutMap });
 // console.log({ ReactDOM: React.DOM['div'] });
@@ -141,20 +143,51 @@ function getRenderedComponent(componentObject, resources, debug) {
       }
     }, this.props.getState())) : {};
     var thisDotProps = !_react2.default.DOM[componentObject.component] && !rebulma[componentObject.component] ? this.props : null;
-    // if (debug) {
-    //   console.debug({
-    //     asyncprops, thisprops,
-    //   });
-    // }
-    // if(!React.DOM[ componentObject.component ] && !rebulma[ componentObject.component ]){
-    //   console.log(componentObject.component,'is not in bulma or reactdom')
-    // }
     var renderedCompProps = (0, _assign2.default)({
       key: renderIndex
     }, thisDotProps, thisprops, componentObject.props, asyncprops, windowprops);
-    // console.debug({ renderedCompProps });
-    //this loops through props assigned on component (wither from props obj or asyncprops, etc ) if filtered list length is all false, then dont display
-    if (typeof componentObject.conditionalprops !== 'undefined' && !(0, _keys2.default)(_util2.default.traverse(componentObject.conditionalprops, renderedCompProps)).filter(function (key) {
+    var comparisons = {};
+    if (componentObject.comparisonprops) {
+      comparisons = componentObject.comparisonprops.map(function (comp) {
+        var compares = {};
+        if (Array.isArray(comp.left)) {
+          compares.left = comp.left;
+        }
+        if (Array.isArray(comp.right)) {
+          compares.right = comp.right;
+        }
+        var propcompares = _util2.default.traverse(compares, renderedCompProps);
+        var opscompares = (0, _assign2.default)({}, comp, propcompares);
+        // console.debug({ opscompares });
+        if (opscompares.operation === 'eq') {
+          return opscompares.left == opscompares.right;
+        } else if (opscompares.operation === 'dne') {
+          return opscompares.left != opscompares.right;
+        } else if (opscompares.operation === 'dnse') {
+          return opscompares.left !== opscompares.right;
+        } else if (opscompares.operation === 'seq') {
+          return opscompares.left === opscompares.right;
+        } else if (opscompares.operation === 'lt') {
+          return opscompares.left < opscompares.right;
+        } else if (opscompares.operation === 'lte') {
+          return opscompares.left <= opscompares.right;
+        } else if (opscompares.operation === 'gt') {
+          return opscompares.left > opscompares.right;
+        } else if (opscompares.operation === 'gte') {
+          return opscompares.left >= opscompares.right;
+        } else {
+          //'exists'
+          return opscompares.left !== undefined;
+        }
+      });
+      // console.debug({ comparisons });
+      // console.debug(comparisons.filter(comp => comp === true).length);
+    }
+    if (componentObject.comparisonprops && comparisons.filter(function (comp) {
+      return comp === true;
+    }).length !== comparisons.length) {
+      return null;
+    } else if (typeof componentObject.conditionalprops !== 'undefined' && !(0, _keys2.default)(_util2.default.traverse(componentObject.conditionalprops, renderedCompProps)).filter(function (key) {
       return _util2.default.traverse(componentObject.conditionalprops, renderedCompProps)[key];
     }).length) {
       return null;
@@ -170,7 +203,7 @@ function getRenderedComponent(componentObject, resources, debug) {
       }) : typeof componentObject.children === 'undefined' ? renderedCompProps && renderedCompProps.children && typeof renderedCompProps.children === 'string' ? renderedCompProps.children : null : componentObject.children);
     }
   } catch (e) {
-    console.error(e);
+    console.error(e, e.stack ? e.stack : 'no stack');
     console.error({ componentObject: componentObject, resources: resources }, this);
     return (0, _react.createElement)('div', {}, e.toString());
   }
