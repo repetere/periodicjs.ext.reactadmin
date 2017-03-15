@@ -3,6 +3,7 @@ import * as rebulma from 're-bulma';
 import * as recharts from 'recharts';
 import { Link, } from 'react-router';
 import ReactSlider from 'react-slider';
+import { Carousel, } from 'react-responsive-carousel';
 import GoogleMap from 'google-map-react';
 import ResponsiveForm from '../ResponsiveForm';
 import DynamicForm from '../DynamicForm';
@@ -26,7 +27,7 @@ import utilities from '../../util';
 let renderIndex = 0;
 
 export let AppLayoutMap = Object.assign({}, {
-  recharts, ResponsiveForm, DynamicForm, RawOutput, RawStateOutput, FormItem, MenuAppLink, SubMenuLinks, ResponsiveTable, ResponsiveCard, DynamicChart, ResponsiveBar, ResponsiveTabs, ResponsiveDatalist, CodeMirror, ReactSlider, GoogleMap, /* Editor,*/
+  recharts, ResponsiveForm, DynamicForm, RawOutput, RawStateOutput, FormItem, MenuAppLink, SubMenuLinks, ResponsiveTable, ResponsiveCard, DynamicChart, ResponsiveBar, ResponsiveTabs, ResponsiveDatalist, CodeMirror, ReactSlider, GoogleMap, Carousel, /* Editor,*/
 }, React.DOM, rebulma, { Link, });
 
 // console.log({ AppLayoutMap });

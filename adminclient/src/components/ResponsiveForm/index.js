@@ -17,7 +17,7 @@ class ResponsiveForm extends Component{
     if (props.stringyFormData) {
       formdata.genericdocjson = JSON.stringify(props.formdata, null, 2);
     }
-    let customPropsFormdata = Object.assign({},props.formdata,formdata);
+    let customPropsFormdata = Object.assign({}, (props.useDynamicData)?props.dynamic.formdata:{}, props.formdata, formdata);
     // console.debug({ formdata });
     // console.debug('ResponsiveForm',{ props });
     this.state = Object.assign({
@@ -49,6 +49,7 @@ class ResponsiveForm extends Component{
   }
   componentWillReceiveProps(nextProps) {
     let formdata = (nextProps.flattenFormData) ? flatten(nextProps.formdata, nextProps.flattenDataOptions) : nextProps.formdata;
+    formdata = Object.assign({}, (nextProps.useDynamicData) ? nextProps.dynamic.formdata : {}, formdata);
     this.setState(formdata);
   }
   getFormSumitUrl(baseurl, params, prop) {

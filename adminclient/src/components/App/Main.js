@@ -104,7 +104,7 @@ class MainApp extends Component{
 
     return (
       (this.state.ui.ui_is_loaded === false)
-        ? (<AppSectionLoading><AppOverlay {...this.state}/></AppSectionLoading>)
+        ? (<AppSectionLoading><AppOverlay   className="reactadmin__app_overlay"  {...this.state}/></AppSectionLoading>)
         : (<div className="reactadmin__app_div_content">
           {/*<div style={styles.redBkgrd}>*/}
           <AppOverlay className="reactadmin__app_overlay" {...this.state}/>

@@ -11,11 +11,11 @@ class DynamicForm extends Component{
     //initialdata
     let initialData = props.initialData;
     let dynamicData = props.getState().dynamic;
-    let formElementData = Object.assign({},initialData,dynamicData);
+    let formElementData = Object.assign({}, initialData, dynamicData);
     let flattenedData = (props.flattenData) 
       ? flatten(formElementData, props.flattenDataOptions)
       : {}
-    let initialState = Object.assign({},formElementData,flattenedData)
+    let initialState = Object.assign({}, (props.useDynamicData)?props.dynamic.formdata:{}, formElementData, flattenedData);
     // console.debug({props,initialState});
     this.state = initialState;
 
@@ -38,7 +38,7 @@ class DynamicForm extends Component{
     console.debug('getting next props');
     let initialData = this.props.initialData;
     let dynamicData = nextProps.getState().dynamic;
-    let formElementData = Object.assign({},initialData,dynamicData);
+    let formElementData = Object.assign({},  (nextProps.useDynamicData)?nextProps.dynamic.formdata:{},initialData, dynamicData);
     let flattenedData = (this.props.flattenData) 
       ? flatten(formElementData, this.props.flattenDataOptions)
       : {}

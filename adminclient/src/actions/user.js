@@ -186,18 +186,18 @@ const user = {
           dispatch(pageActions.initialAppLoaded());
           dispatch(uiActions.closeUISidebar());
           dispatch(this.authenticatedMFA(false));
-          dispatch(push('/'));
-          let t = setTimeout(() => {
-            clearTimeout(t);
-            window.location.pathname = state.settings.auth.logged_out_path || '/';
-          }, 4000);
+          dispatch(push(state.settings.auth.logged_out_path || '/'));
+          // let t = setTimeout(() => {
+          //   clearTimeout(t);
+          //   window.location.pathname = state.settings.auth.logged_out_path || '/';
+          // }, 4000);
         })
         .catch(error => { 
           dispatch(notification.errorNotification(error));
           dispatch(this.failedLogoutRequest(error));
           dispatch(pageActions.initialAppLoaded());
           dispatch(uiActions.closeUISidebar());
-          dispatch(push('/'));
+          dispatch(push(state.settings.auth.logged_out_path || '/'));
           let t = setTimeout(() => {
             clearTimeout(t);
             window.location.pathname = state.settings.auth.logged_out_path || '/';

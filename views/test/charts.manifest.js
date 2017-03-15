@@ -76,20 +76,73 @@ module.exports = {
                   component: 'Title',
                   children: 'Chart Test',
                 },
-                // {
-                //   component: 'RawOutput',
-                //   props: {
-
-                //     style: {
-                //       border: '1px solid black',
-                //       padding: 5,
-                //       margin: 5,
-                //     },
-                //   },
-                //   thisprops: {
-                //     dynamics:[ 'dynamic', ],
-                //   },
-                // },
+                {
+                  component: 'Carousel',
+                  props: {
+                    showThumbs: false,
+                    showStatus: false,
+                    showArrows: false,
+                    infiniteLoop: true,
+                    // emulateTouch: true,
+                    autoPlay:true
+                  },
+                  children: [
+                    {
+                      component: 'div',
+                      props: {
+                        key:1+Math.random(),
+                      },
+                      children: [
+                        {
+                          component: 'p',
+                          children:'slider image 1',
+                        },
+                        {
+                          component: 'Image',
+                          props: {
+                            src:'https://cdn.promisefinancial.net/cloudfiles%2F2016%2F06%2F27%2F56c4dd91b0d021d5579fa01b-promisefin_fertility3-2016-06-27_17-35-11.jpeg',
+                          },
+                        },
+                      ],
+                    },
+                    {
+                      component: 'div',
+                      props: {
+                        key:2+Math.random(),
+                      },
+                      children: [
+                        {
+                          component: 'Image',
+                          props: {
+                            src: 'https://cdn.promisefinancial.net/cloudfiles%2F2016%2F06%2F12%2F56c4dd91b0d021d5579fa01b-promise_homepage-min-2016-06-12_17-31-49.jpg',
+                          },
+                        },
+                        {
+                          component: 'p',
+                          children:'slider image 2',
+                        },
+                      ],
+                    },
+                    {
+                      component: 'div',
+                      props: {
+                        key:3+Math.random(),
+                      },
+                      children: [
+                        {
+                          component: 'Image',
+                          props: {
+                            src: 'https://cdn.promisefinancial.net/cloudfiles%2F2016%2F06%2F27%2F56c4dd91b0d021d5579fa01b-promisefin_home_improvement-2016-06-27_16-40-47.jpg',
+                          },
+                        },
+                        {
+                          component: 'p',
+                          children:'slider image 3',
+                        },
+                      ],
+                    },
+                  ],
+                },
                 {
                   component: 'Title',
                   // props: {
