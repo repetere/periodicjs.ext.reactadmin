@@ -158,9 +158,9 @@
           {
             "component":"MenuAppLink",
             "props":{
-              "href":"/r-admin/content/accounts",
-              "label":"Accounts",
-              "id": "accounts"
+              "href":"/r-admin/content/accounts_sample",
+              "label":"TestAccounts",
+              "id": "testaccounts"
             }
           },
           {
