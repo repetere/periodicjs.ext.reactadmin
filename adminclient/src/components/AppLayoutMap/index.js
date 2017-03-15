@@ -2,7 +2,7 @@ import React, { createElement, } from 'react';
 import * as rebulma from 're-bulma';
 import * as recharts from 'recharts';
 import { Link, } from 'react-router';
-import ReactSlider from 'react-slider';
+import Slider, { Range, } from 'rc-slider';
 import { Carousel, } from 'react-responsive-carousel';
 import GoogleMap from 'google-map-react';
 import ResponsiveForm from '../ResponsiveForm';
@@ -27,7 +27,7 @@ import utilities from '../../util';
 let renderIndex = 0;
 
 export let AppLayoutMap = Object.assign({}, {
-  recharts, ResponsiveForm, DynamicForm, RawOutput, RawStateOutput, FormItem, MenuAppLink, SubMenuLinks, ResponsiveTable, ResponsiveCard, DynamicChart, ResponsiveBar, ResponsiveTabs, ResponsiveDatalist, CodeMirror, ReactSlider, GoogleMap, Carousel, /* Editor,*/
+  recharts, ResponsiveForm, DynamicForm, RawOutput, RawStateOutput, FormItem, MenuAppLink, SubMenuLinks, ResponsiveTable, ResponsiveCard, DynamicChart, ResponsiveBar, ResponsiveTabs, ResponsiveDatalist, CodeMirror, Range, Slider, GoogleMap, Carousel, /* Editor,*/
 }, React.DOM, rebulma, { Link, });
 
 // console.log({ AppLayoutMap });
@@ -51,23 +51,62 @@ export function getRenderedComponent(componentObject, resources, debug) {
       },
     }, this.props.getState())) : {};
     let thisDotProps = (!React.DOM[ componentObject.component ] && !rebulma[ componentObject.component ]) ? this.props : null;
-    // if (debug) {
-    //   console.debug({
-    //     asyncprops, thisprops,
-    //   });
-    // }
-    // if(!React.DOM[ componentObject.component ] && !rebulma[ componentObject.component ]){
-    //   console.log(componentObject.component,'is not in bulma or reactdom')
-    // }
     let renderedCompProps = Object.assign({
       key: renderIndex,
     }, thisDotProps,
       thisprops,
       componentObject.props, asyncprops, windowprops);
-    // console.debug({ renderedCompProps });
-    //this loops through props assigned on component (wither from props obj or asyncprops, etc ) if filtered list length is all false, then dont display
-    if (typeof componentObject.conditionalprops !== 'undefined' &&
-      !Object.keys(utilities.traverse(componentObject.conditionalprops, renderedCompProps)).filter(key=>utilities.traverse(componentObject.conditionalprops, renderedCompProps)[key]).length) {
+    let comparisons = {};
+    if (componentObject.comparisonprops) {
+      comparisons = componentObject.comparisonprops.map(comp => {
+        let compares = {};
+        if (Array.isArray(comp.left)) {
+          compares.left = comp.left;
+        }
+        if (Array.isArray(comp.right)) {
+          compares.right = comp.right;
+        }
+        let propcompares = utilities.traverse(compares, renderedCompProps);
+        let opscompares = Object.assign({}, comp, propcompares);
+        // console.debug({ opscompares });
+        switch (opscompares.operation) {
+          case 'eq':
+            return opscompares.left == opscompares.right;  
+            break;  
+          case 'dne':
+            return opscompares.left != opscompares.right;  
+            break;  
+          case 'dnse':
+            return opscompares.left !== opscompares.right;  
+            break;  
+          case 'seq':
+            return opscompares.left === opscompares.right;  
+            break;
+          case 'lt':
+            return opscompares.left < opscompares.right;  
+            break;
+          case 'lte':
+            return opscompares.left <= opscompares.right;  
+            break;
+          case 'gt':
+            return opscompares.left > opscompares.right;  
+            break;
+          case 'gte':
+            return opscompares.left >= opscompares.right;  
+            break;  
+          case 'exists':
+          default:
+            return opscompares.left !== undefined;  
+            break;  
+        }
+      })
+      // console.debug({ comparisons });
+      // console.debug(comparisons.filter(comp => comp === true).length);
+    }
+    if (componentObject.comparisonprops && comparisons.filter(comp => comp === true).length!==comparisons.length) { 
+      return null;
+    } else if (typeof componentObject.conditionalprops !== 'undefined'
+      && !Object.keys(utilities.traverse(componentObject.conditionalprops, renderedCompProps)).filter(key => utilities.traverse(componentObject.conditionalprops, renderedCompProps)[ key ]).length) {
       return null;
     }    else {
       return createElement(
@@ -89,7 +128,7 @@ export function getRenderedComponent(componentObject, resources, debug) {
     }
    
   } catch (e) {
-    console.error(e);
+    console.error(e,(e.stack)?e.stack:'no stack');
     console.error({ componentObject, resources, }, this);
     return createElement('div', {}, e.toString());
   }

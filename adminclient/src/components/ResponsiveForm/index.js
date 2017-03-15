@@ -3,7 +3,7 @@ import { Columns, Card, CardContent, CardFooter, CardFooterItem, Notification, C
 import ResponsiveCard from '../ResponsiveCard';
 import { getRenderedComponent, } from '../AppLayoutMap';
 import utilities from '../../util';
-import { getFormTextInputArea, getFormCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, getFormTextArea, /*getFormEditor,*/ getFormLink, getHiddenInput, getFormGroup, getImage, getFormDatalist, } from './FormElements';
+import { getFormTextInputArea, getFormCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, getFormTextArea, /*getFormEditor,*/ getFormLink, getHiddenInput, getFormGroup, getImage, getFormDatalist, getRawInput, getSliderInput, } from './FormElements';
 import flatten from 'flat';
 import validate from 'validate.js';
 
@@ -41,6 +41,8 @@ class ResponsiveForm extends Component{
     this.getFormCheckbox = getFormCheckbox.bind(this);
     this.getCardFooterItem = getCardFooterItem.bind(this);
     this.getFormSelect = getFormSelect.bind(this);
+    this.getRawInput = getRawInput.bind(this);
+    this.getSliderInput = getSliderInput.bind(this);
     this.getHiddenInput = getHiddenInput.bind(this);
     // this.getFormEditor = getFormEditor.bind(this);
     this.getFormLink = getFormLink.bind(this);
@@ -173,6 +175,10 @@ class ResponsiveForm extends Component{
       } else {
         this.props[this.props.onSubmit.replace('func:this.props.', '')](submitFormData);
       }
+    } else if (typeof this.props.onSubmit === 'string' && this.props.onSubmit.indexOf('func:window') !== -1) {
+      delete formdata.formDataFiles;
+      delete formdata.formDataErrors;
+      window[this.props.onSubmit.replace('func:this.props.', '')](submitFormData);
     } else if (typeof this.props.onSubmit !== 'function') {
       let fetchOptions = this.props.onSubmit;
       let formBody = new FormData();
@@ -271,6 +277,8 @@ class ResponsiveForm extends Component{
           return null;
         } else if (formElement.type === 'text' ) {
           return this.getFormTextInputArea({ formElement,  i:j, formgroup, });
+        } else if (formElement.type === 'input' ) {
+          return this.getRawInput({ formElement,  i:j, formgroup, });
         } else if (formElement.type === 'textarea') {
           return this.getFormTextArea({ formElement,  i:j, formgroup, });
         } else if (formElement.type === 'hidden') {
@@ -299,6 +307,8 @@ class ResponsiveForm extends Component{
           return this.getFormSelect({ formElement,  i:j, formgroup, }); 
         } else if (formElement.type === 'image') {
           return this.getImage({ formElement,  i:j, formgroup, }); 
+        } else if (formElement.type === 'slider') {
+          return this.getSliderInput({ formElement,  i:j, formgroup, }); 
         } else if (formElement.type === 'layout') {
           return (<Column key={j} {...formElement.layoutProps}>{this.getRenderedComponent(formElement.value)}</Column>);
         } else if (formElement.type === 'submit') {

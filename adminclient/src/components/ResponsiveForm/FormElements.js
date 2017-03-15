@@ -5,8 +5,10 @@ import ResponsiveDatalist from '../ResponsiveDatalist';
 // import RAEditor from '../RAEditor';
 // import ResponsiveButton from '../ResponsiveButton';
 // import { EditorState, } from 'draft-js';
+import Slider from 'rc-slider';
 import { ControlLabel, Label, Input, Button, CardFooterItem, Select, Textarea, Group, Image, } from 're-bulma'; 
 import moment from 'moment';
+import numeral from 'numeral';
 import { unflatten, } from 'flat';
 import styles from '../../styles';
 
@@ -249,6 +251,107 @@ export function getFormCheckbox(options) {
     </input>
     <span {...formElement.placeholderProps}>{formElement.placeholder}</span>
     {getCustomErrorLabel(hasError, this.state, formElement)}
+  </FormItem>);
+}
+
+export function getRawInput(options) {
+  let { formElement, i, onValueChange, } = options;
+  let hasError = getErrorStatus(this.state, formElement.name);
+  let wrapperProps = Object.assign({
+    style: {
+      overflow: 'auto',
+      backgroundColor: 'white',
+      border: (hasError) ? '1px solid #ed6c63' : '1px solid #d3d6db',
+      borderRadius: 3,
+      height:'auto',
+      boxShadow: 'inset 0 1px 2px rgba(17,17,17,.1)',
+    },
+  }, formElement.wrapperProps);
+  if (!onValueChange) {
+    onValueChange = (/*event*/) => {
+      // let text = event.target.value;
+      let updatedStateProp = {};
+      updatedStateProp[ formElement.name ] = (this.state[ formElement.name ] ) ? false : 'on';
+      // console.log({ updatedStateProp });
+      this.setState(updatedStateProp);
+    };
+  }
+
+  return (<FormItem key={i} {...formElement.layoutProps} >
+    {getFormLabel(formElement)}  
+    <div {...wrapperProps}>
+      <input {...formElement.passProps}
+        type={formElement.type}
+        checked={this.state[ formElement.name ]}
+        onChange={onValueChange}
+      >
+      </input>
+      {getCustomErrorLabel(hasError, this.state, formElement)}
+    </div>  
+  </FormItem>);
+}
+
+export function getSliderInput(options) {
+  let { formElement, i, onValueChange, } = options;
+  // const Handle = (
+  // );
+  let hasError = getErrorStatus(this.state, formElement.name);
+  let wrapperProps = Object.assign({
+    style: {
+      overflow: 'auto',
+      backgroundColor: 'white',
+      border: (hasError) ? '1px solid #ed6c63' : '1px solid #d3d6db',
+      borderRadius: 3,
+      height:'auto',
+      boxShadow: 'inset 0 1px 2px rgba(17,17,17,.1)',
+    },
+  }, formElement.wrapperProps);
+  let passableProps = Object.assign({}, formElement.passProps);
+  if (formElement.handle) {
+    passableProps.handle = ({ value, offset }) => (
+      <div style={{ left: `${offset}%` }} className="__reactadmin_slider__handle">
+        <span className="__reactadmin_arrow-left" />
+        {(formElement.numeralFormat) ? numeral(value).format(formElement.numeralFormat) : value}
+        <span className="__reactadmin_arrow-right" />
+      </div>
+    );
+  }
+  if (!onValueChange) {
+    onValueChange = (val) => {
+      // console.debug({ val });
+      let updatedStateProp = {};
+      updatedStateProp[ formElement.name ] = val;
+      // console.log({ updatedStateProp });
+      this.setState(updatedStateProp);
+    };
+  }
+  if (formElement.customOnChange) {
+    let customCallbackfunction;
+    if (formElement.customOnChange.indexOf('func:this.props') !== -1) {
+      customCallbackfunction= this.props[ formElement.customOnChange.replace('func:this.props.', '') ];
+    } else if (formElement.customOnChange.indexOf('func:window') !== -1) {
+      customCallbackfunction= window[ formElement.customOnChange.replace('func:window.', '') ];
+    } 
+    passableProps.onAfterChange = customCallbackfunction;
+  }
+
+  return (<FormItem key={i} {...formElement.layoutProps} >
+    {getFormLabel(formElement)}  
+    <div {...wrapperProps}>
+      <Slider {...passableProps}
+        onChange={onValueChange}
+      >
+        {(formElement.leftLabel)
+          ? (<span className="__reactadmin_slider__label __reactadmin_slider__label_left">{formElement.leftLabel}</span>)
+          : null
+        } 
+        {(formElement.rightLabel)
+          ? (<span className="__reactadmin_slider__label __reactadmin_slider__label_right">{formElement.rightLabel}</span>)
+          : null
+        }  
+      </Slider>  
+      {getCustomErrorLabel(hasError, this.state, formElement)}
+    </div>  
   </FormItem>);
 }
 

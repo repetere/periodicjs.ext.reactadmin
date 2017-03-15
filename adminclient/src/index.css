@@ -51,3 +51,93 @@ div[data-reactroot]{
 .ssr-index{
   visibility: hidden;
 }
+.__reactadmin_slider__ctr {
+  width: 100%;
+  padding-top: 25px;
+  padding-bottom: 10px;
+}
+
+.__reactadmin_slider__label {
+  display: inline-block;
+  padding-top: 10px;
+  color: #999;
+  font-size: 13px;
+}
+
+.__reactadmin_slider__label:last-child {
+  float: right;
+}
+
+.__reactadmin_slider__handle {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  width: 141px;
+  height: 58px;
+  line-height: 58px;
+  border: 1px solid #CCCCCC;
+  border-radius: 7px;
+  font-weight: 700;
+  background: #fff;
+  font-size: 21px;
+  text-align: center;
+  top: 10px;
+}
+
+.__reactadmin_arrow-right {
+  vertical-align: middle;
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-top: 13px solid transparent;
+  border-bottom: 13px solid transparent;
+  border-left: 13px solid #CCCCCC;
+  margin-left: 12px;
+}
+
+.__reactadmin_arrow-left {
+  vertical-align: middle;
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-top: 13px solid transparent;
+  border-bottom: 13px solid transparent;
+  border-right:13px solid #CCCCCC;
+  margin-right: 12px;
+}
+
+.rc-slider {
+  margin-bottom: 30px;
+}
+
+.rc-slider-track {
+  /*height: 14px;*/
+  background-color: #333;
+}
+
+.rc-slider-rail {
+  /*height: 14px;*/
+}
+
+@media only screen and (max-width: 480px) {
+  .__reactadmin_slider__handle {
+    width: 120px;
+    height: 50px;
+    line-height: 50px;
+    font-size: 16px;
+  }
+
+  .__reactadmin_arrow-right {
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-left: 10px solid #CCCCCC;
+    margin-left: 12px;
+  }
+
+  .__reactadmin_arrow-left {
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-right:10px solid #CCCCCC;
+    margin-right: 12px;
+  }
+}

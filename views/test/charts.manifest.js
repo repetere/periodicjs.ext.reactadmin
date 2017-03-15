@@ -75,6 +75,168 @@ module.exports = {
                 {
                   component: 'Title',
                   children: 'Chart Test',
+                  thisprops: {
+                    reqUser:[ 'user', ],
+                  },
+                  windowprops: {
+                    screensize:['innerWidth', ],
+                  },
+                  comparisonprops: [
+                    {
+                      left:[ 'reqUser', 'email', ],
+                      operation: 'exists',
+                      right:true,
+                    },
+                    {
+                      left:[ 'reqUser', 'email', ],
+                      operation: 'eq',
+                      right:[ 'reqUser', 'email', ],
+                    },
+                    {
+                      left:[ 'screensize', ],
+                      operation: 'lt',
+                      right:1080,
+                    },
+                  ],
+                },
+                {
+                  component: 'Title',
+                  props: {
+                    style: {
+                      marginTop:'20px',
+                    },
+                  },
+                  children: [ getTestChart(), ],
+                },
+                { 
+                  component: 'ResponsiveForm',
+                  thisprops: {
+                    dynamics:[ 'dynamic', ],
+                  },
+                  props: {
+                    onSubmit: 'func:this.props.setDynamicData',
+                    dynamicField: 'chartdata',
+                    flattenFormData: true,
+                    style: {
+                      marginBottom:'20px',
+                    },
+                    formgroups: [
+                      {
+                        gridProps: {},
+                        formElements: [
+                          {
+                            type: 'layout',
+                            value: {
+                              component:'div',
+                              children:[
+                                {
+                                  component: 'RawStateOutput',
+                                  props: {
+                                    select:'dynamic',
+                                    style: {
+                                      border: '1px solid black',
+                                      padding: 5,
+                                      margin: 5,
+                                    },
+                                  },
+                                  // thisprops: {
+                                  //   dynamics:[ 'dynamic', ],
+                                  // },
+                                },
+                                {
+                                  component:'Title',
+                                  props:{
+                                    // children:'title from prop',
+                                  },
+                                  thisprops:{
+                                    children:['dynamic', 'chartdata', 'testData', ],
+                                  },
+                                },
+                              ],
+                            },
+                          },
+                          {
+                            type: 'text',
+                            name: 'testData',
+                            label: 'test dynamic data',
+                          },
+                          {
+                            type: 'submit',
+                            value: 'update',
+                          },
+                        ],
+                      },
+                      {
+                        formElements: [
+                          {
+                            type: 'slider',
+                            name: 'loansize',
+                            label: 'loan size',
+                            handle:true,
+                            passProps: {
+                              min: 3000,
+                              max: 35000,
+                              step: 1000,
+                            },
+                            wrapperProps: {
+                              style: {
+                                border: 'none',
+                                background: 'none',
+                              },
+                            },
+                            leftLabel:'$3,000',
+                          },
+                        ],
+                      },
+                      {
+                        formElements: [
+                          // {},
+                          {
+                            type:'layout',
+                            value: {
+                              component:'DynamicForm',
+                              props:{
+                                flattenData:true,
+                                formgroups:[
+                                  {
+                                    formElements:[
+                                      {
+                                        type:'text',
+                                        label:'chart data',
+                                        name: 'chartdata.testData',
+                                      },
+                                    ],
+                                  },
+                                ],
+                              },
+                            },
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                },
+                {
+                  component: 'div',
+                  props: {
+                    style: {
+                      margin:'10px 0',
+                    },
+                  },
+                  children: [
+                    {
+                      component: 'Title',
+                      children:'slider',
+                    },
+                    {
+                      component: 'Slider',
+                      props: {
+                        min: 3000,
+                        max: 35000,
+                        step: 1000,
+                      },
+                    },
+                  ],
                 },
                 {
                   component: 'Carousel',
@@ -84,7 +246,7 @@ module.exports = {
                     showArrows: false,
                     infiniteLoop: true,
                     // emulateTouch: true,
-                    autoPlay:true
+                    autoPlay: true,
                   },
                   children: [
                     {
@@ -142,95 +304,6 @@ module.exports = {
                       ],
                     },
                   ],
-                },
-                {
-                  component: 'Title',
-                  // props: {
-                  // },
-                  children: [ getTestChart(), ],
-                },
-                { 
-                  component: 'ResponsiveForm',
-                  thisprops: {
-                    dynamics:[ 'dynamic', ],
-                  },
-                  props: {
-                    onSubmit: 'func:this.props.setDynamicData',
-                    dynamicField: 'chartdata',
-                    flattenFormData: true,
-                    formgroups: [
-                      {
-                        gridProps: {},
-                        formElements: [
-                          {
-                            type: 'layout',
-                            value: {
-                              component:'div',
-                              children:[
-                                {
-                                  component: 'RawStateOutput',
-                                  props: {
-                                    select:'dynamic',
-                                    style: {
-                                      border: '1px solid black',
-                                      padding: 5,
-                                      margin: 5,
-                                    },
-                                  },
-                                  // thisprops: {
-                                  //   dynamics:[ 'dynamic', ],
-                                  // },
-                                },
-                                {
-                                  component:'Title',
-                                  props:{
-                                    // children:'title from prop',
-                                  },
-                                  thisprops:{
-                                    children:['dynamic', 'chartdata', 'testData', ],
-                                  },
-                                },
-                              ],
-                            },
-                          },
-                          {
-                            type: 'text',
-                            name: 'testData',
-                            label: 'test dynamic data',
-                          },
-                          {
-                            type: 'submit',
-                            value: 'update',
-                          },
-                        ],
-                      },
-                      {
-                        formElements: [
-                          // {},
-                          {
-                            type:'layout',
-                            value: {
-                              component:'DynamicForm',
-                              props:{
-                                flattenData:true,
-                                formgroups:[
-                                  {
-                                    formElements:[
-                                      {
-                                        type:'text',
-                                        label:'chart data',
-                                        name: 'chartdata.testData',
-                                      },
-                                    ],
-                                  },
-                                ],
-                              },
-                            },
-                          },
-                        ],
-                      },
-                    ],
-                  },
                 },
               ],
             },
