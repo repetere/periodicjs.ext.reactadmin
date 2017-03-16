@@ -65,7 +65,7 @@ var setCoreDataConfigurations = function () {
           component: 'MenuList',
           children: [],
         }, ];
-        if (key.indexOf('/:id') === -1) {
+        if (key.indexOf('/:id') === -1 && key.indexOf('/new') === -1) {
           // console.log({key})
           result.layout.children[1].children.push({
             component: 'MenuAppLink',

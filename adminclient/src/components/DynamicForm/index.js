@@ -2,7 +2,7 @@ import React, { Component, } from 'react';
 import { Columns, Column, Label, } from 're-bulma'; 
 import { getRenderedComponent, } from '../AppLayoutMap';
 // import utilities from '../../util';
-import { getFormTextInputArea, getFormCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, getFormTextArea, /*getFormEditor,*/ getFormLink, getHiddenInput, getFormGroup, getImage, getFormDatalist, } from '../ResponsiveForm/FormElements';
+import { getFormTextInputArea, getFormCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, getFormTextArea, /*getFormEditor,*/ getFormLink, getHiddenInput, getFormGroup, getImage, getFormDatalist, getRawInput, } from '../ResponsiveForm/FormElements';
 import flatten from 'flat';
 
 class DynamicForm extends Component{
@@ -29,6 +29,7 @@ class DynamicForm extends Component{
     this.getCardFooterItem = getCardFooterItem.bind(this);
     this.getFormSelect = getFormSelect.bind(this);
     this.getHiddenInput = getHiddenInput.bind(this);
+    this.getRawInput = getRawInput.bind(this);
     // this.getFormEditor = getFormEditor.bind(this);
     this.getFormLink = getFormLink.bind(this);
     this.getFormGroup = getFormGroup.bind(this);
@@ -65,6 +66,8 @@ class DynamicForm extends Component{
           return null;
         } else if (formElement.type === 'text' ) {
           return this.getFormTextInputArea({ formElement,  i:j, formgroup, });
+        } else if (formElement.type === 'input' ) {
+          return this.getRawInput({ formElement,  i:j, formgroup, });
         } else if (formElement.type === 'textarea') {
           return this.getFormTextArea({ formElement,  i:j, formgroup, });
         } else if (formElement.type === 'hidden') {

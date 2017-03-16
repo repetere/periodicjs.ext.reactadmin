@@ -7,6 +7,7 @@ import { Carousel, } from 'react-responsive-carousel';
 import GoogleMap from 'google-map-react';
 import ResponsiveForm from '../ResponsiveForm';
 import DynamicForm from '../DynamicForm';
+import DynamicLayout from '../DynamicLayout';
 import RawOutput from '../RawOutput';
 import RawStateOutput from '../RawOutput/RawStateOutput';
 import MenuAppLink from '../AppSidebar/MenuAppLink';
@@ -27,7 +28,7 @@ import utilities from '../../util';
 let renderIndex = 0;
 
 export let AppLayoutMap = Object.assign({}, {
-  recharts, ResponsiveForm, DynamicForm, RawOutput, RawStateOutput, FormItem, MenuAppLink, SubMenuLinks, ResponsiveTable, ResponsiveCard, DynamicChart, ResponsiveBar, ResponsiveTabs, ResponsiveDatalist, CodeMirror, Range, Slider, GoogleMap, Carousel, /* Editor,*/
+  recharts, ResponsiveForm, DynamicLayout, DynamicForm, RawOutput, RawStateOutput, FormItem, MenuAppLink, SubMenuLinks, ResponsiveTable, ResponsiveCard, DynamicChart, ResponsiveBar, ResponsiveTabs, ResponsiveDatalist, CodeMirror, Range, Slider, GoogleMap, Carousel, /* Editor,*/
 }, React.DOM, rebulma, { Link, });
 
 // console.log({ AppLayoutMap });
@@ -39,7 +40,7 @@ export function getRenderedComponent(componentObject, resources, debug) {
   AppLayoutMap.ResponsiveButton = ResponsiveButton.bind(this);
   // console.log('this.props', this);
   renderIndex++;
-  // console.info({ resources });
+  if(resources) console.info({ resources });
 
   try {
     let asyncprops = (componentObject.asyncprops && typeof componentObject.asyncprops === 'object') ? utilities.traverse(componentObject.asyncprops, resources) : {};
@@ -49,7 +50,7 @@ export function getRenderedComponent(componentObject, resources, debug) {
         _component: componentObject,
         _resources: resources,
       },
-    }, this.props.getState())) : {};
+    }, this.props,componentObject.props, this.props.getState())) : {};
     let thisDotProps = (!React.DOM[ componentObject.component ] && !rebulma[ componentObject.component ]) ? this.props : null;
     let renderedCompProps = Object.assign({
       key: renderIndex,
@@ -57,6 +58,9 @@ export function getRenderedComponent(componentObject, resources, debug) {
       thisprops,
       componentObject.props, asyncprops, windowprops);
     let comparisons = {};
+    // if (thisprops) {
+    //   console.debug({ thisprops, renderedCompProps });
+    // }
     if (componentObject.comparisonprops) {
       comparisons = componentObject.comparisonprops.map(comp => {
         let compares = {};
@@ -111,7 +115,12 @@ export function getRenderedComponent(componentObject, resources, debug) {
         renderedCompProps,
         //props children
         (componentObject.children && Array.isArray(componentObject.children) && typeof componentObject.children !== 'string')
-          ? componentObject.children.map(childComponentObject => getRenderedComponent.call(this, childComponentObject, resources))
+          ? componentObject.children.map(childComponentObject => getRenderedComponent.call(this,
+            (componentObject.bindprops)
+              ? Object.assign({}, childComponentObject, {
+                props: Object.assign(renderedCompProps,childComponentObject.props,{key:renderIndex+Math.random()} )
+              })
+              : childComponentObject, resources))
           : (typeof componentObject.children === 'undefined')
             ? (renderedCompProps && renderedCompProps.children && typeof renderedCompProps.children==='string') ? renderedCompProps.children : null
             : componentObject.children

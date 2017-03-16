@@ -112,6 +112,11 @@ class ResponsiveDatalist extends Component {
           ? <Link to={`${this.props.resourcePreview}/${datum[selector]}`}>{displayText}</Link>
           : displayText
       }
+      {
+        (this.props.resourceDescription)
+          ? <rb.Content><p>{datum.description}</p></rb.Content>
+          : null
+      }
     </span>);
   }
   removeDatalistItem(index) {
