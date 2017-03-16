@@ -17,3 +17,40 @@ export const traverse = function (paths, data) {
 		return result;
 	}, {});
 };
+
+
+/**
+ * custom object sort by field
+ * @example
+ * 			req.controllerData.searchdocuments = searchdocuments.sort(CoreUtilities.sortObject('desc', 'createdat'));
+ * @param  {string} dir   either asc or desc
+ * @param  {string} field object property to seach
+ * @return {function}  object sort compare function
+ */
+export const sortObject = function (dir, field) {
+	var comparefunction;
+	if (dir === 'desc') {
+		comparefunction = function (a, b) {
+			if (a[field] < b[field]) {
+				return 1;
+			}
+			if (a[field] > b[field]) {
+				return -1;
+			}
+			return 0;
+		};
+	}
+	else {
+		comparefunction = function (a, b) {
+			if (a[field] < b[field]) {
+				return -1;
+			}
+			if (a[field] > b[field]) {
+				return 1;
+			}
+			return 0;
+		};
+	}
+
+	return comparefunction;
+};

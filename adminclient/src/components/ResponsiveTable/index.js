@@ -80,6 +80,7 @@ class ResponsiveTable extends Component {
     if (nextProps.flattenRowData) {
       rows = rows.map(row => flatten(row, nextProps.flattenRowDataOptions));
     }
+    // console.debug('nextProps', nextProps);
 
     this.setState({
       headers: nextProps.headers || [],
@@ -93,15 +94,32 @@ class ResponsiveTable extends Component {
       numPages: Math.ceil(nextProps.numItems / nextProps.limit),
       numButtons: nextProps.numButtons,
     });
-    // console.log('this.state', this.state);
   }
   updateTableData(options) {
     if (!this.props.baseUrl) {
+      // console.debug({options})
       let updatedState = {};
+      let newSortOptions = {};
+      updatedState.rows = (typeof options.rows !=='undefined') ? options.rows : this.props.rows;
+      if (options.sort) {
+        newSortOptions.sortProp = options.sort;
+        if (this.state.sortProp === options.sort) {
+          newSortOptions.sortOrder = (this.state.sortOrder !== 'desc') ? 'desc' : 'asc';
+        } else {
+          newSortOptions.sortOrder = 'desc';
+        }
+        updatedState.rows = updatedState.rows.sort(utilities.sortObject(newSortOptions.sortOrder,options.sort))
+        updatedState.sortOrder = newSortOptions.sortOrder;
+        updatedState.sortProp = options.sort;
+      }
+      if (this.props.tableSearch && this.props.searchField && options.search) {
+        updatedState.rows = updatedState.rows.filter(row => row[ this.props.searchField ].indexOf(options.search) !== -1);
+      }
       updatedState.numPages = Math.ceil(this.state.numItems / this.props.limit);
       updatedState.limit = this.props.limit;
-      updatedState.currentPage = options.pagenum;
+      updatedState.currentPage = (typeof options.pagenum !=='undefined') ? options.pagenum : this.props.currentPage;
       updatedState.isLoading = false;
+      // console.debug({ updatedState,newSortOptions },this.state);
       this.setState(updatedState);
     }
     else {
@@ -151,7 +169,7 @@ class ResponsiveTable extends Component {
           });
           updatedState.numPages = Math.ceil(updatedState.numItems / this.props.limit);
           updatedState.limit = this.props.limit;
-          updatedState.currentPage = options.pagenum;
+          updatedState.currentPage = (typeof options.pagenum !=='undefined') ? options.pagenum : this.props.currentPage;
           updatedState.isLoading = false;
           this.setState(updatedState);
         }, e => {
@@ -198,6 +216,7 @@ class ResponsiveTable extends Component {
     return returnLink;
   }
   render() {
+    // console.debug('render this.state', this.state);
     let calcStartIndex = ((this.state.currentPage - 1) * this.state.limit);
     let startIndex = (!this.props.baseUrl)
       ? calcStartIndex

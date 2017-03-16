@@ -3,7 +3,7 @@ import { Columns, Card, CardContent, CardFooter, CardFooterItem, Notification, C
 import ResponsiveCard from '../ResponsiveCard';
 import { getRenderedComponent, } from '../AppLayoutMap';
 import utilities from '../../util';
-import { getFormTextInputArea, getFormCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, getFormTextArea, /*getFormEditor,*/ getFormLink, getHiddenInput, getFormGroup, getImage, getFormDatalist, getRawInput, getSliderInput, } from './FormElements';
+import { getFormTextInputArea, getFormCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, getFormTextArea, /*getFormEditor,*/ getFormLink, getHiddenInput, getFormGroup, getImage, getFormDatalist, getRawInput, getSliderInput, getFormDatatable, } from './FormElements';
 import flatten from 'flat';
 import validate from 'validate.js';
 
@@ -43,6 +43,7 @@ class ResponsiveForm extends Component{
     this.getFormSelect = getFormSelect.bind(this);
     this.getRawInput = getRawInput.bind(this);
     this.getSliderInput = getSliderInput.bind(this);
+    this.getFormDatatable = getFormDatatable.bind(this);
     this.getHiddenInput = getHiddenInput.bind(this);
     // this.getFormEditor = getFormEditor.bind(this);
     this.getFormLink = getFormLink.bind(this);
@@ -285,6 +286,8 @@ class ResponsiveForm extends Component{
           return this.getHiddenInput({ formElement,  i:j, formgroup, });
         } else if (formElement.type === 'datalist') {
           return this.getFormDatalist({ formElement,  i:j, formgroup, });
+        } else if (formElement.type === 'datatable') {
+          return this.getFormDatatable({ formElement,  i:j, formgroup, });
         } else if (formElement.type === 'checkbox' || formElement.type === 'radio') {
           return this.getFormCheckbox({ formElement,  i:j, formgroup, });
         } else if (formElement.type === 'label') {

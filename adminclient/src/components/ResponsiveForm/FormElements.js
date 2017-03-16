@@ -2,6 +2,7 @@ import React from 'react';
 import FormItem from '../FormItem';
 import RACodeMirror from '../RACodeMirror';
 import ResponsiveDatalist from '../ResponsiveDatalist';
+import ResponsiveTable from '../ResponsiveTable';
 // import RAEditor from '../RAEditor';
 // import ResponsiveButton from '../ResponsiveButton';
 // import { EditorState, } from 'draft-js';
@@ -79,6 +80,49 @@ function getInitialValue(formElement, state) {
   else return (typeof state[ formElement.name ] !== 'undefined' )
     ? state[ formElement.name ]
     : formElementValue;
+}
+
+export function getFormDatatable(options){
+  let { formElement, i, } = options;
+  let initialValue = getInitialValue(formElement, Object.assign({},this.state,unflatten(this.state)));
+  let hasError = getErrorStatus(this.state, formElement.name);
+  let passedProps = Object.assign({},
+    this.props,
+    {
+      wrapperProps:{
+        style:{
+          display: 'flex',
+          width: '100%',
+          flex: '5',
+          alignItems: 'stretch',
+          flexDirection: 'column'
+        }
+      },
+      passableProps:{
+        help:getFormElementHelp(hasError, this.state, formElement.name),
+        color:(hasError)?'isDanger':undefined,
+        icon:(hasError)?'fa fa-warning':undefined,
+        placeholder:formElement.placeholder,
+        style:{
+          width:'100%'
+        }
+      },
+    },
+    formElement.datalist, );
+  let shape ={};// this is the header of of the footer which has elements for new insert
+  let inlineshape ={};// if true, should look like a regular form row, else form below
+    // console.debug({formElement,initialValue, },'this.state',this.state);
+  return (<FormItem key={i} {...formElement.layoutProps} >
+  {getFormLabel(formElement)}  
+    <ResponsiveTable {...passedProps}
+      onChange={(newvalue)=>{
+        console.debug({ newvalue });
+        let updatedStateProp = {};
+        updatedStateProp[ formElement.name ] = newvalue;
+        this.setState(updatedStateProp);
+      }}
+      value={ initialValue } />
+  </FormItem>);
 }
 
 export function getFormDatalist(options){
