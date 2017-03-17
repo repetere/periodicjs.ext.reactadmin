@@ -135,6 +135,11 @@ export function getFormDatatable(options){
     {},
     this.props,
     {
+      selectEntireRow: formElement.selectEntireRow,
+      insertSelectedRowHeaderIndex: formElement.insertSelectedRowHeaderIndex,
+      selectOptionSortId: formElement.selectOptionSortId,
+      selectOptionSortIdLabel: formElement.selectOptionSortIdLabel,
+      flattenRowData: formElement.flattenRowData,
       rows: initialValue,
       headers: tableHeaders,
       limit: 5000,
@@ -150,14 +155,22 @@ export function getFormDatatable(options){
   {getFormLabel(formElement)}  
     <ResponsiveTable {...passedProps}
       onChange={(newvalue) => {
+        let selectedRowData = (formElement.selectEntireRow && (newvalue.selectedRowData || newvalue.selectedRowIndex))
+          ? {
+            [ `${formElement.name}__tabledata` ]: {
+              selectedRowData: newvalue.selectedRowData,
+              selectedRowIndex: newvalue.selectedRowIndex,
+            },
+          }
+          : {};
         let flattenedData = (this.props.flattenFormData)
-          ? flatten({ [ formElement.name ]: newvalue.rows, })
+          ? flatten(Object.assign({}, selectedRowData, { [ formElement.name ]: newvalue.rows, }))
           : {};
         let updatedStateProp = Object.assign({
           formDataTables: Object.assign({}, this.state.formDataTables, { [ formElement.name ]: newvalue.rows, }),
           [ formElement.name ]: newvalue.rows,
-        }, flattenedData);
-        // console.debug({ flattenedData,updatedStateProp });
+        }, flattenedData, selectedRowData);
+        console.debug({ flattenedData,updatedStateProp });
         this.setState(updatedStateProp);
       }}
       value={initialValue} />

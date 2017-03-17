@@ -141,6 +141,9 @@
                           "formElements":[
                             {
                               "type":"datatable",
+                              "selectEntireRow":true,
+                              "flattenRowData":false,
+                              "selectOptionSortId":"favorite",
                               "tableHeaderType":{
                                 "food":"select"
                               },

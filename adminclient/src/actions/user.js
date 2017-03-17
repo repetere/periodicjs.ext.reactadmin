@@ -303,12 +303,14 @@ const user = {
         });
     };
   },
-  enforceMFA (noRedirect) {
+  enforceMFA (noRedirect, __returnURL) {
     return (dispatch, getState) => {
       let state = getState();
       let extensionattributes = (state.user.userdata) ? state.user.userdata.extensionattributes : false;
       let queryparams = qs.parse((window.location.search.charAt(0) === '?') ? window.location.search.substr(1, window.location.search.length) : window.location.search);
-      let returnUrl = (queryparams.return_url) ? queryparams.return_url : false;
+      let returnUrl = (queryparams.return_url)
+        ? queryparams.return_url
+        : __returnURL || false;
       // console.log({ returnUrl });
       if (state.settings.auth.enforce_mfa || (extensionattributes && extensionattributes.login_mfa)) {
         if (state.user.isMFAAuthenticated) {
@@ -460,7 +462,7 @@ const user = {
       }
     };
   },
-  initializeAuthenticatedUser (token, ensureMFA) {
+  initializeAuthenticatedUser (token, ensureMFA, __returnURL) {
     return (dispatch, getState) => {
       let requestOptions = {
         method: 'POST',
@@ -476,14 +478,14 @@ const user = {
           clearTimeout(initializationTimeout);
           initializationThrottle.destroyInactiveThrottle();
         }
-        return (ensureMFA !== false) ? this.enforceMFA()(dispatch, getState) : undefined;
+        return (ensureMFA !== false) ? this.enforceMFA(undefined, __returnURL)(dispatch, getState) : undefined;
       } else {
         let assignThrottle = (resolve, reject) => {
           let throttle = () => {
             initializationTimeout = setTimeout(() => {
               clearTimeout(initializationTimeout);
               this.fetchConfigurations(requestOptions)(dispatch, getState)
-                .then(() => (ensureMFA !== false) ? this.enforceMFA()(dispatch, getState) : undefined)
+                .then(() => (ensureMFA !== false) ? this.enforceMFA(undefined, __returnURL)(dispatch, getState) : undefined)
                 .then(resolve)
                 .catch(reject);
             }, 10);
@@ -510,7 +512,7 @@ const user = {
   * @param {object} options what-wg fetch options
   * @param {function} responseFormatter custom reponse formatter, must be a function that returns a promise that resolves to json/javascript object
   */
-  loginUser(loginData, responseFormatter) {
+  loginUser(loginData, __returnURL) {
     return (dispatch, getState) => {
       let fetchResponse;
       let cachedResponseData;
@@ -533,19 +535,7 @@ const user = {
         }),
       })
         .then(checkStatus)
-        .then((response) => {
-          fetchResponse = response;
-          if (responseFormatter) {
-            let formatterPromise = responseFormatter(response);
-            if (formatterPromise instanceof Promise) {
-              return formatterPromise;
-            } else {
-              throw new Error('responseFormatter must return a Promise');
-            }
-          } else {
-            return response.json();
-          } 
-        })
+        .then((response) => response.json())
         .then((responseData) => {
           cachedResponseData = responseData;
           return Promise.all([
@@ -556,7 +546,7 @@ const user = {
               token: responseData.token,
             })),
             AsyncStorage.setItem(constants.jwt_token.PROFILE_JSON, JSON.stringify(responseData.user)),
-            this.initializeAuthenticatedUser(responseData.token, false)(dispatch, getState),
+            this.initializeAuthenticatedUser(responseData.token, false, loginData.__returnURL || __returnURL)(dispatch, getState),
           ]);
         })
         .then(() => {
