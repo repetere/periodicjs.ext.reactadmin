@@ -113,8 +113,8 @@ var ResponsiveForm = function (_Component) {
     if (props.stringyFormData) {
       formdata.genericdocjson = (0, _stringify2.default)(props.formdata, null, 2);
     }
-    var customPropsFormdata = (0, _assign2.default)({}, props.useDynamicData ? props.getState().dynamic.formdata : {}, props.formdata, formdata);
-    customPropsFormdata.__formOptions = props.useFormOptions ? (0, _assign2.default)({}, props.useDynamicData ? props.getState().dynamic.__formOptions : {}, props.__formOptions) : undefined;
+    var customPropsFormdata = (0, _assign2.default)({}, props.useDynamicData && props.getState() ? props.getState().dynamic.formdata : {}, props.formdata, formdata);
+    customPropsFormdata.__formOptions = props.useFormOptions ? (0, _assign2.default)({}, props.useDynamicData && props.getState() ? props.getState().dynamic.__formOptions : {}, props.__formOptions) : undefined;
     // console.debug({ formdata });
     // console.debug('ResponsiveForm',{ props });
     _this.state = (0, _assign2.default)({
@@ -155,7 +155,7 @@ var ResponsiveForm = function (_Component) {
       // console.debug('componentWillReceiveProps', nextProps);
       var formdata = nextProps.flattenFormData ? (0, _flat2.default)(nextProps.formdata, nextProps.flattenDataOptions) : nextProps.formdata;
       formdata = (0, _assign2.default)({}, nextProps.useDynamicData ? this.props.getState().dynamic.formdata : {}, formdata);
-      var __formOptions = nextProps.useFormOptions ? (0, _assign2.default)({}, nextProps.useDynamicData ? nextProps.getState().dynamic.__formOptions : {}, nextProps.__formOptions) : undefined;
+      var __formOptions = nextProps.useFormOptions ? (0, _assign2.default)({}, nextProps.useDynamicData && nextProps.getState() ? nextProps.getState().dynamic.__formOptions : {}, nextProps.__formOptions) : undefined;
       formdata.__formOptions = __formOptions;
       this.setState(formdata);
     }

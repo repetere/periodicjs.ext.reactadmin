@@ -50,12 +50,12 @@ class ResponsiveForm extends Component{
     if (props.stringyFormData) {
       formdata.genericdocjson = JSON.stringify(props.formdata, null, 2);
     }
-    let customPropsFormdata = Object.assign({}, (props.useDynamicData)
+    let customPropsFormdata = Object.assign({}, (props.useDynamicData && props.getState())
       ? props.getState().dynamic.formdata
       : {}, props.formdata, formdata);
     customPropsFormdata.__formOptions = (props.useFormOptions)
       ? Object.assign({},
-        (props.useDynamicData) ? props.getState().dynamic.__formOptions : {}, props.__formOptions)
+        (props.useDynamicData && props.getState()) ? props.getState().dynamic.__formOptions : {}, props.__formOptions)
       : undefined;
     // console.debug({ formdata });
     // console.debug('ResponsiveForm',{ props });
@@ -101,7 +101,7 @@ class ResponsiveForm extends Component{
       formdata);
     let __formOptions = (nextProps.useFormOptions)
       ? Object.assign({},
-        (nextProps.useDynamicData) ? nextProps.getState().dynamic.__formOptions : {}, nextProps.__formOptions)
+        (nextProps.useDynamicData && nextProps.getState()) ? nextProps.getState().dynamic.__formOptions : {}, nextProps.__formOptions)
       : undefined;
     formdata.__formOptions = __formOptions;
     this.setState(formdata);
