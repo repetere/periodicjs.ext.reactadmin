@@ -90,6 +90,7 @@ class ResponsiveForm extends Component{
     this.getImage = getImage.bind(this);
   }
   componentWillReceiveProps(nextProps) {
+    // console.debug('componentWillReceiveProps', nextProps);
     let formdata = (nextProps.flattenFormData)
       ? flatten(nextProps.formdata, nextProps.flattenDataOptions)
       : nextProps.formdata;
@@ -310,12 +311,32 @@ class ResponsiveForm extends Component{
       this.props.onSubmit(submitFormData);
     }
   }
-  componentWillUpdate(prevProps, prevState) {
+  componentWillUpdate (nextProps, nextState) {
     if (this.props.onChange) {
-      this.props.onChange(prevState);
+      let formdata = Object.assign({}, nextState);
+      let submitFormData = formdata;
+      delete formdata.formDataFiles;
+      delete formdata.formDataErrors;
+      delete formdata.formDataError;
+      delete formdata.formDataStatusDate;
+      delete formdata.formDataLists;
+      delete formdata.formDataTables;
+      // console.warn('TODO:this should eventually use the same logic as submitform');
+      if (typeof this.props.onChange === 'string' && this.props.onChange.indexOf('func:this.props') !== -1) {
+        if (this.props.onChange === 'func:this.props.setDynamicData') {
+          this.props.setDynamicData(this.props.dynamicField, submitFormData);
+        } else {
+          this.props[this.props.onChange.replace('func:this.props.', '')](submitFormData);
+        }
+      } else if (typeof this.props.onChange === 'string' && this.props.onChange.indexOf('func:window') !== -1) {
+        window[this.props.onChange.replace('func:this.props.', '')].call(this, submitFormData);
+      } else if(typeof this.props.onChange ==='function') {
+        this.props.onChange(nextState);
+      }
     }
   }
   render() {
+    // console.debug('form render', this.state);
     let keyValue = 0;
     let formGroupData = this.props.formgroups.map((formgroup, i) => {
       let gridProps = Object.assign({

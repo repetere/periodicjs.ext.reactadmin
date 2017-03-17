@@ -32,6 +32,10 @@ const notification = {
   },
   createNotification(options = {}) {
     const ID = generateNotificationID();
+    if (typeof options === 'string') {
+      console.warn('please pass text as {text:noficationtext}');
+      options = { text: options, };
+    }
     return (dispatch/*, getState*/) => {
       if (options.timeout) {
         let t = setTimeout(() => {
@@ -56,6 +60,10 @@ const notification = {
   },
   createModal(options = {}) {
     const ID = generateNotificationID();
+    if (typeof options === 'string') {
+      console.warn('please pass text as {text:modalText}');
+      options = { text: options, };
+    }
     return (dispatch/*, getState*/) => {
       if (options.timeout) {
         let t = setTimeout(() => {

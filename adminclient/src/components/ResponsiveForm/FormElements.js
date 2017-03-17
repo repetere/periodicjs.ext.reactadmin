@@ -11,7 +11,7 @@ import Slider from 'rc-slider';
 import { ControlLabel, Label, Input, Button, CardFooterItem, Select, Textarea, Group, Image, } from 're-bulma'; 
 import moment from 'moment';
 import numeral from 'numeral';
-import { unflatten, } from 'flat';
+import flatten, { unflatten, } from 'flat';
 import styles from '../../styles';
 
 export function getPropertyAttribute(options) {
@@ -73,6 +73,7 @@ function getFormLabel(formElement) {
 }
 
 function getInitialValue(formElement, state) {
+  // console.debug({formElement, state})
   let formElementValue = formElement.value;
   if (formElement.momentFormat) {
     formElementValue = moment(formElementValue).format(formElement.momentFormat);
@@ -85,7 +86,9 @@ function getInitialValue(formElement, state) {
 
 export function getFormDatatable(options){
   let { formElement, i, } = options;
-  let initialValue = getInitialValue(formElement, Object.assign({}, this.state, unflatten(this.state)));
+  let initialValue = getInitialValue(formElement,
+  (Object.keys(this.state.formDataTables).length && this.state.formDataTables[formElement.name])?this.state.formDataTables :  Object.assign({}, this.state, unflatten(this.state, { overwrite: true })));
+  // console.debug({ initialValue },this.state, this.state[formElement.name]);
   let hasError = getErrorStatus(this.state, formElement.name);
   const getTableHeaders = (row) => {
     return Object.keys(row).map(rowkey => {
@@ -99,6 +102,11 @@ export function getFormDatatable(options){
         formtype: (formElement.tableHeaderType && formElement.tableHeaderType[rowkey])
           ? formElement.tableHeaderType[rowkey]
           : 'text',
+        defaultValue: (formElement.tableHeaderDefaultValue && formElement.tableHeaderDefaultValue[rowkey])
+          ? formElement.tableHeaderDefaultValue[rowkey]
+          : (selectOptions.length)
+            ? selectOptions[ 0 ].value
+            : undefined,
         formoptions: selectOptions,
         footerFormElementPassProps: Object.assign({
           placeholder: capitalize(rowkey),
@@ -134,16 +142,22 @@ export function getFormDatatable(options){
       tableForm:true,
     }
   );// formElement.datalist,
-  let shape ={};// this is the header of of the footer which has elements for new insert
-  let inlineshape ={};// if true, should look like a regular form row, else form below
-    // console.debug({formElement,initialValue, },'this.state',this.state);
+  // console.debug({tableHeaders})
+  // let shape ={};// this is the header of of the footer which has elements for new insert
+  // let inlineshape ={};// if true, should look like a regular form row, else form below
+  //   // console.debug({formElement,initialValue, },'this.state',this.state);
   return (<FormItem key={i} {...formElement.layoutProps} >
   {getFormLabel(formElement)}  
     <ResponsiveTable {...passedProps}
-      onChange={(newvalue)=>{
-        console.debug({ newvalue });
-        let updatedStateProp = {};
-        updatedStateProp[ formElement.name ] = newvalue.rows;
+      onChange={(newvalue) => {
+        let flattenedData = (this.props.flattenFormData)
+          ? flatten({ [ formElement.name ]: newvalue.rows, })
+          : {};
+        let updatedStateProp = Object.assign({
+          formDataTables: Object.assign({}, this.state.formDataTables, { [ formElement.name ]: newvalue.rows, }),
+          [ formElement.name ]: newvalue.rows,
+        }, flattenedData);
+        // console.debug({ flattenedData,updatedStateProp });
         this.setState(updatedStateProp);
       }}
       value={initialValue} />

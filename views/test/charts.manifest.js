@@ -115,6 +115,7 @@ module.exports = {
                   },
                   props: {
                     onSubmit: 'func:this.props.setDynamicData',
+                    onChange: 'func:this.props.setDynamicData',
                     dynamicField: 'chartdata',
                     flattenFormData: true,
                     style: {
