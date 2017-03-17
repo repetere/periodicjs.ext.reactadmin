@@ -206,6 +206,11 @@ function getFormDatatable(options) {
     formtype: false
   });
   var passedProps = (0, _assign2.default)({}, this.props, {
+    selectEntireRow: formElement.selectEntireRow,
+    insertSelectedRowHeaderIndex: formElement.insertSelectedRowHeaderIndex,
+    selectOptionSortId: formElement.selectOptionSortId,
+    selectOptionSortIdLabel: formElement.selectOptionSortIdLabel,
+    flattenRowData: formElement.flattenRowData,
     rows: initialValue,
     headers: tableHeaders,
     limit: 5000,
@@ -222,10 +227,14 @@ function getFormDatatable(options) {
     getFormLabel(formElement),
     _react2.default.createElement(_ResponsiveTable2.default, (0, _extends3.default)({}, passedProps, {
       onChange: function onChange(newvalue) {
-        var flattenedData = _this2.props.flattenFormData ? (0, _flat2.default)((0, _defineProperty3.default)({}, formElement.name, newvalue.rows)) : {};
+        var selectedRowData = formElement.selectEntireRow && (newvalue.selectedRowData || newvalue.selectedRowIndex) ? (0, _defineProperty3.default)({}, formElement.name + '__tabledata', {
+          selectedRowData: newvalue.selectedRowData,
+          selectedRowIndex: newvalue.selectedRowIndex
+        }) : {};
+        var flattenedData = _this2.props.flattenFormData ? (0, _flat2.default)((0, _assign2.default)({}, selectedRowData, (0, _defineProperty3.default)({}, formElement.name, newvalue.rows))) : {};
         var updatedStateProp = (0, _assign2.default)((0, _defineProperty3.default)({
           formDataTables: (0, _assign2.default)({}, _this2.state.formDataTables, (0, _defineProperty3.default)({}, formElement.name, newvalue.rows))
-        }, formElement.name, newvalue.rows), flattenedData);
+        }, formElement.name, newvalue.rows), flattenedData, selectedRowData);
         // console.debug({ flattenedData,updatedStateProp });
         _this2.setState(updatedStateProp);
       },
@@ -536,9 +545,9 @@ function getSliderInput(options) {
   }, formElement.wrapperProps);
   var passableProps = (0, _assign2.default)({}, formElement.passProps);
   if (formElement.handle) {
-    passableProps.handle = function (_ref) {
-      var value = _ref.value,
-          offset = _ref.offset;
+    passableProps.handle = function (_ref2) {
+      var value = _ref2.value,
+          offset = _ref2.offset;
       return _react2.default.createElement(
         'div',
         { style: { left: offset + '%' }, className: '__reactadmin_slider__handle' },
