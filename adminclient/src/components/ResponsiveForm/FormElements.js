@@ -170,7 +170,7 @@ export function getFormDatatable(options){
           formDataTables: Object.assign({}, this.state.formDataTables, { [ formElement.name ]: newvalue.rows, }),
           [ formElement.name ]: newvalue.rows,
         }, flattenedData, selectedRowData);
-        console.debug({ flattenedData,updatedStateProp });
+        // console.debug({ flattenedData,updatedStateProp });
         this.setState(updatedStateProp);
       }}
       value={initialValue} />

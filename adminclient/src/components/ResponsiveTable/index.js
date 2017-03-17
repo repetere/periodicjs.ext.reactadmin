@@ -80,7 +80,7 @@ const defaultProps = {
 
 function getOptionsHeaders(props) {
   let headers = (props.headers || []).concat([]);
-  console.debug('original', { headers });
+  // console.debug('original', { headers });
   if (props.selectOptionSortId) {
     headers.unshift({
       sortid: props.selectOptionSortId,
@@ -89,7 +89,7 @@ function getOptionsHeaders(props) {
       selectedOptionRowHeader:true,
     });
   }
-  console.debug('modified', { headers });
+  // console.debug('modified', { headers });
   return headers;
 }
 
@@ -306,9 +306,10 @@ class ResponsiveTable extends Component {
   }
   formatValue(value, row, options, header) {
     // console.info({ value, row, options });
+    // console.debug(options.rowIndex,this.state.selectedRowIndex)
     let returnValue = value;
     if (header.selectedOptionRowHeader) {
-      return <input type="radio" value="on" />;
+      return <input type="radio" checked={(options.rowIndex===this.state.selectedRowIndex)?true:false} />;
     } else if (typeof options.idx !=='undefined' && typeof returnValue==='string' && returnValue.indexOf('--idx--')!==-1) {
       returnValue = returnValue.replace('--idx--', options.idx);
     }
@@ -534,7 +535,7 @@ class ResponsiveTable extends Component {
               :null}
             <rb.Tbody>
               {displayRows.map((row, rowIndex) => (
-                <rb.Tr key={`row${rowIndex}`} >
+                <rb.Tr key={`row${rowIndex}`} className={(this.props.selectEntireRow && rowIndex ===  this.state.selectedRowIndex)?'__selected':undefined} >
                   {this.state.headers.map((header, colIndex) => {
                     // console.debug({header});
                     if (header.link) {
@@ -624,12 +625,13 @@ class ResponsiveTable extends Component {
                           // console.debug({ event, rowIndex });
                         }}>
                           {
-                            this.formatValue(
+                            this.formatValue.call(this,
                               (typeof row[ header.sortid ] !=='undefined')
                               ? row[ header.sortid ]
                               : header.value,
                               row,
                               {
+                                rowIndex: rowIndex,
                                 idx: rowIndex+calcStartIndex,
                                 momentFormat: header.momentFormat,
                                 image: header.image,
