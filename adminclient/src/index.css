@@ -119,6 +119,11 @@ div[data-reactroot]{
   /*height: 14px;*/
 }
 
+.__reactadmin_dp_loading,
+.__reactadmin_dp_loaded{
+  width: '100%';
+  height: '100%';
+}
 @media only screen and (max-width: 480px) {
   .__reactadmin_slider__handle {
     width: 120px;
