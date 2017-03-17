@@ -29,21 +29,84 @@
                     "component":"ResponsiveForm",
                     "props":{
                       "useFormOptions":true,
+                      "flattenFormData":true,
+                      "formdata":{
+                        "food":"kale",
+                        "favorite":true,
+                        "recipe":"sauted kale",
+                        "backlog":{
+                          "history":[
+                            {
+                              "food":"kale",
+                              "favorite":true,
+                              "recipe":"sauted kale"
+                            },
+                            {
+                              "food":"chicken",
+                              "favorite":false,
+                              "recipe":"fried chicken"
+                            },
+                            {
+                              "food":"margarita pizza",
+                              "favorite":false,
+                              "recipe":"pizza"
+                            }
+                          ]
+                        },
+                        "log":[
+                          {
+                            "food":"beer",
+                            "favorite":true,
+                            "recipe":"ithaca ale"
+                          },
+                          {
+                            "food":"fish",
+                            "favorite":false,
+                            "recipe":"garlic and spiced samon"
+                          },
+                          {
+                            "food":"pepperoni pizza",
+                            "favorite":false,
+                            "recipe":"pizza"
+                          },
+                          {
+                            "food":"kale",
+                            "favorite":true,
+                            "recipe":"sauted kale"
+                          },
+                          {
+                            "food":"chicken",
+                            "favorite":false,
+                            "recipe":"fried chicken"
+                          },
+                          {
+                            "food":"margarita pizza",
+                            "favorite":false,
+                            "recipe":"pizza"
+                          }
+                        ]
+                      },
                       "__formOptions":{
-                        "dynselct":[
+                        "food":[
                             {
-                              "value":"option 1 val"  
+                              "value":"pizza"  
                             },
                             {
-                              "value":"option two val"  
+                              "value":"chicken"  
                             },
                             {
-                              "value":"option THREE val"  
+                              "value":"kale"  
+                            },
+                            {
+                              "value":"beer"  
                             }
                           ]
                       },
                       "notificationForm":{
-                        "color":"isDanger"
+                        "color":"isWhite",
+                        "style":{
+                          "border":"1px solid lightgrey"
+                        }
                       },
                       "style":{
                         "marginBottom":"10px",
@@ -54,22 +117,34 @@
                           "formElements":[
                             {
                               "type":"radio",
-                              "name":"samplecheck",
-                              "value":"on",
-                              "label":"save",
-                              "placeholder":"rememberme"
+                              "name":"favorite",
+                              "value":true,
+                              "label":"Favorite",
+                              "placeholder":"fav"
                             },
                             {
                               "type":"text",
-                              "name":"myaccount",
-                              "label":"My Account"
+                              "name":"recipe",
+                              "label":"Recipe"
                             },
                             {
                               "type":"select",
-                              "label":"Dynamic Selects",
-                              "name":"dynselct",
+                              "label":"Food",
+                              "name":"food",
                               "passProps":{
                               },
+                              "value":"Debug Form"
+                            }
+                          ]
+                        },
+                        {
+                          "formElements":[
+                            {
+                              "type":"datatable",
+                              "tableHeaderType":{
+                                "food":"select"
+                              },
+                              "name":"log",
                               "value":"Debug Form"
                             }
                           ]

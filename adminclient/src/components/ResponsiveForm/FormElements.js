@@ -3,6 +3,7 @@ import FormItem from '../FormItem';
 import RACodeMirror from '../RACodeMirror';
 import ResponsiveDatalist from '../ResponsiveDatalist';
 import ResponsiveTable from '../ResponsiveTable';
+import capitalize from 'capitalize';
 // import RAEditor from '../RAEditor';
 // import ResponsiveButton from '../ResponsiveButton';
 // import { EditorState, } from 'draft-js';
@@ -49,7 +50,7 @@ function getCustomErrorLabel(hasError, state, formelement) {
     <div style={Object.assign({
       fontSize: 11,
       color:formelement.errorColor||'#ed6c63',
-    },formelement.customErrorProps)}>{state.formDataErrors[ formelement.name ][ 0 ]}</div>
+    }, formelement.customErrorProps)}>{state.formDataErrors[ formelement.name ][ 0 ]}</div>
   ): null;
 }
 
@@ -84,31 +85,55 @@ function getInitialValue(formElement, state) {
 
 export function getFormDatatable(options){
   let { formElement, i, } = options;
-  let initialValue = getInitialValue(formElement, Object.assign({},this.state,unflatten(this.state)));
+  let initialValue = getInitialValue(formElement, Object.assign({}, this.state, unflatten(this.state)));
   let hasError = getErrorStatus(this.state, formElement.name);
-  let passedProps = Object.assign({},
+  const getTableHeaders = (row) => {
+    return Object.keys(row).map(rowkey => {
+      let selectOptions = (this.state.__formOptions && this.state.__formOptions[ rowkey ])
+        ? this.state.__formOptions[ rowkey ]
+        : [];
+      return {
+        label: capitalize(rowkey),
+        sortid: rowkey,
+        sortable: true,
+        formtype: (formElement.tableHeaderType && formElement.tableHeaderType[rowkey])
+          ? formElement.tableHeaderType[rowkey]
+          : 'text',
+        formoptions: selectOptions,
+        footerFormElementPassProps: Object.assign({
+          placeholder: capitalize(rowkey),
+        }, formElement.footerFormElementPassProps),
+      };
+    });
+  };
+  let useRowButtons = formElement.rowButtons;
+  let tableHeaders = (formElement.headers)
+    ? formElement.headers
+    : (initialValue && Array.isArray(initialValue) && initialValue.length)
+      ? getTableHeaders(initialValue[0])
+      : undefined;
+  tableHeaders = (useRowButtons !== false)
+    ? tableHeaders.concat({
+      label: formElement.rowOptionsLabel || '',
+      formtype: false,
+      formRowButtons: true,
+      formRowButtonProps: formElement.formRowButtonProps,
+    })
+    : tableHeaders.concat({
+      label: '',
+      formtype: false,
+    });
+  let passedProps = Object.assign(
+    {},
     this.props,
     {
-      wrapperProps:{
-        style:{
-          display: 'flex',
-          width: '100%',
-          flex: '5',
-          alignItems: 'stretch',
-          flexDirection: 'column'
-        }
-      },
-      passableProps:{
-        help:getFormElementHelp(hasError, this.state, formElement.name),
-        color:(hasError)?'isDanger':undefined,
-        icon:(hasError)?'fa fa-warning':undefined,
-        placeholder:formElement.placeholder,
-        style:{
-          width:'100%'
-        }
-      },
-    },
-    formElement.datalist, );
+      rows: initialValue,
+      headers: tableHeaders,
+      limit: 5000,
+      hasPagination: false,
+      tableForm:true,
+    }
+  );// formElement.datalist,
   let shape ={};// this is the header of of the footer which has elements for new insert
   let inlineshape ={};// if true, should look like a regular form row, else form below
     // console.debug({formElement,initialValue, },'this.state',this.state);
@@ -118,16 +143,17 @@ export function getFormDatatable(options){
       onChange={(newvalue)=>{
         console.debug({ newvalue });
         let updatedStateProp = {};
-        updatedStateProp[ formElement.name ] = newvalue;
+        updatedStateProp[ formElement.name ] = newvalue.rows;
         this.setState(updatedStateProp);
       }}
-      value={ initialValue } />
+      value={initialValue} />
+    {getCustomErrorLabel(hasError, this.state, formElement)}
   </FormItem>);
 }
 
 export function getFormDatalist(options){
   let { formElement, i, } = options;
-  let initialValue = getInitialValue(formElement, Object.assign({},this.state,unflatten(this.state)));
+  let initialValue = getInitialValue(formElement, Object.assign({}, this.state, unflatten(this.state)));
   let hasError = getErrorStatus(this.state, formElement.name);
   let passedProps = Object.assign({},
     this.props,
@@ -138,8 +164,8 @@ export function getFormDatalist(options){
           width: '100%',
           flex: '5',
           alignItems: 'stretch',
-          flexDirection: 'column'
-        }
+          flexDirection: 'column',
+        },
       },
       passableProps:{
         help:getFormElementHelp(hasError, this.state, formElement.name),
@@ -147,23 +173,17 @@ export function getFormDatalist(options){
         icon:(hasError)?'fa fa-warning':undefined,
         placeholder:formElement.placeholder,
         style:{
-          width:'100%'
-        }
+          width:'100%',
+        },
       },
-      // onChange:(val)=>{
-      //   console.debug('getFDL',{val});
-      //   let updatedStateProp = {};
-      //   updatedStateProp[ formElement.name ] = val;
-      //   this.setState(updatedStateProp);
-      // },
     },
-    formElement.datalist,);
+    formElement.datalist);
     // console.debug({formElement,initialValue, },'this.state',this.state);
   return (<FormItem key={i} {...formElement.layoutProps} >
   {getFormLabel(formElement)}  
     <ResponsiveDatalist {...passedProps}
       onChange={(newvalue)=>{
-        console.debug({ newvalue });
+        // console.debug({ newvalue });
         let updatedStateProp = {};
         updatedStateProp[ formElement.name ] = newvalue;
         this.setState(updatedStateProp);
@@ -196,7 +216,7 @@ export function getFormTextInputArea(options) {
           [ formElement.name ]: document.querySelector(`.${fileClassname} input`),
         });
       } else {
-        updatedStateProp[ formElement.name ] =(passableProps.maxLength)? text.substring(0,passableProps.maxLength-1): text;
+        updatedStateProp[ formElement.name ] =(passableProps.maxLength)? text.substring(0, passableProps.maxLength-1): text;
       }
       this.setState(updatedStateProp);
     };
@@ -385,8 +405,8 @@ export function getSliderInput(options) {
   }, formElement.wrapperProps);
   let passableProps = Object.assign({}, formElement.passProps);
   if (formElement.handle) {
-    passableProps.handle = ({ value, offset }) => (
-      <div style={{ left: `${offset}%` }} className="__reactadmin_slider__handle">
+    passableProps.handle = ({ value, offset, }) => (
+      <div style={{ left: `${offset}%`, }} className="__reactadmin_slider__handle">
         <span className="__reactadmin_arrow-left" />
         {(formElement.numeralFormat) ? numeral(value).format(formElement.numeralFormat) : value}
         <span className="__reactadmin_arrow-right" />
@@ -500,7 +520,7 @@ export function getFormCode(options) {
   let CodeMirrorProps = Object.assign({
     codeMirrorProps: {
       lineNumbers: true,
-      value: (formElement.stringify)?JSON.stringify(initialVal,null,2):initialVal, //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
+      value: (formElement.stringify)?JSON.stringify(initialVal, null, 2):initialVal, //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
       //value: this.state[ formElement.name ] || formElement.value,
       style: {
         minHeight:200,
@@ -616,7 +636,7 @@ export function getFormSubmit(options) {
                       component: 'ResponsiveButton',
                       props: Object.assign({
                         style:{
-                          margin:10
+                          margin:10,
                         },
                         buttonProps: {
                           size:'isMedium',
@@ -628,27 +648,27 @@ export function getFormSubmit(options) {
                           this.submitForm.call(this);
                         },
                         onclickProps:'last',
-                      },formElement.confirmModal.yesButtonProps),  
-                      children:formElement.confirmModal.yesButtonText||'Yes' 
+                      }, formElement.confirmModal.yesButtonProps),  
+                      children:formElement.confirmModal.yesButtonText||'Yes', 
                     },
                     {
                       component: 'ResponsiveButton',
                       props: Object.assign({
                         style:{
-                          margin:10
+                          margin:10,
                         },
                         buttonProps: {
                           size:'isMedium',
                         },
                         onClick: 'func:this.props.hideModal',
                         onclickProps:'last',
-                      },formElement.confirmModal.noButtonProps),  
+                      }, formElement.confirmModal.noButtonProps),  
                       children:formElement.confirmModal.noButtonText||'No',
-                    }
-                  ] 
-                }
-              ]
-          }},formElement.confirmModal))
+                    },
+                  ], 
+                },
+              ],
+            } ,}, formElement.confirmModal))
           : this.submitForm.call(this);
       }}>
       {formElement.value}

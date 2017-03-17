@@ -17,12 +17,31 @@ const propTypes = {
   limit: PropTypes.number,
   currentPage: PropTypes.number,
   numButtons: PropTypes.number,
+  numPages: PropTypes.number,
+  numItems: PropTypes.number,
+  flattenRowData: PropTypes.bool,
+  flattenRowDataOptions: PropTypes.object,
+  selectedRow: PropTypes.object,
+  searchTable:PropTypes.bool,
+  filterSearch:PropTypes.bool,  
+  headers:PropTypes.array,  
+  rows:PropTypes.array,  
+  tableFooter:PropTypes.bool,
+  onChange:PropTypes.func,
+  tableForm: PropTypes.bool,
+  tableFormAddButtonProps: PropTypes.bool,
 };
 
 const defaultProps = {
+  headers: [],
+  rows: [],
   hasPagination: true,
   hasHeader: false,
   hasFooter: false,
+  tableFooter: false,
+  onChange: (event) => {
+    console.debug(event);
+  },
   limit: 50,
   currentPage: 1,
   numPages: 1,
@@ -32,6 +51,7 @@ const defaultProps = {
   flattenRowDataOptions: {},
   searchTable:false,
   filterSearch:false,
+  tableForm:false,
   filterAddonProps:{
     style:{
       marginBottom:'20px',
@@ -46,6 +66,9 @@ const defaultProps = {
     type:'text',
     placeholder:'Search',
     isExpanded:true, 
+  },
+  tableFormAddButtonProps: {
+    color:'isPrimary',
   },
 };
 
@@ -74,6 +97,9 @@ class ResponsiveTable extends Component {
     };
     this.searchFunction = debounce(this.updateTableData, 200);
     this.getRenderedComponent = getRenderedComponent.bind(this);
+    this.deleteRow = this.updateByDeleteRow.bind(this);
+    this.moveRowDown = this.updateByMoveRowDown.bind(this);
+    this.moveRowUp = this.updateByMoveRowUp.bind(this);
   }
   componentWillReceiveProps(nextProps) {
     let rows = nextProps.rows || [];
@@ -95,12 +121,32 @@ class ResponsiveTable extends Component {
       numButtons: nextProps.numButtons,
     });
   }
+  updateByDeleteRow(rowIndex) {
+    let rows = this.state.rows.concat([]);
+    rows.splice(rowIndex, 1);
+    // console.debug({ rowIndex, rows }, this.state.rows);
+    this.updateTableData({ rows, });
+  }
+  updateByMoveRowUp(rowIndex) {
+    let rows = this.state.rows.concat([]);
+    let deletedRow = rows.splice(rowIndex, 1)[0];
+    rows.splice(rowIndex - 1, 0, deletedRow);
+    // console.debug({ rowIndex, rows, deletedRow }, this.state.rows);
+    this.updateTableData({ rows, });
+  }
+  updateByMoveRowDown(rowIndex) {
+    let rows = this.state.rows.concat([]);
+    let deletedRow = rows.splice(rowIndex, 1)[0];
+    rows.splice(rowIndex + 1, 0, deletedRow);
+    // console.debug({ rowIndex, rows, deletedRow }, this.state.rows);
+    this.updateTableData({ rows, });
+  }
   updateTableData(options) {
     if (!this.props.baseUrl) {
       // console.debug({options})
       let updatedState = {};
       let newSortOptions = {};
-      updatedState.rows = (typeof options.rows !=='undefined') ? options.rows : this.props.rows;
+      updatedState.rows = (typeof options.rows !=='undefined') ? options.rows : this.state.rows;
       if (options.sort) {
         newSortOptions.sortProp = options.sort;
         if (this.state.sortProp === options.sort) {
@@ -108,7 +154,7 @@ class ResponsiveTable extends Component {
         } else {
           newSortOptions.sortOrder = 'desc';
         }
-        updatedState.rows = updatedState.rows.sort(utilities.sortObject(newSortOptions.sortOrder,options.sort))
+        updatedState.rows = updatedState.rows.sort(utilities.sortObject(newSortOptions.sortOrder, options.sort));
         updatedState.sortOrder = newSortOptions.sortOrder;
         updatedState.sortProp = options.sort;
       }
@@ -121,6 +167,9 @@ class ResponsiveTable extends Component {
       updatedState.isLoading = false;
       // console.debug({ updatedState,newSortOptions },this.state);
       this.setState(updatedState);
+      if (this.props.tableForm) {
+        this.props.onChange(updatedState);
+      }
     }
     else {
       let newSortOptions = {};
@@ -174,6 +223,9 @@ class ResponsiveTable extends Component {
           }
 
           this.setState(updatedState);
+          if (this.props.tableForm) {
+            this.props.onChange(updatedState);
+          }
         }, e => {
           this.props.errorNotification(e);
         });
@@ -362,6 +414,25 @@ class ResponsiveTable extends Component {
                 ))}
               </rb.Tr>
             </rb.Thead>
+            {(this.props.tableForm)
+              ? (<rb.Tfoot>
+                <rb.Tr>
+                  {this.props.headers.map((header, idx) => (
+                    <rb.Th key={idx} {...header.headerColumnProps}> 
+                      {(idx === this.props.headers.length - 1)
+                        ? <rb.Button {...this.props.tableFormAddButtonProps} style={{width:'100%'}} >Add</rb.Button>
+                        : (header.formtype==='select')
+                          ? (<rb.Select {...header.footerFormElementPassProps}>
+                            {header.formoptions.map((opt, k) => {
+                              return <option key={k} value={opt.value}>{opt.label || opt.value}</option>;
+                            })}
+                          </rb.Select>)
+                          : (<rb.Input {...header.footerFormElementPassProps}></rb.Input>)}
+                    </rb.Th>
+                  ))}
+                </rb.Tr>  
+              </rb.Tfoot>)
+              :null}
             <rb.Tbody>
               {displayRows.map((row, rowIndex) => (
                 <rb.Tr key={`row${rowIndex}`}>
@@ -385,6 +456,28 @@ class ResponsiveTable extends Component {
                                 iconProps: header.iconProps,
                               })
                           }</Link>
+                        </rb.Td>
+                      );
+                    } else if (header.formRowButtons) {
+                      // console.debug({ row, header, });
+                      //http://htmlarrows.com/arrows/
+                      return (
+                        <rb.Td key={`row${rowIndex}col${colIndex}`} style={{ textAlign:'right', }} {...header.columnProps}>
+                          {(rowIndex !== 0)
+                            ? <rb.Button {...this.props.formRowUpButton} onClick={() => {
+                              this.moveRowUp(rowIndex);
+                            }}>⇧</rb.Button>
+                            : null
+                          }
+                          {(rowIndex < this.state.rows.length - 1)
+                            ? <rb.Button  {...this.props.formRowDownButton} onClick={() => {
+                              this.moveRowDown(rowIndex);
+                            }}>⇩</rb.Button>
+                            : null
+                          }
+                          <rb.Button {...this.props.formRowDeleteButton} onClick={() => {
+                            this.deleteRow(rowIndex);
+                          }}>⤫</rb.Button>
                         </rb.Td>
                       );
                     } else if (header.buttons && header.buttons.length) {
