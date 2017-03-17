@@ -72,6 +72,35 @@ var _validate3 = _interopRequireDefault(_validate2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var propTypes = {
+  notificationForm: _react.PropTypes.any,
+  flattenFormData: _react.PropTypes.bool,
+  stringyFormData: _react.PropTypes.bool,
+  useFormOptions: _react.PropTypes.bool,
+  flattenDataOptions: _react.PropTypes.object,
+  useDynamicData: _react.PropTypes.bool,
+  cardForm: _react.PropTypes.bool,
+  cardFormProps: _react.PropTypes.object,
+  passProps: _react.PropTypes.object,
+  formdata: _react.PropTypes.object,
+  __formOptions: _react.PropTypes.object,
+  onSubmit: _react.PropTypes.any,
+  validations: _react.PropTypes.array,
+  hiddenFields: _react.PropTypes.array,
+  footergroups: _react.PropTypes.array,
+  formgroups: _react.PropTypes.oneOfType([_react.PropTypes.bool, _react.PropTypes.object])
+};
+
+var defaultProps = {
+  notificationForm: false,
+  flattenFormData: false,
+  useFormOptions: false,
+  useDynamicData: false,
+  cardForm: false,
+  onSubmit: 'func:this.props.debug',
+  formgroups: []
+};
+
 var ResponsiveForm = function (_Component) {
   (0, _inherits3.default)(ResponsiveForm, _Component);
 
@@ -84,7 +113,8 @@ var ResponsiveForm = function (_Component) {
     if (props.stringyFormData) {
       formdata.genericdocjson = (0, _stringify2.default)(props.formdata, null, 2);
     }
-    var customPropsFormdata = (0, _assign2.default)({}, props.useDynamicData ? props.dynamic.formdata : {}, props.formdata, formdata);
+    var customPropsFormdata = (0, _assign2.default)({}, props.useDynamicData ? props.getState().dynamic.formdata : {}, props.formdata, formdata);
+    customPropsFormdata.__formOptions = props.useFormOptions ? (0, _assign2.default)({}, props.useDynamicData ? props.getState().dynamic.__formOptions : {}, props.__formOptions) : undefined;
     // console.debug({ formdata });
     // console.debug('ResponsiveForm',{ props });
     _this.state = (0, _assign2.default)({
@@ -110,6 +140,7 @@ var ResponsiveForm = function (_Component) {
     _this.getFormSelect = _FormElements.getFormSelect.bind(_this);
     _this.getRawInput = _FormElements.getRawInput.bind(_this);
     _this.getSliderInput = _FormElements.getSliderInput.bind(_this);
+    _this.getFormDatatable = _FormElements.getFormDatatable.bind(_this);
     _this.getHiddenInput = _FormElements.getHiddenInput.bind(_this);
     // this.getFormEditor = getFormEditor.bind(this);
     _this.getFormLink = _FormElements.getFormLink.bind(_this);
@@ -121,8 +152,11 @@ var ResponsiveForm = function (_Component) {
   (0, _createClass3.default)(ResponsiveForm, [{
     key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps(nextProps) {
+      // console.debug('componentWillReceiveProps', nextProps);
       var formdata = nextProps.flattenFormData ? (0, _flat2.default)(nextProps.formdata, nextProps.flattenDataOptions) : nextProps.formdata;
-      formdata = (0, _assign2.default)({}, nextProps.useDynamicData ? nextProps.dynamic.formdata : {}, formdata);
+      formdata = (0, _assign2.default)({}, nextProps.useDynamicData ? this.props.getState().dynamic.formdata : {}, formdata);
+      var __formOptions = nextProps.useFormOptions ? (0, _assign2.default)({}, nextProps.useDynamicData ? nextProps.getState().dynamic.__formOptions : {}, nextProps.__formOptions) : undefined;
+      formdata.__formOptions = __formOptions;
       this.setState(formdata);
     }
   }, {
@@ -250,7 +284,7 @@ var ResponsiveForm = function (_Component) {
       } else if (typeof this.props.onSubmit === 'string' && this.props.onSubmit.indexOf('func:window') !== -1) {
         delete formdata.formDataFiles;
         delete formdata.formDataErrors;
-        window[this.props.onSubmit.replace('func:this.props.', '')](submitFormData);
+        window[this.props.onSubmit.replace('func:this.props.', '')].call(this, submitFormData);
       } else if (typeof this.props.onSubmit !== 'function') {
         var fetchOptions = this.props.onSubmit;
         var formBody = new FormData();
@@ -322,9 +356,28 @@ var ResponsiveForm = function (_Component) {
     }
   }, {
     key: 'componentWillUpdate',
-    value: function componentWillUpdate(prevProps, prevState) {
+    value: function componentWillUpdate(nextProps, nextState) {
       if (this.props.onChange) {
-        this.props.onChange(prevState);
+        var formdata = (0, _assign2.default)({}, nextState);
+        var submitFormData = formdata;
+        delete formdata.formDataFiles;
+        delete formdata.formDataErrors;
+        delete formdata.formDataError;
+        delete formdata.formDataStatusDate;
+        delete formdata.formDataLists;
+        delete formdata.formDataTables;
+        // console.warn('TODO:this should eventually use the same logic as submitform');
+        if (typeof this.props.onChange === 'string' && this.props.onChange.indexOf('func:this.props') !== -1) {
+          if (this.props.onChange === 'func:this.props.setDynamicData') {
+            this.props.setDynamicData(this.props.dynamicField, submitFormData);
+          } else {
+            this.props[this.props.onChange.replace('func:this.props.', '')](submitFormData);
+          }
+        } else if (typeof this.props.onChange === 'string' && this.props.onChange.indexOf('func:window') !== -1) {
+          window[this.props.onChange.replace('func:this.props.', '')].call(this, submitFormData);
+        } else if (typeof this.props.onChange === 'function') {
+          this.props.onChange(nextState);
+        }
       }
     }
   }, {
@@ -332,6 +385,7 @@ var ResponsiveForm = function (_Component) {
     value: function render() {
       var _this3 = this;
 
+      // console.debug('form render', this.state);
       var keyValue = 0;
       var formGroupData = this.props.formgroups.map(function (formgroup, i) {
         var gridProps = (0, _assign2.default)({
@@ -352,6 +406,8 @@ var ResponsiveForm = function (_Component) {
             return _this3.getHiddenInput({ formElement: formElement, i: j, formgroup: formgroup });
           } else if (formElement.type === 'datalist') {
             return _this3.getFormDatalist({ formElement: formElement, i: j, formgroup: formgroup });
+          } else if (formElement.type === 'datatable') {
+            return _this3.getFormDatatable({ formElement: formElement, i: j, formgroup: formgroup });
           } else if (formElement.type === 'checkbox' || formElement.type === 'radio') {
             return _this3.getFormCheckbox({ formElement: formElement, i: j, formgroup: formgroup });
           } else if (formElement.type === 'label') {
@@ -532,7 +588,7 @@ var ResponsiveForm = function (_Component) {
       } else {
         return _react2.default.createElement(
           'div',
-          { style: this.props.style },
+          (0, _extends3.default)({ style: this.props.style }, this.props.passProps),
           formGroupData
         );
       }
@@ -548,5 +604,8 @@ var ResponsiveForm = function (_Component) {
   }]);
   return ResponsiveForm;
 }(_react.Component);
+
+ResponsiveForm.propType = propTypes;
+ResponsiveForm.defaultProps = defaultProps;
 
 exports.default = ResponsiveForm;

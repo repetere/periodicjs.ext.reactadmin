@@ -186,7 +186,16 @@ var ResponsiveDatalist = function (_Component) {
           _reactRouter.Link,
           { to: this.props.resourcePreview + '/' + datum[selector] },
           displayText
-        ) : displayText
+        ) : displayText,
+        this.props.resourceDescription ? _react2.default.createElement(
+          rb.Content,
+          null,
+          _react2.default.createElement(
+            'p',
+            null,
+            datum.description
+          )
+        ) : null
       );
     }
   }, {

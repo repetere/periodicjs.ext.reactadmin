@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.traverse = undefined;
+exports.sortObject = exports.traverse = undefined;
 
 var _typeof2 = require('babel-runtime/helpers/typeof');
 
@@ -34,4 +34,39 @@ var traverse = exports.traverse = function traverse(paths, data) {
 		} else throw new TypeError('asyncprop paths must be a string or an array of strings or numeric indexes');
 		return result;
 	}, {});
+};
+
+/**
+ * custom object sort by field
+ * @example
+ * 			req.controllerData.searchdocuments = searchdocuments.sort(CoreUtilities.sortObject('desc', 'createdat'));
+ * @param  {string} dir   either asc or desc
+ * @param  {string} field object property to seach
+ * @return {function}  object sort compare function
+ */
+var sortObject = exports.sortObject = function sortObject(dir, field) {
+	var comparefunction;
+	if (dir === 'desc') {
+		comparefunction = function comparefunction(a, b) {
+			if (a[field] < b[field]) {
+				return 1;
+			}
+			if (a[field] > b[field]) {
+				return -1;
+			}
+			return 0;
+		};
+	} else {
+		comparefunction = function comparefunction(a, b) {
+			if (a[field] < b[field]) {
+				return -1;
+			}
+			if (a[field] > b[field]) {
+				return 1;
+			}
+			return 0;
+		};
+	}
+
+	return comparefunction;
 };

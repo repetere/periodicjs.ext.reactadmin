@@ -378,6 +378,9 @@ var user = {
           if (state.user.isLoggedIn && returnUrl) dispatch((0, _reactRouterRedux.push)(returnUrl));else dispatch((0, _reactRouterRedux.push)(state.settings.auth.logged_in_homepage));
         }
         if (state.user.isLoggedIn && returnUrl) dispatch((0, _reactRouterRedux.push)(returnUrl));
+        if (state.settings.auth.closeModal) {
+          dispatch(_notification2.default.hideModal('last'));
+        }
         return true;
       }
     };

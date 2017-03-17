@@ -52,6 +52,10 @@ var notification = {
     var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
     var ID = generateNotificationID();
+    if (typeof options === 'string') {
+      console.warn('please pass text as {text:noficationtext}');
+      options = { text: options };
+    }
     return function (dispatch /*, getState*/) {
       if (options.timeout) {
         var t = setTimeout(function () {
@@ -80,6 +84,10 @@ var notification = {
     var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
     var ID = generateNotificationID();
+    if (typeof options === 'string') {
+      console.warn('please pass text as {text:modalText}');
+      options = { text: options };
+    }
     return function (dispatch /*, getState*/) {
       if (options.timeout) {
         var t = setTimeout(function () {

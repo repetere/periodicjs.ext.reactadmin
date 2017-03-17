@@ -8,6 +8,10 @@ var _extends2 = require('babel-runtime/helpers/extends');
 
 var _extends3 = _interopRequireDefault(_extends2);
 
+var _assign = require('babel-runtime/core-js/object/assign');
+
+var _assign2 = _interopRequireDefault(_assign);
+
 var _typeof2 = require('babel-runtime/helpers/typeof');
 
 var _typeof3 = _interopRequireDefault(_typeof2);
@@ -143,7 +147,7 @@ var ModalUI = function (_Component2) {
         ) : undefined;
         return _react2.default.createElement(
           'div',
-          { style: {
+          { style: (0, _assign2.default)({
               position: 'fixed',
               height: '100%',
               width: '100%',
@@ -151,8 +155,8 @@ var ModalUI = function (_Component2) {
               bottom: 0,
               left: 0,
               right: 0,
-              backgroundColor: 'rgba(17,17,17,.86)'
-            } },
+              backgroundColor: 'rgba(17,17,17,.6)'
+            }, _this3.props.overlayProps) },
           _react2.default.createElement(
             _reBulma.Modal,
             {

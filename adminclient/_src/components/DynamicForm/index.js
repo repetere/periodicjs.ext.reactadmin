@@ -63,6 +63,7 @@ var DynamicForm = function (_Component) {
     var formElementData = (0, _assign2.default)({}, initialData, dynamicData);
     var flattenedData = props.flattenData ? (0, _flat2.default)(formElementData, props.flattenDataOptions) : {};
     var initialState = (0, _assign2.default)({}, props.useDynamicData ? props.dynamic.formdata : {}, formElementData, flattenedData);
+    initialState.__formOptions = props.useFormOptions ? (0, _assign2.default)({}, props.useDynamicData ? props.getState().dynamic.__formOptions : {}, props.__formOptions) : undefined;
     // console.debug({props,initialState});
     _this.state = initialState;
 
@@ -75,6 +76,9 @@ var DynamicForm = function (_Component) {
     _this.getFormCheckbox = _FormElements.getFormCheckbox.bind(_this);
     _this.getCardFooterItem = _FormElements.getCardFooterItem.bind(_this);
     _this.getFormSelect = _FormElements.getFormSelect.bind(_this);
+    _this.getRawInput = _FormElements.getRawInput.bind(_this);
+    _this.getSliderInput = _FormElements.getSliderInput.bind(_this);
+    _this.getFormDatatable = _FormElements.getFormDatatable.bind(_this);
     _this.getHiddenInput = _FormElements.getHiddenInput.bind(_this);
     // this.getFormEditor = getFormEditor.bind(this);
     _this.getFormLink = _FormElements.getFormLink.bind(_this);
@@ -86,23 +90,28 @@ var DynamicForm = function (_Component) {
   (0, _createClass3.default)(DynamicForm, [{
     key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps(nextProps) {
-      console.debug('getting next props');
+      // console.debug('getting next props');
       var initialData = this.props.initialData;
       var dynamicData = nextProps.getState().dynamic;
       var formElementData = (0, _assign2.default)({}, nextProps.useDynamicData ? nextProps.dynamic.formdata : {}, initialData, dynamicData);
       var flattenedData = this.props.flattenData ? (0, _flat2.default)(formElementData, this.props.flattenDataOptions) : {};
-
-      var newState = (0, _assign2.default)({}, formElementData, flattenedData);
-      console.debug({ newState: newState, nextProps: nextProps });
+      var __formOptions = nextProps.useFormOptions ? (0, _assign2.default)({}, nextProps.useDynamicData ? nextProps.getState().dynamic.__formOptions : {}, nextProps.__formOptions) : undefined;
+      var newState = (0, _assign2.default)({ __formOptions: __formOptions }, formElementData, flattenedData);
+      // console.debug({newState,nextProps});
       this.setState(newState);
     }
-  }, {
-    key: 'componentWillUpdate',
-    value: function componentWillUpdate(prevProps, prevState) {
-      if (this.props.onChange) {
-        this.props.onChange(prevState);
-      }
-    }
+    // componentWillUpdate(prevProps, prevState) {
+    //   if (this.props.onChange) {
+    //     this.props.onChange(prevState);
+    //   }
+    // }
+    // componentDidUpdate(prevProps, prevState) {
+
+    // }
+    // componentWillUpdate (nextProps, nextState) {
+
+    // }
+
   }, {
     key: 'render',
     value: function render() {
@@ -120,12 +129,16 @@ var DynamicForm = function (_Component) {
             return null;
           } else if (formElement.type === 'text') {
             return _this2.getFormTextInputArea({ formElement: formElement, i: j, formgroup: formgroup });
+          } else if (formElement.type === 'input') {
+            return _this2.getRawInput({ formElement: formElement, i: j, formgroup: formgroup });
           } else if (formElement.type === 'textarea') {
             return _this2.getFormTextArea({ formElement: formElement, i: j, formgroup: formgroup });
           } else if (formElement.type === 'hidden') {
             return _this2.getHiddenInput({ formElement: formElement, i: j, formgroup: formgroup });
           } else if (formElement.type === 'datalist') {
             return _this2.getFormDatalist({ formElement: formElement, i: j, formgroup: formgroup });
+          } else if (formElement.type === 'datatable') {
+            return _this2.getFormDatatable({ formElement: formElement, i: j, formgroup: formgroup });
           } else if (formElement.type === 'checkbox' || formElement.type === 'radio') {
             return _this2.getFormCheckbox({ formElement: formElement, i: j, formgroup: formgroup });
           } else if (formElement.type === 'label') {

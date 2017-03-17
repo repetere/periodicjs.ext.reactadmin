@@ -117,20 +117,6 @@ var defaultUserNavigation = {
       children: [{
         component: 'MenuAppLink',
         props: {
-          href: '/home',
-          label: 'Dashboard',
-          id: 'home'
-        }
-      }, {
-        component: 'MenuAppLink',
-        props: {
-          href: '/documentation',
-          label: 'Documentation',
-          id: 'documentation'
-        }
-      }, {
-        component: 'MenuAppLink',
-        props: {
           href: '/#logout',
           label: 'Logout',
           onClick: 'func:this.props.logoutUser'
@@ -147,73 +133,38 @@ var defaultUserNavigation = {
           component: 'MenuAppLink',
           props: {
             href: '/r-admin/documentation',
-            label: 'Members',
-            id: 'members'
+            label: 'Documentation',
+            id: 'documentation'
           }
         }, {
           component: 'MenuAppLink',
           props: {
             href: '/r-admin/content/testcharts',
             label: 'Test Charts',
-            id: 'plugins'
+            id: 'testcharts'
           }
         }, {
           component: 'MenuAppLink',
           props: {
             href: '/r-admin/content/testtables',
             label: 'Test Tables',
-            id: 'plugins'
+            id: 'testtables'
           }
         }, {
           component: 'MenuAppLink',
-          privileges: ['100'],
           props: {
-            href: '/whatever',
-            label: 'Add a member',
-            id: 'add-member'
+            href: '/r-admin/content/testformtables',
+            label: 'Test Form Tables',
+            id: 'testformtables'
+          }
+        }, {
+          component: 'MenuAppLink',
+          props: {
+            href: '/r-admin/content/dynamics',
+            label: 'Dynamics',
+            id: 'dynamics'
           }
         }]
-      }, {
-        component: 'MenuAppLink',
-        props: {
-          href: '/login',
-          label: 'Invitations',
-          id: 'invitations'
-        }
-      }, {
-        component: 'MenuAppLink',
-        props: {
-          href: '/login',
-          label: 'Authentication',
-          id: 'authentication'
-        }
-      }]
-    }, {
-      component: 'MenuLabel',
-      children: 'Transactions'
-    }, {
-      component: 'MenuList',
-      children: [{
-        component: 'MenuAppLink',
-        props: {
-          href: '/p-admin',
-          label: 'Payments',
-          id: 'payments'
-        }
-      }, {
-        component: 'MenuAppLink',
-        props: {
-          href: '#',
-          label: 'Transfers',
-          id: 'transfers'
-        }
-      }, {
-        component: 'MenuAppLink',
-        props: {
-          href: '#',
-          label: 'Balance',
-          id: 'balance'
-        }
       }]
     }, {
       component: 'MenuLabel',
@@ -223,9 +174,9 @@ var defaultUserNavigation = {
       children: [{
         component: 'MenuAppLink',
         props: {
-          href: '/r-admin/content/accounts',
-          label: 'Accounts',
-          id: 'accounts'
+          href: '/r-admin/content/accounts_sample',
+          label: 'TestAccounts',
+          id: 'testaccounts'
         }
       }, {
         component: 'MenuAppLink',

@@ -51,6 +51,10 @@ var _DynamicForm = require('../DynamicForm');
 
 var _DynamicForm2 = _interopRequireDefault(_DynamicForm);
 
+var _DynamicLayout = require('../DynamicLayout');
+
+var _DynamicLayout2 = _interopRequireDefault(_DynamicLayout);
+
 var _RawOutput = require('../RawOutput');
 
 var _RawOutput2 = _interopRequireDefault(_RawOutput);
@@ -118,7 +122,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var renderIndex = 0;
 // import Editor from '../RAEditor';
 var AppLayoutMap = exports.AppLayoutMap = (0, _assign2.default)({}, {
-  recharts: recharts, ResponsiveForm: _ResponsiveForm2.default, DynamicForm: _DynamicForm2.default, RawOutput: _RawOutput2.default, RawStateOutput: _RawStateOutput2.default, FormItem: _FormItem2.default, MenuAppLink: _MenuAppLink2.default, SubMenuLinks: _SubMenuLinks2.default, ResponsiveTable: _ResponsiveTable2.default, ResponsiveCard: _ResponsiveCard2.default, DynamicChart: _DynamicChart2.default, ResponsiveBar: _ResponsiveBar2.default, ResponsiveTabs: _ResponsiveTabs2.default, ResponsiveDatalist: _ResponsiveDatalist2.default, CodeMirror: _RACodeMirror2.default, Range: _rcSlider.Range, Slider: _rcSlider2.default, GoogleMap: _googleMapReact2.default, Carousel: _reactResponsiveCarousel.Carousel }, _react2.default.DOM, rebulma, { Link: _reactRouter.Link });
+  recharts: recharts, ResponsiveForm: _ResponsiveForm2.default, DynamicLayout: _DynamicLayout2.default, DynamicForm: _DynamicForm2.default, RawOutput: _RawOutput2.default, RawStateOutput: _RawStateOutput2.default, FormItem: _FormItem2.default, MenuAppLink: _MenuAppLink2.default, SubMenuLinks: _SubMenuLinks2.default, ResponsiveTable: _ResponsiveTable2.default, ResponsiveCard: _ResponsiveCard2.default, DynamicChart: _DynamicChart2.default, ResponsiveBar: _ResponsiveBar2.default, ResponsiveTabs: _ResponsiveTabs2.default, ResponsiveDatalist: _ResponsiveDatalist2.default, CodeMirror: _RACodeMirror2.default, Range: _rcSlider.Range, Slider: _rcSlider2.default, GoogleMap: _googleMapReact2.default, Carousel: _reactResponsiveCarousel.Carousel }, _react2.default.DOM, rebulma, { Link: _reactRouter.Link });
 
 // console.log({ AppLayoutMap });
 // console.log({ ReactDOM: React.DOM['div'] });
@@ -131,7 +135,7 @@ function getRenderedComponent(componentObject, resources, debug) {
   AppLayoutMap.ResponsiveButton = _ResponsiveButton2.default.bind(this);
   // console.log('this.props', this);
   renderIndex++;
-  // console.info({ resources });
+  if (resources) console.info({ resources: resources });
 
   try {
     var asyncprops = componentObject.asyncprops && (0, _typeof3.default)(componentObject.asyncprops) === 'object' ? _util2.default.traverse(componentObject.asyncprops, resources) : {};
@@ -141,12 +145,15 @@ function getRenderedComponent(componentObject, resources, debug) {
         _component: componentObject,
         _resources: resources
       }
-    }, this.props.getState())) : {};
+    }, this.props, componentObject.props, this.props.getState())) : {};
     var thisDotProps = !_react2.default.DOM[componentObject.component] && !rebulma[componentObject.component] ? this.props : null;
     var renderedCompProps = (0, _assign2.default)({
       key: renderIndex
     }, thisDotProps, thisprops, componentObject.props, asyncprops, windowprops);
     var comparisons = {};
+    // if (thisprops) {
+    //   console.debug({ thisprops, renderedCompProps });
+    // }
     if (componentObject.comparisonprops) {
       comparisons = componentObject.comparisonprops.map(function (comp) {
         var compares = {};
@@ -201,7 +208,9 @@ function getRenderedComponent(componentObject, resources, debug) {
       renderedCompProps,
       //props children
       componentObject.children && Array.isArray(componentObject.children) && typeof componentObject.children !== 'string' ? componentObject.children.map(function (childComponentObject) {
-        return getRenderedComponent.call(_this, childComponentObject, resources);
+        return getRenderedComponent.call(_this, componentObject.bindprops ? (0, _assign2.default)({}, childComponentObject, {
+          props: (0, _assign2.default)(renderedCompProps, childComponentObject.props, { key: renderIndex + Math.random() })
+        }) : childComponentObject, resources);
       }) : typeof componentObject.children === 'undefined' ? renderedCompProps && renderedCompProps.children && typeof renderedCompProps.children === 'string' ? renderedCompProps.children : null : componentObject.children);
     }
   } catch (e) {
