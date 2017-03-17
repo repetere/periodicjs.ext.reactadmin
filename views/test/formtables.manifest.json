@@ -33,7 +33,7 @@
                       "headers":[
                         { "label": "#", "value":"--idx-ctr--" },
                         { "label": "Email", "sortid":"email", "sortable":true },
-                        {"label":"Likes","sortid":"likes"}
+                        {"label":"Likes","sortid":"likes", "sortable":true }
                       ],
                       "limit":10,
                       "numItems":20,

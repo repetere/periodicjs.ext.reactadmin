@@ -171,6 +171,12 @@ class ResponsiveTable extends Component {
           updatedState.limit = this.props.limit;
           updatedState.currentPage = (typeof options.pagenum !=='undefined') ? options.pagenum : this.props.currentPage;
           updatedState.isLoading = false;
+
+          if (options.sort) {
+            updatedState.sortOrder = newSortOptions.sortOrder;
+            updatedState.sortProp = options.sort;
+          }
+
           this.setState(updatedState);
         }, e => {
           this.props.errorNotification(e);
@@ -352,7 +358,7 @@ class ResponsiveTable extends Component {
               <rb.Tr>
                 {this.props.headers.map((header, idx) => (
                   <rb.Th key={idx} {...header.headerColumnProps}>{(header.sortable)
-                    ? (<a href="#" {...this.props.headerLinkProps} onClick={() => {
+                    ? (<a {...this.props.headerLinkProps} onClick={() => {
                       this.updateTableData({ sort: header.sortid, });
                     }}>{header.label}</a>)
                     : header.label
