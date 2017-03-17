@@ -153,10 +153,6 @@ class ResponsiveTable extends Component {
       utilities.fetchComponent(fetchURL, { headers, })()  
         .then(response => { 
           let updatedState = {};
-          // if (this.props.flattenRowData) {
-          //   response = flatten(response, this.props.flattenRowDataOptions);
-          // }
-          // console.log({ response });
           this.props.dataMap.forEach(data => { 
             if (data.key === 'rows') {
               let rows = response[ data.value ] || [];

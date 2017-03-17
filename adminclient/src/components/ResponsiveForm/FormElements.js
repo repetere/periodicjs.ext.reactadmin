@@ -278,6 +278,9 @@ export function getFormSelect(options) {
   let { formElement, i, /*formgroup, width,*/ onChange, } = options;
   let initialValue = getInitialValue(formElement, this.state); //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
   let hasError = getErrorStatus(this.state, formElement.name);
+  let selectOptions = (this.state.__formOptions && this.state.__formOptions[ formElement.name ])
+    ? this.state.__formOptions[ formElement.name ]
+    : formElement.options || [];
   
   if (typeof initialValue !== 'string') {
     initialValue = JSON.stringify(initialValue, null, 2);
@@ -294,7 +297,7 @@ export function getFormSelect(options) {
       onChange={(event)=>onChange()(event)}
       placeholder={formElement.placeholder||formElement.label}
       value={this.state[ formElement.name ] || initialValue} >
-      {formElement.options.map((opt, k) => {
+      {selectOptions.map((opt, k) => {
         return <option key={k} value={opt.value}>{opt.label || opt.value}</option>;
       })}
     </Select>

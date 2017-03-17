@@ -1,4 +1,4 @@
-import React, { Component, } from 'react';
+import React, { Component, PropTypes, } from 'react';
 import { Columns, Card, CardContent, CardFooter, CardFooterItem, Notification, Column, Label, } from 're-bulma'; 
 import ResponsiveCard from '../ResponsiveCard';
 import { getRenderedComponent, } from '../AppLayoutMap';
@@ -6,6 +6,39 @@ import utilities from '../../util';
 import { getFormTextInputArea, getFormCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, getFormTextArea, /*getFormEditor,*/ getFormLink, getHiddenInput, getFormGroup, getImage, getFormDatalist, getRawInput, getSliderInput, getFormDatatable, } from './FormElements';
 import flatten from 'flat';
 import validate from 'validate.js';
+
+
+const propTypes = {
+  notificationForm: PropTypes.any,
+  flattenFormData: PropTypes.bool,
+  stringyFormData: PropTypes.bool,
+  useFormOptions: PropTypes.bool,
+  flattenDataOptions: PropTypes.object,
+  useDynamicData: PropTypes.bool,
+  cardForm: PropTypes.bool,
+  cardFormProps: PropTypes.object,
+  passProps: PropTypes.object,
+  formdata: PropTypes.object,
+  __formOptions: PropTypes.object,
+  onSubmit: PropTypes.any,
+  validations: PropTypes.array,
+  hiddenFields: PropTypes.array,
+  footergroups: PropTypes.array,
+  formgroups: PropTypes.oneOfType([
+    PropTypes.bool,
+    PropTypes.object,
+  ]),
+};
+
+const defaultProps = {
+  notificationForm: false,
+  flattenFormData: false,
+  useFormOptions: false,
+  useDynamicData: false,
+  cardForm: false,
+  onSubmit: 'func:this.props.debug',
+  formgroups:[],
+};
 
 class ResponsiveForm extends Component{
   constructor(props) {
@@ -17,7 +50,13 @@ class ResponsiveForm extends Component{
     if (props.stringyFormData) {
       formdata.genericdocjson = JSON.stringify(props.formdata, null, 2);
     }
-    let customPropsFormdata = Object.assign({}, (props.useDynamicData)?props.getState().dynamic.formdata:{}, props.formdata, formdata);
+    let customPropsFormdata = Object.assign({}, (props.useDynamicData)
+      ? props.getState().dynamic.formdata
+      : {}, props.formdata, formdata);
+    customPropsFormdata.__formOptions = (props.useFormOptions)
+      ? Object.assign({},
+        (props.useDynamicData) ? props.getState().dynamic.__formOptions : {}, props.__formOptions)
+      : undefined;
     // console.debug({ formdata });
     // console.debug('ResponsiveForm',{ props });
     this.state = Object.assign({
@@ -51,8 +90,19 @@ class ResponsiveForm extends Component{
     this.getImage = getImage.bind(this);
   }
   componentWillReceiveProps(nextProps) {
-    let formdata = (nextProps.flattenFormData) ? flatten(nextProps.formdata, nextProps.flattenDataOptions) : nextProps.formdata;
-    formdata = Object.assign({}, (nextProps.useDynamicData) ? this.props.getState().dynamic.formdata : {}, formdata);
+    let formdata = (nextProps.flattenFormData)
+      ? flatten(nextProps.formdata, nextProps.flattenDataOptions)
+      : nextProps.formdata;
+    formdata = Object.assign({},
+      (nextProps.useDynamicData)
+        ? this.props.getState().dynamic.formdata
+        : {},
+      formdata);
+    let __formOptions = (nextProps.useFormOptions)
+      ? Object.assign({},
+        (nextProps.useDynamicData) ? nextProps.getState().dynamic.__formOptions : {}, nextProps.__formOptions)
+      : undefined;
+    formdata.__formOptions = __formOptions;
     this.setState(formdata);
   }
   getFormSumitUrl(baseurl, params, prop) {
@@ -418,7 +468,7 @@ class ResponsiveForm extends Component{
         <Notification {...this.props.notificationForm}>{formGroupData}</Notification>
       </div>);
     } else {
-      return (<div style={this.props.style}>{ formGroupData }</div>);
+      return (<div style={this.props.style} {...this.props.passProps}>{ formGroupData }</div>);
     }
   }
   componentDidUpdate() {
@@ -428,5 +478,8 @@ class ResponsiveForm extends Component{
     }
   }
 }
+
+ResponsiveForm.propType = propTypes;
+ResponsiveForm.defaultProps = defaultProps;
 
 export default ResponsiveForm;

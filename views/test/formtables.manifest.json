@@ -26,6 +26,71 @@
                     "children":"Standard Documentation Page"
                   },
                   {
+                    "component":"ResponsiveForm",
+                    "props":{
+                      "useFormOptions":true,
+                      "__formOptions":{
+                        "dynselct":[
+                            {
+                              "value":"option 1 val"  
+                            },
+                            {
+                              "value":"option two val"  
+                            },
+                            {
+                              "value":"option THREE val"  
+                            }
+                          ]
+                      },
+                      "notificationForm":{
+                        "color":"isDanger"
+                      },
+                      "style":{
+                        "marginBottom":"10px",
+                        "color":"white"
+                      },
+                      "formgroups":[
+                        {
+                          "formElements":[
+                            {
+                              "type":"radio",
+                              "name":"samplecheck",
+                              "value":"on",
+                              "label":"save",
+                              "placeholder":"rememberme"
+                            },
+                            {
+                              "type":"text",
+                              "name":"myaccount",
+                              "label":"My Account"
+                            },
+                            {
+                              "type":"select",
+                              "label":"Dynamic Selects",
+                              "name":"dynselct",
+                              "passProps":{
+                              },
+                              "value":"Debug Form"
+                            }
+                          ]
+                        },
+                        {
+                          "formElements":[
+                            {
+                              "type":"submit",
+                              "passProps":{
+                                "color":"isInfo",
+                                "size":"isLarge"
+                              },
+                              "confirmModalDISABLE":{},
+                              "value":"Debug Form"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  {
                     "component":"ResponsiveTable",
                     "props":{
                       "tableSearch":true,
