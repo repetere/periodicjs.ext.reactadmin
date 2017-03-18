@@ -7,6 +7,7 @@ import qs from 'querystring';
 import utilities from '../util';
 import manifest from './manifest';
 import notification from './notification';
+let __global__returnURL = false;
 // import { Platform, } from 'react-web';
 // import Immutable from 'immutable';
 
@@ -303,14 +304,15 @@ const user = {
         });
     };
   },
-  enforceMFA (noRedirect, __returnURL) {
+  enforceMFA(noRedirect, __returnURL) {
+    // console.debug({ __returnURL, __global__returnURL });
     return (dispatch, getState) => {
       let state = getState();
       let extensionattributes = (state.user.userdata) ? state.user.userdata.extensionattributes : false;
       let queryparams = qs.parse((window.location.search.charAt(0) === '?') ? window.location.search.substr(1, window.location.search.length) : window.location.search);
       let returnUrl = (queryparams.return_url)
         ? queryparams.return_url
-        : __returnURL || false;
+        : __returnURL || __global__returnURL || false;
       // console.log({ returnUrl });
       if (state.settings.auth.enforce_mfa || (extensionattributes && extensionattributes.login_mfa)) {
         if (state.user.isMFAAuthenticated) {
@@ -462,7 +464,8 @@ const user = {
       }
     };
   },
-  initializeAuthenticatedUser (token, ensureMFA, __returnURL) {
+  initializeAuthenticatedUser(token, ensureMFA, __returnURL) {
+    // console.debug({ __returnURL });
     return (dispatch, getState) => {
       let requestOptions = {
         method: 'POST',
@@ -478,12 +481,14 @@ const user = {
           clearTimeout(initializationTimeout);
           initializationThrottle.destroyInactiveThrottle();
         }
+        // console.debug('enforceMFA clearTimeout __returnURL', __returnURL);
         return (ensureMFA !== false) ? this.enforceMFA(undefined, __returnURL)(dispatch, getState) : undefined;
       } else {
         let assignThrottle = (resolve, reject) => {
           let throttle = () => {
             initializationTimeout = setTimeout(() => {
               clearTimeout(initializationTimeout);
+              // console.debug('throttled enforceMFA clearTimeout __returnURL', __returnURL);
               this.fetchConfigurations(requestOptions)(dispatch, getState)
                 .then(() => (ensureMFA !== false) ? this.enforceMFA(undefined, __returnURL)(dispatch, getState) : undefined)
                 .then(resolve)
@@ -513,6 +518,7 @@ const user = {
   * @param {function} responseFormatter custom reponse formatter, must be a function that returns a promise that resolves to json/javascript object
   */
   loginUser(loginData, __returnURL) {
+    // console.debug({ loginData });
     return (dispatch, getState) => {
       let fetchResponse;
       let cachedResponseData;
@@ -538,6 +544,8 @@ const user = {
         .then((response) => response.json())
         .then((responseData) => {
           cachedResponseData = responseData;
+          // console.debug('loginData.__returnURL', loginData.__returnURL);
+          __global__returnURL = loginData.__returnURL || __returnURL;
           return Promise.all([
             AsyncStorage.setItem(constants.jwt_token.TOKEN_NAME, responseData.token),
             AsyncStorage.setItem(constants.jwt_token.TOKEN_DATA, JSON.stringify({
@@ -546,7 +554,7 @@ const user = {
               token: responseData.token,
             })),
             AsyncStorage.setItem(constants.jwt_token.PROFILE_JSON, JSON.stringify(responseData.user)),
-            this.initializeAuthenticatedUser(responseData.token, false, loginData.__returnURL || __returnURL)(dispatch, getState),
+            this.initializeAuthenticatedUser(responseData.token, false, __global__returnURL)(dispatch, getState),
           ]);
         })
         .then(() => {

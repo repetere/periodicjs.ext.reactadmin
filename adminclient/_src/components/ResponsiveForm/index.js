@@ -185,6 +185,7 @@ var ResponsiveForm = function (_Component) {
       var addNameToName = function addNameToName(formElm) {
         // console.debug('addNameToName','(formElm.passProps && formElm.passProps.state===isDisabled)',(formElm.passProps && formElm.passProps.state==='isDisabled'),{ formElm });
         // skip if null, or disabled
+        // console.debug({ formElm, });
         if (!formElm || formElm.disabled || formElm.passProps && formElm.passProps.state === 'isDisabled') {
           // console.debug('skip', formElm);
           //
@@ -194,6 +195,9 @@ var ResponsiveForm = function (_Component) {
           }
         } else if (formElm.name) {
           formElementFields.push(formElm.name);
+          if (formElm.type === 'hidden') {
+            formdata[formElm.name] = _this2.state[formElm.name] || formElm.value;
+          }
           if (formElm.type === 'datalist') {
             // console.debug('before',{formElm,formdata});
             if (formElm.datalist.multi && formdata[formElm.name] && formdata[formElm.name].length) {
@@ -211,6 +215,7 @@ var ResponsiveForm = function (_Component) {
       delete formdata.formDataStatusDate;
       delete formdata.formDataTables;
 
+      // console.debug('this.props.formgroups', this.props.formgroups, { hiddenInputs, });
       if (this.props.hiddenFields) {
         this.props.hiddenFields.forEach(function (hiddenField) {
           hiddenInputs[hiddenField.form_name] = _this2.state[hiddenField.form_val] || hiddenField.form_static_val;
@@ -239,14 +244,15 @@ var ResponsiveForm = function (_Component) {
                 // console.debug('skip', formElement);
 
               } else {
-                // console.debug({ formElement });
-                if (formElement.name) formElementFields.push(formElement.name);
+                if (formElement.name) {
+                  addNameToName(formElement);
+                  // formElementFields.push(formElement.name);
+                }
               }
             });
           }
         });
       }
-      // console.debug({ formElementFields });
       if (this.props.validations) {
         this.props.validations.forEach(function (validation) {
           // console.debug(formdata[ validation.name ], { validation, });

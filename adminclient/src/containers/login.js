@@ -93,36 +93,36 @@ function getLoginLayout(options) {
                         },
                       }, ],
                     },
-                      {
-                        gridProps: {},
-                        formElements: [{
-                          type: 'text',
-                          label: 'Password',
-                          name: 'password',
-                          submitOnEnter: true,
-                          passProps: {
-                            type:'password',
-                          },
-                          layoutProps: {
+                    {
+                      gridProps: {},
+                      formElements: [{
+                        type: 'text',
+                        label: 'Password',
+                        name: 'password',
+                        submitOnEnter: true,
+                        passProps: {
+                          type:'password',
+                        },
+                        layoutProps: {
                             // horizontalform:true,
-                          },
-                        }, ],
-                      },
-                      {
-                        gridProps: {},
-                        formElements: [{
-                          type: 'checkbox',
-                          label: '',
-                          placeholder: 'Remember Me',
-                          name: 'rememberme',
-                          passProps: {
-                            type:'rememberme',
-                          },
-                          layoutProps: {
+                        },
+                      }, ],
+                    },
+                    {
+                      gridProps: {},
+                      formElements: [{
+                        type: 'checkbox',
+                        label: '',
+                        placeholder: 'Remember Me',
+                        name: 'rememberme',
+                        passProps: {
+                          type:'rememberme',
+                        },
+                        layoutProps: {
                             // horizontalform:true,
-                          },
-                        }, ],
-                      },
+                        },
+                      }, ],
+                    },
                     ],
                     'validations': [
                       {

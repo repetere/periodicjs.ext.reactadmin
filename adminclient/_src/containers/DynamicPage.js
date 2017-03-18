@@ -160,9 +160,7 @@ var DynamicPage = function (_Component) {
     value: function render() {
       return _react2.default.createElement(
         'div',
-        { style: {
-            width: '100%',
-            height: '100%' } },
+        { id: '__ra_dp', className: this.state.ui_is_loaded ? '__reactadmin_dp_loaded' : '__reactadmin_dp_loading' },
         _react2.default.createElement(_overlay2.default, { display: !this.state.ui_is_loaded, wrapperstyle: {
             position: 'fixed',
             height: '100%',

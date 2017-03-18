@@ -481,8 +481,8 @@ export function getSliderInput(options) {
 
 export function getHiddenInput(options) {
   let { formElement, i, } = options;
-  let initialValue = this.state[ formElement.formdata_name  ] || this.state[ formElement.name  ] || formElement.value;
-
+  let initialValue = this.state[ formElement.formdata_name ] || this.state[ formElement.name ] || formElement.value;
+  
   return <input key={i}  {...formElement.passProps}
     type="hidden"
     value={initialValue} />;

@@ -408,7 +408,7 @@ var ResponsiveTable = function (_Component) {
       // console.info({ value, row, options });
       // console.debug(options.rowIndex,this.state.selectedRowIndex)
       var returnValue = value;
-      if (header.selectedOptionRowHeader) {
+      if (header && header.selectedOptionRowHeader) {
         return _react2.default.createElement('input', { type: 'radio', checked: options.rowIndex === this.state.selectedRowIndex ? true : false });
       } else if (typeof options.idx !== 'undefined' && typeof returnValue === 'string' && returnValue.indexOf('--idx--') !== -1) {
         returnValue = returnValue.replace('--idx--', options.idx);

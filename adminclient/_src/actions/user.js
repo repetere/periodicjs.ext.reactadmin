@@ -54,6 +54,7 @@ var _notification2 = _interopRequireDefault(_notification);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var __global__returnURL = false;
 // import { Platform, } from 'react-web';
 // import Immutable from 'immutable';
 
@@ -354,11 +355,12 @@ var user = {
   enforceMFA: function enforceMFA(noRedirect, __returnURL) {
     var _this5 = this;
 
+    // console.debug({ __returnURL, __global__returnURL });
     return function (dispatch, getState) {
       var state = getState();
       var extensionattributes = state.user.userdata ? state.user.userdata.extensionattributes : false;
       var queryparams = _querystring2.default.parse(window.location.search.charAt(0) === '?' ? window.location.search.substr(1, window.location.search.length) : window.location.search);
-      var returnUrl = queryparams.return_url ? queryparams.return_url : __returnURL || false;
+      var returnUrl = queryparams.return_url ? queryparams.return_url : __returnURL || __global__returnURL || false;
       // console.log({ returnUrl });
       if (state.settings.auth.enforce_mfa || extensionattributes && extensionattributes.login_mfa) {
         if (state.user.isMFAAuthenticated) {
@@ -514,6 +516,7 @@ var user = {
   initializeAuthenticatedUser: function initializeAuthenticatedUser(token, ensureMFA, __returnURL) {
     var _this8 = this;
 
+    // console.debug({ __returnURL });
     return function (dispatch, getState) {
       var requestOptions = {
         method: 'POST',
@@ -529,12 +532,14 @@ var user = {
           clearTimeout(initializationTimeout);
           initializationThrottle.destroyInactiveThrottle();
         }
+        // console.debug('enforceMFA clearTimeout __returnURL', __returnURL);
         return ensureMFA !== false ? _this8.enforceMFA(undefined, __returnURL)(dispatch, getState) : undefined;
       } else {
         var assignThrottle = function assignThrottle(resolve, reject) {
           var throttle = function throttle() {
             initializationTimeout = setTimeout(function () {
               clearTimeout(initializationTimeout);
+              // console.debug('throttled enforceMFA clearTimeout __returnURL', __returnURL);
               _this8.fetchConfigurations(requestOptions)(dispatch, getState).then(function () {
                 return ensureMFA !== false ? _this8.enforceMFA(undefined, __returnURL)(dispatch, getState) : undefined;
               }).then(resolve).catch(reject);
@@ -566,6 +571,7 @@ var user = {
   loginUser: function loginUser(loginData, __returnURL) {
     var _this9 = this;
 
+    // console.debug({ loginData });
     return function (dispatch, getState) {
       var fetchResponse = void 0;
       var cachedResponseData = void 0;
@@ -589,11 +595,13 @@ var user = {
         return response.json();
       }).then(function (responseData) {
         cachedResponseData = responseData;
+        // console.debug('loginData.__returnURL', loginData.__returnURL);
+        __global__returnURL = loginData.__returnURL || __returnURL;
         return _promise2.default.all([_serverSideReactNative.AsyncStorage.setItem(_constants2.default.jwt_token.TOKEN_NAME, responseData.token), _serverSideReactNative.AsyncStorage.setItem(_constants2.default.jwt_token.TOKEN_DATA, (0, _stringify2.default)({
           expires: responseData.expires,
           timeout: responseData.timeout,
           token: responseData.token
-        })), _serverSideReactNative.AsyncStorage.setItem(_constants2.default.jwt_token.PROFILE_JSON, (0, _stringify2.default)(responseData.user)), _this9.initializeAuthenticatedUser(responseData.token, false, loginData.__returnURL || __returnURL)(dispatch, getState)]);
+        })), _serverSideReactNative.AsyncStorage.setItem(_constants2.default.jwt_token.PROFILE_JSON, (0, _stringify2.default)(responseData.user)), _this9.initializeAuthenticatedUser(responseData.token, false, __global__returnURL)(dispatch, getState)]);
       }).then(function () {
         dispatch(_this9.recievedLoginUser(url, fetchResponse, cachedResponseData));
         dispatch(_notification2.default.createNotification({ text: 'Welcome back', timeout: 4000, type: 'success' }));
