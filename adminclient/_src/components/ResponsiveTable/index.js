@@ -102,7 +102,8 @@ var propTypes = {
   onChange: _react.PropTypes.func,
   tableForm: _react.PropTypes.bool,
   tableFormAddButtonProps: _react.PropTypes.bool,
-  selectEntireRow: _react.PropTypes.bool
+  selectEntireRow: _react.PropTypes.bool,
+  useInputRows: _react.PropTypes.bool
 };
 
 var defaultProps = {
@@ -143,8 +144,10 @@ var defaultProps = {
     color: 'isPrimary'
   },
   selectEntireRow: false,
+  useInputRows: false,
   selectOptionSortId: false,
   selectOptionSortIdLabel: false,
+  addNewRows: true,
   insertSelectedRowHeaderIndex: 0
 };
 
@@ -206,6 +209,8 @@ var ResponsiveTable = function (_Component) {
     _this.moveRowDown = _this.updateByMoveRowDown.bind(_this);
     _this.moveRowUp = _this.updateByMoveRowUp.bind(_this);
     _this.updateNewRowText = _this.updateNewRowDataText.bind(_this);
+    _this.updateInlineRowText = _this.updateInlineRowDataText.bind(_this);
+    _this.getFooterAddRow = _this.updateGetFooterAddRow.bind(_this);
     return _this;
   }
 
@@ -295,6 +300,19 @@ var ResponsiveTable = function (_Component) {
       });
       // console.debug({ updatedStateProp, options });
       this.setState(updatedStateProp);
+    }
+  }, {
+    key: 'updateInlineRowDataText',
+    value: function updateInlineRowDataText(options) {
+      var name = options.name,
+          text = options.text,
+          rowIndex = options.rowIndex;
+
+      var rows = this.state.rows.concat([]);
+      rows[rowIndex][name] = text;
+      // console.debug({ rowIndex, rows, deletedRow }, this.state.rows);
+      // this.props.onChange({ rows, });
+      this.updateTableData({ rows: rows });
     }
   }, {
     key: 'updateTableData',
@@ -405,11 +423,59 @@ var ResponsiveTable = function (_Component) {
   }, {
     key: 'formatValue',
     value: function formatValue(value, row, options, header) {
-      // console.info({ value, row, options });
+      var _this3 = this;
+
+      // console.debug({ value, row, options, header, });
       // console.debug(options.rowIndex,this.state.selectedRowIndex)
       var returnValue = value;
       if (header && header.selectedOptionRowHeader) {
         return _react2.default.createElement('input', { type: 'radio', checked: options.rowIndex === this.state.selectedRowIndex ? true : false });
+      } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'textarea') {
+        return _react2.default.createElement(
+          rb.Textarea,
+          (0, _extends3.default)({}, header.textareaProps, {
+            onChange: function onChange(event) {
+              var text = event.target.value;
+              var name = header.sortid;
+              var rowIndex = options.rowIndex;
+              _this3.updateInlineRowText({ name: name, text: text, rowIndex: rowIndex });
+            }
+          }),
+          value
+        );
+      } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'text') {
+        return _react2.default.createElement(
+          rb.Input,
+          (0, _extends3.default)({}, header.inputProps, {
+            onChange: function onChange(event) {
+              var text = event.target.value;
+              var name = header.sortid;
+              var rowIndex = options.rowIndex;
+              _this3.updateInlineRowText({ name: name, text: text, rowIndex: rowIndex });
+            }
+          }),
+          value
+        );
+      } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'select') {
+        return _react2.default.createElement(
+          rb.Select,
+          (0, _extends3.default)({
+            value: value
+          }, header.selectProps, {
+            onChange: function onChange(event) {
+              var text = event.target.value;
+              var name = header.sortid;
+              var rowIndex = options.rowIndex;
+              _this3.updateInlineRowText({ name: name, text: text, rowIndex: rowIndex });
+            } }),
+          header.formoptions.map(function (opt, k) {
+            return _react2.default.createElement(
+              'option',
+              { key: k, value: opt.value },
+              opt.label || opt.value
+            );
+          })
+        );
       } else if (typeof options.idx !== 'undefined' && typeof returnValue === 'string' && returnValue.indexOf('--idx--') !== -1) {
         returnValue = returnValue.replace('--idx--', options.idx);
       }
@@ -452,9 +518,56 @@ var ResponsiveTable = function (_Component) {
       return returnLink;
     }
   }, {
+    key: 'updateGetFooterAddRow',
+    value: function updateGetFooterAddRow(header) {
+      var _this4 = this;
+
+      if (header.selectedOptionRowHeader) return null;
+      switch (header.formtype) {
+        case 'select':
+          return _react2.default.createElement(
+            rb.Select,
+            (0, _extends3.default)({}, header.footerFormElementPassProps, {
+              value: this.state.newRowData[header.sortid] || header.defaultValue,
+              onChange: function onChange(event) {
+                var text = event.target.value;
+                var name = header.sortid;
+                _this4.updateNewRowText({ name: name, text: text });
+              } }),
+            header.formoptions.map(function (opt, k) {
+              return _react2.default.createElement(
+                'option',
+                { key: k, value: opt.value },
+                opt.label || opt.value
+              );
+            })
+          );
+        // break;  
+        case 'textarea':
+          return _react2.default.createElement(rb.Textarea, (0, _extends3.default)({}, header.footerFormElementPassProps, {
+            value: this.state.newRowData[header.sortid] || '',
+            onChange: function onChange(event) {
+              var text = event.target.value;
+              var name = header.sortid;
+              _this4.updateNewRowText({ name: name, text: text });
+            } }));
+        // break;  
+        case 'text':
+        default:
+          return _react2.default.createElement(rb.Input, (0, _extends3.default)({}, header.footerFormElementPassProps, {
+            value: this.state.newRowData[header.sortid] || '',
+            onChange: function onChange(event) {
+              var text = event.target.value;
+              var name = header.sortid;
+              _this4.updateNewRowText({ name: name, text: text });
+            } }));
+        // break;  
+      }
+    }
+  }, {
     key: 'render',
     value: function render() {
-      var _this3 = this;
+      var _this5 = this;
 
       // console.debug('render this.state', this.state);
       var calcStartIndex = (this.state.currentPage - 1) * this.state.limit;
@@ -492,7 +605,7 @@ var ResponsiveTable = function (_Component) {
             rb.PageButton,
             { isActive: currentPage === 1,
               onClick: function onClick() {
-                return _this3.updateTableData({ pagenum: 1 });
+                return _this5.updateTableData({ pagenum: 1 });
               }
             },
             '1'
@@ -515,7 +628,7 @@ var ResponsiveTable = function (_Component) {
               rb.PageButton,
               {
                 onClick: function onClick() {
-                  return _this3.updateTableData({ pagenum: index + 1 });
+                  return _this5.updateTableData({ pagenum: index + 1 });
                 }
               },
               index + 1
@@ -529,7 +642,7 @@ var ResponsiveTable = function (_Component) {
               rb.PageButton,
               { color: 'isPrimary', isActive: true,
                 onClick: function onClick() {
-                  return _this3.updateTableData({ pagenum: index + 1 });
+                  return _this5.updateTableData({ pagenum: index + 1 });
                 } },
               index + 1
             )
@@ -553,7 +666,7 @@ var ResponsiveTable = function (_Component) {
           _react2.default.createElement(
             rb.PageButton,
             { onClick: function onClick() {
-                return _this3.updateTableData({ pagenum: lastIndex + 1 });
+                return _this5.updateTableData({ pagenum: lastIndex + 1 });
               } },
             lastIndex + 1
           )
@@ -569,7 +682,7 @@ var ResponsiveTable = function (_Component) {
         ) : _react2.default.createElement(
           rb.PageButton,
           { onClick: function onClick() {
-              return _this3.updateTableData({ pagenum: _this3.state.currentPage - 1 });
+              return _this5.updateTableData({ pagenum: _this5.state.currentPage - 1 });
             } },
           'Previous'
         ),
@@ -585,7 +698,7 @@ var ResponsiveTable = function (_Component) {
         ) : _react2.default.createElement(
           rb.PageButton,
           { onClick: function onClick() {
-              return _this3.updateTableData({ pagenum: _this3.state.currentPage + 1 });
+              return _this5.updateTableData({ pagenum: _this5.state.currentPage + 1 });
             } },
           'Next'
         )
@@ -608,18 +721,18 @@ var ResponsiveTable = function (_Component) {
           fbts,
           _react2.default.createElement(rb.Input, (0, _extends3.default)({}, this.props.filterSearchProps, {
             onChange: function onChange(data) {
-              _this3.searchFunction({ search: data.target.value });
-              _this3.searchInputTextVal = data.target.value; //TODO: this is janky fix it
+              _this5.searchFunction({ search: data.target.value });
+              _this5.searchInputTextVal = data.target.value; //TODO: this is janky fix it
             },
             ref: function ref(input) {
-              _this3.searchTextInput = input;
+              _this5.searchTextInput = input;
             }
           })),
           _react2.default.createElement(
             rb.Button,
             (0, _extends3.default)({}, this.props.searchButtonProps, {
               onClick: function onClick() {
-                _this3.searchFunction({ search: _this3.searchInputTextVal });
+                _this5.searchFunction({ search: _this5.searchInputTextVal });
               }
             }),
             'Search'
@@ -663,8 +776,8 @@ var ResponsiveTable = function (_Component) {
                     (0, _extends3.default)({ key: idx }, header.headerColumnProps),
                     header.sortable ? _react2.default.createElement(
                       'a',
-                      (0, _extends3.default)({}, _this3.props.headerLinkProps, { onClick: function onClick() {
-                          _this3.updateTableData({ sort: header.sortid });
+                      (0, _extends3.default)({}, _this5.props.headerLinkProps, { onClick: function onClick() {
+                          _this5.updateTableData({ sort: header.sortid });
                         } }),
                       header.label
                     ) : header.label
@@ -672,7 +785,7 @@ var ResponsiveTable = function (_Component) {
                 })
               )
             ),
-            this.props.tableForm ? _react2.default.createElement(
+            this.props.tableForm && this.props.addNewRows ? _react2.default.createElement(
               rb.Tfoot,
               null,
               _react2.default.createElement(
@@ -682,37 +795,15 @@ var ResponsiveTable = function (_Component) {
                   return _react2.default.createElement(
                     rb.Th,
                     (0, _extends3.default)({ key: idx }, header.headerColumnProps),
-                    idx === _this3.state.headers.length - 1 ? _react2.default.createElement(
+                    idx === _this5.state.headers.length - 1 ? _react2.default.createElement(
                       rb.Button,
-                      (0, _extends3.default)({}, _this3.props.tableFormAddButtonProps, {
+                      (0, _extends3.default)({}, _this5.props.tableFormAddButtonProps, {
                         style: { width: '100%' },
                         onClick: function onClick() {
-                          _this3.updateByAddRow();
+                          _this5.updateByAddRow();
                         } }),
-                      _this3.props.formRowAddButtonLabel ? _this3.props.formRowAddButtonLabel : 'Add'
-                    ) : header.formtype === 'select' ? _react2.default.createElement(
-                      rb.Select,
-                      (0, _extends3.default)({}, header.footerFormElementPassProps, {
-                        value: _this3.state.newRowData[header.sortid] || header.defaultValue,
-                        onChange: function onChange(event) {
-                          var text = event.target.value;
-                          var name = header.sortid;
-                          _this3.updateNewRowText({ name: name, text: text });
-                        } }),
-                      header.formoptions.map(function (opt, k) {
-                        return _react2.default.createElement(
-                          'option',
-                          { key: k, value: opt.value },
-                          opt.label || opt.value
-                        );
-                      })
-                    ) : header.selectedOptionRowHeader ? null : _react2.default.createElement(rb.Input, (0, _extends3.default)({}, header.footerFormElementPassProps, {
-                      value: _this3.state.newRowData[header.sortid] || '',
-                      onChange: function onChange(event) {
-                        var text = event.target.value;
-                        var name = header.sortid;
-                        _this3.updateNewRowText({ name: name, text: text });
-                      } }))
+                      _this5.props.formRowAddButtonLabel ? _this5.props.formRowAddButtonLabel : 'Add'
+                    ) : _this5.updateGetFooterAddRow(header)
                   );
                 })
               )
@@ -723,8 +814,8 @@ var ResponsiveTable = function (_Component) {
               displayRows.map(function (row, rowIndex) {
                 return _react2.default.createElement(
                   rb.Tr,
-                  { key: 'row' + rowIndex, className: _this3.props.selectEntireRow && rowIndex === _this3.state.selectedRowIndex ? '__selected' : undefined },
-                  _this3.state.headers.map(function (header, colIndex) {
+                  { key: 'row' + rowIndex, className: _this5.props.selectEntireRow && rowIndex === _this5.state.selectedRowIndex ? '__selected' : undefined },
+                  _this5.state.headers.map(function (header, colIndex) {
                     // console.debug({header});
                     if (header.link) {
                       return _react2.default.createElement(
@@ -732,8 +823,8 @@ var ResponsiveTable = function (_Component) {
                         (0, _extends3.default)({ key: 'row' + rowIndex + 'col' + colIndex }, header.columnProps),
                         _react2.default.createElement(
                           _reactRouter.Link,
-                          (0, _extends3.default)({}, header.linkProps, { to: _this3.getHeaderLinkURL(header.link, row) }),
-                          _this3.formatValue(typeof row[header.sortid] !== 'undefined' ? row[header.sortid] : header.value, row, {
+                          (0, _extends3.default)({}, header.linkProps, { to: _this5.getHeaderLinkURL(header.link, row) }),
+                          _this5.formatValue(typeof row[header.sortid] !== 'undefined' ? row[header.sortid] : header.value, row, {
                             idx: rowIndex + calcStartIndex,
                             momentFormat: header.momentFormat,
                             image: header.image,
@@ -751,24 +842,24 @@ var ResponsiveTable = function (_Component) {
                         (0, _extends3.default)({ key: 'row' + rowIndex + 'col' + colIndex, style: { textAlign: 'right' } }, header.columnProps),
                         rowIndex !== 0 ? _react2.default.createElement(
                           rb.Button,
-                          (0, _extends3.default)({}, _this3.props.formRowUpButton, { onClick: function onClick() {
-                              _this3.moveRowUp(rowIndex);
+                          (0, _extends3.default)({}, _this5.props.formRowUpButton, { onClick: function onClick() {
+                              _this5.moveRowUp(rowIndex);
                             } }),
-                          _this3.props.formRowUputtonLabel ? _this3.props.formRowUputtonLabel : '⇧'
+                          _this5.props.formRowUputtonLabel ? _this5.props.formRowUputtonLabel : '⇧'
                         ) : null,
-                        rowIndex < _this3.state.rows.length - 1 ? _react2.default.createElement(
+                        rowIndex < _this5.state.rows.length - 1 ? _react2.default.createElement(
                           rb.Button,
-                          (0, _extends3.default)({}, _this3.props.formRowDownButton, { onClick: function onClick() {
-                              _this3.moveRowDown(rowIndex);
+                          (0, _extends3.default)({}, _this5.props.formRowDownButton, { onClick: function onClick() {
+                              _this5.moveRowDown(rowIndex);
                             } }),
-                          _this3.props.formRowDownButtonLabel ? _this3.props.formRowDownButtonLabel : '⇩'
+                          _this5.props.formRowDownButtonLabel ? _this5.props.formRowDownButtonLabel : '⇩'
                         ) : null,
                         _react2.default.createElement(
                           rb.Button,
-                          (0, _extends3.default)({}, _this3.props.formRowDeleteButton, { onClick: function onClick() {
-                              _this3.deleteRow(rowIndex);
+                          (0, _extends3.default)({}, _this5.props.formRowDeleteButton, { onClick: function onClick() {
+                              _this5.deleteRow(rowIndex);
                             } }),
-                          _this3.props.formRowDeleteButtonLabel ? _this3.props.formRowDeleteButtonLabel : '⤫'
+                          _this5.props.formRowDeleteButtonLabel ? _this5.props.formRowDeleteButtonLabel : '⤫'
                         )
                       );
                     } else if (header.buttons && header.buttons.length) {
@@ -777,13 +868,13 @@ var ResponsiveTable = function (_Component) {
                         rb.Td,
                         (0, _extends3.default)({ key: 'row' + rowIndex + 'col' + colIndex }, header.columnProps),
                         header.buttons.map(function (button) {
-                          return _this3.getRenderedComponent((0, _assign2.default)({
+                          return _this5.getRenderedComponent((0, _assign2.default)({
                             component: 'ResponsiveButton',
                             props: (0, _assign2.default)({
                               onclickPropObject: row,
                               buttonProps: {}
                             }, button.passProps),
-                            children: _this3.formatValue(typeof row[header.sortid] !== 'undefined' ? row[header.sortid] : header.value, row, {
+                            children: _this5.formatValue(typeof row[header.sortid] !== 'undefined' ? row[header.sortid] : header.value, row, {
                               idx: rowIndex + calcStartIndex,
                               momentFormat: header.momentFormat,
                               image: header.image,
@@ -800,15 +891,15 @@ var ResponsiveTable = function (_Component) {
                       return _react2.default.createElement(
                         rb.Td,
                         (0, _extends3.default)({ key: 'row' + rowIndex + 'col' + colIndex }, header.columnProps, { onClick: function onClick() {
-                            if (_this3.props.selectEntireRow) {
-                              _this3.selectRow({
+                            if (_this5.props.selectEntireRow) {
+                              _this5.selectRow({
                                 selectedRowData: row,
                                 selectedRowIndex: rowIndex
                               });
                             }
                             // console.debug({ event, rowIndex });
                           } }),
-                        _this3.formatValue.call(_this3, typeof row[header.sortid] !== 'undefined' ? row[header.sortid] : header.value, row, {
+                        _this5.formatValue.call(_this5, typeof row[header.sortid] !== 'undefined' ? row[header.sortid] : header.value, row, {
                           rowIndex: rowIndex,
                           idx: rowIndex + calcStartIndex,
                           momentFormat: header.momentFormat,

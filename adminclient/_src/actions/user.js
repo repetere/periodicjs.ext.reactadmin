@@ -475,7 +475,12 @@ var user = {
         }).then(function () {
           //add ?refresh=true to fetch route below to reload configurations
           return _util2.default.setCacheConfiguration(function () {
-            return _util2.default.fetchComponent(basename + '/load/configurations' + (state.settings.ui.initialization.refresh_components ? '?refresh=true' : ''), options)().then(function (response) {
+            var isInitial = state.manifest.isInitial;
+            var refreshComponents = state.settings.ui.initialization.refresh_components;
+            var pathname = typeof window !== 'undefined' && window.location.pathname ? window.location.pathname : _this7.props.location.pathname;
+            var params = isInitial || refreshComponents ? '?' + (isInitial ? 'initial=true&location=' + pathname : '') + (refreshComponents ? isInitial ? '&refresh=true' : 'refresh=true' : '') : '';
+            var configurationRoute = basename + '/load/configurations' + params;
+            return _util2.default.fetchComponent(configurationRoute, options)().then(function (response) {
               if (response.result === 'error') return _promise2.default.reject(new Error(response.data.error));
               var responses = (0, _keys2.default)(response.data.settings).reduce(function (result, key) {
                 var data = (0, _assign2.default)({}, response.data);
@@ -486,6 +491,7 @@ var user = {
               dispatch(_this7.navigationSuccessResponse(responses.navigation));
               dispatch(_this7.preferenceSuccessResponse(responses.preferences));
               dispatch(_manifest2.default.receivedManifestData(responses.manifest.data.settings));
+              if (isInitial) _manifest2.default.fetchManifest(options)(dispatch, getState);
               return {
                 data: {
                   versions: response.data.versions,

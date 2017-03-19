@@ -139,12 +139,21 @@ var initialState = {
   hasLoaded: false,
   error: null,
   updatedAt: new Date(),
+  isInitial: true,
   containers: defaultManifest.containers,
   unauthenticated_routes: null,
   unauthenticated: {
     isFetching: false,
     hasLoaded: false,
     error: null,
+    isInitial: true,
+    updatedAt: new Date()
+  },
+  unauthenticated_success: {
+    isFetching: false,
+    hasLoaded: false,
+    error: null,
+    isInitial: true,
     updatedAt: new Date()
   }
 };
@@ -170,8 +179,9 @@ var manifestReducer = function manifestReducer(state, action) {
     case _constants2.default.manifest.MANIFEST_DATA_SUCCESS:
       var manifestSuccessPayload = action.payload;
       return (0, _assign2.default)({}, state, {
-        isFetching: true,
+        isFetching: false,
         hasLoaded: true,
+        isInitial: false,
         error: null,
         containers: (0, _assign2.default)({}, state.containers, manifestSuccessPayload.containers),
         updatedAt: new Date()
@@ -200,8 +210,9 @@ var manifestReducer = function manifestReducer(state, action) {
     case _constants2.default.manifest.UNAUTHENTICATED_MANIFEST_DATA_SUCCESS:
       var unauthenticatedSuccessPayload = action.payload;
       var unauthenticated_success = (0, _assign2.default)({}, state.unauthenticated, {
-        isFetching: true,
+        isFetching: false,
         hasLoaded: true,
+        isInitial: false,
         error: null,
         updatedAt: new Date()
       });

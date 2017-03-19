@@ -50,7 +50,7 @@ var DynamicLayout = function (_Component) {
     };
     _this.getRenderedComponent = _AppLayoutMap.getRenderedComponent.bind(_this);
     _this.state = Items;
-    console.debug({ props: props });
+    // console.debug({props})
     return _this;
   }
 
@@ -68,7 +68,7 @@ var DynamicLayout = function (_Component) {
     value: function render() {
       var _this2 = this;
 
-      console.debug('this.state.items', this.state.items, 'Array.isArray(this.state.items)', Array.isArray(this.state.items));
+      // console.debug('this.state.items', this.state.items,'Array.isArray(this.state.items)',Array.isArray(this.state.items));
       return _react2.default.createElement(
         'div',
         { style: (0, _assign2.default)({

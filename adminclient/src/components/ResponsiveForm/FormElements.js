@@ -91,7 +91,7 @@ export function getFormDatatable(options){
   // console.debug({ initialValue },this.state, this.state[formElement.name]);
   let hasError = getErrorStatus(this.state, formElement.name);
   const getTableHeaders = (row) => {
-    return Object.keys(row).map(rowkey => {
+    return row.map(rowkey => {
       let selectOptions = (this.state.__formOptions && this.state.__formOptions[ rowkey ])
         ? this.state.__formOptions[ rowkey ]
         : [];
@@ -115,12 +115,13 @@ export function getFormDatatable(options){
     });
   };
   let useRowButtons = formElement.rowButtons;
+  let ignoreTableHeaders = formElement.ignoreTableHeaders || [];
   let tableHeaders = (formElement.headers)
     ? formElement.headers
     : (initialValue && Array.isArray(initialValue) && initialValue.length)
-      ? getTableHeaders(initialValue[0])
-      : undefined;
-  tableHeaders = (useRowButtons !== false)
+      ? getTableHeaders(Object.keys(initialValue[0]).filter(header=>ignoreTableHeaders.indexOf(header)===-1))
+      : [];
+  tableHeaders = (useRowButtons)
     ? tableHeaders.concat({
       label: formElement.rowOptionsLabel || '',
       formtype: false,
@@ -141,6 +142,7 @@ export function getFormDatatable(options){
       selectOptionSortIdLabel: formElement.selectOptionSortIdLabel,
       flattenRowData: formElement.flattenRowData,
       addNewRows: formElement.addNewRows,
+      useInputRows: formElement.useInputRows,
       rows: initialValue,
       headers: tableHeaders,
       limit: 5000,

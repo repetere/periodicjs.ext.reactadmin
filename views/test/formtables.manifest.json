@@ -60,9 +60,9 @@
                             "recipe":"ithaca ale"
                           },
                           {
-                            "food":"fish",
+                            "food":"steamed fish",
                             "favorite":false,
-                            "recipe":"garlic and spiced samon"
+                            "recipe":"this is one line \r\n and on another line \r\n garlic and spiced samon"
                           },
                           {
                             "food":"pepperoni pizza",
@@ -143,12 +143,23 @@
                               "type":"datatable",
                               "selectEntireRow":true,
                               "flattenRowData":false,
+                              "useInputRows":true,
+                              "rowButtons":true,
                               "selectOptionSortId":"favorite",
                               "tableHeaderType":{
-                                "food":"select"
+                                "food":"select",
+                                "recipe":"textarea"
                               },
+                              "ignoreTableHeaders":["favorite"],
                               "name":"log",
                               "value":"Debug Form"
+                            },
+                            {
+                              "type":"datatable",
+                              "flattenRowData":false,
+                              "addNewRows":false,
+                              "rowButtons":false,
+                              "name":"log"
                             }
                           ]
                         },

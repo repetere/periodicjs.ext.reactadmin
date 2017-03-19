@@ -32,6 +32,7 @@ const propTypes = {
   tableForm: PropTypes.bool,
   tableFormAddButtonProps: PropTypes.bool,
   selectEntireRow: PropTypes.bool,
+  useInputRows: PropTypes.bool,
 };
 
 const defaultProps = {
@@ -73,6 +74,7 @@ const defaultProps = {
     color:'isPrimary',
   },
   selectEntireRow: false,
+  useInputRows: false,
   selectOptionSortId: false,
   selectOptionSortIdLabel: false,
   addNewRows: true,
@@ -130,6 +132,8 @@ class ResponsiveTable extends Component {
     this.moveRowDown = this.updateByMoveRowDown.bind(this);
     this.moveRowUp = this.updateByMoveRowUp.bind(this);
     this.updateNewRowText = this.updateNewRowDataText.bind(this);
+    this.updateInlineRowText = this.updateInlineRowDataText.bind(this);
+    this.getFooterAddRow = this.updateGetFooterAddRow.bind(this);
   }
   componentWillReceiveProps(nextProps) {
     let rows = nextProps.rows || [];
@@ -202,6 +206,14 @@ class ResponsiveTable extends Component {
     });
     // console.debug({ updatedStateProp, options });
     this.setState(updatedStateProp);
+  }
+  updateInlineRowDataText(options) {
+    let { name, text, rowIndex, } = options;
+    let rows = this.state.rows.concat([]);
+    rows[ rowIndex ][ name ] = text;
+    // console.debug({ rowIndex, rows, deletedRow }, this.state.rows);
+    // this.props.onChange({ rows, });
+    this.updateTableData({ rows, });
   }
   updateTableData(options) {
     let updatedState = {};
@@ -306,13 +318,45 @@ class ResponsiveTable extends Component {
     }
   }
   formatValue(value, row, options, header) {
-    // console.info({ value, row, options });
+    // console.debug({ value, row, options, header, });
     // console.debug(options.rowIndex,this.state.selectedRowIndex)
     let returnValue = value;
     if (header && header.selectedOptionRowHeader) {
       return <input type="radio" checked={(options.rowIndex===this.state.selectedRowIndex)?true:false} />;
-    } else if (header && header.textarea) {
-      return <textarea {...header.textareaProps}>{value}</textarea>;
+    } else if (this.props.useInputRows && header && header.formtype && header.formtype==='textarea') {
+      return <rb.Textarea
+        {...header.textareaProps}
+        onChange={(event) => {
+          let text = event.target.value;
+          let name = header.sortid;
+          let rowIndex = options.rowIndex;
+          this.updateInlineRowText({ name, text, rowIndex, });
+        }}
+      >{value}</rb.Textarea>;
+    } else if (this.props.useInputRows && header && header.formtype && header.formtype==='text') {
+      return <rb.Input
+        {...header.inputProps}
+        onChange={(event) => {
+          let text = event.target.value;
+          let name = header.sortid;
+          let rowIndex = options.rowIndex;
+          this.updateInlineRowText({ name, text, rowIndex, });
+        }}
+      >{value}</rb.Input>;
+    } else if (this.props.useInputRows && header && header.formtype && header.formtype==='select') {
+      return <rb.Select
+        value={value}
+        {...header.selectProps}
+        onChange={(event) => {
+          let text = event.target.value;
+          let name = header.sortid;
+          let rowIndex = options.rowIndex;
+          this.updateInlineRowText({ name, text, rowIndex, });
+        }}>
+        {header.formoptions.map((opt, k) => {
+          return <option key={k} value={opt.value}>{opt.label || opt.value}</option>;
+        })}
+      </rb.Select>;
     } else if (typeof options.idx !=='undefined' && typeof returnValue==='string' && returnValue.indexOf('--idx--')!==-1) {
       returnValue = returnValue.replace('--idx--', options.idx);
     }
@@ -332,7 +376,7 @@ class ResponsiveTable extends Component {
     } else if (options.image && value) {
       if (typeof value !== 'string' && Array.isArray(value)) {
         let images = value.map((val, i) => <rb.Image key={i} {...options.imageProps} src={val} />);
-        return {images}
+        return { images, };
       } else {
         return <rb.Image {...options.imageProps} src={value} />
       }
@@ -347,6 +391,48 @@ class ResponsiveTable extends Component {
       });
     }
     return returnLink;
+  }
+  updateGetFooterAddRow(header) {
+    if (header.selectedOptionRowHeader) return null;
+    switch (header.formtype) {
+    case 'select':
+      return (<rb.Select
+        {...header.footerFormElementPassProps}
+        value={this.state.newRowData[ header.sortid ] || header.defaultValue}
+        onChange={(event) => {
+          let text = event.target.value;
+          let name = header.sortid;
+          this.updateNewRowText({ name, text, });
+        }}>
+        {header.formoptions.map((opt, k) => {
+          return <option key={k} value={opt.value}>{opt.label || opt.value}</option>;
+        })}
+      </rb.Select>);
+      // break;  
+    case 'textarea':
+      return (<rb.Textarea
+        {...header.footerFormElementPassProps}
+        value={this.state.newRowData[ header.sortid ] || ''}
+        onChange={(event) => {
+          let text = event.target.value;
+          let name = header.sortid;
+          this.updateNewRowText({ name, text, });
+        }}>
+      </rb.Textarea>);    
+      // break;  
+    case 'text':
+    default:
+      return (<rb.Input
+        {...header.footerFormElementPassProps}
+        value={this.state.newRowData[ header.sortid ] || ''}
+        onChange={(event) => {
+          let text = event.target.value;
+          let name = header.sortid;
+          this.updateNewRowText({ name, text, });
+        }}>
+      </rb.Input>);  
+      // break;  
+    }
   }
   render() {
     // console.debug('render this.state', this.state);
@@ -507,30 +593,7 @@ class ResponsiveTable extends Component {
                           }}>
                           {(this.props.formRowAddButtonLabel) ? this.props.formRowAddButtonLabel : 'Add'}
                         </rb.Button>)
-                        : (header.formtype==='select')
-                          ? (<rb.Select
-                            {...header.footerFormElementPassProps}
-                            value={this.state.newRowData[ header.sortid ] || header.defaultValue}
-                            onChange={(event) => {
-                              let text = event.target.value;
-                              let name = header.sortid;
-                              this.updateNewRowText({ name, text, });
-                            }}>
-                            {header.formoptions.map((opt, k) => {
-                              return <option key={k} value={opt.value}>{opt.label || opt.value}</option>;
-                            })}
-                          </rb.Select>)
-                          : (header.selectedOptionRowHeader)
-                              ? null
-                              : (<rb.Input
-                              {...header.footerFormElementPassProps}
-                              value={this.state.newRowData[ header.sortid ] || ''}
-                              onChange={(event) => {
-                                let text = event.target.value;
-                                let name = header.sortid;
-                                this.updateNewRowText({ name, text, });
-                              }}>
-                          </rb.Input>)}
+                        : this.updateGetFooterAddRow(header)}
                     </rb.Th>
                   ))}
                 </rb.Tr>  

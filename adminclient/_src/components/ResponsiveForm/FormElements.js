@@ -179,7 +179,7 @@ function getFormDatatable(options) {
   // console.debug({ initialValue },this.state, this.state[formElement.name]);
   var hasError = getErrorStatus(this.state, formElement.name);
   var getTableHeaders = function getTableHeaders(row) {
-    return (0, _keys2.default)(row).map(function (rowkey) {
+    return row.map(function (rowkey) {
       var selectOptions = _this2.state.__formOptions && _this2.state.__formOptions[rowkey] ? _this2.state.__formOptions[rowkey] : [];
       return {
         label: (0, _capitalize2.default)(rowkey),
@@ -195,8 +195,11 @@ function getFormDatatable(options) {
     });
   };
   var useRowButtons = formElement.rowButtons;
-  var tableHeaders = formElement.headers ? formElement.headers : initialValue && Array.isArray(initialValue) && initialValue.length ? getTableHeaders(initialValue[0]) : undefined;
-  tableHeaders = useRowButtons !== false ? tableHeaders.concat({
+  var ignoreTableHeaders = formElement.ignoreTableHeaders || [];
+  var tableHeaders = formElement.headers ? formElement.headers : initialValue && Array.isArray(initialValue) && initialValue.length ? getTableHeaders((0, _keys2.default)(initialValue[0]).filter(function (header) {
+    return ignoreTableHeaders.indexOf(header) === -1;
+  })) : [];
+  tableHeaders = useRowButtons ? tableHeaders.concat({
     label: formElement.rowOptionsLabel || '',
     formtype: false,
     formRowButtons: true,
@@ -211,6 +214,8 @@ function getFormDatatable(options) {
     selectOptionSortId: formElement.selectOptionSortId,
     selectOptionSortIdLabel: formElement.selectOptionSortIdLabel,
     flattenRowData: formElement.flattenRowData,
+    addNewRows: formElement.addNewRows,
+    useInputRows: formElement.useInputRows,
     rows: initialValue,
     headers: tableHeaders,
     limit: 5000,
