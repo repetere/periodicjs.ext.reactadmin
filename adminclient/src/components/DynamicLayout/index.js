@@ -36,7 +36,7 @@ class DynamicLayout extends Component {
             let mergedLayout = Object.assign({}, this.props.layout, {
               props: Object.assign({}, this.props.layout.props, item),
             });
-            console.debug({ mergedLayout });
+            // console.debug({ mergedLayout });
             return this.getRenderedComponent(mergedLayout);
           })
           : null
