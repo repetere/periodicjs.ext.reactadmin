@@ -45,6 +45,7 @@ const manifest = {
       let hasCached;
       let basename = (typeof state.settings.adminPath ==='string' && state.settings.adminPath !=='/') ? state.settings.basename+state.settings.adminPath : state.settings.basename;
       let headers = state.settings.userprofile.options.headers;
+      let isInitial = state.manifest.isInitial;
       delete headers.clientid_default;
       options.headers = Object.assign({}, options.headers, headers);
       //add ?refresh=true to below route to reload manifest configuration
@@ -52,10 +53,14 @@ const manifest = {
         .then(result => {
           hasCached = (result.manifest && result.manifest.authenticated);
           if (hasCached) dispatch(this.receivedManifestData(result.manifest.authenticated));
-          return utilities.fetchComponent(`${ basename }/load/manifest${(state.settings.ui.initialization.refresh_manifests)?'?refresh=true':''}`, options)()
+          let refreshComponents = state.settings.ui.initialization.refresh_components;
+          let pathname = (typeof window !== 'undefined' && window.location.pathname) ? window.location.pathname : this.props.location.pathname;
+          let params = (isInitial || refreshComponents) ? `?${ (isInitial) ? 'initial=true&location=' + pathname : '' }${ (refreshComponents) ? ((isInitial) ? '&refresh=true' : 'refresh=true') : '' }` : '';
+          return utilities.fetchComponent(`${ basename }/load/manifest${ params }`, options)()
         })
         .then(response => {
           dispatch(this.receivedManifestData(response.data.settings));
+          if (isInitial) utilities.fetchComponent(`${ basename }/load/manifest`, options)()
           return response;
         }, e => {
           if (!hasCached) dispatch(this.failedManifestRetrival(e))
@@ -68,16 +73,19 @@ const manifest = {
       dispatch(this.unauthenticatedManifestRequest());
       let state = getState();
       let hasCached;
+      let isInitial = state.manifest.unauthenticated_success.isInitial;
       let basename = (typeof state.settings.adminPath ==='string' && state.settings.adminPath !=='/') ? state.settings.basename+state.settings.adminPath : state.settings.basename;
       //add ?refresh=true to below route to reload manifest configuration
       return utilities.loadCacheConfigurations()
         .then(result => {
           hasCached = (result.manifest && result.manifest.unauthenticated);
           if (hasCached) dispatch(this.unauthenticatedReceivedManifestData(result.manifest.unauthenticated));
-          return utilities.fetchComponent(`${basename}/load/public_manifest`)()
+          let pathname = (typeof window!== 'undefined' && window.location.pathname) ? window.location.pathname : this.props.location.pathname;
+          return utilities.fetchComponent(`${basename}/load/public_manifest${ (isInitial) ? '?initial=true&location=' + pathname : '' }`)()
         })
         .then(response => {
           dispatch(this.unauthenticatedReceivedManifestData(response.data.settings));
+          if (isInitial) utilities.fetchComponent(`${basename}/load/public_manifest`)()
           return response;
         }, e => {
           if (!hasCached) dispatch(this.unauthenticatedFailedManifestRetrival(e))

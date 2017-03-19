@@ -423,7 +423,12 @@ const user = {
           .then(() => {
             //add ?refresh=true to fetch route below to reload configurations
             return utilities.setCacheConfiguration(() => {
-              return utilities.fetchComponent(`${basename}/load/configurations${(state.settings.ui.initialization.refresh_components)?'?refresh=true':''}`, options)()
+              let isInitial = state.manifest.isInitial;
+              let refreshComponents = state.settings.ui.initialization.refresh_components;
+              let pathname = (typeof window !== 'undefined' && window.location.pathname) ? window.location.pathname : this.props.location.pathname;
+              let params = (isInitial || refreshComponents) ? `?${ (isInitial) ? 'initial=true&location=' + pathname : '' }${ (refreshComponents) ? ((isInitial) ? '&refresh=true' : 'refresh=true') : '' }` : '';
+              let configurationRoute = `${ basename }/load/configurations${ params }`;
+              return utilities.fetchComponent(configurationRoute, options)()
                 .then(response => {
                   if (response.result === 'error') return Promise.reject(new Error(response.data.error));
                   let responses = Object.keys(response.data.settings).reduce((result, key) => {
@@ -435,6 +440,7 @@ const user = {
                   dispatch(this.navigationSuccessResponse(responses.navigation));
                   dispatch(this.preferenceSuccessResponse(responses.preferences));
                   dispatch(manifest.receivedManifestData(responses.manifest.data.settings));
+                  if (isInitial) manifest.fetchManifest(options)(dispatch, getState);
                   return {
                     data: {
                       versions: response.data.versions,

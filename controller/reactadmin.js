@@ -471,6 +471,13 @@ var pullConfigurationSettings = function (reload) {
     .catch(e => Promisie.reject(e));
 };
 
+var filterInitialManifest = function (containers, location) {
+  return Object.keys(containers).reduce((result, key) => {
+    if (location === key || key === '/login' || key === '/mfa') result[key] = containers[key];
+    return result;
+  }, {});
+};
+
 /**
  * Loads manifest configuration data and sends response with settings
  * @param  {Object}   req  express request
@@ -488,13 +495,14 @@ var loadManifest = function (req, res, next) {
         setCoreDataConfigurations();
         if (CORE_DATA_CONFIGURATIONS.manifest) manifest.containers = Object.assign({}, CORE_DATA_CONFIGURATIONS.manifest, manifest.containers);
       }
+      if (req.query && req.query.initial) manifest.containers = filterInitialManifest(manifest.containers, req.query.location);
       manifest.containers = recursivePrivilegesFilter(Object.keys(req.session.userprivilegesdata), manifest.containers, true);
       if (res && typeof res.send === 'function') {
         res.status(200).send({
           result: 'success',
           status: 200,
           data: {
-            versions,
+            versions: (req.query && req.query.initial) ? undefined : versions,
             settings: manifest,
           },
         });
@@ -520,12 +528,13 @@ var loadUnauthenticatedManifest = function (req, res, next) {
         setCoreDataConfigurations();
         if (CORE_DATA_CONFIGURATIONS.unauthenticated_manifest) unauthenticated_manifest.containers = Object.assign({}, CORE_DATA_CONFIGURATIONS.unauthenticated_manifest, unauthenticated_manifest.containers);
       }
+      if (req.query && req.query.initial) unauthenticated_manifest.containers = filterInitialManifest(unauthenticated_manifest.containers, req.query.location);
       if (res && typeof res.send === 'function') {
         res.status(200).send({
           result: 'success',
           status: 200,
           data: {
-            versions,
+            versions: (req.query && req.query.initial) ? undefined : versions,
             settings: unauthenticated_manifest,
           },
         });
