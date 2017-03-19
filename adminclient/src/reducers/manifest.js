@@ -7,12 +7,21 @@ const initialState = {
   hasLoaded: false,
   error: null,
   updatedAt: new Date(),
+  isInitial: true,
   containers: defaultManifest.containers,
   unauthenticated_routes: null,
   unauthenticated: {
     isFetching: false,
     hasLoaded: false,
     error: null,
+    isInitial: true,
+    updatedAt: new Date(),
+  },
+  unauthenticated_success: {
+    isFetching: false,
+    hasLoaded: false,
+    error: null,
+    isInitial: true,
     updatedAt: new Date(),
   },
 };
@@ -38,8 +47,9 @@ const manifestReducer = (state, action) => {
   case constants.manifest.MANIFEST_DATA_SUCCESS:
     var manifestSuccessPayload = action.payload;
     return Object.assign({}, state, {
-      isFetching: true,
+      isFetching: false,
       hasLoaded: true,
+      isInitial: false,
       error: null,
       containers: Object.assign({}, state.containers, manifestSuccessPayload.containers),
       updatedAt: new Date(),
@@ -68,8 +78,9 @@ const manifestReducer = (state, action) => {
   case constants.manifest.UNAUTHENTICATED_MANIFEST_DATA_SUCCESS:
     var unauthenticatedSuccessPayload = action.payload;
     var unauthenticated_success = Object.assign({}, state.unauthenticated, {
-      isFetching: true,
+      isFetching: false,
       hasLoaded: true,
+      isInitial: false,
       error: null,
       updatedAt: new Date(),
     });
