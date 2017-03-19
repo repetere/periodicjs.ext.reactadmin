@@ -12,7 +12,7 @@ class DynamicLayout extends Component {
     };
     this.getRenderedComponent = getRenderedComponent.bind(this);
     this.state = Items;
-    console.debug({props})
+    // console.debug({props})
   }
   componentWillReceiveProps(nextProps) {
     let dynamicItems = (this.props.dynamicProp)
@@ -24,7 +24,7 @@ class DynamicLayout extends Component {
     this.setState(Items);
   }
   render() {
-    console.debug('this.state.items', this.state.items,'Array.isArray(this.state.items)',Array.isArray(this.state.items));
+    // console.debug('this.state.items', this.state.items,'Array.isArray(this.state.items)',Array.isArray(this.state.items));
     return (<div style={
         Object.assign({
         flexDirection: 'rows',

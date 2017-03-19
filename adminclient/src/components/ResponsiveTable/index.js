@@ -75,6 +75,7 @@ const defaultProps = {
   selectEntireRow: false,
   selectOptionSortId: false,
   selectOptionSortIdLabel: false,
+  addNewRows: true,
   insertSelectedRowHeaderIndex:0,
 };
 
@@ -310,6 +311,8 @@ class ResponsiveTable extends Component {
     let returnValue = value;
     if (header && header.selectedOptionRowHeader) {
       return <input type="radio" checked={(options.rowIndex===this.state.selectedRowIndex)?true:false} />;
+    } else if (header && header.textarea) {
+      return <textarea {...header.textareaProps}>{value}</textarea>;
     } else if (typeof options.idx !=='undefined' && typeof returnValue==='string' && returnValue.indexOf('--idx--')!==-1) {
       returnValue = returnValue.replace('--idx--', options.idx);
     }
@@ -490,7 +493,7 @@ class ResponsiveTable extends Component {
                 ))}
               </rb.Tr>
             </rb.Thead>
-            {(this.props.tableForm)
+            {(this.props.tableForm && this.props.addNewRows)
               ? (<rb.Tfoot>
                 <rb.Tr>
                   {this.state.headers.map((header, idx) => (

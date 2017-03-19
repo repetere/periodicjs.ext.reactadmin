@@ -140,6 +140,7 @@ export function getFormDatatable(options){
       selectOptionSortId: formElement.selectOptionSortId,
       selectOptionSortIdLabel: formElement.selectOptionSortIdLabel,
       flattenRowData: formElement.flattenRowData,
+      addNewRows: formElement.addNewRows,
       rows: initialValue,
       headers: tableHeaders,
       limit: 5000,
