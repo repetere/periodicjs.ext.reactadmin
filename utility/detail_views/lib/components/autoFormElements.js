@@ -131,8 +131,19 @@ var buildInputComponent = function (label, type, schema, options) {
 
 var handleFormElements = function (label, value, schema, options) {
   value = (value && value.type && DICTIONARY[Symbol.for(value.type)]) ? value.type : value;
-  let type = DICTIONARY[Symbol.for(value)];
-  if (type && type !== 'array' && !Array.isArray(value)) return buildInputComponent(label, type, schema, options);
+  let type = DICTIONARY[ Symbol.for(value) ];
+  if (!type) {
+    if (Array.isArray(value)) {
+      type = DICTIONARY[ Symbol.for(value) ] || '_id';
+      if (Array.isArray(value) && value.length && typeof value[0]!=='undefined' && value[0].ref) {
+        value = value[ 0 ];
+      }
+    }
+  }
+  // if (schema && schema.entitytype && schema.entitytype.default && schema.entitytype.default==='credit_engine'){
+  //   console.log('handleFormElements', { label, type, value });
+  // }
+  if (type && type !== 'array' && !Array.isArray(value)) return buildInputComponent(label, type, schema, options);  
   else if (value && typeof value === 'object' && !Array.isArray(value)) return buildFormGroup(label, value);
   else if (Array.isArray(value)) return handleTable(label, value);
 };
