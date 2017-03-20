@@ -18,10 +18,12 @@ pluralize.addIrregularRule('data', 'datas');
  * @param {*} options 
  */
 const constructDetail = function (schema, label, options = {}, newEntity) {
-  let usablePrefix = helpers.getDataPrefix(options.prefix);
+  let usablePrefix = helpers.getDataPrefix(options.prefix,undefined,schema,label,options);
+  // console.log({ label, usablePrefix });
+  // console.log({usablePrefix,label},`${(usablePrefix.charAt(0)!=='/')?'/'+usablePrefix:usablePrefix}/${pluralize(label)}/:id?format=json`);
   return {
     resources: (newEntity)?undefined: {
-      [ helpers.getDetailLabel(label) ]: `/${usablePrefix}/${pluralize(label)}/:id?format=json`,
+      [ helpers.getDetailLabel(label) ]: `${(usablePrefix.charAt(0)!=='/')?'/'+usablePrefix:usablePrefix}/${pluralize(label)}/:id?format=json`,
     },
     onFinish:'render',
     pageData:{
@@ -98,11 +100,12 @@ const constructDetail = function (schema, label, options = {}, newEntity) {
  */
 const constructIndex = function (schema, label, options = {}) {
   // console.log('constructIndex', { schema, label, options })
-  let usablePrefix = helpers.getDataPrefix(options.prefix);
+  let usablePrefix = helpers.getDataPrefix(options.prefix,undefined,schema,label,options);
   let manifestPrefix = helpers.getManifestPathPrefix(options.prefix);
+  // console.log({ label, usablePrefix });
   return {
     resources: {
-      [ helpers.getIndexLabel(label) ]:  `/${usablePrefix}/${pluralize(label)}?format=json`,
+      [ helpers.getIndexLabel(label) ]:  `${(usablePrefix.charAt(0)!=='/')?'/'+usablePrefix:usablePrefix}/${pluralize(label)}?format=json`,
     },
     onFinish:'render',
     pageData:{

@@ -1,3 +1,4 @@
+'use strict';
 
 const capitalize = require('capitalize');
 const helpers = require('../helpers');
@@ -49,6 +50,7 @@ const getAllHeaders = function (schemas, label, options) {
       })
     );
 };
+exports.getAllHeaders = getAllHeaders;
 
 const getDefaultHeaders = function (schemas, label, options) {
   // let usablePrefix = helpers.getDataPrefix(options.prefix);
@@ -61,6 +63,7 @@ const getDefaultHeaders = function (schemas, label, options) {
     data_tables.tableOptions(schemas, label, options),
   ];
 };
+exports.getDefaultHeaders = getDefaultHeaders;
 
 const getTableHeader = function _getTableHeader(schemas, label, options) {
   // console.log({ options });
@@ -70,6 +73,7 @@ const getTableHeader = function _getTableHeader(schemas, label, options) {
     return getDefaultHeaders(schemas, label, options);
   }
 };
+exports.getTableHeader = getTableHeader;
 
 const getTableProps = function _getTableProps(schemas, label, options) {
   if(options.extsettings.data_table_props && options.extsettings.data_table_props[options.dbname] && options.extsettings.data_table_props[options.dbname][label]) {
@@ -78,9 +82,10 @@ const getTableProps = function _getTableProps(schemas, label, options) {
     return {};
   }
 };
+exports.getTableProps = getTableProps;
 
 module.exports = function (schemas, label, options) {
-  let usablePrefix = helpers.getDataPrefix(options.prefix);
+  let usablePrefix = helpers.getDataPrefix(options.prefix,undefined,schemas, label, options);
   return [
     // {
     //   component: 'pre',
@@ -102,7 +107,7 @@ module.exports = function (schemas, label, options) {
             'filterSearch': false,
             'tableSearch': true,
             flattenRowData: true,
-            baseUrl: `/${usablePrefix}/${pluralize(label)}?format=json`,
+            baseUrl: `${(usablePrefix.charAt(0)!=='/')?'/'+usablePrefix:usablePrefix}/${pluralize(label)}?format=json`,
             dataMap:[{
               'key': 'rows',
               'value': `${pluralize(label)}`,

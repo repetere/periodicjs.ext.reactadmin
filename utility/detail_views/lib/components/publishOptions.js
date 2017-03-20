@@ -23,10 +23,11 @@ function _id() {
     layoutProps:{},
   };
 }
+exports.id = _id;
 
 function _dataList(schema, label, options, type) {
   let entity = helpers.getSchemaEntity({ schema, label, });
-  let usablePrefix = helpers.getDataPrefix(options.prefix);
+  let usablePrefix = helpers.getDataPrefix(options.prefix,undefined,schema, label, options);
   let manifestPrefix = helpers.getManifestPathPrefix(options.prefix);
 
   return {
@@ -52,7 +53,7 @@ function _dataList(schema, label, options, type) {
     },
   };
 }
-
+exports.dataList = _dataList;
 
 function _createdat () {
   return {
@@ -72,6 +73,7 @@ function _createdat () {
     // },
   };
 }
+exports.createdat = _createdat;
 
 function _updatedat() {
   return {
@@ -91,6 +93,7 @@ function _updatedat() {
     // },
   };
 }
+exports.updatedat = _updatedat;
 
 function _name(schema, label, options) {
   let namefield = (schema.username) ? 'username' : 'name';
@@ -108,6 +111,7 @@ function _name(schema, label, options) {
     // },
   };
 }
+exports.name = _name;
 
 function _title () {
   return {
@@ -124,6 +128,7 @@ function _title () {
     // },
   };
 }
+exports.title = _title;
 
 function _content (type = 'content') {
   return {
@@ -140,6 +145,7 @@ function _content (type = 'content') {
     // },
   };
 }
+exports.content = _content;
 
 function _status () {
   return {
@@ -183,6 +189,7 @@ function _status () {
     ],
   };
 }
+exports.status = _status;
 
 function _datetime () {
   return {
@@ -199,12 +206,14 @@ function _datetime () {
     // },
   };
 }
+exports.datetime = _datetime;
 
 function _getLine() {
   return {
     type:'line',
   };
 }
+exports.getLine = _getLine;
 
 function _assetField(fieldname, fieldlabel) {
   // function getFieldName(fieldname) {
@@ -230,6 +239,7 @@ function _assetField(fieldname, fieldlabel) {
     };
   };
 }
+exports.assetField = _assetField;
 
 function _dateday () {
   return {
@@ -246,6 +256,7 @@ function _dateday () {
     // },
   };
 }
+exports.dateday = _dateday;
 
 function _assetpreview() {
   return {
@@ -267,14 +278,8 @@ function _assetpreview() {
   };
 }
 
-exports.status = _status;
-exports.dateday = _dateday;
-exports.datetime = _datetime;
-exports.title = _title;
-exports.content = _content;
-
 function _publishButtons (schema, label, options = {}, newEntity) {
-  let usablePrefix = helpers.getDataPrefix(options.prefix);
+  let usablePrefix = helpers.getDataPrefix(options.prefix,undefined,schema, label, options);
   let manifestPrefix = helpers.getManifestPathPrefix(options.prefix);
   return {
     label: ' ',
@@ -348,6 +353,7 @@ function _publishButtons (schema, label, options = {}, newEntity) {
     ],
   };
 }
+exports.publishButtons = _publishButtons;
 
 function getPublishOptions(schema, label, options, newEntity) {
   let pubOptions = [
@@ -388,6 +394,7 @@ function getPublishOptions(schema, label, options, newEntity) {
 
   return pubOptions;
 }
+exports.getPublishOptions = getPublishOptions;
 
 function getContentOptions(schema, label, options) {
   let contentItems = [];
@@ -417,6 +424,7 @@ function getContentOptions(schema, label, options) {
   }
   return contentItems;
 }
+exports.getContentOptions = getContentOptions;
 
 exports.publishBasic = function _publishBasic(schema, label, options = {}, newEntity) {
   // console.log({ schema });
@@ -530,11 +538,4 @@ exports.publishAttributes = function _publishAtrributes(schema, label, options =
   return publishAttributesBasic;
 };
 
-exports.id = _id;
-exports.name = _name;
-exports.status = _status;
-exports.dateday = _dateday;
-exports.datetime = _datetime;
-exports.createdat = _createdat;
-exports.updatedat = _updatedat;
-exports.publishButtons = _publishButtons;
+

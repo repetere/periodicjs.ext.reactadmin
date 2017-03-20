@@ -10,8 +10,13 @@ const publishOptions = require('./publishOptions');
 pluralize.addIrregularRule('data', 'datas');
 
 const buildDetail = function (schema, label, options = {}, newEntity) {
+  if (label === 'creditengine') {
+    // console.log({ label, schema, });
+  }
   let elems = [];
-  let usablePrefix = helpers.getDataPrefix(options.prefix);
+  // let usablePrefix = helpers.getDataPrefix(options.prefix);
+  let usablePrefix = helpers.getDataPrefix(options.prefix,undefined,schema,label,options);
+
   let manifestPrefix = helpers.getManifestPathPrefix(options.prefix);
   let top = {
     component: 'ResponsiveForm',
@@ -67,6 +72,9 @@ const buildDetail = function (schema, label, options = {}, newEntity) {
       ? schema[ key ].type
       : schema[ key ];
     let type = DICTIONARY[ Symbol.for(data) ];
+    if (label === 'creditengine') {
+      // console.log({ key, data, type, });
+    }
     elems.push({ key, label, type, data, });
     if ([ '_id', 'id', 'content', 'title', 'name', 'authors', 'primaryauthor', 'status', 'description', 'changes', 'tags', 'categories', 'contenttypes','assets','primaryasset', ].indexOf(key) !== -1) {
       // console.log({ key, schema });

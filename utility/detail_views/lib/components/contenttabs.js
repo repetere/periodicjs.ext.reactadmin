@@ -5,7 +5,13 @@ const helpers = require('../helpers');
 
 module.exports = function (schemas, label, options) {
   let manifestPrefix = helpers.getManifestPathPrefix(options.prefix);
-  let tabs = Object.keys(options.allSchemas).map(key => {
+  let ignoreTabs = (options && options.extsettings && options.extsettings.extension_overrides && options.extsettings.extension_overrides.ignoreContentTabs)
+    ? options.extsettings.extension_overrides.ignoreContentTabs
+    : [];
+  let allSchems = Object.keys(options.allSchemas);
+  let filteredContentTabs = allSchems.filter(schema => ignoreTabs.indexOf(schema) === -1);
+  // console.log({ ignoreTabs,allSchems,filteredContentTabs });
+  let tabs = filteredContentTabs.map(key => {
     return {
       label:pluralize(capitalize(key)),
       location:pluralize(key),

@@ -8,7 +8,9 @@ const publishOptions = require('./publishOptions');
 pluralize.addIrregularRule('data', 'datas');
 
 const buildAdvancedDetail = function (schema, label, options = {},newEntity) {
-  let usablePrefix = helpers.getDataPrefix(options.prefix);
+  // let usablePrefix = helpers.getDataPrefix(options.prefix);
+  let usablePrefix = helpers.getDataPrefix(options.prefix,undefined,schema,label,options);
+
   // let manifestPrefix = helpers.getManifestPathPrefix(options.prefix);
   let top = {
     component: 'ResponsiveForm',
