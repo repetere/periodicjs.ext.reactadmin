@@ -84,6 +84,38 @@ function getInitialValue(formElement, state) {
     : formElementValue;
 }
 
+function getPassablePropsKeyEvents(passableProps, formElement) {
+  if (formElement.keyPress) {
+    let customKeyPress;
+    if (formElement.keyPress.indexOf('func:this.props') !== -1) {
+      customKeyPress= this.props[ formElement.keyPress.replace('func:this.props.', '') ];
+    } else if (formElement.keyPress.indexOf('func:window') !== -1 && typeof window[ formElement.keyPress.replace('func:window.', '') ] ==='function') {
+      customKeyPress= window[ formElement.keyPress.replace('func:window.', '') ].bind(this);
+      // console.debug({ customKeyPress });
+    } 
+    passableProps.onKeyPress = (e) => {
+      customKeyPress(e, formElement);
+      // console.debug('custom press');
+    };
+  } else if(formElement.submitOnEnter){
+    passableProps.onKeyPress = (e) => {
+      if (formElement.submitOnEnter && (e.key === 'Enter' || e.which === 13)) {
+        this.submitForm();
+      }
+    };
+  }
+  if (formElement.onBlur) {
+    let customonBlur;
+    if (formElement.onBlur.indexOf('func:this.props') !== -1) {
+      customonBlur= this.props[ formElement.onBlur.replace('func:this.props.', '') ];
+    } else if (formElement.onBlur.indexOf('func:window') !== -1 && typeof window[ formElement.onBlur.replace('func:window.', '') ] ==='function') {
+      customonBlur= window[ formElement.onBlur.replace('func:window.', '') ].bind(this);
+    } 
+    passableProps.onBlur = customonBlur;
+  }
+  return passableProps;
+}
+
 export function getFormDatatable(options){
   let { formElement, i, } = options;
   let initialValue = getInitialValue(formElement,
@@ -225,7 +257,7 @@ export function getFormDatalist(options){
 export function getFormTextInputArea(options) {
   let { formElement, i, /*formgroup, width,*/ onChange, } = options;
   let initialValue = getInitialValue(formElement, this.state); //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
-  
+  let getPassablePropkeyevents = getPassablePropsKeyEvents.bind(this);
   let fileClassname = `__reactadmin_file_${formElement.name}`;
   let hasError = getErrorStatus(this.state, formElement.name);
   let passableProps = Object.assign({
@@ -251,31 +283,9 @@ export function getFormTextInputArea(options) {
       this.setState(updatedStateProp);
     };
   }
-  if (formElement.keyPress) {
-    let customKeyPress;
-    if (formElement.keyPress.indexOf('func:this.props') !== -1) {
-      customKeyPress= this.props[ formElement.keyPress.replace('func:this.props.', '') ];
-    } else if (formElement.keyPress.indexOf('func:window') !== -1) {
-      customKeyPress= window[ formElement.keyPress.replace('func:window.', '') ].bind(this);
-    } 
-    passableProps.keyPress = customKeyPress;
-  } else if(formElement.submitOnEnter){
-    passableProps.keyPress = (e) => {
-      if (formElement.submitOnEnter && (e.key === 'Enter' || e.which === 13)) {
-        this.submitForm();
-      }
-    };
-  }
-  if (formElement.onBlur) {
-    let customonBlur;
-    if (formElement.onBlur.indexOf('func:this.props') !== -1) {
-      customonBlur= this.props[ formElement.onBlur.replace('func:this.props.', '') ];
-    } else if (formElement.onBlur.indexOf('func:window') !== -1) {
-      customonBlur= window[ formElement.onBlur.replace('func:window.', '') ].bind(this);
-    } 
-    passableProps.onBlur = customonBlur;
-  }
+  passableProps = getPassablePropkeyevents(passableProps, formElement);
 
+  // console.debug({ passableProps });
   return (<FormItem key={i} {...formElement.layoutProps} >
     {getFormLabel(formElement)}  
     <Input {...passableProps}
@@ -294,21 +304,14 @@ export function getFormTextArea(options) {
   let hasError = getErrorStatus(this.state, formElement.name);
   let passableProps = Object.assign({
   }, formElement.passProps);
+  let getPassablePropkeyevents = getPassablePropsKeyEvents.bind(this);
+  passableProps = getPassablePropkeyevents(passableProps, formElement);
 
   if (typeof initialValue !== 'string') {
     initialValue = JSON.stringify(initialValue, null, 2);
   }
   if (!onChange) {
     onChange = valueChangeHandler.bind(this, formElement);
-  }
-  if (formElement.onBlur) {
-    let customonBlur;
-    if (formElement.onBlur.indexOf('func:this.props') !== -1) {
-      customonBlur= this.props[ formElement.onBlur.replace('func:this.props.', '') ];
-    } else if (formElement.onBlur.indexOf('func:window') !== -1) {
-      customonBlur= window[ formElement.onBlur.replace('func:window.', '') ].bind(this);
-    } 
-    passableProps.onBlur = customonBlur;
   }
 
   return (<FormItem key={i} {...formElement.layoutProps} >
@@ -394,6 +397,9 @@ export function getRawInput(options) {
       boxShadow: 'inset 0 1px 2px rgba(17,17,17,.1)',
     },
   }, formElement.wrapperProps);
+  let passableProps = formElement.passProps;
+  let getPassablePropkeyevents = getPassablePropsKeyEvents.bind(this);
+  passableProps = getPassablePropkeyevents(passableProps, formElement);
   if (!onValueChange) {
     onValueChange = (/*event*/) => {
       // let text = event.target.value;
@@ -407,7 +413,7 @@ export function getRawInput(options) {
   return (<FormItem key={i} {...formElement.layoutProps} >
     {getFormLabel(formElement)}  
     <div {...wrapperProps}>
-      <input {...formElement.passProps}
+      <input {...passableProps}
         type={formElement.type}
         checked={this.state[ formElement.name ]}
         onChange={onValueChange}

@@ -169,8 +169,42 @@ function getInitialValue(formElement, state) {
   if (state[formElement.name] === null || formElementValue === null || formElementValue === 'null') return '';else return typeof state[formElement.name] !== 'undefined' ? state[formElement.name] : formElementValue;
 }
 
-function getFormDatatable(options) {
+function getPassablePropsKeyEvents(passableProps, formElement) {
   var _this2 = this;
+
+  if (formElement.keyPress) {
+    var customKeyPress = void 0;
+    if (formElement.keyPress.indexOf('func:this.props') !== -1) {
+      customKeyPress = this.props[formElement.keyPress.replace('func:this.props.', '')];
+    } else if (formElement.keyPress.indexOf('func:window') !== -1 && typeof window[formElement.keyPress.replace('func:window.', '')] === 'function') {
+      customKeyPress = window[formElement.keyPress.replace('func:window.', '')].bind(this);
+      // console.debug({ customKeyPress });
+    }
+    passableProps.onKeyPress = function (e) {
+      customKeyPress(e, formElement);
+      // console.debug('custom press');
+    };
+  } else if (formElement.submitOnEnter) {
+    passableProps.onKeyPress = function (e) {
+      if (formElement.submitOnEnter && (e.key === 'Enter' || e.which === 13)) {
+        _this2.submitForm();
+      }
+    };
+  }
+  if (formElement.onBlur) {
+    var customonBlur = void 0;
+    if (formElement.onBlur.indexOf('func:this.props') !== -1) {
+      customonBlur = this.props[formElement.onBlur.replace('func:this.props.', '')];
+    } else if (formElement.onBlur.indexOf('func:window') !== -1 && typeof window[formElement.onBlur.replace('func:window.', '')] === 'function') {
+      customonBlur = window[formElement.onBlur.replace('func:window.', '')].bind(this);
+    }
+    passableProps.onBlur = customonBlur;
+  }
+  return passableProps;
+}
+
+function getFormDatatable(options) {
+  var _this3 = this;
 
   var formElement = options.formElement,
       i = options.i;
@@ -180,7 +214,7 @@ function getFormDatatable(options) {
   var hasError = getErrorStatus(this.state, formElement.name);
   var getTableHeaders = function getTableHeaders(row) {
     return row.map(function (rowkey) {
-      var selectOptions = _this2.state.__formOptions && _this2.state.__formOptions[rowkey] ? _this2.state.__formOptions[rowkey] : [];
+      var selectOptions = _this3.state.__formOptions && _this3.state.__formOptions[rowkey] ? _this3.state.__formOptions[rowkey] : [];
       return {
         label: (0, _capitalize2.default)(rowkey),
         sortid: rowkey,
@@ -236,12 +270,12 @@ function getFormDatatable(options) {
           selectedRowData: newvalue.selectedRowData,
           selectedRowIndex: newvalue.selectedRowIndex
         }) : {};
-        var flattenedData = _this2.props.flattenFormData ? (0, _flat2.default)((0, _assign2.default)({}, selectedRowData, (0, _defineProperty3.default)({}, formElement.name, newvalue.rows))) : {};
+        var flattenedData = _this3.props.flattenFormData ? (0, _flat2.default)((0, _assign2.default)({}, selectedRowData, (0, _defineProperty3.default)({}, formElement.name, newvalue.rows))) : {};
         var updatedStateProp = (0, _assign2.default)((0, _defineProperty3.default)({
-          formDataTables: (0, _assign2.default)({}, _this2.state.formDataTables, (0, _defineProperty3.default)({}, formElement.name, newvalue.rows))
+          formDataTables: (0, _assign2.default)({}, _this3.state.formDataTables, (0, _defineProperty3.default)({}, formElement.name, newvalue.rows))
         }, formElement.name, newvalue.rows), flattenedData, selectedRowData);
         // console.debug({ flattenedData,updatedStateProp });
-        _this2.setState(updatedStateProp);
+        _this3.setState(updatedStateProp);
       },
       value: initialValue })),
     getCustomErrorLabel(hasError, this.state, formElement)
@@ -249,7 +283,7 @@ function getFormDatatable(options) {
 }
 
 function getFormDatalist(options) {
-  var _this3 = this;
+  var _this4 = this;
 
   var formElement = options.formElement,
       i = options.i;
@@ -286,21 +320,21 @@ function getFormDatalist(options) {
         // console.debug({ newvalue });
         var updatedStateProp = {};
         updatedStateProp[formElement.name] = newvalue;
-        _this3.setState(updatedStateProp);
+        _this4.setState(updatedStateProp);
       },
       value: initialValue }))
   );
 }
 
 function getFormTextInputArea(options) {
-  var _this4 = this;
+  var _this5 = this;
 
   var formElement = options.formElement,
       i = options.i,
       onChange = options.onChange;
 
   var initialValue = getInitialValue(formElement, this.state); //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
-
+  var getPassablePropkeyevents = getPassablePropsKeyEvents.bind(this);
   var fileClassname = '__reactadmin_file_' + formElement.name;
   var hasError = getErrorStatus(this.state, formElement.name);
   var passableProps = (0, _assign2.default)({
@@ -317,38 +351,16 @@ function getFormTextInputArea(options) {
       var text = event.target.value;
       var updatedStateProp = {};
       if (passableProps && passableProps.type === 'file') {
-        updatedStateProp.formDataFiles = (0, _assign2.default)({}, _this4.state.formDataFiles, (0, _defineProperty3.default)({}, formElement.name, document.querySelector('.' + fileClassname + ' input')));
+        updatedStateProp.formDataFiles = (0, _assign2.default)({}, _this5.state.formDataFiles, (0, _defineProperty3.default)({}, formElement.name, document.querySelector('.' + fileClassname + ' input')));
       } else {
         updatedStateProp[formElement.name] = passableProps.maxLength ? text.substring(0, passableProps.maxLength - 1) : text;
       }
-      _this4.setState(updatedStateProp);
+      _this5.setState(updatedStateProp);
     };
   }
-  if (formElement.keyPress) {
-    var customKeyPress = void 0;
-    if (formElement.keyPress.indexOf('func:this.props') !== -1) {
-      customKeyPress = this.props[formElement.keyPress.replace('func:this.props.', '')];
-    } else if (formElement.keyPress.indexOf('func:window') !== -1) {
-      customKeyPress = window[formElement.keyPress.replace('func:window.', '')].bind(this);
-    }
-    passableProps.keyPress = customKeyPress;
-  } else if (formElement.submitOnEnter) {
-    passableProps.keyPress = function (e) {
-      if (formElement.submitOnEnter && (e.key === 'Enter' || e.which === 13)) {
-        _this4.submitForm();
-      }
-    };
-  }
-  if (formElement.onBlur) {
-    var customonBlur = void 0;
-    if (formElement.onBlur.indexOf('func:this.props') !== -1) {
-      customonBlur = this.props[formElement.onBlur.replace('func:this.props.', '')];
-    } else if (formElement.onBlur.indexOf('func:window') !== -1) {
-      customonBlur = window[formElement.onBlur.replace('func:window.', '')].bind(this);
-    }
-    passableProps.onBlur = customonBlur;
-  }
+  passableProps = getPassablePropkeyevents(passableProps, formElement);
 
+  // console.debug({ passableProps });
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps),
@@ -371,21 +383,14 @@ function getFormTextArea(options) {
   var initialValue = getInitialValue(formElement, this.state); //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
   var hasError = getErrorStatus(this.state, formElement.name);
   var passableProps = (0, _assign2.default)({}, formElement.passProps);
+  var getPassablePropkeyevents = getPassablePropsKeyEvents.bind(this);
+  passableProps = getPassablePropkeyevents(passableProps, formElement);
 
   if (typeof initialValue !== 'string') {
     initialValue = (0, _stringify2.default)(initialValue, null, 2);
   }
   if (!_onChange) {
     _onChange = valueChangeHandler.bind(this, formElement);
-  }
-  if (formElement.onBlur) {
-    var customonBlur = void 0;
-    if (formElement.onBlur.indexOf('func:this.props') !== -1) {
-      customonBlur = this.props[formElement.onBlur.replace('func:this.props.', '')];
-    } else if (formElement.onBlur.indexOf('func:window') !== -1) {
-      customonBlur = window[formElement.onBlur.replace('func:window.', '')].bind(this);
-    }
-    passableProps.onBlur = customonBlur;
   }
 
   return _react2.default.createElement(
@@ -447,7 +452,7 @@ function getFormSelect(options) {
 }
 
 function getFormCheckbox(options) {
-  var _this5 = this;
+  var _this6 = this;
 
   var formElement = options.formElement,
       i = options.i,
@@ -459,9 +464,9 @@ function getFormCheckbox(options) {
     onValueChange = function onValueChange() /*event*/{
       // let text = event.target.value;
       var updatedStateProp = {};
-      updatedStateProp[formElement.name] = _this5.state[formElement.name] ? false : 'on';
+      updatedStateProp[formElement.name] = _this6.state[formElement.name] ? false : 'on';
       // console.log({ updatedStateProp });
-      _this5.setState(updatedStateProp);
+      _this6.setState(updatedStateProp);
     };
   }
 
@@ -484,7 +489,7 @@ function getFormCheckbox(options) {
 }
 
 function getRawInput(options) {
-  var _this6 = this;
+  var _this7 = this;
 
   var formElement = options.formElement,
       i = options.i,
@@ -501,13 +506,16 @@ function getRawInput(options) {
       boxShadow: 'inset 0 1px 2px rgba(17,17,17,.1)'
     }
   }, formElement.wrapperProps);
+  var passableProps = formElement.passProps;
+  var getPassablePropkeyevents = getPassablePropsKeyEvents.bind(this);
+  passableProps = getPassablePropkeyevents(passableProps, formElement);
   if (!onValueChange) {
     onValueChange = function onValueChange() /*event*/{
       // let text = event.target.value;
       var updatedStateProp = {};
-      updatedStateProp[formElement.name] = _this6.state[formElement.name] ? false : 'on';
+      updatedStateProp[formElement.name] = _this7.state[formElement.name] ? false : 'on';
       // console.log({ updatedStateProp });
-      _this6.setState(updatedStateProp);
+      _this7.setState(updatedStateProp);
     };
   }
 
@@ -518,7 +526,7 @@ function getRawInput(options) {
     _react2.default.createElement(
       'div',
       wrapperProps,
-      _react2.default.createElement('input', (0, _extends3.default)({}, formElement.passProps, {
+      _react2.default.createElement('input', (0, _extends3.default)({}, passableProps, {
         type: formElement.type,
         checked: this.state[formElement.name],
         onChange: onValueChange
@@ -529,7 +537,7 @@ function getRawInput(options) {
 }
 
 function getSliderInput(options) {
-  var _this7 = this;
+  var _this8 = this;
 
   var formElement = options.formElement,
       i = options.i,
@@ -568,7 +576,7 @@ function getSliderInput(options) {
       var updatedStateProp = {};
       updatedStateProp[formElement.name] = val;
       // console.log({ updatedStateProp });
-      _this7.setState(updatedStateProp);
+      _this8.setState(updatedStateProp);
     };
   }
   if (formElement.customOnChange) {
@@ -792,7 +800,7 @@ export function getFormEditor(options) {
 
 */
 function getFormSubmit(options) {
-  var _this8 = this;
+  var _this9 = this;
 
   var formElement = options.formElement,
       i = options.i;
@@ -805,7 +813,7 @@ function getFormSubmit(options) {
       _reBulma.Button,
       (0, _extends3.default)({}, formElement.passProps, {
         onClick: function onClick() {
-          formElement.confirmModal ? _this8.props.createModal((0, _assign2.default)({
+          formElement.confirmModal ? _this9.props.createModal((0, _assign2.default)({
             title: 'Please Confirm',
             text: {
               component: 'div',
@@ -831,8 +839,8 @@ function getFormSubmit(options) {
                       color: 'isPrimary'
                     },
                     onClick: function onClick() {
-                      _this8.props.hideModal('last');
-                      _this8.submitForm.call(_this8);
+                      _this9.props.hideModal('last');
+                      _this9.submitForm.call(_this9);
                     },
                     onclickProps: 'last'
                   }, formElement.confirmModal.yesButtonProps),
@@ -852,7 +860,7 @@ function getFormSubmit(options) {
                   children: formElement.confirmModal.noButtonText || 'No'
                 }]
               }]
-            } }, formElement.confirmModal)) : _this8.submitForm.call(_this8);
+            } }, formElement.confirmModal)) : _this9.submitForm.call(_this9);
         } }),
       formElement.value
     )

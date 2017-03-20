@@ -79,7 +79,7 @@ var DynamicLayout = function (_Component) {
           var mergedLayout = (0, _assign2.default)({}, _this2.props.layout, {
             props: (0, _assign2.default)({}, _this2.props.layout.props, item)
           });
-          console.debug({ mergedLayout: mergedLayout });
+          // console.debug({ mergedLayout });
           return _this2.getRenderedComponent(mergedLayout);
         }) : null
       );

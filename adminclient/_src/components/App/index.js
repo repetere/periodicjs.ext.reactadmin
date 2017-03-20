@@ -321,6 +321,9 @@ var Main = function (_Component) {
       } else if (document && document.body && document.body.className) {
         document.body.className = document.body.className += ' __reactadmin_body_loaded';
       }
+      if (document && document.querySelector && document.querySelector('html') && document.querySelector('html').add) {
+        document.querySelector('html').classList.add('__reactadmin_html_loaded');
+      }
     }
   }, {
     key: 'render',

@@ -115,9 +115,13 @@ div[data-reactroot]{
   background-color: #333;
 }
 
-.rc-slider-rail {
-  /*height: 14px;*/
+.__ra_no_border{
+  border:none !important;
 }
+
+/*.rc-slider-rail {
+  height: 14px;
+}*/
 
 .__reactadmin_dp_loading,
 .__reactadmin_dp_loaded{

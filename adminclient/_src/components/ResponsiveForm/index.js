@@ -72,6 +72,19 @@ var _validate3 = _interopRequireDefault(_validate2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// function getCallbackFromString(fetchOptions.successCallback) {
+function getCallbackFromString(successCBProp) {
+  var successCallback = void 0;
+  if (typeof successCBProp === 'string' && successCBProp.indexOf('func:this.props.reduxRouter') !== -1) {
+    successCallback = this.props.reduxRouter[successCBProp.replace('func:this.props.reduxRouter.', '')];
+  } else if (successCBProp.indexOf('func:window') !== -1 && typeof window[successCBProp.replace('func:window.', '')] === 'function') {
+    successCallback = window[successCBProp.replace('func:window.', '')].bind(this);
+  } else {
+    successCallback = this.props[successCBProp.replace('func:this.props.', '')];
+  }
+  return successCallback;
+}
+
 var propTypes = {
   notificationForm: _react.PropTypes.any,
   flattenFormData: _react.PropTypes.bool,
@@ -96,6 +109,8 @@ var defaultProps = {
   flattenFormData: false,
   useFormOptions: false,
   useDynamicData: false,
+  dynamicResponseField: false,
+  dynamicField: false,
   cardForm: false,
   onSubmit: 'func:this.props.debug',
   formgroups: []
@@ -182,6 +197,7 @@ var ResponsiveForm = function (_Component) {
       var hiddenInputs = {};
       var submitFormData = {};
       var formElementFields = [];
+      var getCBFromString = getCallbackFromString.bind(this);
       var addNameToName = function addNameToName(formElm) {
         // console.debug('addNameToName','(formElm.passProps && formElm.passProps.state===isDisabled)',(formElm.passProps && formElm.passProps.state==='isDisabled'),{ formElm });
         // skip if null, or disabled
@@ -334,7 +350,9 @@ var ResponsiveForm = function (_Component) {
             }
           }
           if (fetchOptions.successCallback) {
-            var successCallback = typeof fetchOptions.successCallback === 'string' && fetchOptions.successCallback.indexOf('func:this.props.reduxRouter') !== -1 ? _this2.props.reduxRouter[fetchOptions.successCallback.replace('func:this.props.reduxRouter.', '')] : _this2.props[fetchOptions.successCallback.replace('func:this.props.', '')];
+            var successCallback = getCBFromString(fetchOptions.successCallback);
+            var responseCallback = getCBFromString(fetchOptions.responseCallback);
+
             res.json().then(function (successData) {
               if (fetchOptions.successCallback === 'func:this.props.setDynamicData') {
                 _this2.props.setDynamicData(_this2.props.dynamicField, submitFormData);
@@ -343,6 +361,16 @@ var ResponsiveForm = function (_Component) {
                   _this2.props.setDynamicData(_this2.props.dynamicField, submitFormData);
                 }
                 successCallback(fetchOptions.successProps || successData, submitFormData);
+              }
+              if (responseCallback) {
+                if (fetchOptions.responseCallback === 'func:this.props.setDynamicData') {
+                  _this2.props.setDynamicData(_this2.props.dynamicResponseField, successData);
+                } else {
+                  if (fetchOptions.setDynamicResponseData) {
+                    _this2.props.setDynamicData(_this2.props.dynamicResponseField, successData);
+                  }
+                  responseCallback(successData, submitFormData);
+                }
               }
             });
           } else {

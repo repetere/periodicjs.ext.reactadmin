@@ -125,7 +125,9 @@
                             {
                               "type":"text",
                               "name":"recipe",
-                              "label":"Recipe"
+                              "label":"Recipe",
+                              "submitOnEnter":true,
+                              "keyPress":"func:window.testWindowFunction"
                             },
                             {
                               "type":"select",

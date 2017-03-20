@@ -7,6 +7,18 @@ import { getFormTextInputArea, getFormCheckbox, getFormSubmit, getFormSelect, ge
 import flatten from 'flat';
 import validate from 'validate.js';
 
+// function getCallbackFromString(fetchOptions.successCallback) {
+function getCallbackFromString(successCBProp) {
+  let successCallback;
+  if (typeof successCBProp === 'string' && successCBProp.indexOf('func:this.props.reduxRouter') !== -1) {
+    successCallback = this.props.reduxRouter[ successCBProp.replace('func:this.props.reduxRouter.', '') ];
+  } else if (successCBProp.indexOf('func:window') !== -1 && typeof window[ successCBProp.replace('func:window.', '') ] ==='function'){
+    successCallback= window[ successCBProp.replace('func:window.', '') ].bind(this);
+  } else {
+    successCallback = this.props[ successCBProp.replace('func:this.props.', '') ];
+  }
+  return successCallback;
+}
 
 const propTypes = {
   notificationForm: PropTypes.any,
@@ -35,6 +47,8 @@ const defaultProps = {
   flattenFormData: false,
   useFormOptions: false,
   useDynamicData: false,
+  dynamicResponseField: false,
+  dynamicField: false,
   cardForm: false,
   onSubmit: 'func:this.props.debug',
   formgroups:[],
@@ -123,6 +137,7 @@ class ResponsiveForm extends Component{
     let hiddenInputs = {};
     let submitFormData = {};
     let formElementFields = [];
+    const getCBFromString = getCallbackFromString.bind(this);
     let addNameToName = (formElm) => {
       // console.debug('addNameToName','(formElm.passProps && formElm.passProps.state===isDisabled)',(formElm.passProps && formElm.passProps.state==='isDisabled'),{ formElm });
       // skip if null, or disabled
@@ -286,9 +301,10 @@ class ResponsiveForm extends Component{
             }
           } 
           if (fetchOptions.successCallback) {
-            let successCallback = (typeof fetchOptions.successCallback === 'string' && fetchOptions.successCallback.indexOf('func:this.props.reduxRouter') !== -1)
-              ? this.props.reduxRouter[ fetchOptions.successCallback.replace('func:this.props.reduxRouter.', '') ]
-              : this.props[ fetchOptions.successCallback.replace('func:this.props.', '') ];
+            let successCallback = getCBFromString(fetchOptions.successCallback);
+            let responseCallback = getCBFromString(fetchOptions.responseCallback);
+            
+            
             res.json()
               .then(successData => {
                 if (fetchOptions.successCallback === 'func:this.props.setDynamicData') {
@@ -298,6 +314,16 @@ class ResponsiveForm extends Component{
                     this.props.setDynamicData(this.props.dynamicField, submitFormData);
                   }
                   successCallback(fetchOptions.successProps || successData, submitFormData);
+                }
+                if (responseCallback) {
+                  if (fetchOptions.responseCallback === 'func:this.props.setDynamicData') {
+                    this.props.setDynamicData(this.props.dynamicResponseField, successData);
+                  } else {
+                    if(fetchOptions.setDynamicResponseData){
+                      this.props.setDynamicData(this.props.dynamicResponseField, successData);
+                    }
+                    responseCallback(successData, submitFormData);
+                  }
                 }
               });
           } else {
