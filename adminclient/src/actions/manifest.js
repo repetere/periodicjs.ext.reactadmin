@@ -52,7 +52,7 @@ const manifest = {
       return utilities.loadCacheConfigurations()
         .then(result => {
           hasCached = (result.manifest && result.manifest.authenticated);
-          if (hasCached) dispatch(this.receivedManifestData(result.manifest.authenticated));
+          if (hasCached && !options.skip_cache) dispatch(this.receivedManifestData(result.manifest.authenticated));
           let refreshComponents = state.settings.ui.initialization.refresh_components;
           let pathname = (typeof window !== 'undefined' && window.location.pathname) ? window.location.pathname : this.props.location.pathname;
           let params = (isInitial || refreshComponents) ? `?${ (isInitial) ? 'initial=true&location=' + pathname : '' }${ (refreshComponents) ? ((isInitial) ? '&refresh=true' : 'refresh=true') : '' }` : '';
