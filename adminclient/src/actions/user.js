@@ -440,7 +440,7 @@ const user = {
                   dispatch(this.navigationSuccessResponse(responses.navigation));
                   dispatch(this.preferenceSuccessResponse(responses.preferences));
                   dispatch(manifest.receivedManifestData(responses.manifest.data.settings));
-                  if (isInitial) manifest.fetchManifest(options)(dispatch, getState);
+                  if (isInitial) manifest.fetchManifest(Object.assign(options, { skip_cache: true }))(dispatch, getState);
                   return {
                     data: {
                       versions: response.data.versions,
