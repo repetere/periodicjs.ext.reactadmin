@@ -12,7 +12,7 @@ class AppFooter extends Component {
   }
   render() {
     return (
-      <Nav style={Object.assign(styles.fixedBottom, styles.footerContainer,this.props.settings.ui.footer.navStyle)} className={(this.props.settings.ui.initialization.show_footer || this.props.user.isLoggedIn) ? 'animated fadeInUp Header-Speed' : 'animated slideOutUp Header-Speed'}>
+      <Nav style={Object.assign(styles.fixedBottom, styles.footerContainer,this.props.settings.ui.footer.navStyle)} className={(this.props.settings.ui.initialization.show_footer || this.props.user.isLoggedIn) ? 'animated fadeInUp Header-Speed reactadmin__app_footer' : 'animated slideOutUp Header-Speed reactadmin__app_footer'}>
         {(this.props.ui.components.footer && typeof this.props.ui.components.footer==='object' && this.props.ui.components.footer.layout) 
         ? this.getRenderedComponent(this.props.ui.components.footer.layout)
         : (<Container>

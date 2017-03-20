@@ -44,7 +44,9 @@ var handleTable = function (label, data) {
 
 var buildInputComponent = function (label, type, schema, options) {
   // console.log('buildInputComponent',{ label, type, schema, });
-  // console.log('buildInputComponent','schema.entitytype',schema.entitytype,{ label, type,  });
+  // if (schema && schema.entitytype && schema.entitytype.default && schema.entitytype.default==='credit_engine'){
+  //   console.log('buildInputComponent', 'schema.entitytype', schema.entitytype, { label, type, });
+  // }
 
   let schema_entity_type = (schema && schema.entitytype && schema.entitytype.default)
     ? schema.entitytype.default
@@ -53,98 +55,78 @@ var buildInputComponent = function (label, type, schema, options) {
     ? options.extsettings.extension_overrides.customEntitytypeElements[ schema_entity_type ]
     : false;
 
-  // if (schema && schema.entitytype && schema.entitytype.default && schema.entitytype.default==='credit_engine') {
-  //   console.log('schema.entitytype.default', schema.entitytype.default, {label, type, schema_entity_type,customEntitytypeElement});
+  let customInput = (schema_entity_type && customEntitytypeElement && customEntitytypeElement[ label ])
+    ? customEntitytypeElement[ label ]
+    : {};
+  // console.log({customInput})
+  
+  let input = {
+    type: (['text', 'boolean', 'id', '_id', ].indexOf(type) !== -1) ? 'text' : type,
+    label: capitalize.words(label.replace(/_/g, ' ')),
+    labelProps: {
+      style: {
+        flex:3,
+      },
+    },
+    name: (type==='_id' &&(label==='id'||label==='_id')) ? '_id': label.replace(/\s/g, '.'),
+    layoutProps: {
+      horizontalform: true,
+    },
+  };
+  if ((customInput && customInput.type && customInput.type==='datalist') || (type === '_id' || type==='array' ) && (schema && schema[label])) {
+
+    let usablePrefix = helpers.getDataPrefix(options.prefix);
+    let manifestPrefix = helpers.getManifestPathPrefix(options.prefix);
     
-  // }  
+    let entity = helpers.getSchemaEntity({ schema, label, });
+    // console.log(label,'entity',entity,'schema[label].length',schema[label].length,'schema[label]',schema[label]);
 
-  if (schema_entity_type && customEntitytypeElement && customEntitytypeElement[ label ]) {
-    let customInput = customEntitytypeElement[ label ];
-    if (!customInput.label) {
-      customInput.label = capitalize.words(label.replace(/_/g, ' '));
-    }
-    // customInput.labelProps = {
-    //   style: {
-    //     flex:3,
-    //   },
-    // };
-    // customInput.layoutProps = {
-    //   horizontalform: true,
-    // };
-    return customInput;
-  }
-  else {
-    let input = {
-      type: (['text', 'boolean', 'id', '_id', ].indexOf(type) !== -1) ? 'text' : type,
-      label: capitalize.words(label.replace(/_/g, ' ')),
-      labelProps: {
-        style: {
-          flex:3,
-        },
-      },
-      name: (type==='_id' &&(label==='id'||label==='_id')) ? '_id': label.replace(/\s/g, '.'),
-      layoutProps: {
-        horizontalform: true,
-      },
+    input.type = 'datalist';
+    input.placeholder=`${capitalize(label)} › ${entity}`;
+    input.datalist = {
+      selector: '_id',
+      displayField: 'title',
+      multi: (type === 'array') ? true : false,
+      field:label,
+      dbname: options.dbname ||'periodic',
+      entity: entity.toLowerCase(),
+      resourcePreview: `${manifestPrefix}/${pluralize(entity.toLowerCase())}`,
+      resourceUrl: `${options.extsettings.basename}${usablePrefix}/${pluralize(entity.toLowerCase())}/?format=json`,
     };
-    if ((type === '_id' || type==='array') && (schema && schema[label])) {
-
-      let usablePrefix = helpers.getDataPrefix(options.prefix);
-      let manifestPrefix = helpers.getManifestPathPrefix(options.prefix);
-      // console.log('-----','-----','-----','-----');
-      // if(!schema || !schema[label]){
-      //   console.log('missing label schema',label,schema);
-      // }
-      // console.log('schema[label]',schema[label]);
-      let entity = helpers.getSchemaEntity({ schema, label, });
-      // console.log(label,'entity',entity,'schema[label].length',schema[label].length,'schema[label]',schema[label]);
-
-
-      input.type = 'datalist';
-      input.placeholder=`${capitalize(label)} › ${entity}`;
-      input.datalist = {
-        selector: '_id',
-        displayField: 'title',
-        multi: (type === 'array') ? true : false,
-        field:label,
-        dbname: options.dbname ||'periodic',
-        entity: entity.toLowerCase(),
-        resourcePreview: `${manifestPrefix}/${pluralize(entity.toLowerCase())}`,
-        resourceUrl: `${options.extsettings.basename}/${usablePrefix}/${pluralize(entity.toLowerCase())}/?format=json`,
-      };
-    }
-    if (type === 'boolean') {
-      input.type = 'select';
-      input.options = [
-        {
-          'label': 'True',
-          'value': 'true',
-        },
-        {
-          'label': 'False',
-          'value': 'false',
-        },
-      ];
-    }
-    if (label === 'entitytype' || label === 'createdat' || label === 'updatedat' || label === 'publishat') {
-      input.passProps = {
-        state: 'isDisabled',
-      };
-    }
-    if (label === 'entitytype') {
-      input.passProps = {
-        state: 'isDisabled',
-      };
-    }
-    if(schema && label && schema[label] && schema[label].default){
-      input.value = schema[label].default;
-    }
-    // if(schema && label && schema[label] && label === 'entitytype' ){
-    //   console.log('schema[label]',schema[label],schema[label].default);
+    // if(!schema || !schema[label]){
+    //   console.log('missing label schema',label,schema);
     // }
-    return input;
+  }
+  if (type === 'boolean') {
+    input.type = 'select';
+    input.options = [
+      {
+        'label': 'True',
+        'value': 'true',
+      },
+      {
+        'label': 'False',
+        'value': 'false',
+      },
+    ];
+  }
+  if (label === 'entitytype' || label === 'createdat' || label === 'updatedat' || label === 'publishat') {
+    input.passProps = {
+      state: 'isDisabled',
+    };
+  }
+  if (label === 'entitytype') {
+    input.passProps = {
+      state: 'isDisabled',
+    };
+  }
+  if(schema && label && schema[label] && schema[label].default){
+    input.value = schema[label].default;
   }
   
+  input = Object.assign({}, input, customInput);
+  
+  return input;
 };
 
 var handleFormElements = function (label, value, schema, options) {

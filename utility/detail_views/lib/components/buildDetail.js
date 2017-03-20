@@ -15,7 +15,7 @@ const buildDetail = function (schema, label, options = {}, newEntity) {
   }
   let elems = [];
   // let usablePrefix = helpers.getDataPrefix(options.prefix);
-  let usablePrefix = helpers.getDataPrefix(options.prefix,undefined,schema,label,options);
+  let usablePrefix = helpers.getDataPrefix(options.prefix, undefined, schema, label, options);
 
   let manifestPrefix = helpers.getManifestPathPrefix(options.prefix);
   let top = {
@@ -44,7 +44,10 @@ const buildDetail = function (schema, label, options = {}, newEntity) {
           'form_val':'_id',
         },
       ],
-      flattenFormData:true,
+      flattenFormData: true,
+      flattenDataOptions: {
+        maxDepth: 2,
+      },
       marginBottom: 30,
       footergroups: [],
       formgroups: [
@@ -58,7 +61,7 @@ const buildDetail = function (schema, label, options = {}, newEntity) {
           formElements: [{
             formGroupElementsLeft: [],
             formGroupElementsRight: [],	
-          },],
+          }, ],
         },
       ],
     },
@@ -66,7 +69,7 @@ const buildDetail = function (schema, label, options = {}, newEntity) {
   let formElements = top.props.formgroups[0].formElements;
   let result = [ top, ];
   let index = 0;
-  let flattenedSchema = flatten(schema,{maxDepth:2});
+  let flattenedSchema = flatten(schema, { maxDepth:2 ,});
   for (let key in schema) {
     let data = (schema[ key ] && schema[ key ].type && DICTIONARY[ Symbol.for(schema[ key ].type) ])
       ? schema[ key ].type
@@ -76,7 +79,7 @@ const buildDetail = function (schema, label, options = {}, newEntity) {
       // console.log({ key, data, type, });
     }
     elems.push({ key, label, type, data, });
-    if ([ '_id', 'id', 'content', 'title', 'name', 'authors', 'primaryauthor', 'status', 'description', 'changes', 'tags', 'categories', 'contenttypes','assets','primaryasset', ].indexOf(key) !== -1) {
+    if ([ '_id', 'id', 'content', 'title', 'name', 'authors', 'primaryauthor', 'status', 'description', 'changes', 'tags', 'categories', 'contenttypes', 'assets', 'primaryasset', ].indexOf(key) !== -1) {
       // console.log({ key, schema });
     } else if (type || (data && Array.isArray(data))) {
       if(data && Array.isArray(data)) {
@@ -95,36 +98,6 @@ const buildDetail = function (schema, label, options = {}, newEntity) {
   }
   result[ 0 ].props.formgroups.splice(0, 0, publishOptions.publishBasic(schema, label, options, newEntity));
   result[ 0 ].props.formgroups.push(publishOptions.publishAttributes(schema, label, options));
-
-//   result.push(
-//     // {
-//     //   component: 'pre',
-//     //   props: {
-//     //     style: {
-//     //       border: '1px solid black',
-//     //     },
-//     //   },
-//     //   children: 'label: '+JSON.stringify(label, null, 2),
-//     // },
-//     {
-//       component: 'pre',
-//       props: {
-//         style: {
-//           border: '1px solid black',
-//         },
-//       },
-//       children: 'schema: '+JSON.stringify(schema, null, 2),
-//     }
-//     // {
-//     //   component: 'pre',
-//     //   props: {
-//     //     style: {
-//     //       border: '1px solid black',
-//     //     },
-//     //   },
-//     //   children: 'elems: '+JSON.stringify(elems, null, 2),
-//     // }
-//   );
   
   return result;
 };
