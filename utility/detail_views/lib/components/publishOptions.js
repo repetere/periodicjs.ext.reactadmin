@@ -27,7 +27,7 @@ exports.id = _id;
 
 function _dataList(schema, label, options, type) {
   let entity = helpers.getSchemaEntity({ schema, label, });
-  let usablePrefix = helpers.getDataPrefix(options.prefix,undefined,schema, label, options);
+  let usablePrefix = helpers.getDataPrefix(options.prefix, undefined, schema, label, options);
   let manifestPrefix = helpers.getManifestPathPrefix(options.prefix);
 
   return {
@@ -279,7 +279,7 @@ function _assetpreview() {
 }
 
 function _publishButtons (schema, label, options = {}, newEntity) {
-  let usablePrefix = helpers.getDataPrefix(options.prefix,undefined,schema, label, options);
+  let usablePrefix = helpers.getDataPrefix(options.prefix, undefined, schema, label, options);
   let manifestPrefix = helpers.getManifestPathPrefix(options.prefix);
   return {
     label: ' ',
@@ -397,29 +397,33 @@ function getPublishOptions(schema, label, options, newEntity) {
 exports.getPublishOptions = getPublishOptions;
 
 function getContentOptions(schema, label, options) {
+  let customIgnoreFields = helpers.getCustomEntityIgnoreFields(schema, label, options);  
+  if (customIgnoreFields) {
+    console.log('getContentOptions', { customIgnoreFields, });
+  }
   let contentItems = [];
-  if (schema.fileurl) {
+  if (schema.fileurl && customIgnoreFields.indexOf('fileurl') === -1) {
     contentItems.push(_assetpreview(schema, label, options));
   }
-  if (schema.title) {
+  if (schema.title && customIgnoreFields.indexOf('title') === -1) {
     contentItems.push(_title());
   }
-  if (schema.content) {
+  if (schema.content && customIgnoreFields.indexOf('content') === -1) {
     contentItems.push(_content());
   }
-  if (schema.tags) {
+  if (schema.tags && customIgnoreFields.indexOf('tags') === -1) {
     contentItems.push(_dataList(schema, 'tags', options, 'array', true));
   }
-  if (schema.categories) {
+  if (schema.categories && customIgnoreFields.indexOf('categories') === -1) {
     contentItems.push(_dataList(schema, 'categories', options, 'array', true));
   }
-  if (schema.contenttypes) {
+  if (schema.contenttypes && customIgnoreFields.indexOf('contenttypes') === -1) {
     contentItems.push(_dataList(schema, 'contenttypes', options, 'array', true));
   }
-  if (schema.primaryasset) {
+  if (schema.primaryasset && customIgnoreFields.indexOf('primaryasset') === -1) {
     contentItems.push(_dataList(schema, 'primaryasset', options, '_id', true));
   }
-  if (schema.assets) {
+  if (schema.assets && customIgnoreFields.indexOf('assets') === -1) {
     contentItems.push(_dataList(schema, 'assets', options, 'array', true));
   }
   return contentItems;
@@ -430,6 +434,7 @@ exports.publishBasic = function _publishBasic(schema, label, options = {}, newEn
   // console.log({ schema });
   let contentItems = getContentOptions(schema, label, options);
   let pubOptions = getPublishOptions(schema, label, options, newEntity);
+  let customCardProps = helpers.getCustomCardProps(options);   
 
   let publishBasic = {
     gridProps: {
@@ -449,22 +454,22 @@ exports.publishBasic = function _publishBasic(schema, label, options = {}, newEn
           display:'flex',
         },
       },
-      leftCardProps: {
+      leftCardProps: Object.assign({}, customCardProps, {
         cardTitle: 'Content',
         cardStyle: {
           style: {
             marginBottom:0,
           },
         },
-      },
-      rightCardProps: {
+      }),
+      rightCardProps: Object.assign({}, customCardProps, {
         cardTitle: 'Publish Options',
         cardStyle: {
           style: {
             marginBottom:0,
           },
         },
-      },
+      }),
     },
     formElements: [
       {
@@ -477,7 +482,7 @@ exports.publishBasic = function _publishBasic(schema, label, options = {}, newEn
   return publishBasic;
 };
 exports.publishAttributes = function _publishAtrributes(schema, label, options = {}) {
-
+  let customCardProps = helpers.getCustomCardProps(options);  
   let publishAttributesBasic = {
     gridProps: {
       isMultiline: false,
@@ -496,22 +501,22 @@ exports.publishAttributes = function _publishAtrributes(schema, label, options =
           display:'flex',
         },
       },
-      leftCardProps: {
+      leftCardProps: Object.assign({}, customCardProps, {
         cardTitle: 'Attributes',
         cardStyle: {
           style: {
             marginBottom:0,
           },
         },
-      },
-      rightCardProps: {
+      }),
+      rightCardProps: Object.assign({}, customCardProps, {
         cardTitle: 'Extension Attributes',
         cardStyle: {
           style: {
             marginBottom:0,
           },
         },
-      },
+      }),
     },
     formElements: [
       {
@@ -537,5 +542,3 @@ exports.publishAttributes = function _publishAtrributes(schema, label, options =
 
   return publishAttributesBasic;
 };
-
-

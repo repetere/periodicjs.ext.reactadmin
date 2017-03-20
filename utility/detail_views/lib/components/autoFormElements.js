@@ -18,7 +18,7 @@ var generateTableElement = function (label, data) {
   else {
     if (elem !== null && elem !== undefined) {
       elem = (elem && elem.type && DICTIONARY[Symbol.for(elem.type)]) ? elem.type : elem;
-      if (DICTIONARY[Symbol.for(elem)]) return [{ label: 'values', },];
+      if (DICTIONARY[Symbol.for(elem)]) return [{ label: 'values', }, ];
       else return Object.keys(elem).reduce((result, key) => {
         result.push({ label: key, });
         return result;
@@ -27,12 +27,15 @@ var generateTableElement = function (label, data) {
   }
 };
 
-var handleTable = function (label, data) {
+var handleTable = function (label, data, schema, options) {
+  let customCardProps = (options && options.extsettings && options.extsettings.extension_overrides && options.extsettings.extension_overrides.customCardProps)
+  ? options.extsettings.extension_overrides.customCardProps
+  : {};  
   return {
     component: 'ResponsiveCard',
-    props: {
+    props:  Object.assign(customCardProps, {
       cardTitle: pluralize(label),
-    },
+    }),
     children: [{
       component: 'ResponsiveTable',
       props: {
@@ -145,16 +148,19 @@ var handleFormElements = function (label, value, schema, options) {
   // }
   if (type && type !== 'array' && !Array.isArray(value)) return buildInputComponent(label, type, schema, options);  
   else if (value && typeof value === 'object' && !Array.isArray(value)) return buildFormGroup(label, value);
-  else if (Array.isArray(value)) return handleTable(label, value);
+  else if (Array.isArray(value)) return handleTable(label, value, schema, options);
 };
 
 var buildFormGroup = function (label, data, isRoot = false, schema, options) {
+  let customCardProps = (options && options.extsettings && options.extsettings.extension_overrides && options.extsettings.extension_overrides.customCardProps)
+  ? options.extsettings.extension_overrides.customCardProps
+  : {};  
   return {
     card: {
       twoColumns: isRoot,
-      props: {
+      props: Object.assign(customCardProps, {
         cardTitle: `${ capitalize.words(label) }`,
-      },
+      }),
     },
     formElements: (isRoot) ? Object.keys(data).reduce((result, key, index) => {
       result[0] = result[0] || {

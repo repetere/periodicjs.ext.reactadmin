@@ -16,8 +16,29 @@ exports.getDataPrefix = function (prefix, dbname = 'periodic', schema, label, op
   } else if (!prefix || typeof prefix !== 'string') {
     return `contentdata/${customDBName}`;
   } else {
-    return prefix.replace('/content', `/contentdata/${customDBName}`).replace('//', '/');
+    return prefix.replace('/content', `/contentdata/${customDBName}`).replace('//','/');
   }
+};
+
+exports.getCustomEntityIgnoreFields = function (schema, label, options) {
+  let customIgnoreFields = (options && options.extsettings && options.extsettings.extension_overrides && options.extsettings.extension_overrides.ignoreEntityFields && options.extsettings.extension_overrides.ignoreEntityFields[ label ])
+    ? options.extsettings.extension_overrides.ignoreEntityFields[ label ]
+    : [];
+  return customIgnoreFields;
+};
+
+exports.getCustomFormGroups = function (schema, label, options) {
+  let customFormGroups = (options && options.extsettings && options.extsettings.extension_overrides && options.extsettings.extension_overrides.customFormgroups && options.extsettings.extension_overrides.customFormgroups[ label ])
+    ? options.extsettings.extension_overrides.customFormgroups[ label ]
+    : null;
+  return customFormGroups;
+};
+
+exports.getCustomCardProps = function (options) {
+  let customCardProps = (options && options.extsettings && options.extsettings.extension_overrides && options.extsettings.extension_overrides.customCardProps)
+    ? options.extsettings.extension_overrides.customCardProps
+    : {};
+  return customCardProps;
 };
 
 exports.getManifestPathPrefix = function (prefix, dbname ='periodic') {

@@ -62,12 +62,9 @@ module.exports = function (schemas, label, options) {
             children: tabs.map(tab => {
               return getTabComponent(tab, label);
             }),
-            props: {
-            
-            },
           },
         ],
-      }, ]
-    }, ]
+      }, ],
+    }, ],
   };
 };

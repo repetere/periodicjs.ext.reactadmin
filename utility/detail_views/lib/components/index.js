@@ -18,7 +18,7 @@ pluralize.addIrregularRule('data', 'datas');
  * @param {*} options 
  */
 const constructDetail = function (schema, label, options = {}, newEntity) {
-  let usablePrefix = helpers.getDataPrefix(options.prefix,undefined,schema,label,options);
+  let usablePrefix = helpers.getDataPrefix(options.prefix, undefined, schema, label, options);
   // console.log({ label, usablePrefix });
   // console.log({usablePrefix,label},`${(usablePrefix.charAt(0)!=='/')?'/'+usablePrefix:usablePrefix}/${pluralize(label)}/:id?format=json`);
   return {
@@ -63,6 +63,7 @@ const constructDetail = function (schema, label, options = {}, newEntity) {
                     border: 'none',
                     fontSize: 14,
                   },
+                  className:'__ra_no_border',
                 },
                 tabs: [
                   {
@@ -100,7 +101,7 @@ const constructDetail = function (schema, label, options = {}, newEntity) {
  */
 const constructIndex = function (schema, label, options = {}) {
   // console.log('constructIndex', { schema, label, options })
-  let usablePrefix = helpers.getDataPrefix(options.prefix,undefined,schema,label,options);
+  let usablePrefix = helpers.getDataPrefix(options.prefix, undefined, schema, label, options);
   let manifestPrefix = helpers.getManifestPathPrefix(options.prefix);
   // console.log({ label, usablePrefix });
   return {

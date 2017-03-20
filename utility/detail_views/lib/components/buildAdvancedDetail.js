@@ -7,9 +7,9 @@ const pluralize = require('pluralize');
 const publishOptions = require('./publishOptions');
 pluralize.addIrregularRule('data', 'datas');
 
-const buildAdvancedDetail = function (schema, label, options = {},newEntity) {
-  // let usablePrefix = helpers.getDataPrefix(options.prefix);
-  let usablePrefix = helpers.getDataPrefix(options.prefix,undefined,schema,label,options);
+const buildAdvancedDetail = function (schema, label, options = {}, newEntity) {
+  let customCardProps = helpers.getCustomCardProps(options);  
+  let usablePrefix = helpers.getDataPrefix(options.prefix, undefined, schema, label, options);
 
   // let manifestPrefix = helpers.getManifestPathPrefix(options.prefix);
   let top = {
@@ -56,12 +56,12 @@ const buildAdvancedDetail = function (schema, label, options = {},newEntity) {
             rightDoubleCardColumn: {
               size:'isOneThird',
             },
-            leftCardProps: {
-              cardTitle: `${ capitalize(label) }`,
-            },
-            rightCardProps: {
+            leftCardProps: Object.assign({}, customCardProps, {
+              cardTitle:  `${ capitalize(label) }`,
+            }),
+            rightCardProps: Object.assign({}, customCardProps, {
               cardTitle: 'Publish Options',
-            },
+            }),
           },
           formElements: [
             {
