@@ -398,9 +398,9 @@ exports.getPublishOptions = getPublishOptions;
 
 function getContentOptions(schema, label, options) {
   let customIgnoreFields = helpers.getCustomEntityIgnoreFields(schema, label, options);  
-  if (customIgnoreFields) {
-    console.log('getContentOptions', { customIgnoreFields, });
-  }
+  // if (customIgnoreFields) {
+  //   console.log('getContentOptions', { customIgnoreFields, });
+  // }
   let contentItems = [];
   if (schema.fileurl && customIgnoreFields.indexOf('fileurl') === -1) {
     contentItems.push(_assetpreview(schema, label, options));

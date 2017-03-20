@@ -19,17 +19,21 @@ pluralize.addIrregularRule('data', 'datas');
  */
 const constructDetail = function (schema, label, options = {}, newEntity) {
   let usablePrefix = helpers.getDataPrefix(options.prefix, undefined, schema, label, options);
-  // console.log({ label, usablePrefix });
-  // console.log({usablePrefix,label},`${(usablePrefix.charAt(0)!=='/')?'/'+usablePrefix:usablePrefix}/${pluralize(label)}/:id?format=json`);
+  let customPageData = helpers.getExtensionOverride('customDetailPageData', schema, label, options);
+  let customTabs = helpers.getExtensionOverride('customDetailTabs', schema, label, options);
+  let customHeader = helpers.getExtensionOverride('customDetailHeader', schema, label, options);
+
   return {
     resources: (newEntity)?undefined: {
       [ helpers.getDetailLabel(label) ]: `${(usablePrefix.charAt(0)!=='/')?'/'+usablePrefix:usablePrefix}/${pluralize(label)}/:id?format=json`,
     },
     onFinish:'render',
-    pageData:{
-      title:`Content › ${pluralize(capitalize(label))}`,
-      navLabel:`Content › ${pluralize(capitalize(label))}`,
-    },
+    pageData: (customPageData)
+      ? customPageData
+      : {
+        title:`Content › ${pluralize(capitalize(label))}`,
+        navLabel:`Content › ${pluralize(capitalize(label))}`,
+      },
     layout: {
       component:'div',
       props:{
@@ -39,7 +43,8 @@ const constructDetail = function (schema, label, options = {}, newEntity) {
         },
       },
       children: [
-        contenttabs(schema, label, options),
+        customHeader,
+        (customTabs)?customTabs:contenttabs(schema, label, options),
         {
           component: 'Container',
           props: {
@@ -103,16 +108,22 @@ const constructIndex = function (schema, label, options = {}) {
   // console.log('constructIndex', { schema, label, options })
   let usablePrefix = helpers.getDataPrefix(options.prefix, undefined, schema, label, options);
   let manifestPrefix = helpers.getManifestPathPrefix(options.prefix);
+  let customPageData = helpers.getExtensionOverride('customIndexPageData', schema, label, options);
+  let customTabs = helpers.getExtensionOverride('customIndexTabs', schema, label, options);
+  let customHeader = helpers.getExtensionOverride('customIndexHeader', schema, label, options);
+  
   // console.log({ label, usablePrefix });
   return {
     resources: {
       [ helpers.getIndexLabel(label) ]:  `${(usablePrefix.charAt(0)!=='/')?'/'+usablePrefix:usablePrefix}/${pluralize(label)}?format=json`,
     },
     onFinish:'render',
-    pageData:{
-      title:`Content › ${pluralize(capitalize(label))}`,
-      navLabel:`Content › ${pluralize(capitalize(label))}`,
-    },
+    pageData: (customPageData)
+      ? customPageData
+      : {
+        title:`Content › ${pluralize(capitalize(label))}`,
+        navLabel:`Content › ${pluralize(capitalize(label))}`,
+      },
     layout: {
       component: 'div',
       props: {
@@ -122,7 +133,8 @@ const constructIndex = function (schema, label, options = {}) {
         },
       },
       children: [
-        contenttabs(schema, label, options),
+        customHeader,
+        (customTabs)?customTabs:contenttabs(schema, label, options),
         {
           component: 'Container',
           props: {

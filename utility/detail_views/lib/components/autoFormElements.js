@@ -33,7 +33,7 @@ var handleTable = function (label, data, schema, options) {
   : {};  
   return {
     component: 'ResponsiveCard',
-    props:  Object.assign(customCardProps, {
+    props:  Object.assign({}, customCardProps, {
       cardTitle: pluralize(label),
     }),
     children: [{
@@ -158,7 +158,7 @@ var buildFormGroup = function (label, data, isRoot = false, schema, options) {
   return {
     card: {
       twoColumns: isRoot,
-      props: Object.assign(customCardProps, {
+      props: Object.assign({},customCardProps, {
         cardTitle: `${ capitalize.words(label) }`,
       }),
     },

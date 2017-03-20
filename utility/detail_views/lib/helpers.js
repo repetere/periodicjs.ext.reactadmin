@@ -16,7 +16,7 @@ exports.getDataPrefix = function (prefix, dbname = 'periodic', schema, label, op
   } else if (!prefix || typeof prefix !== 'string') {
     return `contentdata/${customDBName}`;
   } else {
-    return prefix.replace('/content', `/contentdata/${customDBName}`).replace('//','/');
+    return prefix.replace('/content', `/contentdata/${customDBName}`).replace('//', '/');
   }
 };
 
@@ -34,9 +34,30 @@ exports.getCustomFormGroups = function (schema, label, options) {
   return customFormGroups;
 };
 
+exports.getCustomIndexTableHeaders = function (schema, label, options) {
+  let customIndexTable = (options && options.extsettings && options.extsettings.extension_overrides && options.extsettings.extension_overrides.customIndexTables && options.extsettings.extension_overrides.customIndexTables[ label ])
+    ? options.extsettings.extension_overrides.customIndexTables[ label ]
+    : false;
+  return customIndexTable;
+};
+
+exports.getCustomIndexTableProps = function (schema, label, options) {
+  let customIndexTableProps = (options && options.extsettings && options.extsettings.extension_overrides && options.extsettings.extension_overrides.customIndexTableProps && options.extsettings.extension_overrides.customIndexTableProps[ label ])
+    ? options.extsettings.extension_overrides.customIndexTableProps[ label ]
+    : false;
+  return customIndexTableProps;
+};
+
+exports.getExtensionOverride = function (field, schema, label, options, defaultReturn = null) {
+  let extOverride = (options && options.extsettings && options.extsettings.extension_overrides && options.extsettings.extension_overrides[field] && options.extsettings.extension_overrides[field][ label ])
+    ? options.extsettings.extension_overrides[field][ label ]
+    : defaultReturn;
+  return extOverride;
+};
+
 exports.getCustomCardProps = function (options) {
   let customCardProps = (options && options.extsettings && options.extsettings.extension_overrides && options.extsettings.extension_overrides.customCardProps)
-    ? options.extsettings.extension_overrides.customCardProps
+    ? Object.assign({}, options.extsettings.extension_overrides.customCardProps)
     : {};
   return customCardProps;
 };

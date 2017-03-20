@@ -67,8 +67,13 @@ exports.getDefaultHeaders = getDefaultHeaders;
 
 const getTableHeader = function _getTableHeader(schemas, label, options) {
   // console.log({ options });
-  if(options.extsettings.data_tables && options.extsettings.data_tables[options.dbname] && options.extsettings.data_tables[options.dbname][label]) {
-    return options.extsettings.data_tables[options.dbname][label].map(header=>header.call(null, schemas, label, options))
+  let customIndexHeader = helpers.getCustomIndexTableHeaders(schemas, label, options);
+  if (customIndexHeader) {
+    let customheaders = customIndexHeader.map(header => header.call(null, schemas, label, options));
+    // console.log({ customheaders });
+    return customheaders;
+  } else if(options.extsettings.data_tables && options.extsettings.data_tables[options.dbname] && options.extsettings.data_tables[options.dbname][label]) {
+    return options.extsettings.data_tables[options.dbname][label].map(header=>header.call(null, schemas, label, options));
   } else {
     return getDefaultHeaders(schemas, label, options);
   }
@@ -76,7 +81,10 @@ const getTableHeader = function _getTableHeader(schemas, label, options) {
 exports.getTableHeader = getTableHeader;
 
 const getTableProps = function _getTableProps(schemas, label, options) {
-  if(options.extsettings.data_table_props && options.extsettings.data_table_props[options.dbname] && options.extsettings.data_table_props[options.dbname][label]) {
+  let customIndexTableProps = helpers.getCustomIndexTableProps(schemas, label, options);
+  if (customIndexTableProps) {
+    return customIndexTableProps;
+  } else if(options.extsettings.data_table_props && options.extsettings.data_table_props[options.dbname] && options.extsettings.data_table_props[options.dbname][label]) {
     return options.extsettings.data_table_props[ options.dbname ][ label ];
   } else {
     return {};
@@ -85,7 +93,8 @@ const getTableProps = function _getTableProps(schemas, label, options) {
 exports.getTableProps = getTableProps;
 
 module.exports = function (schemas, label, options) {
-  let usablePrefix = helpers.getDataPrefix(options.prefix,undefined,schemas, label, options);
+  let usablePrefix = helpers.getDataPrefix(options.prefix, undefined, schemas, label, options);
+  let customCardProps = helpers.getCustomCardProps(options);  
   return [
     // {
     //   component: 'pre',
@@ -93,9 +102,9 @@ module.exports = function (schemas, label, options) {
     // },
     {
       component: 'ResponsiveCard',
-      props: {
+      props: Object.assign({}, customCardProps, {
         cardTitle: `All ${capitalize(pluralize(label))}`,
-      },
+      }),
       children: [
         {
           component: 'ResponsiveTable',
