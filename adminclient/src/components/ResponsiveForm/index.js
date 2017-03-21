@@ -302,7 +302,9 @@ class ResponsiveForm extends Component{
           } 
           if (fetchOptions.successCallback) {
             let successCallback = getCBFromString(fetchOptions.successCallback);
-            let responseCallback = getCBFromString(fetchOptions.responseCallback);
+            let responseCallback = (fetchOptions.responseCallback)
+              ? getCBFromString(fetchOptions.responseCallback)
+              : false;
             
             
             res.json()
