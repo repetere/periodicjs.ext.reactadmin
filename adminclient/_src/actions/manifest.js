@@ -80,7 +80,7 @@ var manifest = {
         return _util2.default.fetchComponent(basename + '/load/manifest' + params, options)();
       }).then(function (response) {
         dispatch(_this.receivedManifestData(response.data.settings));
-        if (isInitial) _util2.default.fetchComponent(basename + '/load/manifest', options)();
+        if (isInitial) _this.fetchManifest((0, _assign2.default)(options, { skip_cache: true }))(dispatch, getState);
         return response;
       }, function (e) {
         if (!hasCached) dispatch(_this.failedManifestRetrival(e));
@@ -107,7 +107,7 @@ var manifest = {
         return _util2.default.fetchComponent(basename + '/load/public_manifest' + (isInitial ? '?initial=true&location=' + pathname : ''))();
       }).then(function (response) {
         dispatch(_this2.unauthenticatedReceivedManifestData(response.data.settings));
-        if (isInitial) _util2.default.fetchComponent(basename + '/load/public_manifest')({ skip_cache: true });
+        if (isInitial) _this2.fetchUnauthenticatedManifest({ skip_cache: true })(dispatch, getState);
         return response;
       }, function (e) {
         if (!hasCached) dispatch(_this2.unauthenticatedFailedManifestRetrival(e));
