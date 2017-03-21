@@ -104,7 +104,7 @@ const buildDetail = function (schema, label, options = {}, newEntity) {
     if (typeof customFormGroups === 'function') {
       result[ 0 ].props.formgroups.push(...customFormGroups(schema, label, options, newEntity));
     } else {
-      result[ 0 ].props.formgroups.push(customFormGroups);
+      result[ 0 ].props.formgroups.push(...customFormGroups);
     }
   }
   result[ 0 ].props.formgroups.push(publishOptions.publishAttributes(schema, label, options));
