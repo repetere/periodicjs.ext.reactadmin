@@ -56,19 +56,19 @@ const manifest = {
           let refreshComponents = state.settings.ui.initialization.refresh_components;
           let pathname = (typeof window !== 'undefined' && window.location.pathname) ? window.location.pathname : this.props.location.pathname;
           let params = (isInitial || refreshComponents) ? `?${ (isInitial) ? 'initial=true&location=' + pathname : '' }${ (refreshComponents) ? ((isInitial) ? '&refresh=true' : 'refresh=true') : '' }` : '';
-          return utilities.fetchComponent(`${ basename }/load/manifest${ params }`, options)()
+          return utilities.fetchComponent(`${ basename }/load/manifest${ params }`, options)();
         })
         .then(response => {
           dispatch(this.receivedManifestData(response.data.settings));
-          if (isInitial) utilities.fetchComponent(`${ basename }/load/manifest`, options)()
+          if (isInitial) utilities.fetchComponent(`${ basename }/load/manifest`, options)();
           return response;
         }, e => {
-          if (!hasCached) dispatch(this.failedManifestRetrival(e))
+          if (!hasCached) dispatch(this.failedManifestRetrival(e));
         });
     };
     return utilities.setCacheConfiguration(manifestAction, 'manifest.authenticated');
   },
-  fetchUnauthenticatedManifest () {
+  fetchUnauthenticatedManifest(options = {}) {
     let unauthenticatedManifestAction = (dispatch, getState) => {
       dispatch(this.unauthenticatedManifestRequest());
       let state = getState();
@@ -79,16 +79,16 @@ const manifest = {
       return utilities.loadCacheConfigurations()
         .then(result => {
           hasCached = (result.manifest && result.manifest.unauthenticated);
-          if (hasCached) dispatch(this.unauthenticatedReceivedManifestData(result.manifest.unauthenticated));
+          if (hasCached && !options.skip_cache) dispatch(this.unauthenticatedReceivedManifestData(result.manifest.unauthenticated));
           let pathname = (typeof window!== 'undefined' && window.location.pathname) ? window.location.pathname : this.props.location.pathname;
-          return utilities.fetchComponent(`${basename}/load/public_manifest${ (isInitial) ? '?initial=true&location=' + pathname : '' }`)()
+          return utilities.fetchComponent(`${basename}/load/public_manifest${ (isInitial) ? '?initial=true&location=' + pathname : '' }`)();
         })
         .then(response => {
           dispatch(this.unauthenticatedReceivedManifestData(response.data.settings));
-          if (isInitial) utilities.fetchComponent(`${basename}/load/public_manifest`)()
+          if (isInitial) utilities.fetchComponent(`${basename}/load/public_manifest`)({ skip_cache:true, });
           return response;
         }, e => {
-          if (!hasCached) dispatch(this.unauthenticatedFailedManifestRetrival(e))
+          if (!hasCached) dispatch(this.unauthenticatedFailedManifestRetrival(e));
         });
     };
     return utilities.setCacheConfiguration(unauthenticatedManifestAction, 'manifest.unauthenticated');

@@ -91,6 +91,8 @@ var manifest = {
   fetchUnauthenticatedManifest: function fetchUnauthenticatedManifest() {
     var _this2 = this;
 
+    var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
     var unauthenticatedManifestAction = function unauthenticatedManifestAction(dispatch, getState) {
       dispatch(_this2.unauthenticatedManifestRequest());
       var state = getState();
@@ -100,12 +102,12 @@ var manifest = {
       //add ?refresh=true to below route to reload manifest configuration
       return _util2.default.loadCacheConfigurations().then(function (result) {
         hasCached = result.manifest && result.manifest.unauthenticated;
-        if (hasCached) dispatch(_this2.unauthenticatedReceivedManifestData(result.manifest.unauthenticated));
+        if (hasCached && !options.skip_cache) dispatch(_this2.unauthenticatedReceivedManifestData(result.manifest.unauthenticated));
         var pathname = typeof window !== 'undefined' && window.location.pathname ? window.location.pathname : _this2.props.location.pathname;
         return _util2.default.fetchComponent(basename + '/load/public_manifest' + (isInitial ? '?initial=true&location=' + pathname : ''))();
       }).then(function (response) {
         dispatch(_this2.unauthenticatedReceivedManifestData(response.data.settings));
-        if (isInitial) _util2.default.fetchComponent(basename + '/load/public_manifest')();
+        if (isInitial) _util2.default.fetchComponent(basename + '/load/public_manifest')({ skip_cache: true });
         return response;
       }, function (e) {
         if (!hasCached) dispatch(_this2.unauthenticatedFailedManifestRetrival(e));
