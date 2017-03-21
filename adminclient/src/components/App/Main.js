@@ -64,8 +64,7 @@ class MainApp extends Component{
             this.props.getUserProfile(jwt_token);
             this.props.initializeAuthenticatedUser(jwt_token, false);
             this.props.createNotification({ text: 'welcome back', timeout:4000,  });
-          }
-          else {
+          } else {
             console.log('MAIN componentDidMount USER IS NOT LOGGED IN');
           }
           this.props.setUILoadedState(true);  
@@ -81,6 +80,11 @@ class MainApp extends Component{
         this.props.logoutUser();
         this.props.setUILoadedState(true);
       });
+    if (document && document.body && document.body.classList && document.body.classList.add) {
+      document.body.classList.add('__ra_mc_loaded');
+    } else if (document && document.body && document.body.className) {
+      document.body.className = document.body.className += ' __ra_mc_loaded';
+    }
   }
   render() {
     // console.log('this.state', this.state);

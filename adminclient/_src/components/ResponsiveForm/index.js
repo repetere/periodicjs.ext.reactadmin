@@ -351,7 +351,7 @@ var ResponsiveForm = function (_Component) {
           }
           if (fetchOptions.successCallback) {
             var successCallback = getCBFromString(fetchOptions.successCallback);
-            var responseCallback = getCBFromString(fetchOptions.responseCallback);
+            var responseCallback = fetchOptions.responseCallback ? getCBFromString(fetchOptions.responseCallback) : false;
 
             res.json().then(function (successData) {
               if (fetchOptions.successCallback === 'func:this.props.setDynamicData') {

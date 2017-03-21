@@ -153,6 +153,11 @@ var MainApp = function (_Component) {
         _this2.props.logoutUser();
         _this2.props.setUILoadedState(true);
       });
+      if (document && document.body && document.body.classList && document.body.classList.add) {
+        document.body.classList.add('__ra_mc_loaded');
+      } else if (document && document.body && document.body.className) {
+        document.body.className = document.body.className += ' __ra_mc_loaded';
+      }
     }
   }, {
     key: 'render',

@@ -45,7 +45,7 @@ var Loading = function (_Component) {
     value: function render() {
       return _react2.default.createElement(
         _reBulma.Hero,
-        { size: 'isFullheight' },
+        { className: '__ra_app_section_loading', size: 'isFullheight' },
         _react2.default.createElement(
           _reBulma.HeroBody,
           null,

@@ -491,7 +491,7 @@ var user = {
               dispatch(_this7.navigationSuccessResponse(responses.navigation));
               dispatch(_this7.preferenceSuccessResponse(responses.preferences));
               dispatch(_manifest2.default.receivedManifestData(responses.manifest.data.settings));
-              if (isInitial) _manifest2.default.fetchManifest(options)(dispatch, getState);
+              if (isInitial) _manifest2.default.fetchManifest((0, _assign2.default)(options, { skip_cache: true }))(dispatch, getState);
               return {
                 data: {
                   versions: response.data.versions,

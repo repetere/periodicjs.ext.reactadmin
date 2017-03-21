@@ -73,7 +73,7 @@ var manifest = {
       //add ?refresh=true to below route to reload manifest configuration
       return _util2.default.loadCacheConfigurations().then(function (result) {
         hasCached = result.manifest && result.manifest.authenticated;
-        if (hasCached) dispatch(_this.receivedManifestData(result.manifest.authenticated));
+        if (hasCached && !options.skip_cache) dispatch(_this.receivedManifestData(result.manifest.authenticated));
         var refreshComponents = state.settings.ui.initialization.refresh_components;
         var pathname = typeof window !== 'undefined' && window.location.pathname ? window.location.pathname : _this.props.location.pathname;
         var params = isInitial || refreshComponents ? '?' + (isInitial ? 'initial=true&location=' + pathname : '') + (refreshComponents ? isInitial ? '&refresh=true' : 'refresh=true' : '') : '';
