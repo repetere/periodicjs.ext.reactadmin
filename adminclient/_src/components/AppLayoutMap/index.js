@@ -135,7 +135,7 @@ function getRenderedComponent(componentObject, resources, debug) {
   AppLayoutMap.ResponsiveButton = _ResponsiveButton2.default.bind(this);
   // console.log('this.props', this);
   renderIndex++;
-  if (resources) console.info({ resources: resources });
+  // if(resources) console.info({ resources });
 
   try {
     var asyncprops = componentObject.asyncprops && (0, _typeof3.default)(componentObject.asyncprops) === 'object' ? _util2.default.traverse(componentObject.asyncprops, resources) : {};

@@ -40,7 +40,7 @@ export function getRenderedComponent(componentObject, resources, debug) {
   AppLayoutMap.ResponsiveButton = ResponsiveButton.bind(this);
   // console.log('this.props', this);
   renderIndex++;
-  if(resources) console.info({ resources });
+  // if(resources) console.info({ resources });
 
   try {
     let asyncprops = (componentObject.asyncprops && typeof componentObject.asyncprops === 'object') ? utilities.traverse(componentObject.asyncprops, resources) : {};
