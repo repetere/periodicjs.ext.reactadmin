@@ -9,6 +9,7 @@ module.exports = {
       'node_modules/periodicjs.ext.reactadmin/views/test/',
     ],
     'unauthenticated_manifests':[
+      'node_modules/periodicjs.ext.reactadmin/views/unauth/'
     ],
     'navigation':'node_modules/periodicjs.ext.reactadmin/adminclient/src/content/config/navigation.json',
     'components':{
