@@ -28,6 +28,16 @@ class ResponsiveButton extends Component {
     }
     return returnLink;
   }
+  getHref(options) {
+    let { clickprop, thisDotProp, clickThisProp, clickPropObject, clickBaseUrl, clickLinkParams, clickPassProps, clickFetchProps, clickSuccessProps, } = options;
+    let linkSelectionProp = (clickThisProp)
+      ? thisDotProp[clickThisProp]
+      : clickPropObject;
+    let onclickProp = (clickBaseUrl)
+      ? this.getButtonLink(clickBaseUrl, clickLinkParams, linkSelectionProp)
+      : clickPassProps;
+    return onclickProp;
+  }
   handleOnClick(options) {
     // console.debug({ options });
     let { clickprop, thisDotProp, clickThisProp, clickPropObject, clickBaseUrl, clickLinkParams, clickPassProps, clickFetchProps, clickSuccessProps, } = options;
@@ -179,6 +189,8 @@ class ResponsiveButton extends Component {
           : this.props.children
         }
       </Button>;
+    } else if (this.props.aProps){ 
+      return <a {...this.props.aProps} href={this.getHref.call(this, getPropsForOnClick())}>{this.props.children}</a>;
     } else {
       return <span
         {...this.props.spanProps}

@@ -6,7 +6,7 @@ import utilities from '../../util';
 import { getFormTextInputArea, getFormCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, getFormTextArea, /*getFormEditor,*/ getFormLink, getHiddenInput, getFormGroup, getImage, getFormDatalist, getRawInput, getSliderInput, getFormDatatable, } from './FormElements';
 import flatten from 'flat';
 import validate from 'validate.js';
-
+import qs from 'querystring';
 // function getCallbackFromString(fetchOptions.successCallback) {
 function getCallbackFromString(successCBProp) {
   let successCallback;
@@ -277,16 +277,19 @@ class ResponsiveForm extends Component{
         delete formdata.formDataFiles;
         fetchPostBody = JSON.stringify(submitFormData);        
       }
-
+      let isGetRequest = fetchOptions.options && fetchOptions.options.method && fetchOptions.options.method.toUpperCase() === 'GET';
+      let bodyForFetch = (isGetRequest)
+        ? {}
+        : {
+          body: fetchPostBody,
+        };
       fetchOptions.options = Object.assign(
         {
           headers,
         },
         fetchOptions.options,
-        {
-          body: fetchPostBody, 
-        });
-      fetch(this.getFormSumitUrl(fetchOptions.url, fetchOptions.params, formdata),
+        bodyForFetch);
+      fetch(this.getFormSumitUrl(`${fetchOptions.url}${(isGetRequest && fetchOptions.url.indexOf('?')!==-1)?'&':'?'+qs.stringify(submitFormData)}`, fetchOptions.params, formdata),
         fetchOptions.options
       )
         .then(utilities.checkStatus)
