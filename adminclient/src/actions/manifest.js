@@ -60,7 +60,7 @@ const manifest = {
         })
         .then(response => {
           dispatch(this.receivedManifestData(response.data.settings));
-          if (isInitial) utilities.fetchComponent(`${ basename }/load/manifest`, options)();
+          if (isInitial) this.fetchManifest(Object.assign(options, { skip_cache: true }))(dispatch, getState);
           return response;
         }, e => {
           if (!hasCached) dispatch(this.failedManifestRetrival(e));
@@ -68,7 +68,7 @@ const manifest = {
     };
     return utilities.setCacheConfiguration(manifestAction, 'manifest.authenticated');
   },
-  fetchUnauthenticatedManifest(options = {}) {
+  fetchUnauthenticatedManifest (options = {}) {
     let unauthenticatedManifestAction = (dispatch, getState) => {
       dispatch(this.unauthenticatedManifestRequest());
       let state = getState();
@@ -85,7 +85,7 @@ const manifest = {
         })
         .then(response => {
           dispatch(this.unauthenticatedReceivedManifestData(response.data.settings));
-          if (isInitial) utilities.fetchComponent(`${basename}/load/public_manifest`)({ skip_cache:true, });
+          if (isInitial) this.fetchUnauthenticatedManifest({ skip_cache: true })(dispatch, getState);
           return response;
         }, e => {
           if (!hasCached) dispatch(this.unauthenticatedFailedManifestRetrival(e));
