@@ -41,7 +41,9 @@ export function getRenderedComponent(componentObject, resources, debug) {
   // console.log('this.props', this);
   renderIndex++;
   // if(resources) console.info({ resources });
-
+  if (!componentObject) {
+    return null;
+  }
   try {
     let asyncprops = (componentObject.asyncprops && typeof componentObject.asyncprops === 'object') ? utilities.traverse(componentObject.asyncprops, resources) : {};
     let windowprops = (componentObject.windowprops && typeof componentObject.windowprops === 'object') ? utilities.traverse(componentObject.windowprops, window) : {};
