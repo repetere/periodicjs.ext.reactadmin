@@ -13,7 +13,7 @@ class Loading extends Component {
           <div className="has-text-centered" style={
             Object.assign({ textAlign: 'center', margin:'auto'}, this.props.style)
           }>
-            <Button color="isWhite" buttonStyle="isOutlined" state="isLoading" style={{border:'none'}}>Loading</Button> 
+            <Button color="isWhite" buttonStyle="isOutlined" state="isLoading" style={{border:'none'}}>Loading</Button>
           </div>
         </HeroBody>
         {this.props.children}

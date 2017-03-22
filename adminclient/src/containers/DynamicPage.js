@@ -79,7 +79,8 @@ class DynamicPage extends Component {
       ui_is_loaded: false,
       async_data_is_loaded: false,
     };
-    this.uiLayout = {};
+    this.overlayUIWrapperStyle = this.props.getState().ui.customOverlayWrapperStyle;
+    this.uiLayout = null;
     this.getRenderedComponent = getRenderedComponent.bind(this);
     this.handleComponentLifecycle = _handleComponentLifecycle.bind(this);
     this.fetchData = utilities.fetchDynamicContent.bind(this);
@@ -90,12 +91,15 @@ class DynamicPage extends Component {
   componentDidMount () { 
     this.handleComponentLifecycle();
   }
-  componentWillReceiveProps () { 
+  componentWillReceiveProps(/*nextProps*/) {
+    // console.debug({ nextProps });
     this.handleComponentLifecycle();
   }
-  render () {
+  render() {
+    // console.debug('this.props.getState()', this.props.getState(),'this.overlayUIWrapperStyle',this.overlayUIWrapperStyle);
     return (<div id="__ra_dp" className={(this.state.ui_is_loaded)?'__reactadmin_dp_loaded':'__reactadmin_dp_loading'}>
-        <AppSectionLoadingOverlay display={!this.state.ui_is_loaded} wrapperstyle={{
+      <AppSectionLoadingOverlay display={!this.state.ui_is_loaded} wrapperstyle={
+        Object.assign({}, {
           position: 'fixed',
           height: '100%',
           width: '100%',
@@ -103,11 +107,12 @@ class DynamicPage extends Component {
           bottom: 0,
           left: 0,
           right: 0,
-          backgroundColor: 'rgba(255,255,255,.8)',
+          // opacity:0.8,
+          backgroundColor: 'rgba(255,255,255,0.8)',
           zIndex:100,
-        }} /> 
+        }, this.overlayUIWrapperStyle)} /> 
       {
-        (this.state.async_data_is_loaded && this.uiLayout) ? this.uiLayout : null
+        (this.state.async_data_is_loaded && this.uiLayout) ? this.uiLayout : this.uiLayout //null
       }
     </div>);
   }
