@@ -128,7 +128,7 @@ var ResponsiveForm = function (_Component) {
     if (props.stringyFormData) {
       formdata.genericdocjson = (0, _stringify2.default)(props.formdata, null, 2);
     }
-    var customPropsFormdata = (0, _assign2.default)({}, props.useDynamicData && props.getState() ? props.getState().dynamic.formdata : {}, props.formdata, formdata);
+    var customPropsFormdata = (0, _assign2.default)({}, formdata, props.useDynamicData && props.getState() ? props.getState().dynamic.formdata : {}, props.formdata);
     customPropsFormdata.__formOptions = props.useFormOptions ? (0, _assign2.default)({}, props.useDynamicData && props.getState() ? props.getState().dynamic.__formOptions : {}, props.__formOptions) : undefined;
     // console.debug({ formdata });
 

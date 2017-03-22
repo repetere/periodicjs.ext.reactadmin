@@ -60,9 +60,9 @@ class ResponsiveForm extends Component{
     if (props.stringyFormData) {
       formdata.genericdocjson = JSON.stringify(props.formdata, null, 2);
     }
-    let customPropsFormdata = Object.assign({}, (props.useDynamicData && props.getState())
+    let customPropsFormdata = Object.assign({}, formdata, (props.useDynamicData && props.getState())
       ? props.getState().dynamic.formdata
-      : {}, props.formdata, formdata);
+      : {}, props.formdata);
     customPropsFormdata.__formOptions = (props.useFormOptions)
       ? Object.assign({},
         (props.useDynamicData && props.getState()) ? props.getState().dynamic.__formOptions : {}, props.__formOptions)

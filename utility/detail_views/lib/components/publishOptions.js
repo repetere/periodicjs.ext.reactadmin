@@ -320,7 +320,7 @@ function _publishButtons (schema, label, options = {}, newEntity) {
           children: 'Delete',
           props: {
             onClick: 'func:this.props.fetchAction',
-            onclickBaseUrl: `${options.extsettings.basename}/${usablePrefix}/${pluralize(label)}/:id?format=json`,
+            onclickBaseUrl: `${options.extsettings.basename}${usablePrefix}/${pluralize(label)}/:id?format=json`,
             onclickLinkParams: [
               {
                 'key': ':id',

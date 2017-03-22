@@ -29,8 +29,8 @@ const buildDetail = function (schema, label, options = {}, newEntity) {
     props: {
       onSubmit:{
         url: (newEntity)
-          ?`${options.extsettings.basename}/${usablePrefix}/${pluralize(label)}?format=json`
-          :`${options.extsettings.basename}/${usablePrefix}/${pluralize(label)}/:id?format=json&unflatten=true`,
+          ?`${options.extsettings.basename}${usablePrefix}/${pluralize(label)}?format=json`
+          :`${options.extsettings.basename}${usablePrefix}/${pluralize(label)}/:id?format=json&unflatten=true`,
         params: (newEntity)?undefined:[
           { 'key': ':id', 'val': '_id', },
         ],
