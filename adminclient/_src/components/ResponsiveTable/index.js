@@ -12,6 +12,10 @@ var _typeof2 = require('babel-runtime/helpers/typeof');
 
 var _typeof3 = _interopRequireDefault(_typeof2);
 
+var _slicedToArray2 = require('babel-runtime/helpers/slicedToArray');
+
+var _slicedToArray3 = _interopRequireDefault(_slicedToArray2);
+
 var _defineProperty2 = require('babel-runtime/helpers/defineProperty');
 
 var _defineProperty3 = _interopRequireDefault(_defineProperty2);
@@ -76,6 +80,16 @@ var _capitalize = require('capitalize');
 
 var _capitalize2 = _interopRequireDefault(_capitalize);
 
+var _reactFileReaderInput = require('react-file-reader-input');
+
+var _reactFileReaderInput2 = _interopRequireDefault(_reactFileReaderInput);
+
+var _path = require('path');
+
+var _path2 = _interopRequireDefault(_path);
+
+var _json2Csv = require('json-2-csv');
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -103,7 +117,13 @@ var propTypes = {
   tableForm: _react.PropTypes.bool,
   tableFormAddButtonProps: _react.PropTypes.bool,
   selectEntireRow: _react.PropTypes.bool,
-  useInputRows: _react.PropTypes.bool
+  useInputRows: _react.PropTypes.bool,
+  replaceButton: _react.PropTypes.bool,
+  replaceButtonProps: _react.PropTypes.any,
+  replaceButtonLabel: _react.PropTypes.string,
+  uploadAddButton: _react.PropTypes.bool,
+  uploadAddButtonProps: _react.PropTypes.any,
+  uploadAddButtonLabel: _react.PropTypes.string
 };
 
 var defaultProps = {
@@ -204,6 +224,8 @@ var ResponsiveTable = function (_Component) {
     _this.searchFunction = (0, _debounce2.default)(_this.updateTableData, 200);
     _this.getRenderedComponent = _AppLayoutMap.getRenderedComponent.bind(_this);
     _this.addRow = _this.updateByAddRow.bind(_this);
+    _this.replaceRows = _this.updateByReplacingRows.bind(_this);
+    _this.addingRows = _this.updateByAddingRows.bind(_this);
     _this.selectRow = _this.updateSelectedRow.bind(_this);
     _this.deleteRow = _this.updateByDeleteRow.bind(_this);
     _this.moveRowDown = _this.updateByMoveRowDown.bind(_this);
@@ -244,6 +266,17 @@ var ResponsiveTable = function (_Component) {
     value: function updateSelectedRow(options) {
       // console.debug({ options });
       this.updateTableData(options);
+    }
+  }, {
+    key: 'updateByReplacingRows',
+    value: function updateByReplacingRows(newrows) {
+      this.updateTableData({ rows: newrows.concat([]), clearNewRowData: true });
+    }
+  }, {
+    key: 'updateByAddingRows',
+    value: function updateByAddingRows(newrows) {
+      var rows = this.state.rows.concat(newrows || []);
+      this.updateTableData({ rows: rows, clearNewRowData: true });
     }
   }, {
     key: 'updateByAddRow',
@@ -315,9 +348,38 @@ var ResponsiveTable = function (_Component) {
       this.updateTableData({ rows: rows });
     }
   }, {
+    key: 'handleFileUpload',
+    value: function handleFileUpload(type) {
+      var _this2 = this;
+
+      return function (e, results) {
+        var updatefunction = type === 'replace' ? _this2.replaceRows : _this2.addingRows;
+        try {
+          console.debug({ e: e, results: results });
+          results.forEach(function (result) {
+            var _result = (0, _slicedToArray3.default)(result, 2),
+                e = _result[0],
+                file = _result[1];
+
+            if (_path2.default.extname(file.name) === '.csv') {
+              (0, _json2Csv.csv2json)(e.target.result, function (err, newRows) {
+                if (err) throw err;
+                updatefunction(newRows);
+              });
+            } else {
+              var newRows = JSON.parse(e.target.result);
+              updatefunction(newRows);
+            }
+          });
+        } catch (e) {
+          _this2.props.errorNotification(e);
+        }
+      };
+    }
+  }, {
     key: 'updateTableData',
     value: function updateTableData(options) {
-      var _this2 = this;
+      var _this3 = this;
 
       var updatedState = {};
       var newSortOptions = {};
@@ -348,12 +410,12 @@ var ResponsiveTable = function (_Component) {
         }
         if (this.props.tableSearch && this.props.searchField && options.search) {
           updatedState.rows = updatedState.rows.filter(function (row) {
-            return row[_this2.props.searchField].indexOf(options.search) !== -1;
+            return row[_this3.props.searchField].indexOf(options.search) !== -1;
           });
         }
-        updatedState.numPages = Math.ceil(this.state.numItems / this.props.limit);
+        updatedState.numPages = Math.ceil(updatedState.rows.length / this.props.limit);
         updatedState.limit = this.props.limit;
-        updatedState.currentPage = typeof options.pagenum !== 'undefined' ? options.pagenum : this.props.currentPage;
+        updatedState.currentPage = typeof options.pagenum !== 'undefined' ? options.pagenum : this.state.currentPage && this.state.currentPage <= updatedState.numPages ? this.state.currentPage : 1;
         updatedState.isLoading = false;
 
         if (this.props.tableForm) {
@@ -389,21 +451,21 @@ var ResponsiveTable = function (_Component) {
           'x-access-token': stateProps.user.jwt_token
         }, stateProps.settings.userprofile.options.headers);
         _util2.default.fetchComponent(fetchURL, { headers: headers })().then(function (response) {
-          _this2.props.dataMap.forEach(function (data) {
+          _this3.props.dataMap.forEach(function (data) {
             if (data.key === 'rows') {
               var rows = response[data.value] || [];
-              if (_this2.props.flattenRowData) {
+              if (_this3.props.flattenRowData) {
                 updatedState[data.key] = rows.map(function (row) {
-                  return (0, _flat2.default)(row, _this2.props.flattenRowDataOptions);
+                  return (0, _flat2.default)(row, _this3.props.flattenRowDataOptions);
                 });
               }
             } else {
               updatedState[data.key] = response[data.value];
             }
           });
-          updatedState.numPages = Math.ceil(updatedState.numItems / _this2.props.limit);
-          updatedState.limit = _this2.props.limit;
-          updatedState.currentPage = typeof options.pagenum !== 'undefined' ? options.pagenum : _this2.props.currentPage;
+          updatedState.numPages = Math.ceil(updatedState.numItems / _this3.props.limit);
+          updatedState.limit = _this3.props.limit;
+          updatedState.currentPage = typeof options.pagenum !== 'undefined' ? options.pagenum : _this3.props.currentPage;
           updatedState.isLoading = false;
 
           if (options.sort) {
@@ -411,19 +473,19 @@ var ResponsiveTable = function (_Component) {
             updatedState.sortProp = options.sort;
           }
 
-          if (_this2.props.tableForm) {
-            _this2.props.onChange(updatedState);
+          if (_this3.props.tableForm) {
+            _this3.props.onChange(updatedState);
           }
-          _this2.setState(updatedState);
+          _this3.setState(updatedState);
         }, function (e) {
-          _this2.props.errorNotification(e);
+          _this3.props.errorNotification(e);
         });
       }
     }
   }, {
     key: 'formatValue',
     value: function formatValue(value, row, options, header) {
-      var _this3 = this;
+      var _this4 = this;
 
       // console.debug({ value, row, options, header, });
       // console.debug(options.rowIndex,this.state.selectedRowIndex)
@@ -438,7 +500,7 @@ var ResponsiveTable = function (_Component) {
               var text = event.target.value;
               var name = header.sortid;
               var rowIndex = options.rowIndex;
-              _this3.updateInlineRowText({ name: name, text: text, rowIndex: rowIndex });
+              _this4.updateInlineRowText({ name: name, text: text, rowIndex: rowIndex });
             }
           }),
           value
@@ -451,7 +513,7 @@ var ResponsiveTable = function (_Component) {
               var text = event.target.value;
               var name = header.sortid;
               var rowIndex = options.rowIndex;
-              _this3.updateInlineRowText({ name: name, text: text, rowIndex: rowIndex });
+              _this4.updateInlineRowText({ name: name, text: text, rowIndex: rowIndex });
             }
           }),
           value
@@ -466,7 +528,7 @@ var ResponsiveTable = function (_Component) {
               var text = event.target.value;
               var name = header.sortid;
               var rowIndex = options.rowIndex;
-              _this3.updateInlineRowText({ name: name, text: text, rowIndex: rowIndex });
+              _this4.updateInlineRowText({ name: name, text: text, rowIndex: rowIndex });
             } }),
           header.formoptions.map(function (opt, k) {
             return _react2.default.createElement(
@@ -520,7 +582,7 @@ var ResponsiveTable = function (_Component) {
   }, {
     key: 'updateGetFooterAddRow',
     value: function updateGetFooterAddRow(header) {
-      var _this4 = this;
+      var _this5 = this;
 
       if (header.selectedOptionRowHeader) return null;
       switch (header.formtype) {
@@ -532,7 +594,7 @@ var ResponsiveTable = function (_Component) {
               onChange: function onChange(event) {
                 var text = event.target.value;
                 var name = header.sortid;
-                _this4.updateNewRowText({ name: name, text: text });
+                _this5.updateNewRowText({ name: name, text: text });
               } }),
             header.formoptions.map(function (opt, k) {
               return _react2.default.createElement(
@@ -549,7 +611,7 @@ var ResponsiveTable = function (_Component) {
             onChange: function onChange(event) {
               var text = event.target.value;
               var name = header.sortid;
-              _this4.updateNewRowText({ name: name, text: text });
+              _this5.updateNewRowText({ name: name, text: text });
             } }));
         // break;  
         case 'text':
@@ -559,7 +621,7 @@ var ResponsiveTable = function (_Component) {
             onChange: function onChange(event) {
               var text = event.target.value;
               var name = header.sortid;
-              _this4.updateNewRowText({ name: name, text: text });
+              _this5.updateNewRowText({ name: name, text: text });
             } }));
         // break;  
       }
@@ -567,7 +629,7 @@ var ResponsiveTable = function (_Component) {
   }, {
     key: 'render',
     value: function render() {
-      var _this5 = this;
+      var _this6 = this;
 
       // console.debug('render this.state', this.state);
       var calcStartIndex = (this.state.currentPage - 1) * this.state.limit;
@@ -605,7 +667,7 @@ var ResponsiveTable = function (_Component) {
             rb.PageButton,
             { isActive: currentPage === 1,
               onClick: function onClick() {
-                return _this5.updateTableData({ pagenum: 1 });
+                return _this6.updateTableData({ pagenum: 1 });
               }
             },
             '1'
@@ -628,7 +690,7 @@ var ResponsiveTable = function (_Component) {
               rb.PageButton,
               {
                 onClick: function onClick() {
-                  return _this5.updateTableData({ pagenum: index + 1 });
+                  return _this6.updateTableData({ pagenum: index + 1 });
                 }
               },
               index + 1
@@ -642,7 +704,7 @@ var ResponsiveTable = function (_Component) {
               rb.PageButton,
               { color: 'isPrimary', isActive: true,
                 onClick: function onClick() {
-                  return _this5.updateTableData({ pagenum: index + 1 });
+                  return _this6.updateTableData({ pagenum: index + 1 });
                 } },
               index + 1
             )
@@ -666,7 +728,7 @@ var ResponsiveTable = function (_Component) {
           _react2.default.createElement(
             rb.PageButton,
             { onClick: function onClick() {
-                return _this5.updateTableData({ pagenum: lastIndex + 1 });
+                return _this6.updateTableData({ pagenum: lastIndex + 1 });
               } },
             lastIndex + 1
           )
@@ -682,7 +744,7 @@ var ResponsiveTable = function (_Component) {
         ) : _react2.default.createElement(
           rb.PageButton,
           { onClick: function onClick() {
-              return _this5.updateTableData({ pagenum: _this5.state.currentPage - 1 });
+              return _this6.updateTableData({ pagenum: _this6.state.currentPage - 1 });
             } },
           'Previous'
         ),
@@ -698,7 +760,7 @@ var ResponsiveTable = function (_Component) {
         ) : _react2.default.createElement(
           rb.PageButton,
           { onClick: function onClick() {
-              return _this5.updateTableData({ pagenum: _this5.state.currentPage + 1 });
+              return _this6.updateTableData({ pagenum: _this6.state.currentPage + 1 });
             } },
           'Next'
         )
@@ -721,18 +783,18 @@ var ResponsiveTable = function (_Component) {
           fbts,
           _react2.default.createElement(rb.Input, (0, _extends3.default)({}, this.props.filterSearchProps, {
             onChange: function onChange(data) {
-              _this5.searchFunction({ search: data.target.value });
-              _this5.searchInputTextVal = data.target.value; //TODO: this is janky fix it
+              _this6.searchFunction({ search: data.target.value });
+              _this6.searchInputTextVal = data.target.value; //TODO: this is janky fix it
             },
             ref: function ref(input) {
-              _this5.searchTextInput = input;
+              _this6.searchTextInput = input;
             }
           })),
           _react2.default.createElement(
             rb.Button,
             (0, _extends3.default)({}, this.props.searchButtonProps, {
               onClick: function onClick() {
-                _this5.searchFunction({ search: _this5.searchInputTextVal });
+                _this6.searchFunction({ search: _this6.searchInputTextVal });
               }
             }),
             'Search'
@@ -776,8 +838,8 @@ var ResponsiveTable = function (_Component) {
                     (0, _extends3.default)({ key: idx }, header.headerColumnProps),
                     header.sortable ? _react2.default.createElement(
                       'a',
-                      (0, _extends3.default)({}, _this5.props.headerLinkProps, { onClick: function onClick() {
-                          _this5.updateTableData({ sort: header.sortid });
+                      (0, _extends3.default)({}, _this6.props.headerLinkProps, { onClick: function onClick() {
+                          _this6.updateTableData({ sort: header.sortid });
                         } }),
                       header.label
                     ) : header.label
@@ -795,15 +857,37 @@ var ResponsiveTable = function (_Component) {
                   return _react2.default.createElement(
                     rb.Th,
                     (0, _extends3.default)({ key: idx }, header.headerColumnProps),
-                    idx === _this5.state.headers.length - 1 ? _react2.default.createElement(
-                      rb.Button,
-                      (0, _extends3.default)({}, _this5.props.tableFormAddButtonProps, {
-                        style: { width: '100%' },
-                        onClick: function onClick() {
-                          _this5.updateByAddRow();
-                        } }),
-                      _this5.props.formRowAddButtonLabel ? _this5.props.formRowAddButtonLabel : 'Add'
-                    ) : _this5.updateGetFooterAddRow(header)
+                    idx === _this6.state.headers.length - 1 ? _react2.default.createElement(
+                      'span',
+                      (0, _extends3.default)({ className: '__ra_rt_tf', style: { display: 'flex' } }, _this6.props.tableFormButtonWrapperProps),
+                      _this6.props.replaceButton ? _react2.default.createElement(
+                        _reactFileReaderInput2.default,
+                        { as: 'text', onChange: _this6.handleFileUpload.call(_this6, 'replace') },
+                        _react2.default.createElement(
+                          rb.Button,
+                          _this6.props.replaceButtonProps,
+                          _this6.props.replaceButtonLabel || 'Replace'
+                        )
+                      ) : null,
+                      _this6.props.uploadAddButton ? _react2.default.createElement(
+                        _reactFileReaderInput2.default,
+                        { as: 'text', onChange: _this6.handleFileUpload.call(_this6, 'add') },
+                        _react2.default.createElement(
+                          rb.Button,
+                          _this6.props.uploadAddButtonProps,
+                          _this6.props.uploadAddButtonLabel || 'Upload'
+                        )
+                      ) : null,
+                      _react2.default.createElement(
+                        rb.Button,
+                        (0, _extends3.default)({}, _this6.props.tableFormAddButtonProps, {
+                          style: { width: '100%' },
+                          onClick: function onClick() {
+                            _this6.updateByAddRow();
+                          } }),
+                        _this6.props.formRowAddButtonLabel ? _this6.props.formRowAddButtonLabel : 'Add'
+                      )
+                    ) : _this6.updateGetFooterAddRow(header)
                   );
                 })
               )
@@ -814,8 +898,8 @@ var ResponsiveTable = function (_Component) {
               displayRows.map(function (row, rowIndex) {
                 return _react2.default.createElement(
                   rb.Tr,
-                  { key: 'row' + rowIndex, className: _this5.props.selectEntireRow && rowIndex === _this5.state.selectedRowIndex ? '__selected' : undefined },
-                  _this5.state.headers.map(function (header, colIndex) {
+                  { key: 'row' + rowIndex, className: _this6.props.selectEntireRow && rowIndex === _this6.state.selectedRowIndex ? '__selected' : undefined },
+                  _this6.state.headers.map(function (header, colIndex) {
                     // console.debug({header});
                     if (header.link) {
                       return _react2.default.createElement(
@@ -823,8 +907,8 @@ var ResponsiveTable = function (_Component) {
                         (0, _extends3.default)({ key: 'row' + rowIndex + 'col' + colIndex }, header.columnProps),
                         _react2.default.createElement(
                           _reactRouter.Link,
-                          (0, _extends3.default)({}, header.linkProps, { to: _this5.getHeaderLinkURL(header.link, row) }),
-                          _this5.formatValue(typeof row[header.sortid] !== 'undefined' ? row[header.sortid] : header.value, row, {
+                          (0, _extends3.default)({}, header.linkProps, { to: _this6.getHeaderLinkURL(header.link, row) }),
+                          _this6.formatValue(typeof row[header.sortid] !== 'undefined' ? row[header.sortid] : header.value, row, {
                             idx: rowIndex + calcStartIndex,
                             momentFormat: header.momentFormat,
                             image: header.image,
@@ -842,24 +926,24 @@ var ResponsiveTable = function (_Component) {
                         (0, _extends3.default)({ key: 'row' + rowIndex + 'col' + colIndex, style: { textAlign: 'right' } }, header.columnProps),
                         rowIndex !== 0 ? _react2.default.createElement(
                           rb.Button,
-                          (0, _extends3.default)({}, _this5.props.formRowUpButton, { onClick: function onClick() {
-                              _this5.moveRowUp(rowIndex);
+                          (0, _extends3.default)({}, _this6.props.formRowUpButton, { onClick: function onClick() {
+                              _this6.moveRowUp(rowIndex);
                             } }),
-                          _this5.props.formRowUputtonLabel ? _this5.props.formRowUputtonLabel : '⇧'
+                          _this6.props.formRowUputtonLabel ? _this6.props.formRowUputtonLabel : '⇧'
                         ) : null,
-                        rowIndex < _this5.state.rows.length - 1 ? _react2.default.createElement(
+                        rowIndex < _this6.state.rows.length - 1 ? _react2.default.createElement(
                           rb.Button,
-                          (0, _extends3.default)({}, _this5.props.formRowDownButton, { onClick: function onClick() {
-                              _this5.moveRowDown(rowIndex);
+                          (0, _extends3.default)({}, _this6.props.formRowDownButton, { onClick: function onClick() {
+                              _this6.moveRowDown(rowIndex);
                             } }),
-                          _this5.props.formRowDownButtonLabel ? _this5.props.formRowDownButtonLabel : '⇩'
+                          _this6.props.formRowDownButtonLabel ? _this6.props.formRowDownButtonLabel : '⇩'
                         ) : null,
                         _react2.default.createElement(
                           rb.Button,
-                          (0, _extends3.default)({}, _this5.props.formRowDeleteButton, { onClick: function onClick() {
-                              _this5.deleteRow(rowIndex);
+                          (0, _extends3.default)({}, _this6.props.formRowDeleteButton, { onClick: function onClick() {
+                              _this6.deleteRow(rowIndex);
                             } }),
-                          _this5.props.formRowDeleteButtonLabel ? _this5.props.formRowDeleteButtonLabel : '⤫'
+                          _this6.props.formRowDeleteButtonLabel ? _this6.props.formRowDeleteButtonLabel : '⤫'
                         )
                       );
                     } else if (header.buttons && header.buttons.length) {
@@ -868,13 +952,13 @@ var ResponsiveTable = function (_Component) {
                         rb.Td,
                         (0, _extends3.default)({ key: 'row' + rowIndex + 'col' + colIndex }, header.columnProps),
                         header.buttons.map(function (button) {
-                          return _this5.getRenderedComponent((0, _assign2.default)({
+                          return _this6.getRenderedComponent((0, _assign2.default)({
                             component: 'ResponsiveButton',
                             props: (0, _assign2.default)({
                               onclickPropObject: row,
                               buttonProps: {}
                             }, button.passProps),
-                            children: _this5.formatValue(typeof row[header.sortid] !== 'undefined' ? row[header.sortid] : header.value, row, {
+                            children: _this6.formatValue(typeof row[header.sortid] !== 'undefined' ? row[header.sortid] : header.value, row, {
                               idx: rowIndex + calcStartIndex,
                               momentFormat: header.momentFormat,
                               image: header.image,
@@ -891,15 +975,15 @@ var ResponsiveTable = function (_Component) {
                       return _react2.default.createElement(
                         rb.Td,
                         (0, _extends3.default)({ key: 'row' + rowIndex + 'col' + colIndex }, header.columnProps, { onClick: function onClick() {
-                            if (_this5.props.selectEntireRow) {
-                              _this5.selectRow({
+                            if (_this6.props.selectEntireRow) {
+                              _this6.selectRow({
                                 selectedRowData: row,
                                 selectedRowIndex: rowIndex
                               });
                             }
                             // console.debug({ event, rowIndex });
                           } }),
-                        _this5.formatValue.call(_this5, typeof row[header.sortid] !== 'undefined' ? row[header.sortid] : header.value, row, {
+                        _this6.formatValue.call(_this6, typeof row[header.sortid] !== 'undefined' ? row[header.sortid] : header.value, row, {
                           rowIndex: rowIndex,
                           idx: rowIndex + calcStartIndex,
                           momentFormat: header.momentFormat,

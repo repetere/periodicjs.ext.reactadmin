@@ -8,13 +8,13 @@ var _extends2 = require('babel-runtime/helpers/extends');
 
 var _extends3 = _interopRequireDefault(_extends2);
 
-var _defineProperty2 = require('babel-runtime/helpers/defineProperty');
-
-var _defineProperty3 = _interopRequireDefault(_defineProperty2);
-
 var _keys = require('babel-runtime/core-js/object/keys');
 
 var _keys2 = _interopRequireDefault(_keys);
+
+var _defineProperty2 = require('babel-runtime/helpers/defineProperty');
+
+var _defineProperty3 = _interopRequireDefault(_defineProperty2);
 
 var _stringify = require('babel-runtime/core-js/json/stringify');
 
@@ -62,6 +62,8 @@ var _util2 = _interopRequireDefault(_util);
 
 var _FormElements = require('./FormElements');
 
+var _FormHelpers = require('./FormHelpers');
+
 var _flat = require('flat');
 
 var _flat2 = _interopRequireDefault(_flat);
@@ -70,26 +72,20 @@ var _validate2 = require('validate.js');
 
 var _validate3 = _interopRequireDefault(_validate2);
 
+var _querystring = require('querystring');
+
+var _querystring2 = _interopRequireDefault(_querystring);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // function getCallbackFromString(fetchOptions.successCallback) {
-function getCallbackFromString(successCBProp) {
-  var successCallback = void 0;
-  if (typeof successCBProp === 'string' && successCBProp.indexOf('func:this.props.reduxRouter') !== -1) {
-    successCallback = this.props.reduxRouter[successCBProp.replace('func:this.props.reduxRouter.', '')];
-  } else if (successCBProp.indexOf('func:window') !== -1 && typeof window[successCBProp.replace('func:window.', '')] === 'function') {
-    successCallback = window[successCBProp.replace('func:window.', '')].bind(this);
-  } else {
-    successCallback = this.props[successCBProp.replace('func:this.props.', '')];
-  }
-  return successCallback;
-}
 
 var propTypes = {
   notificationForm: _react.PropTypes.any,
   flattenFormData: _react.PropTypes.bool,
   stringyFormData: _react.PropTypes.bool,
   useFormOptions: _react.PropTypes.bool,
+  setInitialValues: _react.PropTypes.bool,
   flattenDataOptions: _react.PropTypes.object,
   useDynamicData: _react.PropTypes.bool,
   cardForm: _react.PropTypes.bool,
@@ -109,6 +105,7 @@ var defaultProps = {
   flattenFormData: false,
   useFormOptions: false,
   useDynamicData: false,
+  setInitialValues: true,
   dynamicResponseField: false,
   dynamicField: false,
   cardForm: false,
@@ -122,16 +119,19 @@ var ResponsiveForm = function (_Component) {
   function ResponsiveForm(props) {
     (0, _classCallCheck3.default)(this, ResponsiveForm);
 
+    // console.debug('initialformdata', setFormNameFields.call(this,{ formElementFields: [], formdata: {}, }));
+    // console.debug({ props });
     var _this = (0, _possibleConstructorReturn3.default)(this, (ResponsiveForm.__proto__ || (0, _getPrototypeOf2.default)(ResponsiveForm)).call(this, props));
 
-    var formdata = (0, _assign2.default)({}, props.flattenFormData && props.formdata ? (0, _flat2.default)(props.formdata, props.flattenDataOptions) : props.formdata);
+    var formdata = (0, _assign2.default)({}, _FormHelpers.setFormNameFields.call({ props: props }, { formElementFields: [], formdata: {} }).formdata, props.flattenFormData && props.formdata ? (0, _flat2.default)(props.formdata, props.flattenDataOptions) : props.formdata);
+    // console.debug('initial', { formdata });
     if (props.stringyFormData) {
       formdata.genericdocjson = (0, _stringify2.default)(props.formdata, null, 2);
     }
     var customPropsFormdata = (0, _assign2.default)({}, props.useDynamicData && props.getState() ? props.getState().dynamic.formdata : {}, props.formdata, formdata);
     customPropsFormdata.__formOptions = props.useFormOptions ? (0, _assign2.default)({}, props.useDynamicData && props.getState() ? props.getState().dynamic.__formOptions : {}, props.__formOptions) : undefined;
     // console.debug({ formdata });
-    // console.debug('ResponsiveForm',{ props });
+
     _this.state = (0, _assign2.default)({
       formDataError: null,
       formDataErrors: {},
@@ -197,36 +197,9 @@ var ResponsiveForm = function (_Component) {
       var hiddenInputs = {};
       var submitFormData = {};
       var formElementFields = [];
-      var getCBFromString = getCallbackFromString.bind(this);
-      var addNameToName = function addNameToName(formElm) {
-        // console.debug('addNameToName','(formElm.passProps && formElm.passProps.state===isDisabled)',(formElm.passProps && formElm.passProps.state==='isDisabled'),{ formElm });
-        // skip if null, or disabled
-        // console.debug({ formElm, });
-        if (!formElm || formElm.disabled || formElm.passProps && formElm.passProps.state === 'isDisabled') {
-          // console.debug('skip', formElm);
-          //
-        } else if (formElm.type === 'group') {
-          if (formElm.groupElements && formElm.groupElements.length) {
-            formElm.groupElements.forEach(addNameToName);
-          }
-        } else if (formElm.name) {
-          formElementFields.push(formElm.name);
-          if (formElm.type === 'hidden') {
-            formdata[formElm.name] = _this2.state[formElm.name] || formElm.value;
-          }
-          if (formElm.type === 'datalist') {
-            // console.debug('before',{formElm,formdata});
-            if (formElm.datalist.multi && formdata[formElm.name] && formdata[formElm.name].length) {
-              formdata[formElm.name] = formdata[formElm.name].map(function (datum) {
-                return datum[formElm.datalist.selector || '_id'];
-              });
-            } else if (formdata[formElm.name] && (0, _keys2.default)(formdata[formElm.name]).length) {
-              formdata[formElm.name] = formdata[formElm.name][formElm.datalist.selector || '_id'];
-            }
-            // console.debug('after',{formElm,formdata});
-          }
-        }
-      };
+      var getCBFromString = _FormHelpers.getCallbackFromString.bind(this);
+      var formNameFields = _FormHelpers.setFormNameFields.bind(this);
+
       delete formdata.formDataLists;
       delete formdata.formDataStatusDate;
       delete formdata.formDataTables;
@@ -239,36 +212,10 @@ var ResponsiveForm = function (_Component) {
         });
         formdata = (0, _assign2.default)(formdata, hiddenInputs);
       }
-      if (this.props.formgroups && this.props.formgroups.length) {
-        this.props.formgroups.forEach(function (formgroup) {
-          if (formgroup.formElements && formgroup.formElements.length) {
-            formgroup.formElements.forEach(function (formElement) {
-              var formElementsLeft = formElement.formGroupElementsLeft && formElement.formGroupElementsLeft.length ? formElement.formGroupElementsLeft : false;
-              var formElementsRight = formElement.formGroupElementsRight && formElement.formGroupElementsRight.length ? formElement.formGroupElementsRight : false;
-              var formGroupLeft = formElement.formGroupCardLeft && formElement.formGroupCardLeft.length ? formElement.formGroupCardLeft : false;
-              var formGroupRight = formElement.formGroupCardRight && formElement.formGroupCardRight.length ? formElement.formGroupCardRight : false;
-              if (formElementsLeft || formElementsRight) {
-                if (formElementsLeft) formElementsLeft.forEach(addNameToName);
-                if (formElementsRight) formElementsRight.forEach(addNameToName);
-              } else if (formGroupLeft || formGroupRight) {
-                if (formGroupLeft) formGroupLeft.forEach(addNameToName);
-                if (formGroupRight) formGroupRight.forEach(addNameToName);
-              } else if (formElement.type === 'group') {
-                if (formElement.groupElements && formElement.groupElements.length) formElement.groupElements.forEach(addNameToName);
-              } else if (!formElement || formElement.disabled || formElement.passProps && formElement.passProps.state === 'isDisabled') {
-                //skip if dsiabled
-                // console.debug('skip', formElement);
+      var updatedFormFieldsAndData = formNameFields({ formElementFields: formElementFields, formdata: formdata });
+      formElementFields = updatedFormFieldsAndData.formElementFields;
+      formdata = updatedFormFieldsAndData.formdata;
 
-              } else {
-                if (formElement.name) {
-                  addNameToName(formElement);
-                  // formElementFields.push(formElement.name);
-                }
-              }
-            });
-          }
-        });
-      }
       if (this.props.validations) {
         this.props.validations.forEach(function (validation) {
           // console.debug(formdata[ validation.name ], { validation, });
@@ -333,13 +280,14 @@ var ResponsiveForm = function (_Component) {
           delete formdata.formDataFiles;
           fetchPostBody = (0, _stringify2.default)(submitFormData);
         }
-
+        var isGetRequest = fetchOptions.options && fetchOptions.options.method && fetchOptions.options.method.toUpperCase() === 'GET';
+        var bodyForFetch = isGetRequest ? {} : {
+          body: fetchPostBody
+        };
         fetchOptions.options = (0, _assign2.default)({
           headers: headers
-        }, fetchOptions.options, {
-          body: fetchPostBody
-        });
-        fetch(this.getFormSumitUrl(fetchOptions.url, fetchOptions.params, formdata), fetchOptions.options).then(_util2.default.checkStatus).then(function (res) {
+        }, fetchOptions.options, bodyForFetch);
+        fetch(this.getFormSumitUrl('' + fetchOptions.url + (isGetRequest && fetchOptions.url.indexOf('?') !== -1 ? '&' : '?') + (isGetRequest ? _querystring2.default.stringify(submitFormData) : ''), fetchOptions.params, formdata), fetchOptions.options).then(_util2.default.checkStatus).then(function (res) {
           if (fetchOptions.success) {
             if (fetchOptions.success.modal) {
               _this2.props.createModal(fetchOptions.success.modal);
@@ -349,8 +297,8 @@ var ResponsiveForm = function (_Component) {
               _this2.props.createNotification({ text: 'Saved', timeout: 4000, type: 'success' });
             }
           }
-          if (fetchOptions.successCallback) {
-            var successCallback = getCBFromString(fetchOptions.successCallback);
+          if (fetchOptions.successCallback || fetchOptions.responseCallback) {
+            var successCallback = fetchOptions.successCallback ? getCBFromString(fetchOptions.successCallback) : false;
             var responseCallback = fetchOptions.responseCallback ? getCBFromString(fetchOptions.responseCallback) : false;
 
             res.json().then(function (successData) {
@@ -360,7 +308,9 @@ var ResponsiveForm = function (_Component) {
                 if (fetchOptions.setDynamicData) {
                   _this2.props.setDynamicData(_this2.props.dynamicField, submitFormData);
                 }
-                successCallback(fetchOptions.successProps || successData, submitFormData);
+                if (successCallback) {
+                  successCallback(fetchOptions.successProps || successData, submitFormData);
+                }
               }
               if (responseCallback) {
                 if (fetchOptions.responseCallback === 'func:this.props.setDynamicData') {
@@ -430,7 +380,7 @@ var ResponsiveForm = function (_Component) {
           // console.debug({ formElement });
           if (!formElement) {
             return null;
-          } else if (formElement.type === 'text') {
+          } else if (formElement.type === 'text' || formElement.type === 'file') {
             return _this3.getFormTextInputArea({ formElement: formElement, i: j, formgroup: formgroup });
           } else if (formElement.type === 'input') {
             return _this3.getRawInput({ formElement: formElement, i: j, formgroup: formgroup });
@@ -601,29 +551,32 @@ var ResponsiveForm = function (_Component) {
       if (this.props.cardForm) {
         return _react2.default.createElement(
           _reBulma.Card,
-          this.props.cardFormProps,
+          (0, _extends3.default)({ className: '__ra_rf' }, this.props.cardFormProps),
           _react2.default.createElement(
             _reBulma.CardContent,
             null,
-            formGroupData
+            formGroupData,
+            this.props.children
           ),
           footerGroupData
         );
       } else if (this.props.notificationForm) {
         return _react2.default.createElement(
           'div',
-          { style: this.props.style },
+          { className: '__ra_rf', style: this.props.style },
           _react2.default.createElement(
             _reBulma.Notification,
             this.props.notificationForm,
-            formGroupData
+            formGroupData,
+            this.props.children
           )
         );
       } else {
         return _react2.default.createElement(
           'div',
-          (0, _extends3.default)({ style: this.props.style }, this.props.passProps),
-          formGroupData
+          (0, _extends3.default)({ className: '__ra_rf', style: this.props.style }, this.props.passProps),
+          formGroupData,
+          this.props.children
         );
       }
     }

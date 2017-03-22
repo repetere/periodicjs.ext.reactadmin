@@ -82,6 +82,21 @@ var ResponsiveButton = function (_Component) {
       return returnLink;
     }
   }, {
+    key: 'getHref',
+    value: function getHref(options) {
+      var thisDotProp = options.thisDotProp,
+          clickThisProp = options.clickThisProp,
+          clickPropObject = options.clickPropObject,
+          clickBaseUrl = options.clickBaseUrl,
+          clickLinkParams = options.clickLinkParams,
+          clickPassProps = options.clickPassProps;
+      // console.debug('getHref',{options})  
+
+      var linkSelectionProp = clickThisProp ? thisDotProp[clickThisProp] : clickPropObject;
+      var onclickProp = clickBaseUrl ? this.getButtonLink(clickBaseUrl, clickLinkParams, linkSelectionProp) : clickPassProps;
+      return onclickProp;
+    }
+  }, {
     key: 'handleOnClick',
     value: function handleOnClick(options) {
       var _this2 = this;
@@ -224,7 +239,7 @@ var ResponsiveButton = function (_Component) {
 
         return _react2.default.createElement(
           _reBulma.Select,
-          (0, _extends3.default)({}, this.props.selectElmProps, { value: this.props.selectProps.selected, onChange: function onChange(event) {
+          (0, _extends3.default)({ className: '__ra_rb' }, this.props.selectElmProps, { value: this.props.selectProps.selected, onChange: function onChange(event) {
               // console.log({ event });
               _this3.handleSelect.call(_this3, event, _this3.props.selectProps.values);
             } }),
@@ -233,7 +248,8 @@ var ResponsiveButton = function (_Component) {
       } else if (this.props.buttonProps) {
         return _react2.default.createElement(
           _reBulma.Button,
-          (0, _extends3.default)({}, this.props.buttonProps, {
+          (0, _extends3.default)({ className: '__ra_rb'
+          }, this.props.buttonProps, {
             style: (0, _assign2.default)({
               cursor: 'pointer', display: 'inline-block'
             }, this.props.style),
@@ -241,10 +257,17 @@ var ResponsiveButton = function (_Component) {
           }),
           this.props.onclickThisProp && this.props.displayThisProps ? this.props[this.props.onclickThisProp][this.props.displayThisProps] : this.props.children
         );
+      } else if (this.props.aProps) {
+        return _react2.default.createElement(
+          'a',
+          (0, _extends3.default)({ className: '__ra_rb' }, this.props.aProps, { href: this.getHref.call(this, getPropsForOnClick()) }),
+          this.props.children
+        );
       } else {
         return _react2.default.createElement(
           'span',
-          (0, _extends3.default)({}, this.props.spanProps, {
+          (0, _extends3.default)({ className: '__ra_rb'
+          }, this.props.spanProps, {
             style: (0, _assign2.default)({
               cursor: 'pointer', display: 'inline-block'
             }, this.props.style),

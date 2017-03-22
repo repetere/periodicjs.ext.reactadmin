@@ -249,13 +249,15 @@ function getFormDatatable(options) {
     selectOptionSortIdLabel: formElement.selectOptionSortIdLabel,
     flattenRowData: formElement.flattenRowData,
     addNewRows: formElement.addNewRows,
+    replaceButton: false,
+    uploadAddButton: true,
     useInputRows: formElement.useInputRows,
     rows: initialValue,
     headers: tableHeaders,
     limit: 5000,
     hasPagination: false,
     tableForm: true
-  }); // formElement.datalist,
+  }, formElement.passProps); // formElement.datalist,
   // console.debug({tableHeaders})
   // let shape ={};// this is the header of of the footer which has elements for new insert
   // let inlineshape ={};// if true, should look like a regular form row, else form below

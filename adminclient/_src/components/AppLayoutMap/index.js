@@ -136,7 +136,9 @@ function getRenderedComponent(componentObject, resources, debug) {
   // console.log('this.props', this);
   renderIndex++;
   // if(resources) console.info({ resources });
-
+  if (!componentObject) {
+    return null;
+  }
   try {
     var asyncprops = componentObject.asyncprops && (0, _typeof3.default)(componentObject.asyncprops) === 'object' ? _util2.default.traverse(componentObject.asyncprops, resources) : {};
     var windowprops = componentObject.windowprops && (0, _typeof3.default)(componentObject.windowprops) === 'object' ? _util2.default.traverse(componentObject.windowprops, window) : {};

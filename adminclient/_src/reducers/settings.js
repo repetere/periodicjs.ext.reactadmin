@@ -221,6 +221,7 @@ var packageJSON = {
     eslint: '^3.14.1',
     'eslint-plugin-react': '^6.9.0',
     flat: '^2.0.1',
+    'json-2-csv': '^2.1.0',
     'rc-slider': '^6.2.0',
     react: '15.3.2',
     'react-codemirror': '^0.3.0',
