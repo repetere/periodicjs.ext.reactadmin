@@ -25,6 +25,7 @@ module.exports = function(resources) {
 		helperController.handleFileAssets,  
     helperController.fixCodeMirrorSubmit,
     helperController.fixFlattenedSubmit,
+		helperController.handleFileAssetsResponse,  
     transformController.pretransform,
     resources.core.controller.save_revision,
     contentdataController.create_entity,
