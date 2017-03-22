@@ -4,6 +4,10 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _assign = require('babel-runtime/core-js/object/assign');
+
+var _assign2 = _interopRequireDefault(_assign);
+
 var _getPrototypeOf = require('babel-runtime/core-js/object/get-prototype-of');
 
 var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
@@ -133,7 +137,8 @@ var DynamicPage = function (_Component) {
       ui_is_loaded: false,
       async_data_is_loaded: false
     };
-    _this2.uiLayout = {};
+    _this2.overlayUIWrapperStyle = _this2.props.getState().ui.customOverlayWrapperStyle;
+    _this2.uiLayout = null;
     _this2.getRenderedComponent = _AppLayoutMap.getRenderedComponent.bind(_this2);
     _this2.handleComponentLifecycle = _handleComponentLifecycle.bind(_this2);
     _this2.fetchData = _util2.default.fetchDynamicContent.bind(_this2);
@@ -152,16 +157,18 @@ var DynamicPage = function (_Component) {
     }
   }, {
     key: 'componentWillReceiveProps',
-    value: function componentWillReceiveProps() {
+    value: function componentWillReceiveProps() /*nextProps*/{
+      // console.debug({ nextProps });
       this.handleComponentLifecycle();
     }
   }, {
     key: 'render',
     value: function render() {
+      // console.debug('this.props.getState()', this.props.getState(),'this.overlayUIWrapperStyle',this.overlayUIWrapperStyle);
       return _react2.default.createElement(
         'div',
         { id: '__ra_dp', className: this.state.ui_is_loaded ? '__reactadmin_dp_loaded' : '__reactadmin_dp_loading' },
-        _react2.default.createElement(_overlay2.default, { display: !this.state.ui_is_loaded, wrapperstyle: {
+        _react2.default.createElement(_overlay2.default, { display: !this.state.ui_is_loaded, wrapperstyle: (0, _assign2.default)({}, {
             position: 'fixed',
             height: '100%',
             width: '100%',
@@ -169,10 +176,12 @@ var DynamicPage = function (_Component) {
             bottom: 0,
             left: 0,
             right: 0,
-            backgroundColor: 'rgba(255,255,255,.8)',
+            // opacity:0.8,
+            backgroundColor: 'rgba(255,255,255,0.8)',
             zIndex: 100
-          } }),
-        this.state.async_data_is_loaded && this.uiLayout ? this.uiLayout : null
+          }, this.overlayUIWrapperStyle) }),
+        this.state.async_data_is_loaded && this.uiLayout ? this.uiLayout : this.uiLayout //null
+
       );
     }
   }]);
