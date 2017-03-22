@@ -61,10 +61,6 @@ const fixFlattenedSubmit = function (req, res, next) {
 
 const handleFileUpload = function(req, res, next){
   if (req.query.handleupload) {
-    // return [
-    //   assetController.multiupload,
-    //   assetController.create_assets_from_files,
-    //   // handleFileResponse(req, res),
     // ];
     return assetController.multiupload(req, res, next);
   } else {
@@ -74,16 +70,23 @@ const handleFileUpload = function(req, res, next){
 
 const handleFileAssets = function(req, res, next){
   if (req.query.handleupload) {
+    // req.query.format = 'json';
     return assetController.create_assets_from_files(req, res, next);
   } else {
     next();
   }
 };
 
+const handleFileAssetsResponse = function (req, res, next) {
+  if (req.query.handleupload) {
+    // req.query.format = 'json';
+    return handleControllerDataResponse(req, res);
+  } else {
+    next();
+  }
+};
+
 const handleControllerDataResponse = function (req, res) {
-  // console.log('req.controllerData', req.controllerData);
-  // console.log('req.body', req.body);
-  // console.log('req.files', req.files);
   //console.log('req.controllerData',req.controllerData);
   delete req.controllerData.authorization_header;
   res.send((req.controllerData.useSuccessWrapper) ? {
@@ -129,6 +132,7 @@ module.exports = function (resources) {
     handleFileUpload,
     handleFileAssets,
     handleControllerDataResponse,
+    handleFileAssetsResponse,
     // handleFileResponse,
   };
 };

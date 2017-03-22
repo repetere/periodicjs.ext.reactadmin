@@ -8,7 +8,9 @@ import debounce from 'debounce';
 import flatten from 'flat';
 import { getRenderedComponent, } from '../AppLayoutMap';
 import capitalize from 'capitalize';
-
+import FileReaderInput from 'react-file-reader-input';
+import path from 'path';
+import { csv2json, } from 'json-2-csv';
 // import styles from '../styles';
 
 const propTypes = {
@@ -33,6 +35,12 @@ const propTypes = {
   tableFormAddButtonProps: PropTypes.bool,
   selectEntireRow: PropTypes.bool,
   useInputRows: PropTypes.bool,
+  replaceButton: PropTypes.bool,
+  replaceButtonProps: PropTypes.any,
+  replaceButtonLabel: PropTypes.string,
+  uploadAddButton: PropTypes.bool,
+  uploadAddButtonProps: PropTypes.any,
+  uploadAddButtonLabel: PropTypes.string,
 };
 
 const defaultProps = {
@@ -127,6 +135,8 @@ class ResponsiveTable extends Component {
     this.searchFunction = debounce(this.updateTableData, 200);
     this.getRenderedComponent = getRenderedComponent.bind(this);
     this.addRow = this.updateByAddRow.bind(this);
+    this.replaceRows = this.updateByReplacingRows.bind(this);
+    this.addingRows = this.updateByAddingRows.bind(this);
     this.selectRow = this.updateSelectedRow.bind(this);
     this.deleteRow = this.updateByDeleteRow.bind(this);
     this.moveRowDown = this.updateByMoveRowDown.bind(this);
@@ -159,6 +169,13 @@ class ResponsiveTable extends Component {
   updateSelectedRow(options) {
     // console.debug({ options });
     this.updateTableData(options);
+  }
+  updateByReplacingRows(newrows) {
+    this.updateTableData({ rows:newrows.concat([]), clearNewRowData:true, });
+  }
+  updateByAddingRows(newrows) {
+    let rows = this.state.rows.concat(newrows||[]);
+    this.updateTableData({ rows, clearNewRowData:true, });
   }
   updateByAddRow() {
     let rows = this.state.rows.concat([]);
@@ -215,6 +232,31 @@ class ResponsiveTable extends Component {
     // this.props.onChange({ rows, });
     this.updateTableData({ rows, });
   }
+  handleFileUpload(type) {
+    return (e, results) => {
+      let updatefunction = (type === 'replace')
+        ? this.replaceRows
+        : this.addingRows;
+      try {
+        console.debug({ e, results });
+        results.forEach(result => { 
+          const [ e, file ] = result;
+          if (path.extname(file.name) === '.csv') {
+            csv2json(e.target.result, (err, newRows) => {
+              if (err) throw err;
+              updatefunction(newRows);
+            });
+          } else {
+            let newRows = JSON.parse(e.target.result);
+            updatefunction(newRows);
+          }
+        });
+      } catch (e) {
+        this.props.errorNotification(e);
+      }
+      
+    }
+  }
   updateTableData(options) {
     let updatedState = {};
     let newSortOptions = {};
@@ -246,9 +288,13 @@ class ResponsiveTable extends Component {
       if (this.props.tableSearch && this.props.searchField && options.search) {
         updatedState.rows = updatedState.rows.filter(row => row[ this.props.searchField ].indexOf(options.search) !== -1);
       }
-      updatedState.numPages = Math.ceil(this.state.numItems / this.props.limit);
+      updatedState.numPages = Math.ceil(updatedState.rows.length / this.props.limit);
       updatedState.limit = this.props.limit;
-      updatedState.currentPage = (typeof options.pagenum !=='undefined') ? options.pagenum : this.props.currentPage;
+      updatedState.currentPage = (typeof options.pagenum !== 'undefined')
+        ? options.pagenum
+        : (this.state.currentPage && this.state.currentPage <= updatedState.numPages)
+          ? this.state.currentPage
+          : 1;
       updatedState.isLoading = false;
       
       if (this.props.tableForm) {
@@ -527,6 +573,7 @@ class ResponsiveTable extends Component {
     }
     return (
       <rb.Container>
+        
         {(this.props.tableSearch)
           ? (<rb.Addons
               {...this.props.filterAddonProps}
@@ -585,14 +632,28 @@ class ResponsiveTable extends Component {
                   {this.state.headers.map((header, idx) => (
                     <rb.Th key={idx} {...header.headerColumnProps}> 
                       {(idx === this.state.headers.length - 1)
-                        ? (<rb.Button
+                        ? (<span className="__ra_rt_tf" style={{ display: 'flex', }} {...this.props.tableFormButtonWrapperProps}>
+                          {(this.props.replaceButton)
+                            ? <FileReaderInput as="text" onChange={this.handleFileUpload.call(this, 'replace')}>
+                                <rb.Button {...this.props.replaceButtonProps}>{this.props.replaceButtonLabel||'Replace'}</rb.Button>  
+                              </FileReaderInput>  
+                            : null}
+                          {(this.props.uploadAddButton)
+                            ? <FileReaderInput as="text" onChange={this.handleFileUpload.call(this, 'add')}>
+                                <rb.Button {...this.props.uploadAddButtonProps}>{this.props.uploadAddButtonLabel||'Upload'}</rb.Button>  
+                              </FileReaderInput>   
+                            :null}
+                          <rb.Button
                           {...this.props.tableFormAddButtonProps}
                           style={{ width: '100%', }}
                           onClick={() => {
                             this.updateByAddRow();
                           }}>
-                          {(this.props.formRowAddButtonLabel) ? this.props.formRowAddButtonLabel : 'Add'}
-                        </rb.Button>)
+                            {(this.props.formRowAddButtonLabel) ? this.props.formRowAddButtonLabel : 'Add'}
+                          </rb.Button>
+                          
+                        </span>  
+                        )
                         : this.updateGetFooterAddRow(header)}
                     </rb.Th>
                   ))}

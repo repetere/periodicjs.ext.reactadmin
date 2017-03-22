@@ -28,6 +28,17 @@ class ResponsiveButton extends Component {
     }
     return returnLink;
   }
+  getHref(options) {
+    let { thisDotProp, clickThisProp, clickPropObject, clickBaseUrl, clickLinkParams, clickPassProps, /*clickprop, clickFetchProps, clickSuccessProps, */ } = options;
+    // console.debug('getHref',{options})  
+    let linkSelectionProp = (clickThisProp)
+      ? thisDotProp[clickThisProp]
+      : clickPropObject;
+    let onclickProp = (clickBaseUrl)
+      ? this.getButtonLink(clickBaseUrl, clickLinkParams, linkSelectionProp)
+      : clickPassProps;
+    return onclickProp;
+  }
   handleOnClick(options) {
     // console.debug({ options });
     let { clickprop, thisDotProp, clickThisProp, clickPropObject, clickBaseUrl, clickLinkParams, clickPassProps, clickFetchProps, clickSuccessProps, } = options;
@@ -159,14 +170,14 @@ class ResponsiveButton extends Component {
         options.push(<option {...additionalOptionProps} key={`sddb-${key}`} value={key}>{selectPropsVals[key].label}</option>);
       });
 
-      return <Select {...this.props.selectElmProps} value={this.props.selectProps.selected}  onChange={(event) => {
+      return <Select className="__ra_rb" {...this.props.selectElmProps} value={this.props.selectProps.selected}  onChange={(event) => {
         // console.log({ event });
         this.handleSelect.call(this, event, this.props.selectProps.values);
       }}>
         {options}  
       </Select>;
     } else if (this.props.buttonProps) {
-      return <Button
+      return <Button className="__ra_rb"
         {...this.props.buttonProps}
         style={Object.assign({
           cursor: 'pointer', display: 'inline-block',
@@ -179,8 +190,10 @@ class ResponsiveButton extends Component {
           : this.props.children
         }
       </Button>;
+    } else if (this.props.aProps){ 
+      return <a className="__ra_rb" {...this.props.aProps} href={this.getHref.call(this, getPropsForOnClick())}>{this.props.children}</a>;
     } else {
-      return <span
+      return <span className="__ra_rb"
         {...this.props.spanProps}
         style={Object.assign({
           cursor: 'pointer', display: 'inline-block',

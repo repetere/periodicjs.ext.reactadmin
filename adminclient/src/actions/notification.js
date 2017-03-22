@@ -23,7 +23,11 @@ const notification = {
       let errorTimeout = getState().settings.ui.notifications.error_timeout;
       let options = {
         type: 'error',
-        text: error.toString(),
+        text: (error && error.data && error.data.error)
+          ? error.data.error
+          : (error && error.data && error.data)
+            ? error.data
+            : error.toString(),
         meta: error,
         timeout: (typeof timeout === 'boolean' && timeout ===false)? false : errorTimeout,
       };

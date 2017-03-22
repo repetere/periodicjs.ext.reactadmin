@@ -4,27 +4,18 @@ import ResponsiveCard from '../ResponsiveCard';
 import { getRenderedComponent, } from '../AppLayoutMap';
 import utilities from '../../util';
 import { getFormTextInputArea, getFormCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, getFormTextArea, /*getFormEditor,*/ getFormLink, getHiddenInput, getFormGroup, getImage, getFormDatalist, getRawInput, getSliderInput, getFormDatatable, } from './FormElements';
+import { getCallbackFromString, setFormNameFields, } from './FormHelpers';
 import flatten from 'flat';
 import validate from 'validate.js';
-
+import qs from 'querystring';
 // function getCallbackFromString(fetchOptions.successCallback) {
-function getCallbackFromString(successCBProp) {
-  let successCallback;
-  if (typeof successCBProp === 'string' && successCBProp.indexOf('func:this.props.reduxRouter') !== -1) {
-    successCallback = this.props.reduxRouter[ successCBProp.replace('func:this.props.reduxRouter.', '') ];
-  } else if (successCBProp.indexOf('func:window') !== -1 && typeof window[ successCBProp.replace('func:window.', '') ] ==='function'){
-    successCallback= window[ successCBProp.replace('func:window.', '') ].bind(this);
-  } else {
-    successCallback = this.props[ successCBProp.replace('func:this.props.', '') ];
-  }
-  return successCallback;
-}
 
 const propTypes = {
   notificationForm: PropTypes.any,
   flattenFormData: PropTypes.bool,
   stringyFormData: PropTypes.bool,
   useFormOptions: PropTypes.bool,
+  setInitialValues: PropTypes.bool,
   flattenDataOptions: PropTypes.object,
   useDynamicData: PropTypes.bool,
   cardForm: PropTypes.bool,
@@ -47,6 +38,7 @@ const defaultProps = {
   flattenFormData: false,
   useFormOptions: false,
   useDynamicData: false,
+  setInitialValues: true,
   dynamicResponseField: false,
   dynamicField: false,
   cardForm: false,
@@ -57,10 +49,14 @@ const defaultProps = {
 class ResponsiveForm extends Component{
   constructor(props) {
     super(props);
+    // console.debug('initialformdata', setFormNameFields.call(this,{ formElementFields: [], formdata: {}, }));
+    // console.debug({ props });
     let formdata = Object.assign({},
+      setFormNameFields.call({ props, }, { formElementFields: [], formdata: {}, }).formdata,  
       (props.flattenFormData && props.formdata) 
         ? flatten(props.formdata, props.flattenDataOptions)
         : props.formdata);
+    // console.debug('initial', { formdata });
     if (props.stringyFormData) {
       formdata.genericdocjson = JSON.stringify(props.formdata, null, 2);
     }
@@ -72,15 +68,16 @@ class ResponsiveForm extends Component{
         (props.useDynamicData && props.getState()) ? props.getState().dynamic.__formOptions : {}, props.__formOptions)
       : undefined;
     // console.debug({ formdata });
-    // console.debug('ResponsiveForm',{ props });
-    this.state = Object.assign({
-      formDataError: null,
-      formDataErrors: {},
-      formDataStatusDate: new Date(),
-      formDataLists:{},
-      formDataTables:{},
-      formDataFiles:{},
-    },
+    
+    this.state = Object.assign(
+      {
+        formDataError: null,
+        formDataErrors: {},
+        formDataStatusDate: new Date(),
+        formDataLists:{},
+        formDataTables:{},
+        formDataFiles:{},
+      },
       // customProps.formdata,
       customPropsFormdata);
     this.datalists = {};
@@ -138,36 +135,8 @@ class ResponsiveForm extends Component{
     let submitFormData = {};
     let formElementFields = [];
     const getCBFromString = getCallbackFromString.bind(this);
-    let addNameToName = (formElm) => {
-      // console.debug('addNameToName','(formElm.passProps && formElm.passProps.state===isDisabled)',(formElm.passProps && formElm.passProps.state==='isDisabled'),{ formElm });
-      // skip if null, or disabled
-      // console.debug({ formElm, });
-      if (!formElm
-        || formElm.disabled
-        || (formElm.passProps && formElm.passProps.state==='isDisabled')
-      ) {
-        // console.debug('skip', formElm);
-        //
-      } else if (formElm.type === 'group') {
-        if (formElm.groupElements && formElm.groupElements.length) {
-          formElm.groupElements.forEach(addNameToName);
-        }
-      } else if (formElm.name) {
-        formElementFields.push(formElm.name);
-        if (formElm.type === 'hidden') { 
-          formdata[ formElm.name ] = this.state[ formElm.name ] || formElm.value;
-        }
-        if(formElm.type==='datalist'){
-          // console.debug('before',{formElm,formdata});
-          if(formElm.datalist.multi && formdata[formElm.name] && formdata[formElm.name].length){
-            formdata[formElm.name] = formdata[formElm.name].map(datum=>datum[formElm.datalist.selector||'_id']);
-          } else if(formdata[formElm.name] && Object.keys(formdata[formElm.name]).length){
-            formdata[formElm.name] = formdata[formElm.name][formElm.datalist.selector||'_id'];
-          }
-          // console.debug('after',{formElm,formdata});
-        }
-      }
-    };
+    const formNameFields = setFormNameFields.bind(this);
+    
     delete formdata.formDataLists;
     delete formdata.formDataStatusDate;
     delete formdata.formDataTables;
@@ -180,39 +149,10 @@ class ResponsiveForm extends Component{
       });
       formdata = Object.assign(formdata, hiddenInputs);
     }
-    if (this.props.formgroups && this.props.formgroups.length) {
-      this.props.formgroups.forEach(formgroup => {
-        if (formgroup.formElements && formgroup.formElements.length) {
-          formgroup.formElements.forEach(formElement => {
-            let formElementsLeft = (formElement.formGroupElementsLeft && formElement.formGroupElementsLeft.length) ? formElement.formGroupElementsLeft : false;
-            let formElementsRight = (formElement.formGroupElementsRight && formElement.formGroupElementsRight.length) ? formElement.formGroupElementsRight : false;
-            let formGroupLeft = (formElement.formGroupCardLeft && formElement.formGroupCardLeft.length) ? formElement.formGroupCardLeft : false;
-            let formGroupRight = (formElement.formGroupCardRight && formElement.formGroupCardRight.length) ? formElement.formGroupCardRight : false;
-            if (formElementsLeft || formElementsRight) {
-              if (formElementsLeft) formElementsLeft.forEach(addNameToName);
-              if (formElementsRight) formElementsRight.forEach(addNameToName);
-            } else if (formGroupLeft || formGroupRight) {
-              if (formGroupLeft) formGroupLeft.forEach(addNameToName);
-              if (formGroupRight) formGroupRight.forEach(addNameToName);
-            } else if (formElement.type === 'group') {
-              if (formElement.groupElements && formElement.groupElements.length) formElement.groupElements.forEach(addNameToName);
-            } else if (!formElement
-              || formElement.disabled
-              || (formElement.passProps && formElement.passProps.state==='isDisabled')
-            ) { 
-              //skip if dsiabled
-              // console.debug('skip', formElement);
+    let updatedFormFieldsAndData = formNameFields({ formElementFields, formdata, });
+    formElementFields = updatedFormFieldsAndData.formElementFields;
+    formdata = updatedFormFieldsAndData.formdata;
 
-            } else {
-              if (formElement.name) {
-                addNameToName(formElement);
-                // formElementFields.push(formElement.name);
-              }
-            }
-          });
-        }
-      });
-    }
     if (this.props.validations) {
       this.props.validations.forEach(validation => {
         // console.debug(formdata[ validation.name ], { validation, });
@@ -277,16 +217,19 @@ class ResponsiveForm extends Component{
         delete formdata.formDataFiles;
         fetchPostBody = JSON.stringify(submitFormData);        
       }
-
+      let isGetRequest = fetchOptions.options && fetchOptions.options.method && fetchOptions.options.method.toUpperCase() === 'GET';
+      let bodyForFetch = (isGetRequest)
+        ? {}
+        : {
+          body: fetchPostBody,
+        };
       fetchOptions.options = Object.assign(
         {
           headers,
         },
         fetchOptions.options,
-        {
-          body: fetchPostBody, 
-        });
-      fetch(this.getFormSumitUrl(fetchOptions.url, fetchOptions.params, formdata),
+        bodyForFetch);
+      fetch(this.getFormSumitUrl(`${fetchOptions.url}${(isGetRequest && fetchOptions.url.indexOf('?')!==-1)?'&':'?'}${(isGetRequest)?qs.stringify(submitFormData):''}`, fetchOptions.params, formdata),
         fetchOptions.options
       )
         .then(utilities.checkStatus)
@@ -300,8 +243,10 @@ class ResponsiveForm extends Component{
               this.props.createNotification({ text: 'Saved', timeout:4000, type:'success',  });
             }
           } 
-          if (fetchOptions.successCallback) {
-            let successCallback = getCBFromString(fetchOptions.successCallback);
+          if (fetchOptions.successCallback || fetchOptions.responseCallback) {
+            let successCallback = (fetchOptions.successCallback)
+              ? getCBFromString(fetchOptions.successCallback)
+              : false;
             let responseCallback = (fetchOptions.responseCallback)
               ? getCBFromString(fetchOptions.responseCallback)
               : false;
@@ -315,7 +260,9 @@ class ResponsiveForm extends Component{
                   if(fetchOptions.setDynamicData){
                     this.props.setDynamicData(this.props.dynamicField, submitFormData);
                   }
-                  successCallback(fetchOptions.successProps || successData, submitFormData);
+                  if (successCallback) {
+                    successCallback(fetchOptions.successProps || successData, submitFormData);
+                  }
                 }
                 if (responseCallback) {
                   if (fetchOptions.responseCallback === 'func:this.props.setDynamicData') {
@@ -380,7 +327,7 @@ class ResponsiveForm extends Component{
         // console.debug({ formElement });
         if (!formElement) {
           return null;
-        } else if (formElement.type === 'text' ) {
+        } else if (formElement.type === 'text' || formElement.type === 'file' ) {
           return this.getFormTextInputArea({ formElement,  i:j, formgroup, });
         } else if (formElement.type === 'input' ) {
           return this.getRawInput({ formElement,  i:j, formgroup, });
@@ -511,18 +458,25 @@ class ResponsiveForm extends Component{
       : [];
 
     if (this.props.cardForm) {
-      return (<Card {...this.props.cardFormProps}>
+      return (<Card className="__ra_rf" {...this.props.cardFormProps}>
         <CardContent>
           {formGroupData}
+          {this.props.children}
         </CardContent>
         {footerGroupData}
       </Card>);
     } else if(this.props.notificationForm){
-      return (<div style={this.props.style}>
-        <Notification {...this.props.notificationForm}>{formGroupData}</Notification>
+      return (<div className="__ra_rf" style={this.props.style}>
+        <Notification {...this.props.notificationForm}>
+          {formGroupData}
+          {this.props.children}
+        </Notification>
       </div>);
     } else {
-      return (<div style={this.props.style} {...this.props.passProps}>{ formGroupData }</div>);
+      return (<div className="__ra_rf" style={this.props.style} {...this.props.passProps}>
+        {formGroupData}
+        {this.props.children}
+      </div>);
     }
   }
   componentDidUpdate() {

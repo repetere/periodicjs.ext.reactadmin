@@ -38,6 +38,7 @@
     "flat": "^2.0.1",
     "google-map-react": "^0.23.0",
     "isomorphic-fetch": "^2.2.1",
+    "json-2-csv": "^2.1.0",
     "path-to-regexp": "^1.7.0",
     "pluralize": "^3.1.0",
     "prettysize": "0.0.3",
@@ -134,7 +135,7 @@
     "test": "mocha",
     "ssr_build": "babel adminclient/src -d adminclient/_src --ignore adminclient/src/components/RACodeMirror/",
     "ssr": "babel utility/ssr_manifest_es6.js > utility/ssr_manifest.js && babel adminclient/src -d adminclient/_src --ignore adminclient/src/components/RACodeMirror/,adminclient/src/index.js",
-    "package":"cd adminclient && npm run build && cd .. && npm run ssr && grunt copy"
+    "package": "cd adminclient && npm run build && cd .. && npm run ssr && grunt copy"
   },
   "version": "0.9.975"
 }
