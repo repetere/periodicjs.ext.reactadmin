@@ -45,7 +45,13 @@ function setAddNameToName(options) {
   } else if (formElm.name) {
     formElementFields.push(formElm.name);
     if (formElm.type === 'hidden' || this.props.setInitialValues) {
-      formdata[formElm.name] = this.state ? this.state[formElm.name] || formElm.value : formElm.value;
+      if (formElm.type === 'radio') {
+        if (this.state || formElm.checked || formElm.passProps && formElm.passProps.checked) {
+          formdata[formElm.name] = formElm.value;
+        }
+      } else {
+        formdata[formElm.name] = this.state ? this.state[formElm.name] || formElm.value : formElm.value;
+      }
     }
     if (formElm.type === 'datalist') {
       // console.debug('before',{formElm,formdata});

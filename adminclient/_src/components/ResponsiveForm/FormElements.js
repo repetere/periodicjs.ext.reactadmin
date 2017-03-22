@@ -198,7 +198,20 @@ function getPassablePropsKeyEvents(passableProps, formElement) {
     } else if (formElement.onBlur.indexOf('func:window') !== -1 && typeof window[formElement.onBlur.replace('func:window.', '')] === 'function') {
       customonBlur = window[formElement.onBlur.replace('func:window.', '')].bind(this);
     }
-    passableProps.onBlur = customonBlur;
+    passableProps.onBlur = function (e) {
+      customonBlur(e, formElement);
+    };
+  }
+  if (formElement.keyUp) {
+    var customkeyUp = void 0;
+    if (formElement.keyUp.indexOf('func:this.props') !== -1) {
+      customkeyUp = this.props[formElement.keyUp.replace('func:this.props.', '')];
+    } else if (formElement.keyUp.indexOf('func:window') !== -1 && typeof window[formElement.keyUp.replace('func:window.', '')] === 'function') {
+      customkeyUp = window[formElement.keyUp.replace('func:window.', '')].bind(this);
+    }
+    passableProps.onKeyUp = function (e) {
+      customkeyUp(e, formElement);
+    };
   }
   return passableProps;
 }
@@ -466,8 +479,14 @@ function getFormCheckbox(options) {
     onValueChange = function onValueChange() /*event*/{
       // let text = event.target.value;
       var updatedStateProp = {};
-      updatedStateProp[formElement.name] = _this6.state[formElement.name] ? false : 'on';
-      // console.log({ updatedStateProp });
+      // console.debug('before', { updatedStateProp, formElement, }, event.target);
+      if (formElement.type === 'radio') {
+        // event.target.value = 'on';
+        updatedStateProp[formElement.name] = formElement.value || 'on';
+      } else {
+        updatedStateProp[formElement.name] = _this6.state[formElement.name] ? false : 'on';
+      }
+      // console.debug('after', { updatedStateProp, formElement, }, event.target);
       _this6.setState(updatedStateProp);
     };
   }
@@ -478,7 +497,8 @@ function getFormCheckbox(options) {
     getFormLabel(formElement),
     _react2.default.createElement('input', (0, _extends3.default)({}, formElement.passProps, {
       type: formElement.type || 'checkbox',
-      checked: this.state[formElement.name],
+      name: formElement.name,
+      checked: formElement.type === 'radio' ? this.state[formElement.name] === formElement.value : this.state[formElement.name],
       onChange: onValueChange
     })),
     _react2.default.createElement(

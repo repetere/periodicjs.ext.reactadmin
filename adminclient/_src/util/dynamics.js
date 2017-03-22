@@ -94,7 +94,7 @@ var _handleFetchPaths = exports._handleFetchPaths = function _handleFetchPaths(l
  * Sets a configurable 404 error component or sets a default 404 component
  */
 var fetchErrorContent = exports.fetchErrorContent = function _fetchErrorContent(e, type, resources) {
-  console.debug('fetchErrorContent', { e: e, type: type });
+  console.debug('fetchErrorContent', e, { type: type });
   var getState = _getState.call(this);
   var state = getState();
   var custom404Error = void 0;

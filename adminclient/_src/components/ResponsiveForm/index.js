@@ -135,7 +135,7 @@ var ResponsiveForm = function (_Component) {
     _this.state = (0, _assign2.default)({
       formDataError: null,
       formDataErrors: {},
-      formDataStatusDate: new Date(),
+      __formDataStatusDate: new Date().toString(),
       formDataLists: {},
       formDataTables: {},
       formDataFiles: {}
@@ -199,9 +199,15 @@ var ResponsiveForm = function (_Component) {
       var formElementFields = [];
       var getCBFromString = _FormHelpers.getCallbackFromString.bind(this);
       var formNameFields = _FormHelpers.setFormNameFields.bind(this);
+      var __formStateUpdate = function __formStateUpdate() {
+        _this2.setState({
+          __formDataStatusDate: new Date().toString()
+        });
+      };
 
       delete formdata.formDataLists;
-      delete formdata.formDataStatusDate;
+      delete formdata.__formDataStatusDate;
+      // delete formdata.__formStateRandUpdate;
       delete formdata.formDataTables;
 
       // console.debug('this.props.formgroups', this.props.formgroups, { hiddenInputs, });
@@ -234,13 +240,14 @@ var ResponsiveForm = function (_Component) {
       }
       // console.debug({ submitFormData, formdata });
       if (validationErrors && (0, _keys2.default)(validationErrors).length < 1) {
-        this.setState({ formDataErrors: {} });
+        __formStateUpdate();
       }
       if (validationErrors && (0, _keys2.default)(validationErrors).length > 0) {
         this.setState({ formDataErrors: validationErrors });
         console.debug('has errors', validationErrors, { submitFormData: submitFormData });
       } else if (!this.props.onSubmit) {
         this.props.debug(submitFormData);
+        __formStateUpdate();
       } else if (typeof this.props.onSubmit === 'string' && this.props.onSubmit.indexOf('func:this.props') !== -1) {
         delete formdata.formDataFiles;
         delete formdata.formDataErrors;
@@ -250,10 +257,12 @@ var ResponsiveForm = function (_Component) {
         } else {
           this.props[this.props.onSubmit.replace('func:this.props.', '')](submitFormData);
         }
+        __formStateUpdate();
       } else if (typeof this.props.onSubmit === 'string' && this.props.onSubmit.indexOf('func:window') !== -1) {
         delete formdata.formDataFiles;
         delete formdata.formDataErrors;
         window[this.props.onSubmit.replace('func:this.props.', '')].call(this, submitFormData);
+        __formStateUpdate();
       } else if (typeof this.props.onSubmit !== 'function') {
         var fetchOptions = this.props.onSubmit;
         var formBody = new FormData();
@@ -296,6 +305,9 @@ var ResponsiveForm = function (_Component) {
             } else {
               _this2.props.createNotification({ text: 'Saved', timeout: 4000, type: 'success' });
             }
+            if (!fetchOptions.successCallback && !fetchOptions.responseCallback) {
+              __formStateUpdate();
+            }
           }
           if (fetchOptions.successCallback || fetchOptions.responseCallback) {
             var successCallback = fetchOptions.successCallback ? getCBFromString(fetchOptions.successCallback) : false;
@@ -322,6 +334,7 @@ var ResponsiveForm = function (_Component) {
                   responseCallback(successData, submitFormData);
                 }
               }
+              __formStateUpdate();
             });
           } else {
             return res.json();
@@ -333,6 +346,7 @@ var ResponsiveForm = function (_Component) {
           } else {
             _this2.props.onError(e);
           }
+          __formStateUpdate();
         });
       } else {
         this.props.onSubmit(submitFormData);
@@ -435,6 +449,7 @@ var ResponsiveForm = function (_Component) {
           } else if (formElement.type === 'group') {
             return _this3.getFormGroup({ formElement: formElement, i: j, groupElements: formElement.groupElements.map(getFormElements) });
           } else {
+            formElement.passProps = (0, _assign2.default)({}, formElement.passProps, { type: formElement.type });
             return _this3.getFormTextInputArea({ formElement: formElement, i: j, formgroup: formgroup });
 
             // return <Column key={j} {...formElement.layoutProps}>{`${formElement.label || formElement.name }(${formElement.type || 'unknown'}):${ this.state[formElement.name] || formElement.value }`}</Column>;
@@ -551,7 +566,9 @@ var ResponsiveForm = function (_Component) {
       if (this.props.cardForm) {
         return _react2.default.createElement(
           _reBulma.Card,
-          (0, _extends3.default)({ className: '__ra_rf' }, this.props.cardFormProps),
+          (0, _extends3.default)({ className: '__ra_rf' }, (0, _assign2.default)({}, {
+            isFullwidth: true
+          }, this.props.cardFormProps)),
           _react2.default.createElement(
             _reBulma.CardContent,
             null,

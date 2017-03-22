@@ -8,6 +8,10 @@ var _stringify = require('babel-runtime/core-js/json/stringify');
 
 var _stringify2 = _interopRequireDefault(_stringify);
 
+var _assign = require('babel-runtime/core-js/object/assign');
+
+var _assign2 = _interopRequireDefault(_assign);
+
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
@@ -19,18 +23,21 @@ var _flat2 = _interopRequireDefault(_flat);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var RawOutput = function RawOutput(props) {
+  console.debug('GOT TO RAWOUTPUT');
   var displayProp = '';
   var displayData = '';
   try {
+    var propData = (0, _assign2.default)({}, props, undefined.props.getState());
+    console.debug({ propData: propData });
     if (props.flattenRawData) {
-      var flattenedProps = Object({}, (0, _flat2.default)(props));
+      var flattenedProps = Object({}, (0, _flat2.default)(propData));
       displayProp = props.select ? flattenedProps[props.select] : flattenedProps;
     } else {
-      displayProp = props.select ? props[props.select] : props;
+      displayProp = props.select ? propData[props.select] : propData;
     }
     displayData = props.display ? displayProp.toString() : (0, _stringify2.default)(displayProp, null, 2);
 
-    // console.debug({ props, displayData, displayProp, });
+    console.debug({ props: props, displayData: displayData, displayProp: displayProp });
   } catch (e) {
     if (!global) {
       console.error(e);

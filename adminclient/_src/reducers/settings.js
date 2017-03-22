@@ -160,6 +160,13 @@ var defaultUserNavigation = {
         }, {
           component: 'MenuAppLink',
           props: {
+            href: '/r-admin/content/testform',
+            label: 'Test Form',
+            id: 'tforms'
+          }
+        }, {
+          component: 'MenuAppLink',
+          props: {
             href: '/r-admin/content/dynamics',
             label: 'Dynamics',
             id: 'dynamics'
