@@ -11,6 +11,7 @@ export function getCallbackFromString(successCBProp) {
 }
 export function setAddNameToName(options) {
   let { formdata, formElementFields, formElm, } = options;
+  let recursiveSetAddNameToName = setAddNameToName.bind(this);
   // console.debug('addNameToName','(formElm.passProps && formElm.passProps.state===isDisabled)',(formElm.passProps && formElm.passProps.state==='isDisabled'),{ formElm });
   // skip if null, or disabled
   // console.debug({ formElm, });
@@ -22,11 +23,11 @@ export function setAddNameToName(options) {
     //
   } else if (formElm.type === 'group') {
     if (formElm.groupElements && formElm.groupElements.length) {
-      formElm.groupElements.forEach(formElm => setAddNameToName({ formdata, formElementFields, formElm, }));
+      formElm.groupElements.forEach(formElm => recursiveSetAddNameToName({ formdata, formElementFields, formElm, }));
     }
   } else if (formElm.name) {
     formElementFields.push(formElm.name);
-    if (formElm.type === 'hidden' || this.props.setInitialValues) { 
+    if (formElm.type === 'hidden' || (this.props && this.props.setInitialValues)) { 
       if (formElm.type === 'radio') {
         if (this.state || (formElm.checked || (formElm.passProps && formElm.passProps.checked))){
           formdata[ formElm.name ] = formElm.value;

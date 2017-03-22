@@ -29,22 +29,23 @@ function setAddNameToName(options) {
   var formdata = options.formdata,
       formElementFields = options.formElementFields,
       formElm = options.formElm;
+
+  var recursiveSetAddNameToName = setAddNameToName.bind(this);
   // console.debug('addNameToName','(formElm.passProps && formElm.passProps.state===isDisabled)',(formElm.passProps && formElm.passProps.state==='isDisabled'),{ formElm });
   // skip if null, or disabled
   // console.debug({ formElm, });
-
   if (!formElm || formElm.disabled || formElm.passProps && formElm.passProps.state === 'isDisabled') {
     // console.debug('skip', formElm);
     //
   } else if (formElm.type === 'group') {
     if (formElm.groupElements && formElm.groupElements.length) {
       formElm.groupElements.forEach(function (formElm) {
-        return setAddNameToName({ formdata: formdata, formElementFields: formElementFields, formElm: formElm });
+        return recursiveSetAddNameToName({ formdata: formdata, formElementFields: formElementFields, formElm: formElm });
       });
     }
   } else if (formElm.name) {
     formElementFields.push(formElm.name);
-    if (formElm.type === 'hidden' || this.props.setInitialValues) {
+    if (formElm.type === 'hidden' || this.props && this.props.setInitialValues) {
       if (formElm.type === 'radio') {
         if (this.state || formElm.checked || formElm.passProps && formElm.passProps.checked) {
           formdata[formElm.name] = formElm.value;
