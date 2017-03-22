@@ -187,6 +187,9 @@
                   },
                   {
                     "component":"ResponsiveForm",
+                    "thisprops":{
+                      "formdata":["user","userdata"]
+                    },
                     "props":{
                       "notificationForm":{},
                       "onSubmit":{
@@ -203,6 +206,11 @@
                               "type":"text",
                               "name":"search",
                               "label":"SEARCH"
+                            },
+                            {
+                              "type":"text",
+                              "name":"email",
+                              "label":"Email"
                             },
                             {
                               "type":"text",
@@ -225,7 +233,7 @@
                                 },
                                 "props":{
                                   "onclickThisProp":"formdata",
-                                  "onclickBaseUrl": "/r-admin/content/users/:id",
+                                  "onclickBaseUrl": "/r-admin/content/periodic/users/:id",
                                   "onclickLinkParams": [{
                                     "key": ":id", 
                                     "val": "_id"

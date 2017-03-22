@@ -174,13 +174,16 @@ export function getFormDatatable(options){
       selectOptionSortIdLabel: formElement.selectOptionSortIdLabel,
       flattenRowData: formElement.flattenRowData,
       addNewRows: formElement.addNewRows,
+      replaceButton: false,
+      uploadAddButton: true,
       useInputRows: formElement.useInputRows,
       rows: initialValue,
       headers: tableHeaders,
       limit: 5000,
       hasPagination: false,
       tableForm:true,
-    }
+    },
+    formElement.passProps
   );// formElement.datalist,
   // console.debug({tableHeaders})
   // let shape ={};// this is the header of of the footer which has elements for new insert

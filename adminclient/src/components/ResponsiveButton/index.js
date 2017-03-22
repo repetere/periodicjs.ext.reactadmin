@@ -30,7 +30,7 @@ class ResponsiveButton extends Component {
   }
   getHref(options) {
     let { thisDotProp, clickThisProp, clickPropObject, clickBaseUrl, clickLinkParams, clickPassProps, /*clickprop, clickFetchProps, clickSuccessProps, */ } = options;
-    console.debug('getHref',{options})  
+    // console.debug('getHref',{options})  
     let linkSelectionProp = (clickThisProp)
       ? thisDotProp[clickThisProp]
       : clickPropObject;
