@@ -111,7 +111,20 @@ function getPassablePropsKeyEvents(passableProps, formElement) {
     } else if (formElement.onBlur.indexOf('func:window') !== -1 && typeof window[ formElement.onBlur.replace('func:window.', '') ] ==='function') {
       customonBlur= window[ formElement.onBlur.replace('func:window.', '') ].bind(this);
     } 
-    passableProps.onBlur = customonBlur;
+    passableProps.onBlur = (e) => {
+      customonBlur(e, formElement);
+    };
+  }
+  if (formElement.keyUp) {
+    let customkeyUp;
+    if (formElement.keyUp.indexOf('func:this.props') !== -1) {
+      customkeyUp= this.props[ formElement.keyUp.replace('func:this.props.', '') ];
+    } else if (formElement.keyUp.indexOf('func:window') !== -1 && typeof window[ formElement.keyUp.replace('func:window.', '') ] ==='function') {
+      customkeyUp= window[ formElement.keyUp.replace('func:window.', '') ].bind(this);
+    } 
+    passableProps.onKeyUp = (e) => {
+      customkeyUp(e, formElement);
+    };
   }
   return passableProps;
 }
@@ -368,8 +381,14 @@ export function getFormCheckbox(options) {
     onValueChange = (/*event*/) => {
       // let text = event.target.value;
       let updatedStateProp = {};
-      updatedStateProp[ formElement.name ] = (this.state[ formElement.name ] ) ? false : 'on';
-      // console.log({ updatedStateProp });
+      // console.debug('before', { updatedStateProp, formElement, }, event.target);
+      if (formElement.type === 'radio') {
+        // event.target.value = 'on';
+        updatedStateProp[ formElement.name ] = formElement.value ||'on';
+      } else {
+        updatedStateProp[ formElement.name ] = (this.state[ formElement.name ] ) ? false : 'on';
+      }
+      // console.debug('after', { updatedStateProp, formElement, }, event.target);
       this.setState(updatedStateProp);
     };
   }
@@ -378,7 +397,10 @@ export function getFormCheckbox(options) {
     {getFormLabel(formElement)}  
     <input {...formElement.passProps}
       type={formElement.type || 'checkbox'}
-      checked={this.state[ formElement.name ]}
+      name={formElement.name}
+      checked={(formElement.type === 'radio')
+        ? this.state[ formElement.name ] === formElement.value
+        : this.state[ formElement.name ]}
       onChange={onValueChange}
     >
     </input>

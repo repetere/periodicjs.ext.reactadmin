@@ -73,7 +73,7 @@ class ResponsiveForm extends Component{
       {
         formDataError: null,
         formDataErrors: {},
-        formDataStatusDate: new Date(),
+        __formDataStatusDate: new Date().toString(),
         formDataLists:{},
         formDataTables:{},
         formDataFiles:{},
@@ -136,9 +136,16 @@ class ResponsiveForm extends Component{
     let formElementFields = [];
     const getCBFromString = getCallbackFromString.bind(this);
     const formNameFields = setFormNameFields.bind(this);
+    const __formStateUpdate = () => {
+      this.setState({
+        __formDataStatusDate: new Date().toString(),
+        // __formStateRandUpdate: Math.random(),
+      });
+    };
     
     delete formdata.formDataLists;
-    delete formdata.formDataStatusDate;
+    delete formdata.__formDataStatusDate;
+    // delete formdata.__formStateRandUpdate;
     delete formdata.formDataTables;
 
     // console.debug('this.props.formgroups', this.props.formgroups, { hiddenInputs, });
@@ -171,13 +178,14 @@ class ResponsiveForm extends Component{
     }
     // console.debug({ submitFormData, formdata });
     if (validationErrors && Object.keys(validationErrors).length < 1) {
-      this.setState({ formDataErrors: {}, });
+      __formStateUpdate();
     }
     if (validationErrors && Object.keys(validationErrors).length > 0) {
       this.setState({ formDataErrors: validationErrors, });
       console.debug('has errors', validationErrors, { submitFormData, });
     } else if (!this.props.onSubmit) {
       this.props.debug(submitFormData);
+      __formStateUpdate();
     } else if (typeof this.props.onSubmit === 'string' && this.props.onSubmit.indexOf('func:this.props') !== -1) {
       delete formdata.formDataFiles;
       delete formdata.formDataErrors;
@@ -187,10 +195,12 @@ class ResponsiveForm extends Component{
       } else {
         this.props[this.props.onSubmit.replace('func:this.props.', '')](submitFormData);
       }
+      __formStateUpdate();
     } else if (typeof this.props.onSubmit === 'string' && this.props.onSubmit.indexOf('func:window') !== -1) {
       delete formdata.formDataFiles;
       delete formdata.formDataErrors;
-      window[this.props.onSubmit.replace('func:this.props.', '')].call(this,submitFormData);
+      window[ this.props.onSubmit.replace('func:this.props.', '') ].call(this, submitFormData);
+      __formStateUpdate();
     } else if (typeof this.props.onSubmit !== 'function') {
       let fetchOptions = this.props.onSubmit;
       let formBody = new FormData();
@@ -242,6 +252,9 @@ class ResponsiveForm extends Component{
             } else {
               this.props.createNotification({ text: 'Saved', timeout:4000, type:'success',  });
             }
+            if (!fetchOptions.successCallback && !fetchOptions.responseCallback){
+              __formStateUpdate();
+            }
           } 
           if (fetchOptions.successCallback || fetchOptions.responseCallback) {
             let successCallback = (fetchOptions.successCallback)
@@ -274,6 +287,7 @@ class ResponsiveForm extends Component{
                     responseCallback(successData, submitFormData);
                   }
                 }
+                __formStateUpdate();
               });
           } else {
             return res.json();
@@ -286,6 +300,7 @@ class ResponsiveForm extends Component{
           } else {
             this.props.onError(e);
           }
+          __formStateUpdate();
         });
     } else {
       this.props.onSubmit(submitFormData);
@@ -370,6 +385,7 @@ class ResponsiveForm extends Component{
         } else if (formElement.type === 'group') {
           return this.getFormGroup({ formElement,  i:j, groupElements:formElement.groupElements.map(getFormElements), }); 
         } else {
+          formElement.passProps = Object.assign({}, formElement.passProps, { type: formElement.type, });
           return this.getFormTextInputArea({ formElement,  i:j, formgroup, });
 
           // return <Column key={j} {...formElement.layoutProps}>{`${formElement.label || formElement.name }(${formElement.type || 'unknown'}):${ this.state[formElement.name] || formElement.value }`}</Column>;
@@ -458,7 +474,9 @@ class ResponsiveForm extends Component{
       : [];
 
     if (this.props.cardForm) {
-      return (<Card className="__ra_rf" {...this.props.cardFormProps}>
+      return (<Card className="__ra_rf" {...Object.assign({}, {
+        isFullwidth: true,
+      }, this.props.cardFormProps) }>
         <CardContent>
           {formGroupData}
           {this.props.children}

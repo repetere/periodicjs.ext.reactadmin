@@ -33,8 +33,9 @@
       To create a production bundle, use `npm run build`.
     -->
     <script type="text/javascript">
-      var testWindowFunction = function _testWindowFunction(debugdata){
-        console.debug('debugdata',debugdata,'this',this);
+      var testWindowFunction = function _testWindowFunction(debugdata,formElement){
+        console.debug('debugdata',debugdata,'this',this,'formElement',formElement);
+        console.debug(this.state[formElement.name]);
         return debugdata;
       }
     </script>
