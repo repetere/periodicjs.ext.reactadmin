@@ -111,7 +111,7 @@ class ResponsiveTable extends Component {
     let rows = props.rows || [];
     let headers = getOptionsHeaders(props);
     if (props.flattenRowData) {
-      rows = rows.map(row => flatten(row, props.flattenRowDataOptions));
+      rows = rows.map(row => Object.assign({}, row, flatten(row, props.flattenRowDataOptions)));
     }
 
     this.state = {
@@ -149,7 +149,7 @@ class ResponsiveTable extends Component {
     let rows = nextProps.rows || [];
     let headers = getOptionsHeaders(nextProps);
     if (nextProps.flattenRowData) {
-      rows = rows.map(row => flatten(row, nextProps.flattenRowDataOptions));
+      rows = rows.map(row => Object.assign({}, row, flatten(row, nextProps.flattenRowDataOptions)));
     }
     // console.debug('nextProps.rows', nextProps.rows);
 
@@ -367,6 +367,14 @@ class ResponsiveTable extends Component {
     // console.debug({ value, row, options, header, });
     // console.debug(options.rowIndex,this.state.selectedRowIndex)
     let returnValue = value;
+    if (header && header.stringify) {
+      value = JSON.stringify(value, null, 2);
+      returnValue = JSON.stringify(value, null, 2);
+    }
+    if (header && header.tostring) {
+      value = value.toString();
+      returnValue = value.toString();
+    }
     if (header && header.selectedOptionRowHeader) {
       return <input type="radio" checked={(options.rowIndex===this.state.selectedRowIndex)?true:false} />;
     } else if (this.props.useInputRows && header && header.formtype && header.formtype==='textarea') {
@@ -389,7 +397,8 @@ class ResponsiveTable extends Component {
           this.updateInlineRowText({ name, text, rowIndex, });
         }}
       >{value}</rb.Input>;
-    } else if (this.props.useInputRows && header && header.formtype && header.formtype==='select') {
+    } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'select') {
+      let selectOptions = header.formoptions || [];
       return <rb.Select
         value={value}
         {...header.selectProps}
@@ -399,7 +408,7 @@ class ResponsiveTable extends Component {
           let rowIndex = options.rowIndex;
           this.updateInlineRowText({ name, text, rowIndex, });
         }}>
-        {header.formoptions.map((opt, k) => {
+        {selectOptions.map((opt, k) => {
           return <option key={k} value={opt.value}>{opt.label || opt.value}</option>;
         })}
       </rb.Select>;

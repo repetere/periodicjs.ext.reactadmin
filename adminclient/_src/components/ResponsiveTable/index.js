@@ -8,6 +8,10 @@ var _extends2 = require('babel-runtime/helpers/extends');
 
 var _extends3 = _interopRequireDefault(_extends2);
 
+var _stringify = require('babel-runtime/core-js/json/stringify');
+
+var _stringify2 = _interopRequireDefault(_stringify);
+
 var _typeof2 = require('babel-runtime/helpers/typeof');
 
 var _typeof3 = _interopRequireDefault(_typeof2);
@@ -199,7 +203,7 @@ var ResponsiveTable = function (_Component) {
     var headers = getOptionsHeaders(props);
     if (props.flattenRowData) {
       rows = rows.map(function (row) {
-        return (0, _flat2.default)(row, props.flattenRowDataOptions);
+        return (0, _assign2.default)({}, row, (0, _flat2.default)(row, props.flattenRowDataOptions));
       });
     }
 
@@ -243,7 +247,7 @@ var ResponsiveTable = function (_Component) {
       var headers = getOptionsHeaders(nextProps);
       if (nextProps.flattenRowData) {
         rows = rows.map(function (row) {
-          return (0, _flat2.default)(row, nextProps.flattenRowDataOptions);
+          return (0, _assign2.default)({}, row, (0, _flat2.default)(row, nextProps.flattenRowDataOptions));
         });
       }
       // console.debug('nextProps.rows', nextProps.rows);
@@ -490,6 +494,14 @@ var ResponsiveTable = function (_Component) {
       // console.debug({ value, row, options, header, });
       // console.debug(options.rowIndex,this.state.selectedRowIndex)
       var returnValue = value;
+      if (header && header.stringify) {
+        value = (0, _stringify2.default)(value, null, 2);
+        returnValue = (0, _stringify2.default)(value, null, 2);
+      }
+      if (header && header.tostring) {
+        value = value.toString();
+        returnValue = value.toString();
+      }
       if (header && header.selectedOptionRowHeader) {
         return _react2.default.createElement('input', { type: 'radio', checked: options.rowIndex === this.state.selectedRowIndex ? true : false });
       } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'textarea') {
@@ -519,6 +531,7 @@ var ResponsiveTable = function (_Component) {
           value
         );
       } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'select') {
+        var selectOptions = header.formoptions || [];
         return _react2.default.createElement(
           rb.Select,
           (0, _extends3.default)({
@@ -530,7 +543,7 @@ var ResponsiveTable = function (_Component) {
               var rowIndex = options.rowIndex;
               _this4.updateInlineRowText({ name: name, text: text, rowIndex: rowIndex });
             } }),
-          header.formoptions.map(function (opt, k) {
+          selectOptions.map(function (opt, k) {
             return _react2.default.createElement(
               'option',
               { key: k, value: opt.value },

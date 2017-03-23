@@ -488,7 +488,7 @@ export function getSliderInput(options) {
     let customCallbackfunction;
     if (formElement.customOnChange.indexOf('func:this.props') !== -1) {
       customCallbackfunction= this.props[ formElement.customOnChange.replace('func:this.props.', '') ];
-    } else if (formElement.customOnChange.indexOf('func:window') !== -1) {
+    } else if (formElement.customOnChange.indexOf('func:window') !== -1 && typeof window[ formElement.customOnChange.replace('func:window.', '') ] ==='function') {
       customCallbackfunction= window[ formElement.customOnChange.replace('func:window.', '') ].bind(this);
     } 
     passableProps.onAfterChange = customCallbackfunction;
