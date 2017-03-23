@@ -179,7 +179,7 @@ const user = {
         AsyncStorage.removeItem(constants.jwt_token.TOKEN_DATA),
         AsyncStorage.removeItem(constants.jwt_token.PROFILE_JSON),
         AsyncStorage.removeItem(constants.user.MFA_AUTHENTICATED),
-        utilities.flushCacheConfiguration(['manifest.authenticated', 'user.navigation', 'user.preferences']),
+        utilities.flushCacheConfiguration(['manifest.authenticated', 'user.navigation', 'user.preferences',]),
         // AsyncStorage.removeItem(constants.pages.ASYNCSTORAGE_KEY),
       ])
         .then((/*results*/) => {
@@ -221,17 +221,17 @@ const user = {
           if (hasCached) {
             dispatch(this.preferenceSuccessResponse({
               data: {
-                settings: result.user.preferences
-              }
+                settings: result.user.preferences,
+              },
             }));
           }
-          return utilities.fetchComponent(`${ basename }/load/preferences`, options)()
+          return utilities.fetchComponent(`${ basename }/load/preferences`, options)();
         })
         .then(response => {
           dispatch(this.preferenceSuccessResponse(response));
           return response;
         }, e => {
-          if (!hasCached) dispatch(this.preferenceErrorResponse(e))
+          if (!hasCached) dispatch(this.preferenceErrorResponse(e));
         });
     };
     return utilities.setCacheConfiguration(preferencesAction, 'user.preferences');
@@ -252,17 +252,17 @@ const user = {
           if (hasCached) {
             dispatch(this.navigationSuccessResponse({
               data: {
-                settings: result.user.navigation
-              }
+                settings: result.user.navigation,
+              },
             }));
           }
-          return utilities.fetchComponent(`${ basename }/load/navigation${(state.settings.ui.initialization.refresh_navigation)?'?refresh=true':''}`, options)()
+          return utilities.fetchComponent(`${ basename }/load/navigation${(state.settings.ui.initialization.refresh_navigation)?'?refresh=true':''}`, options)();
         })
         .then(response => {
           dispatch(this.navigationSuccessResponse(response));
           return response;
         }, e => {
-          if (!hasCached) dispatch(this.navigationErrorResponse(e))
+          if (!hasCached) dispatch(this.navigationErrorResponse(e));
         });
     };
     return utilities.setCacheConfiguration(navigationAction, 'user.navigation');
@@ -310,10 +310,13 @@ const user = {
       let state = getState();
       let extensionattributes = (state.user.userdata) ? state.user.userdata.extensionattributes : false;
       let queryparams = qs.parse((window.location.search.charAt(0) === '?') ? window.location.search.substr(1, window.location.search.length) : window.location.search);
+      let formReturnURL = (!__global__returnURL && state && state.routing && state.routing.locationBeforeTransitions && state.routing.locationBeforeTransitions.pathname && state.dynamic && state.dynamic.formdata && (state.dynamic.formdata.__loginReturnURL || state.dynamic.formdata.__loginLastURL))
+        ? state.dynamic.formdata.__loginReturnURL || state.routing.locationBeforeTransitions.pathname
+        : false;  
       let returnUrl = (queryparams.return_url)
         ? queryparams.return_url
-        : __returnURL || __global__returnURL || false;
-      // console.log({ returnUrl });
+        : __returnURL || __global__returnURL || formReturnURL || false;
+      console.debug({ formReturnURL,returnUrl, });
       if (state.settings.auth.enforce_mfa || (extensionattributes && extensionattributes.login_mfa)) {
         if (state.user.isMFAAuthenticated) {
           if (!noRedirect) {
@@ -334,9 +337,10 @@ const user = {
           else dispatch(push(state.settings.auth.logged_in_homepage));
         }
         if (state.user.isLoggedIn && returnUrl) dispatch(push(returnUrl));
-        if (state.settings.auth.closeModal) {
+        if (state.notification.modals && state.notification.modals.length && state.notification.modals[0]&& state.notification.modals[0].pathname && (state.notification.modals[0].pathname==='/signin' || state.notification.modals[0].pathname==='/login')) {
           dispatch(notification.hideModal('last'));
         }
+        __global__returnURL = false;
         return true;
       } 
     };
@@ -349,7 +353,7 @@ const user = {
         'Content-Type': 'application/json',
         'x-access-token': undefined,
       },
-      body: JSON.stringify(formdata)
+      body: JSON.stringify(formdata),
     };
     return (dispatch, getState) => {
       let state = getState();
@@ -357,7 +361,7 @@ const user = {
       let headers = state.settings.userprofile.options.headers;
       delete headers.clientid_default;
       let options = Object.assign({}, requestOptions);
-      options.headers = Object.assign({}, options.headers, { 'x-access-token': state.user.jwt_token });
+      options.headers = Object.assign({}, options.headers, { 'x-access-token': state.user.jwt_token, });
       return utilities.fetchComponent(`${ basename }/load/mfa`, options)()
         .then(response => {
           if (response && response.data && response.data.authenticated) {
@@ -365,11 +369,11 @@ const user = {
             return AsyncStorage.setItem(constants.user.MFA_AUTHENTICATED, true)
               .then(() => response, e => Promise.reject(e));
           }
-          return response
+          return response;
         })
         .then(response => {
           if (response.result === 'error') dispatch(notification.errorNotification(new Error(response.data.error)));
-          return this.enforceMFA()(dispatch, getState)
+          return this.enforceMFA()(dispatch, getState);
         })
         .catch(e => {
           dispatch(notification.errorNotification(e));
@@ -405,15 +409,15 @@ const user = {
               if (result.user.navigation) {
                 dispatch(this.navigationSuccessResponse({
                   data: {
-                    settings: result.user.navigation
-                  }
+                    settings: result.user.navigation,
+                  },
                 }));
               }
               if (result.user.preferences) {
                 dispatch(this.preferenceSuccessResponse({
                   data: {
-                    settings: result.user.preferences
-                  }
+                    settings: result.user.preferences,
+                  },
                 }));
               }
             }
@@ -434,18 +438,18 @@ const user = {
                   let responses = Object.keys(response.data.settings).reduce((result, key) => {
                     let data = Object.assign({}, response.data);
                     data.settings = response.data.settings[key];
-                    result[key] = { data };
+                    result[key] = { data, };
                     return result;
                   }, {});
                   dispatch(this.navigationSuccessResponse(responses.navigation));
                   dispatch(this.preferenceSuccessResponse(responses.preferences));
                   dispatch(manifest.receivedManifestData(responses.manifest.data.settings));
-                  if (isInitial) manifest.fetchManifest(Object.assign(options, { skip_cache: true }))(dispatch, getState);
+                  if (isInitial) manifest.fetchManifest(Object.assign(options, { skip_cache: true, }))(dispatch, getState);
                   return {
                     data: {
                       versions: response.data.versions,
-                      settings: responses
-                    }
+                      settings: responses,
+                    },
                   };
                 })
                 .catch(e => {
@@ -458,8 +462,8 @@ const user = {
               navigation: 'user.navigation',
               preferences: 'user.preferences',
               manifest: 'manifest.authenticated',
-              unauthenticated_manifest: 'manifest.unauthenticated'
-            }, { multi: true })();
+              unauthenticated_manifest: 'manifest.unauthenticated',
+            }, { multi: true, })();
           })
           .catch(e => {
             console.log('OUTER FAILED', e);

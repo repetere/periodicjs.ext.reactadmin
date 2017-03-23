@@ -52,7 +52,7 @@ export function getRenderedComponent(componentObject, resources, debug) {
         _component: componentObject,
         _resources: resources,
       },
-    }, this.props,componentObject.props, this.props.getState())) : {};
+    }, this.props, componentObject.props, this.props.getState())) : {};
     let thisDotProps = (!React.DOM[ componentObject.component ] && !rebulma[ componentObject.component ]) ? this.props : null;
     let renderedCompProps = Object.assign({
       key: renderIndex,
@@ -120,7 +120,7 @@ export function getRenderedComponent(componentObject, resources, debug) {
           ? componentObject.children.map(childComponentObject => getRenderedComponent.call(this,
             (componentObject.bindprops)
               ? Object.assign({}, childComponentObject, {
-                props: Object.assign(renderedCompProps,childComponentObject.props,{key:renderIndex+Math.random()} )
+                props: Object.assign(renderedCompProps, childComponentObject.props, { key:renderIndex+Math.random(),  } ),
               })
               : childComponentObject, resources))
           : (typeof componentObject.children === 'undefined')
@@ -130,7 +130,7 @@ export function getRenderedComponent(componentObject, resources, debug) {
     }
    
   } catch (e) {
-    console.error(e,(e.stack)?e.stack:'no stack');
+    console.error(e, (e.stack)?e.stack:'no stack');
     console.error({ componentObject, resources, }, this);
     return createElement('div', {}, e.toString());
   }

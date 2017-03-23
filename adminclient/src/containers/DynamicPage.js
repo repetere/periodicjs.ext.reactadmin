@@ -20,13 +20,16 @@ const determineDynamicRouteAccess = function (state, pathname) {
       unauthRoutes = utilities.findMatchingRoute(unauthRoutes, (state.settings.auth.admin_path) ? pathname.replace(state.settings.auth.admin_path, '') : pathname);
     }
     let hasDynamicRoute = Boolean(utilities.findMatchingRoute(state.manifest.containers, (state.settings.auth.admin_path) ? pathname.replace(state.settings.auth.admin_path, '') : pathname));
-    return { authenticated: hasDynamicRoute, unauthenticated: Boolean(unauthRoutes) };
+    return { authenticated: hasDynamicRoute, unauthenticated: Boolean(unauthRoutes), };
   }
   return false;
 };
 
 const _handleComponentLifecycle = function () {
-  this.setState({ ui_is_loaded: false, async_data_is_loaded: false });
+  this.setState({ ui_is_loaded: false, async_data_is_loaded: false, });
+  if(window && window.scrollTo){
+    window.scrollTo(0, 0);
+  }
   let parentState = this.props.getState();
   let pathname = (this.props.location.pathname) ? this.props.location.pathname : window.location.href || window.location.pathname;
   let isAuthenticated = isLoggedIn();
@@ -58,7 +61,8 @@ const _handleComponentLifecycle = function () {
     }
     return this.fetchDynamicErrorContent();
   } else if (parentState.manifest && parentState.manifest.hasLoaded) {
-    if (pathname === '/mfa' && window.location.pathname === '/mfa'){       return this.fetchData();
+    if (pathname === '/mfa' && window.location.pathname === '/mfa'){
+      return this.fetchData();
     } else {
       let isValid = this.props.enforceMFA(true);
       if (isValid) this.fetchData();

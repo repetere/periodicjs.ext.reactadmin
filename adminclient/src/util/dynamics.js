@@ -55,12 +55,18 @@ export const _handleFetchPaths = function (layout, resources = {}, options = {})
   return utilities.fetchPaths(state.settings.basename, resources, headers)
     .then((typeof options.onSuccess === 'function') ? options.onSuccess : _resources => {
       this.uiLayout = this.getRenderedComponent(layout, _resources);
+      // if(window && window.scrollTo){
+      //   window.scrollTo(0, 0);
+      // }
       this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
     })
     .catch((typeof options.onError === 'function') ? e => options.onError( e, 'fetchResources', resources) : e => {
       // console.debug('USING FALLBACK ONERROR ');
       if (this.props && this.props.errorNotification) this.props.errorNotification(e);
       else console.error(e);
+      // if(window && window.scrollTo){
+      //   window.scrollTo(0, 0);
+      // }
       this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
     });
 };
@@ -69,7 +75,7 @@ export const _handleFetchPaths = function (layout, resources = {}, options = {})
  * Sets a configurable 404 error component or sets a default 404 component
  */
 export const fetchErrorContent = function _fetchErrorContent (e, type, resources) {
-  console.debug('fetchErrorContent', e, { type, });
+  console.debug('fetchErrorContent', e, { type, resources, });
   let getState = _getState.call(this);
   let state = getState();
   let custom404Error;
@@ -112,17 +118,17 @@ export const fetchSuccessContent = function _fetchSuccessContent (pathname, hasP
       });
     } else {
       this.uiLayout = this.getRenderedComponent(containers[pathname].layout);
+      // if(window && window.scrollTo){
+      //   window.scrollTo(0, 0);
+      // }
       this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
-      if(window && window.scrollTo){
-        window.scrollTo(0, 0);
-      }
     }
   } catch (e) {
     if (this.props && this.props.errorNotification) this.props.errorNotification(e);
     else console.error(e);
-    if(window && window.scrollTo){
-      window.scrollTo(0, 0);
-    }
+    // if(window && window.scrollTo){
+    //   window.scrollTo(0, 0);
+    // }
     this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
   }
 };
@@ -163,7 +169,7 @@ export const fetchDynamicContent = function _fetchDynamicContent (_pathname, onS
   }
 };
 
-export const fetchAction = function _fetchAction (pathname, fetchOptions, success, customThis) {
+export const fetchAction = function _fetchAction (pathname, fetchOptions, success) {
   // console.debug('in fetch action this', this,{ pathname, fetchOptions, success, customThis, });
   let state = _getState.call(this)();
   let headers = (state.settings && state.settings.userprofile && state.settings.userprofile.options && state.settings.userprofile.options.headers)
@@ -196,6 +202,8 @@ export const fetchAction = function _fetchAction (pathname, fetchOptions, succes
               successCallback = this.props.reduxRouter[ successCallbackProp.replace('func:this.props.reduxRouter.', '') ];
             } else if (typeof successCallbackProp === 'string' && successCallbackProp.indexOf('func:this.props') !== -1) { 
               successCallback = this.props[ success.successCallback.replace('func:this.props.', '') ];
+            } else if (typeof successCallbackProp === 'string' && successCallbackProp.indexOf('func:window') !== -1 && typeof window[ success.successCallback.replace('func:window.', '') ]==='function') { 
+              successCallback = window[ success.successCallback.replace('func:window.', '') ].bind(this);
             }
             if (fetchOptions.successCallback === 'func:this.props.setDynamicData') {
               this.props.setDynamicData(success.dynamicField, success.successProps || successData);

@@ -80,12 +80,18 @@ var _handleFetchPaths = exports._handleFetchPaths = function _handleFetchPaths(l
 
   return _index2.default.fetchPaths(state.settings.basename, resources, headers).then(typeof options.onSuccess === 'function' ? options.onSuccess : function (_resources) {
     _this.uiLayout = _this.getRenderedComponent(layout, _resources);
+    // if(window && window.scrollTo){
+    //   window.scrollTo(0, 0);
+    // }
     _this.setState({ ui_is_loaded: true, async_data_is_loaded: true });
   }).catch(typeof options.onError === 'function' ? function (e) {
     return options.onError(e, 'fetchResources', resources);
   } : function (e) {
     // console.debug('USING FALLBACK ONERROR ');
     if (_this.props && _this.props.errorNotification) _this.props.errorNotification(e);else console.error(e);
+    // if(window && window.scrollTo){
+    //   window.scrollTo(0, 0);
+    // }
     _this.setState({ ui_is_loaded: true, async_data_is_loaded: true });
   });
 };
@@ -94,7 +100,7 @@ var _handleFetchPaths = exports._handleFetchPaths = function _handleFetchPaths(l
  * Sets a configurable 404 error component or sets a default 404 component
  */
 var fetchErrorContent = exports.fetchErrorContent = function _fetchErrorContent(e, type, resources) {
-  console.debug('fetchErrorContent', e, { type: type });
+  console.debug('fetchErrorContent', e, { type: type, resources: resources });
   var getState = _getState.call(this);
   var state = getState();
   var custom404Error = void 0;
@@ -134,16 +140,16 @@ var fetchSuccessContent = exports.fetchSuccessContent = function _fetchSuccessCo
       });
     } else {
       this.uiLayout = this.getRenderedComponent(containers[pathname].layout);
+      // if(window && window.scrollTo){
+      //   window.scrollTo(0, 0);
+      // }
       this.setState({ ui_is_loaded: true, async_data_is_loaded: true });
-      if (window && window.scrollTo) {
-        window.scrollTo(0, 0);
-      }
     }
   } catch (e) {
     if (this.props && this.props.errorNotification) this.props.errorNotification(e);else console.error(e);
-    if (window && window.scrollTo) {
-      window.scrollTo(0, 0);
-    }
+    // if(window && window.scrollTo){
+    //   window.scrollTo(0, 0);
+    // }
     this.setState({ ui_is_loaded: true, async_data_is_loaded: true });
   }
 };
@@ -178,7 +184,7 @@ var fetchDynamicContent = exports.fetchDynamicContent = function _fetchDynamicCo
   }
 };
 
-var fetchAction = exports.fetchAction = function _fetchAction(pathname, fetchOptions, success, customThis) {
+var fetchAction = exports.fetchAction = function _fetchAction(pathname, fetchOptions, success) {
   var _this2 = this;
 
   // console.debug('in fetch action this', this,{ pathname, fetchOptions, success, customThis, });
@@ -208,6 +214,8 @@ var fetchAction = exports.fetchAction = function _fetchAction(pathname, fetchOpt
           successCallback = _this2.props.reduxRouter[successCallbackProp.replace('func:this.props.reduxRouter.', '')];
         } else if (typeof successCallbackProp === 'string' && successCallbackProp.indexOf('func:this.props') !== -1) {
           successCallback = _this2.props[success.successCallback.replace('func:this.props.', '')];
+        } else if (typeof successCallbackProp === 'string' && successCallbackProp.indexOf('func:window') !== -1 && typeof window[success.successCallback.replace('func:window.', '')] === 'function') {
+          successCallback = window[success.successCallback.replace('func:window.', '')].bind(_this2);
         }
         if (fetchOptions.successCallback === 'func:this.props.setDynamicData') {
           _this2.props.setDynamicData(success.dynamicField, success.successProps || successData);

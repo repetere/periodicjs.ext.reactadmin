@@ -10,7 +10,7 @@ module.exports = function(periodic) {
   let defaultConfig = require(path.join(__dirname, '../config/settings.js')).development;
   let config = require(path.join(__dirname, '../../../content/config/extensions/periodicjs.ext.reactadmin/settings.js'));
   let extensionConfig = Object.assign({}, defaultConfig, { adminPath: 'p-admin', }, config[ appenvironment ]);
-  console.log({ extensionConfig });
+  // console.log({ extensionConfig });
   
   periodic.app.controller.extension.reactadmin = Object.assign({}, periodic.app.controller.extension.reactadmin, { settings:extensionConfig, });
 

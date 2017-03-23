@@ -77,6 +77,9 @@ var _handleComponentLifecycle = function _handleComponentLifecycle() {
   var _this = this;
 
   this.setState({ ui_is_loaded: false, async_data_is_loaded: false });
+  if (window && window.scrollTo) {
+    window.scrollTo(0, 0);
+  }
   var parentState = this.props.getState();
   var pathname = this.props.location.pathname ? this.props.location.pathname : window.location.href || window.location.pathname;
   var isAuthenticated = isLoggedIn();

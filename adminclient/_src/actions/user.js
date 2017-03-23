@@ -360,8 +360,9 @@ var user = {
       var state = getState();
       var extensionattributes = state.user.userdata ? state.user.userdata.extensionattributes : false;
       var queryparams = _querystring2.default.parse(window.location.search.charAt(0) === '?' ? window.location.search.substr(1, window.location.search.length) : window.location.search);
-      var returnUrl = queryparams.return_url ? queryparams.return_url : __returnURL || __global__returnURL || false;
-      // console.log({ returnUrl });
+      var formReturnURL = !__global__returnURL && state && state.routing && state.routing.locationBeforeTransitions && state.routing.locationBeforeTransitions.pathname && state.dynamic && state.dynamic.formdata && (state.dynamic.formdata.__loginReturnURL || state.dynamic.formdata.__loginLastURL) ? state.dynamic.formdata.__loginReturnURL || state.routing.locationBeforeTransitions.pathname : false;
+      var returnUrl = queryparams.return_url ? queryparams.return_url : __returnURL || __global__returnURL || formReturnURL || false;
+      console.debug({ formReturnURL: formReturnURL, returnUrl: returnUrl });
       if (state.settings.auth.enforce_mfa || extensionattributes && extensionattributes.login_mfa) {
         if (state.user.isMFAAuthenticated) {
           if (!noRedirect) {
@@ -380,9 +381,10 @@ var user = {
           if (state.user.isLoggedIn && returnUrl) dispatch((0, _reactRouterRedux.push)(returnUrl));else dispatch((0, _reactRouterRedux.push)(state.settings.auth.logged_in_homepage));
         }
         if (state.user.isLoggedIn && returnUrl) dispatch((0, _reactRouterRedux.push)(returnUrl));
-        if (state.settings.auth.closeModal) {
+        if (state.notification.modals && state.notification.modals.length && state.notification.modals[0] && state.notification.modals[0].pathname && (state.notification.modals[0].pathname === '/signin' || state.notification.modals[0].pathname === '/login')) {
           dispatch(_notification2.default.hideModal('last'));
         }
+        __global__returnURL = false;
         return true;
       }
     };
