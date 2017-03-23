@@ -199,6 +199,7 @@ var ResponsiveForm = function (_Component) {
       var formElementFields = [];
       var getCBFromString = _FormHelpers.getCallbackFromString.bind(this);
       var formNameFields = _FormHelpers.setFormNameFields.bind(this);
+      var getAssigedHiddenField = _FormHelpers.assignHiddenFields.bind(this);
       var __formStateUpdate = function __formStateUpdate() {
         _this2.setState({
           __formDataStatusDate: new Date().toString()
@@ -210,14 +211,11 @@ var ResponsiveForm = function (_Component) {
       // delete formdata.__formStateRandUpdate;
       delete formdata.formDataTables;
 
-      // console.debug('this.props.formgroups', this.props.formgroups, { hiddenInputs, });
-      if (this.props.hiddenFields) {
-        this.props.hiddenFields.forEach(function (hiddenField) {
-          hiddenInputs[hiddenField.form_name] = _this2.state[hiddenField.form_val] || hiddenField.form_static_val;
-          submitFormData[hiddenField.form_name] = _this2.state[hiddenField.form_val] || hiddenField.form_static_val;
-        });
-        formdata = (0, _assign2.default)(formdata, hiddenInputs);
-      }
+      var assigedHiddenFields = getAssigedHiddenField({ formdata: formdata, hiddenInputs: hiddenInputs, submitFormData: submitFormData });
+      hiddenInputs = assigedHiddenFields.hiddenInputs;
+      formdata = assigedHiddenFields.formdata;
+      submitFormData = assigedHiddenFields.submitFormData;
+
       var updatedFormFieldsAndData = formNameFields({ formElementFields: formElementFields, formdata: formdata });
       formElementFields = updatedFormFieldsAndData.formElementFields;
       formdata = updatedFormFieldsAndData.formdata;

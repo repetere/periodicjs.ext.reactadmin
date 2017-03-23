@@ -74,10 +74,14 @@ var ResponsiveButton = function (_Component) {
     value: function getButtonLink(baseurl, params, prop) {
       // console.debug({ baseurl, params, prop });
       var returnLink = baseurl;
-      if (params && params.length > 0) {
-        params.forEach(function (param) {
-          returnLink = returnLink.replace(param.key, prop[param.val]);
-        });
+      try {
+        if (params && params.length > 0) {
+          params.forEach(function (param) {
+            returnLink = returnLink.replace(param.key, prop[param.val]);
+          });
+        }
+      } catch (e) {
+        console.debug(e, { baseurl: baseurl, params: params, prop: prop });
       }
       return returnLink;
     }

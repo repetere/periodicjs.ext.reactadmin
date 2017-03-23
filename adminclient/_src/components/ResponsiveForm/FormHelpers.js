@@ -8,12 +8,55 @@ var _keys = require('babel-runtime/core-js/object/keys');
 
 var _keys2 = _interopRequireDefault(_keys);
 
+var _assign = require('babel-runtime/core-js/object/assign');
+
+var _assign2 = _interopRequireDefault(_assign);
+
+exports.assignHiddenFields = assignHiddenFields;
 exports.getCallbackFromString = getCallbackFromString;
 exports.setAddNameToName = setAddNameToName;
 exports.setFormNameFields = setFormNameFields;
 
+var _flat = require('flat');
+
+var _flat2 = _interopRequireDefault(_flat);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function assignHiddenFields(options) {
+  var _this = this;
+
+  // console.debug('this.props.formgroups', this.props.formgroups, { hiddenInputs, });
+  // if (this.props.hiddenFields) {
+  //   this.props.hiddenFields.forEach(hiddenField => {
+  //     hiddenInputs[ hiddenField.form_name ] = this.state[ hiddenField.form_val ] || hiddenField.form_static_val; 
+  //     submitFormData[ hiddenField.form_name ] = this.state[ hiddenField.form_val ] || hiddenField.form_static_val; 
+  //   });
+  //   formdata = Object.assign(formdata, hiddenInputs);
+  // }
+  var formdata = options.formdata,
+      hiddenInputs = options.hiddenInputs,
+      submitFormData = options.submitFormData;
+
+  var dynamicFields = {};
+  var ApplicationState = this.props.getState();
+
+  if (this.props.hiddenFields) {
+    this.props.hiddenFields.forEach(function (hiddenField) {
+      hiddenInputs[hiddenField.form_name] = _this.state[hiddenField.form_val] || hiddenField.form_static_val;
+      submitFormData[hiddenField.form_name] = _this.state[hiddenField.form_val] || hiddenField.form_static_val;
+    });
+  }
+  if (this.props.dynamicFields) {
+    var mergedDynamicField = this.props.mergeDynamicFields ? (0, _assign2.default)({}, ApplicationState.dynamic, (0, _flat2.default)(ApplicationState.dynamic)) : ApplicationState.dynamic;
+    this.props.dynamicFields.forEach(function (dynamicHiddenField) {
+      dynamicFields[dynamicHiddenField.form_name] = mergedDynamicField[dynamicHiddenField.form_val] || dynamicHiddenField.form_static_val;
+      submitFormData[dynamicHiddenField.form_name] = mergedDynamicField[dynamicHiddenField.form_val] || dynamicHiddenField.form_static_val;
+    });
+  }
+  formdata = (0, _assign2.default)(formdata, hiddenInputs, dynamicFields);
+  return { formdata: formdata, hiddenInputs: hiddenInputs, submitFormData: submitFormData };
+}
 function getCallbackFromString(successCBProp) {
   var successCallback = void 0;
   if (typeof successCBProp === 'string' && successCBProp.indexOf('func:this.props.reduxRouter') !== -1) {
