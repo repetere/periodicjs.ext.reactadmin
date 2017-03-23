@@ -1,12 +1,16 @@
 'use strict';
-
 // const Promisie = require('promisie');
 // const fs = Promisie.promisifyAll(require('fs-extra'));
 // const path = require('path');
 // const mongoose = require('mongoose');
 // const capitalize = require('capitalize');
+const mongoose = require('mongoose');
 const str2json = require('string-to-json');
+const Promisie = require('promisie');
 let assetController;
+let appSettings;
+let CoreUtilities;
+let CoreExtensions;
 
 const approveOptionsRequest = (req, res, next) => {
   // console.log('req.method', req.method);
@@ -95,33 +99,88 @@ const handleControllerDataResponse = function (req, res) {
   } : req.controllerData);
 };
 
-// const handleFileResponse = function (req, res, next) {
-//   if (req.query.handleupload) {
-//     console.log('req.controllerData', req.controllerData);
-//     console.log('req.body', req.body);
-//     console.log('req.files', req.files);
-//     delete req.controllerData.authorization_header;
-//     res.send(
-//       (req.controllerData.useSuccessWrapper) 
-//         ? {
-//           result: 'success',
-//           data: req.controllerData,
-//         } 
-//         : req.controllerData);
-//   } else {
-//     next();
-//   }
-// };
-
+const getDBStats = (req, res, next) => {
+  let databaseCountData = [];
+  let databaseFeedData = [];
+  req.controllerData = (req.controllerData) ? req.controllerData : {};
+  const DBModels = Object.keys(mongoose.models);
+  Promisie.parallel({
+    databaseFeed: () => {
+      return Promise.all(DBModels.map(model => {
+        return new Promise((resolve, reject) => {
+          mongoose.model(model)
+            .find({})
+            .limit(5)
+            .sort({ updatedat: 'desc', })
+            .exec((err, results) => {
+              if (err) {
+                reject(err);
+              } else {
+                resolve((results && results.length)
+                  ? results.map(result => {
+                    databaseFeedData.push(result);
+                    return result;
+                  })
+                  : []);
+              }
+            });
+        });
+      }));
+    },
+    databaseCount: () => {
+      return Promise.all(DBModels.map(model => {
+        return new Promise((resolve, reject) => {
+          mongoose.model(model)
+            .count({}, (err, count) => {
+              if (err) {
+                reject(err);
+              } else {
+                databaseCountData.push({
+                  collection: model,
+                  count: count,
+                });
+                resolve(count);
+              }
+            });
+        });
+      }));
+    },
+    extensions: () => {
+      return new Promise((resolve, reject) => {
+        CoreExtensions.getExtensions({
+          periodicsettings: appSettings,
+        },
+        function (err, extensions) {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(extensions);
+          }
+        });
+      });
+    },
+  })
+    .then(results => {
+      databaseFeedData = databaseFeedData.sort(CoreUtilities.sortObject('desc', 'updatedat'));
+      req.controllerData.contentcounts = {
+        databaseFeedData,
+        databaseCountData,
+        extensions: results.extensions,
+      };
+      next();
+    })
+    .catch(next);
+};
 
 module.exports = function (resources) {
   assetController = resources.app.controller.native.asset;
+  appSettings = resources.settings;
+  CoreUtilities = resources.core.utilities;
+  CoreExtensions = resources.core.extension;
   // periodic = resources;
-  // appSettings = resources.settings;
   // themeSettings = resources.settings.themeSettings;
   // appenvironment = appSettings.application.environment;
   // CoreController = resources.core.controller;
-  // CoreUtilities = resources.core.utilities;
   // logger = resources.logger;
   // extsettings = resources.app.locals.extension.reactadmin.settings;
 
@@ -133,6 +192,6 @@ module.exports = function (resources) {
     handleFileAssets,
     handleControllerDataResponse,
     handleFileAssetsResponse,
-    // handleFileResponse,
+    getDBStats,
   };
 };

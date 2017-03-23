@@ -12,6 +12,9 @@ module.exports = function(resources) {
   ContentRouter.get('/:dbname/secure-asset/:id/:filename', assetController.loadAsset, assetController.decryptAsset);
 
   ContentRouter.use(helperController.approveOptionsRequest, ensureApiAuthenticated);
+  ContentRouter.get('/:dbname/dbstats',
+    helperController.getDBStats,
+    helperController.handleControllerDataResponse);
 
   ContentRouter.get('/:dbname/:entity_type', //get index
     transformController.pretransform,
