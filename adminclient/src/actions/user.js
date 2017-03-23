@@ -316,7 +316,10 @@ const user = {
       let returnUrl = (queryparams.return_url)
         ? queryparams.return_url
         : __returnURL || __global__returnURL || formReturnURL || false;
-      console.debug({ formReturnURL,returnUrl, });
+      if (state.routing && state.routing.locationBeforeTransitions && state.routing.locationBeforeTransitions.pathname && state.routing.locationBeforeTransitions.pathname === returnUrl) {
+        returnUrl = false;
+      }
+      console.debug({ formReturnURL, returnUrl, });
       if (state.settings.auth.enforce_mfa || (extensionattributes && extensionattributes.login_mfa)) {
         if (state.user.isMFAAuthenticated) {
           if (!noRedirect) {

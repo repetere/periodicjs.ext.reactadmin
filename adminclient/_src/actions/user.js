@@ -362,6 +362,9 @@ var user = {
       var queryparams = _querystring2.default.parse(window.location.search.charAt(0) === '?' ? window.location.search.substr(1, window.location.search.length) : window.location.search);
       var formReturnURL = !__global__returnURL && state && state.routing && state.routing.locationBeforeTransitions && state.routing.locationBeforeTransitions.pathname && state.dynamic && state.dynamic.formdata && (state.dynamic.formdata.__loginReturnURL || state.dynamic.formdata.__loginLastURL) ? state.dynamic.formdata.__loginReturnURL || state.routing.locationBeforeTransitions.pathname : false;
       var returnUrl = queryparams.return_url ? queryparams.return_url : __returnURL || __global__returnURL || formReturnURL || false;
+      if (state.routing && state.routing.locationBeforeTransitions && state.routing.locationBeforeTransitions.pathname && state.routing.locationBeforeTransitions.pathname === returnUrl) {
+        returnUrl = false;
+      }
       console.debug({ formReturnURL: formReturnURL, returnUrl: returnUrl });
       if (state.settings.auth.enforce_mfa || extensionattributes && extensionattributes.login_mfa) {
         if (state.user.isMFAAuthenticated) {
