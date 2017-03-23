@@ -257,6 +257,7 @@ export function getFormDatalist(options){
     },
     formElement.datalist);
     // console.debug({formElement,initialValue, },'this.state',this.state);
+  // console.debug({ passedProps });
   return (<FormItem key={i} {...formElement.layoutProps} >
   {getFormLabel(formElement)}  
     <ResponsiveDatalist {...passedProps}

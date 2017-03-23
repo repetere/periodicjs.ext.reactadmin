@@ -19,7 +19,7 @@ class MainApp extends Component{
     // this.previousRoute = {};
   }
   componentWillReceiveProps(nextProps) {
-    console.log('componentWillReceiveProps nextProps', nextProps);
+    // console.log('componentWillReceiveProps nextProps', nextProps);
     this.setState(nextProps);
     if (document && document.body && document.body.setAttribute) {
       document.body.setAttribute('id', encodeURIComponent(nextProps.location.pathname));

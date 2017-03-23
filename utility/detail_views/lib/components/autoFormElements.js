@@ -96,6 +96,7 @@ var buildInputComponent = function (label, type, schema, options) {
       resourcePreview: `${manifestPrefix}/${pluralize(entity.toLowerCase())}`,
       resourceUrl: `${options.extsettings.basename}${usablePrefix}/${pluralize(entity.toLowerCase())}/?format=json`,
     };
+    // console.log('input.datalist.resourceUrl', input.datalist.resourceUrl);
     // if(!schema || !schema[label]){
     //   console.log('missing label schema',label,schema);
     // }

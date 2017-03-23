@@ -59,7 +59,8 @@ class ResponsiveDatalist extends Component {
     // this.setState(Object.assign({}, nextProps, this.props.getState()));
     // // console.log('this.state', this.state);
   }
-  updateDataList(options){
+  updateDataList(options) {
+    // console.log('this.props.resourceUrl', this.props.resourceUrl);
     if(this.props.resourceUrl){
       this.setState({ isSearching: true, });
       let stateProps = this.props.getState();
@@ -94,7 +95,7 @@ class ResponsiveDatalist extends Component {
   }
   getDatalistDisplay(options){
     let { displayField, selector, datum } = options;
-    let displayText = datum[ displayField ] || datum.title || datum.name || datum.username || datum.email || datum[ selector ];
+    let displayText = datum[ displayField ] || datum.title || datum.name || datum.username || datum.email || datum[ selector ] || datum;
     return (<span style={{
       wordBreak: 'break-all',
       textOverflow: 'ellipsis',
@@ -109,7 +110,7 @@ class ResponsiveDatalist extends Component {
       }
       {
         (this.props.resourcePreview)
-          ? <Link to={`${this.props.resourcePreview}/${datum[selector]}`}>{displayText}</Link>
+          ? <Link title={datum.title||displayText} to={`${this.props.resourcePreview}/${datum[selector]||datum}`}>{displayText}</Link>
           : displayText
       }
       {

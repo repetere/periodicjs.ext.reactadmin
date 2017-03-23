@@ -49,7 +49,7 @@ function _dataList(schema, label, options, type) {
       entity: entity.toLowerCase(),
       dbname: options.dbname ||'periodic',
       resourcePreview: `${manifestPrefix}/${pluralize(entity.toLowerCase())}`,
-      resourceUrl: `${options.extsettings.basename}/${usablePrefix}/${pluralize(entity.toLowerCase())}/?format=json`,
+      resourceUrl: `${options.extsettings.basename}${usablePrefix}/${pluralize(entity.toLowerCase())}/?format=json`,
     },
   };
 }

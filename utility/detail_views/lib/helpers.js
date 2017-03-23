@@ -11,13 +11,19 @@ exports.getDataPrefix = function (prefix, dbname = 'periodic', schema, label, op
     : false;
   // console.log({ customDBName, customPrefix, label, });
   // console.log({prefix,dbname,schema,label,options})
+  let useableDataPrefix;
   if (customPrefix) {
-    return customPrefix;
+    useableDataPrefix = customPrefix;
   } else if (!prefix || typeof prefix !== 'string') {
-    return `contentdata/${customDBName}`;
+    useableDataPrefix = `contentdata/${customDBName}`;
   } else {
-    return prefix.replace('/content', `/contentdata/${customDBName}`).replace('//', '/');
+    useableDataPrefix = prefix.replace('/content', `/contentdata/${customDBName}`);
   }
+  useableDataPrefix = (useableDataPrefix.charAt(0) !== '/')
+    ? `/${useableDataPrefix}`
+    : useableDataPrefix;
+  // console.log({ useableDataPrefix });
+  return useableDataPrefix.replace('//', '/');
 };
 
 exports.getCustomEntityIgnoreFields = function (schema, label, options) {
