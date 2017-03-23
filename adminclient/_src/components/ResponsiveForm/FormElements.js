@@ -326,6 +326,7 @@ function getFormDatalist(options) {
     }
   }, formElement.datalist);
   // console.debug({formElement,initialValue, },'this.state',this.state);
+  // console.debug({ passedProps });
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps),

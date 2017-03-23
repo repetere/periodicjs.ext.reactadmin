@@ -100,7 +100,7 @@ var MainApp = function (_Component) {
   (0, _createClass3.default)(MainApp, [{
     key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps(nextProps) {
-      console.log('componentWillReceiveProps nextProps', nextProps);
+      // console.log('componentWillReceiveProps nextProps', nextProps);
       this.setState(nextProps);
       if (document && document.body && document.body.setAttribute) {
         document.body.setAttribute('id', encodeURIComponent(nextProps.location.pathname));

@@ -132,6 +132,7 @@ var ResponsiveDatalist = function (_Component) {
     value: function updateDataList(options) {
       var _this2 = this;
 
+      // console.log('this.props.resourceUrl', this.props.resourceUrl);
       if (this.props.resourceUrl) {
         this.setState({ isSearching: true });
         var stateProps = this.props.getState();
@@ -171,7 +172,7 @@ var ResponsiveDatalist = function (_Component) {
           selector = options.selector,
           datum = options.datum;
 
-      var displayText = datum[displayField] || datum.title || datum.name || datum.username || datum.email || datum[selector];
+      var displayText = datum[displayField] || datum.title || datum.name || datum.username || datum.email || datum[selector] || datum;
       return _react2.default.createElement(
         'span',
         { style: {
@@ -184,7 +185,7 @@ var ResponsiveDatalist = function (_Component) {
         datum && datum.fileurl && datum.transform && datum.transform.preview ? _react2.default.createElement(rb.Image, { src: datum.transform.preview, size: 'is24X24', style: { float: 'left', marginRight: '5px' } }) : null,
         this.props.resourcePreview ? _react2.default.createElement(
           _reactRouter.Link,
-          { to: this.props.resourcePreview + '/' + datum[selector] },
+          { title: datum.title || displayText, to: this.props.resourcePreview + '/' + (datum[selector] || datum) },
           displayText
         ) : displayText,
         this.props.resourceDescription ? _react2.default.createElement(
