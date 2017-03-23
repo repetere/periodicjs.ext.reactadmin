@@ -4,7 +4,7 @@ import ResponsiveCard from '../ResponsiveCard';
 import { getRenderedComponent, } from '../AppLayoutMap';
 import utilities from '../../util';
 import { getFormTextInputArea, getFormCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, getFormTextArea, /*getFormEditor,*/ getFormLink, getHiddenInput, getFormGroup, getImage, getFormDatalist, getRawInput, getSliderInput, getFormDatatable, } from './FormElements';
-import { getCallbackFromString, setFormNameFields, } from './FormHelpers';
+import { getCallbackFromString, setFormNameFields, assignHiddenFields, } from './FormHelpers';
 import flatten from 'flat';
 import validate from 'validate.js';
 import qs from 'querystring';
@@ -136,6 +136,7 @@ class ResponsiveForm extends Component{
     let formElementFields = [];
     const getCBFromString = getCallbackFromString.bind(this);
     const formNameFields = setFormNameFields.bind(this);
+    const getAssigedHiddenField = assignHiddenFields.bind(this);
     const __formStateUpdate = () => {
       this.setState({
         __formDataStatusDate: new Date().toString(),
@@ -148,14 +149,11 @@ class ResponsiveForm extends Component{
     // delete formdata.__formStateRandUpdate;
     delete formdata.formDataTables;
 
-    // console.debug('this.props.formgroups', this.props.formgroups, { hiddenInputs, });
-    if (this.props.hiddenFields) {
-      this.props.hiddenFields.forEach(hiddenField => {
-        hiddenInputs[ hiddenField.form_name ] = this.state[ hiddenField.form_val ] || hiddenField.form_static_val; 
-        submitFormData[ hiddenField.form_name ] = this.state[ hiddenField.form_val ] || hiddenField.form_static_val; 
-      });
-      formdata = Object.assign(formdata, hiddenInputs);
-    }
+    let assigedHiddenFields = getAssigedHiddenField({ formdata, hiddenInputs, submitFormData, });
+    hiddenInputs = assigedHiddenFields.hiddenInputs;
+    formdata = assigedHiddenFields.formdata;
+    submitFormData = assigedHiddenFields.submitFormData;
+
     let updatedFormFieldsAndData = formNameFields({ formElementFields, formdata, });
     formElementFields = updatedFormFieldsAndData.formElementFields;
     formdata = updatedFormFieldsAndData.formdata;

@@ -1,3 +1,36 @@
+import flatten from 'flat';
+
+export function assignHiddenFields(options) {
+  // console.debug('this.props.formgroups', this.props.formgroups, { hiddenInputs, });
+  // if (this.props.hiddenFields) {
+  //   this.props.hiddenFields.forEach(hiddenField => {
+  //     hiddenInputs[ hiddenField.form_name ] = this.state[ hiddenField.form_val ] || hiddenField.form_static_val; 
+  //     submitFormData[ hiddenField.form_name ] = this.state[ hiddenField.form_val ] || hiddenField.form_static_val; 
+  //   });
+  //   formdata = Object.assign(formdata, hiddenInputs);
+  // }
+  let { formdata, hiddenInputs, submitFormData, } = options;
+  let dynamicFields = {};
+  let ApplicationState = this.props.getState();
+
+  if (this.props.hiddenFields) {
+    this.props.hiddenFields.forEach(hiddenField => {
+      hiddenInputs[ hiddenField.form_name ] = this.state[ hiddenField.form_val ] || hiddenField.form_static_val; 
+      submitFormData[ hiddenField.form_name ] = this.state[ hiddenField.form_val ] || hiddenField.form_static_val; 
+    });
+  }
+  if (this.props.dynamicFields) {
+    let mergedDynamicField = (this.props.mergeDynamicFields)    
+      ? Object.assign({}, ApplicationState.dynamic, flatten(ApplicationState.dynamic))
+      : ApplicationState.dynamic;
+    this.props.dynamicFields.forEach(dynamicHiddenField => {
+      dynamicFields[ dynamicHiddenField.form_name ] = mergedDynamicField[ dynamicHiddenField.form_val ] || dynamicHiddenField.form_static_val; 
+      submitFormData[ dynamicHiddenField.form_name ] = mergedDynamicField[ dynamicHiddenField.form_val ] || dynamicHiddenField.form_static_val; 
+    });
+  }
+  formdata = Object.assign(formdata, hiddenInputs, dynamicFields);
+  return { formdata, hiddenInputs, submitFormData, };
+}
 export function getCallbackFromString(successCBProp) {
   let successCallback;
   if (typeof successCBProp === 'string' && successCBProp.indexOf('func:this.props.reduxRouter') !== -1) {

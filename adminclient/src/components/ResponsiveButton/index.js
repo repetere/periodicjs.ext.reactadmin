@@ -21,10 +21,14 @@ class ResponsiveButton extends Component {
   getButtonLink(baseurl, params, prop) {
     // console.debug({ baseurl, params, prop });
     let returnLink = baseurl;
-    if (params && params.length > 0) {
-      params.forEach((param) => {
-        returnLink = returnLink.replace(param.key, prop[ param.val ]);
-      });
+    try {
+      if (params && params.length > 0) {
+        params.forEach((param) => {
+          returnLink = returnLink.replace(param.key, prop[ param.val ]);
+        });
+      }
+    } catch (e) {
+      console.debug(e, { baseurl, params, prop, });
     }
     return returnLink;
   }
