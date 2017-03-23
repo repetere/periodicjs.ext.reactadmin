@@ -22,8 +22,8 @@ const buildAdvancedDetail = function (schema, label, options = {}, newEntity) {
       marginBottom: 30,
       onSubmit:{
         url: (newEntity)
-          ?`${options.extsettings.basename}/${usablePrefix}/${pluralize(label)}/?format=json&unflatten=true`
-          :`${options.extsettings.basename}/${usablePrefix}/${pluralize(label)}/:id?format=json&unflatten=true`,
+          ?`${options.extsettings.basename}${usablePrefix}/${pluralize(label)}/?format=json&unflatten=true`
+          :`${options.extsettings.basename}${usablePrefix}/${pluralize(label)}/:id?format=json&unflatten=true`,
         params: (newEntity)
           ? undefined
           : [

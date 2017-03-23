@@ -25,7 +25,7 @@ const constructDetail = function (schema, label, options = {}, newEntity) {
 
   return {
     resources: (newEntity)?undefined: {
-      [ helpers.getDetailLabel(label) ]: `${(usablePrefix.charAt(0)!=='/')?'/'+usablePrefix:usablePrefix}/${pluralize(label)}/:id?format=json`,
+      [ helpers.getDetailLabel(label) ]: `${usablePrefix}/${pluralize(label)}/:id?format=json`,
     },
     onFinish:'render',
     pageData: (customPageData)
@@ -115,7 +115,7 @@ const constructIndex = function (schema, label, options = {}) {
   // console.log({ label, usablePrefix });
   return {
     resources: {
-      [ helpers.getIndexLabel(label) ]:  `${(usablePrefix.charAt(0)!=='/')?'/'+usablePrefix:usablePrefix}/${pluralize(label)}?format=json`,
+      [ helpers.getIndexLabel(label) ]: `${usablePrefix}/${pluralize(label)}?format=json`,
     },
     onFinish:'render',
     pageData: (customPageData)
