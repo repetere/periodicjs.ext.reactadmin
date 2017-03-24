@@ -121,9 +121,16 @@ export function getRenderedComponent(componentObject, resources, debug) {
         (componentObject.children && Array.isArray(componentObject.children) && typeof componentObject.children !== 'string')
           ? componentObject.children.map(childComponentObject => getRenderedComponent.call(this,
             (componentObject.bindprops)
-              ? Object.assign({}, childComponentObject, {
-                props: Object.assign(renderedCompProps, childComponentObject.props, { key:renderIndex+Math.random(),  } ),
-              })
+              ? Object.assign({},
+                childComponentObject, {
+                  props: Object.assign({},
+                    renderedCompProps,
+                    {
+                      style: {},
+                    },
+                    childComponentObject.props,
+                    { key: renderIndex + Math.random(), }),
+                })
               : childComponentObject, resources))
           : (typeof componentObject.children === 'undefined')
             ? (renderedCompProps && renderedCompProps.children && typeof renderedCompProps.children==='string') ? renderedCompProps.children : null

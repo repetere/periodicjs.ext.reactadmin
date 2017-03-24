@@ -75,13 +75,23 @@ function getFormLabel(formElement) {
 function getInitialValue(formElement, state) {
   // console.debug({formElement, state})
   let formElementValue = formElement.value;
-  if (formElement.momentFormat) {
-    formElementValue = moment(formElementValue).format(formElement.momentFormat);
+ 
+  if (state[ formElement.name ] === null || formElementValue === null || formElementValue === 'null') {
+    return '';
+  } else {
+    let returnVal = (typeof state[ formElement.name ] !== 'undefined')
+      ? state[ formElement.name ]
+      : formElementValue;
+    
+    if (formElement.momentFormat) {
+      returnVal = moment(returnVal).format(formElement.momentFormat);
+    }
+    if (formElement.numeralFormat) {
+      returnVal = numeral(returnVal).format(formElement.numeralFormat);
+    }
+
+    return returnVal;
   }
-  if (state[ formElement.name ] === null || formElementValue === null || formElementValue === 'null' ) return '';
-  else return (typeof state[ formElement.name ] !== 'undefined' )
-    ? state[ formElement.name ]
-    : formElementValue;
 }
 
 function getPassablePropsKeyEvents(passableProps, formElement) {

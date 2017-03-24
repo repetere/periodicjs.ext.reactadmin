@@ -211,7 +211,9 @@ function getRenderedComponent(componentObject, resources, debug) {
       //props children
       componentObject.children && Array.isArray(componentObject.children) && typeof componentObject.children !== 'string' ? componentObject.children.map(function (childComponentObject) {
         return getRenderedComponent.call(_this, componentObject.bindprops ? (0, _assign2.default)({}, childComponentObject, {
-          props: (0, _assign2.default)(renderedCompProps, childComponentObject.props, { key: renderIndex + Math.random() })
+          props: (0, _assign2.default)({}, renderedCompProps, {
+            style: {}
+          }, childComponentObject.props, { key: renderIndex + Math.random() })
         }) : childComponentObject, resources);
       }) : typeof componentObject.children === 'undefined' ? renderedCompProps && renderedCompProps.children && typeof renderedCompProps.children === 'string' ? renderedCompProps.children : null : componentObject.children);
     }

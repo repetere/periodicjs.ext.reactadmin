@@ -64,7 +64,7 @@ module.exports = (options) => {
                         type: 'inline',
                       },
                       asyncprops: {
-                        stat: [ 'contentstats', 'contentcounts', level.asyncprop ],
+                        stat: [ 'contentstats', 'contentcounts', level.asyncprop, ],
                       },
                     },
                   ],
@@ -147,7 +147,6 @@ module.exports = (options) => {
                   asyncprops: {
                     rows:['contentstats', 'contentcounts', 'data', ],
                   },
-
                 },
               ],
             },
@@ -208,10 +207,14 @@ module.exports = (options) => {
         {
           component: 'DynamicLayout',
           props: {
+            isColumns:true,
+            columnsProps: {
+              isMultiline:true,
+            },
             layout: {
               component: 'Column',
               props: {
-                size: 'isOneQuarter',
+                size: 'isOneThird',
               },
               bindprops: true,
               children: [
@@ -221,15 +224,52 @@ module.exports = (options) => {
                     header: [ 'title', ],
                     children: [ 'description', ],
                   },
+                  bindprops:true,
+                  children: [
+                    {
+                      component: 'DynamicForm',
+                      thisprops: {
+                        initialData:[],
+                      },
+                      props: {
+                        formgroups: [
+                          {
+                            name:'entitytype',
+                            label:'Entity',
+                          },
+                          {
+                            name:'updatedat',
+                            label: 'Updated',
+                            momentFormat:'lll',
+                          },
+                          {
+                            name:'description',
+                            label:'Description',
+                          },
+                        ].map(formelm => {
+                          return {
+                            formElements: [
+                              {
+                                type: 'text',
+                                name: formelm.name,
+                                label: formelm.label,
+                                momentFormat: formelm.momentFormat,
+                                passProps: {
+                                  state: 'isDisabled',
+                                  style: {
+                                    background:'white',
+                                  },
+                                },
+                              },
+                            ],
+                          };
+                        }),
+                      },
+                    },
+                  ],
                 },
               ],
             },
-            columnsProps: {
-              isMultiline:true,
-            },
-            style: {
-              display:'block'
-            }
           },
           asyncprops: {
             items: [ 'contentstats', 'contentcounts', 'databaseFeedData', ],

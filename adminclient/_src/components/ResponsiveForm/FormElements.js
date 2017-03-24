@@ -163,10 +163,21 @@ function getFormLabel(formElement) {
 function getInitialValue(formElement, state) {
   // console.debug({formElement, state})
   var formElementValue = formElement.value;
-  if (formElement.momentFormat) {
-    formElementValue = (0, _moment2.default)(formElementValue).format(formElement.momentFormat);
+
+  if (state[formElement.name] === null || formElementValue === null || formElementValue === 'null') {
+    return '';
+  } else {
+    var returnVal = typeof state[formElement.name] !== 'undefined' ? state[formElement.name] : formElementValue;
+
+    if (formElement.momentFormat) {
+      returnVal = (0, _moment2.default)(returnVal).format(formElement.momentFormat);
+    }
+    if (formElement.numeralFormat) {
+      returnVal = (0, _numeral2.default)(returnVal).format(formElement.numeralFormat);
+    }
+
+    return returnVal;
   }
-  if (state[formElement.name] === null || formElementValue === null || formElementValue === 'null') return '';else return typeof state[formElement.name] !== 'undefined' ? state[formElement.name] : formElementValue;
 }
 
 function getPassablePropsKeyEvents(passableProps, formElement) {
