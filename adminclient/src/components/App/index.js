@@ -18,8 +18,10 @@ import { getRoutes, } from '../../routers/routes';
 import CONSTANTS from '../../constants/index';
 // import logo from './logo.svg';
 // import './App.css';
-// import capitalize from 'capitalize';
-// import moment from 'moment';
+import pluralize from 'pluralize';
+import numeral from 'numeral';
+import capitalize from 'capitalize';
+import moment from 'moment';
 // import debounce from 'debounce';
 const history = getHistory(historySettings, AppConfigSettings, store);
 
@@ -37,7 +39,14 @@ const mapStateToProps = (state) => {
     // messageBar: state.messageBar,
   };
 };
-window.__reactadmin = Object.assign({},window.__reactadmin);
+window.__reactadmin = Object.assign({}, {
+  __ra_helpers: {
+    numeral,
+    moment,
+    capitalize,
+    pluralize,
+  },
+}, window.__reactadmin);
 window.__reactadmin.setDynamicData = (prop, val) => store.dispatch(actions.dynamic.setDynamicData(prop, val));
 const reduxActions = {
   isLoggedIn: () => store.getState().user.isLoggedIn,

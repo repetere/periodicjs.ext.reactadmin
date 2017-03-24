@@ -3,10 +3,13 @@
 // const fs = Promisie.promisifyAll(require('fs-extra'));
 // const path = require('path');
 // const mongoose = require('mongoose');
-// const capitalize = require('capitalize');
+const pluralize = require('pluralize');
+const capitalize = require('capitalize');
+const numeral = require('numeral');
 const mongoose = require('mongoose');
 const str2json = require('string-to-json');
 const Promisie = require('promisie');
+const colors = require('../utility/detail_views/colors');
 let assetController;
 let appSettings;
 let CoreUtilities;
@@ -161,11 +164,28 @@ const getDBStats = (req, res, next) => {
     },
   })
     .then(results => {
+      const totalItems = databaseCountData.map(datam => datam.count).reduce((result, key) => result + key, 0);
+      const data = databaseCountData.map((datum, i) => {
+        return {
+          name: capitalize(pluralize(datum.collection)),
+          docs: datum.count,
+          count: datum.count,
+          percent: ((datum.count / totalItems) * 100).toFixed(2),
+          fill: colors[i].HEX,
+        }
+      });
+      const numeralFormat = '0.0a';
       databaseFeedData = databaseFeedData.sort(CoreUtilities.sortObject('desc', 'updatedat'));
+    
       req.controllerData.contentcounts = {
+        data,
         databaseFeedData,
         databaseCountData,
+        totalItems: numeral(totalItems).format(numeralFormat),
+        totalCollections: numeral(databaseCountData.length).format(numeralFormat),
+        totalExtensions: numeral(results.extensions.length).format(numeralFormat),
         extensions: results.extensions,
+        appname:appSettings.name,
       };
       next();
     })

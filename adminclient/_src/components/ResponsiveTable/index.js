@@ -28,6 +28,10 @@ var _assign = require('babel-runtime/core-js/object/assign');
 
 var _assign2 = _interopRequireDefault(_assign);
 
+var _keys = require('babel-runtime/core-js/object/keys');
+
+var _keys2 = _interopRequireDefault(_keys);
+
 var _getPrototypeOf = require('babel-runtime/core-js/object/get-prototype-of');
 
 var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
@@ -62,6 +66,10 @@ var _moment = require('moment');
 
 var _moment2 = _interopRequireDefault(_moment);
 
+var _numeral = require('numeral');
+
+var _numeral2 = _interopRequireDefault(_numeral);
+
 var _util = require('../../util');
 
 var _util2 = _interopRequireDefault(_util);
@@ -83,6 +91,10 @@ var _AppLayoutMap = require('../AppLayoutMap');
 var _capitalize = require('capitalize');
 
 var _capitalize2 = _interopRequireDefault(_capitalize);
+
+var _pluralize = require('pluralize');
+
+var _pluralize2 = _interopRequireDefault(_pluralize);
 
 var _reactFileReaderInput = require('react-file-reader-input');
 
@@ -175,8 +187,8 @@ var defaultProps = {
   insertSelectedRowHeaderIndex: 0
 };
 
-function getOptionsHeaders(props) {
-  var headers = (props.headers || []).concat([]);
+function getOptionsHeaders(props, propHeaders) {
+  var headers = (propHeaders || props.headers || []).concat([]);
   // console.debug('original', { headers });
   if (props.selectOptionSortId) {
     headers.unshift({
@@ -200,7 +212,14 @@ var ResponsiveTable = function (_Component) {
     var _this = (0, _possibleConstructorReturn3.default)(this, (ResponsiveTable.__proto__ || (0, _getPrototypeOf2.default)(ResponsiveTable)).call(this, props));
 
     var rows = props.rows || [];
-    var headers = getOptionsHeaders(props);
+    var headers = (!props.headers || !props.headers.length) && rows[0] ? (0, _keys2.default)(rows[0]).map(function (rowkey) {
+      return {
+        label: (0, _capitalize2.default)((0, _pluralize2.default)(rowkey)),
+        sortid: rowkey,
+        sortable: true
+      };
+    }) : props.headers;
+    headers = getOptionsHeaders(props, headers);
     if (props.flattenRowData) {
       rows = rows.map(function (row) {
         return (0, _assign2.default)({}, row, (0, _flat2.default)(row, props.flattenRowDataOptions));
@@ -244,7 +263,14 @@ var ResponsiveTable = function (_Component) {
     key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps(nextProps) {
       var rows = nextProps.rows || [];
-      var headers = getOptionsHeaders(nextProps);
+      var headers = (!nextProps.headers || !nextProps.headers.length) && rows[0] ? (0, _keys2.default)(rows[0]).map(function (rowkey) {
+        return {
+          label: (0, _capitalize2.default)((0, _pluralize2.default)(rowkey)),
+          sortid: rowkey,
+          sortable: true
+        };
+      }) : nextProps.headers;
+      headers = getOptionsHeaders(nextProps);
       if (nextProps.flattenRowData) {
         rows = rows.map(function (row) {
           return (0, _assign2.default)({}, row, (0, _flat2.default)(row, nextProps.flattenRowDataOptions));
@@ -559,6 +585,8 @@ var ResponsiveTable = function (_Component) {
       }
       if (options.momentFormat) {
         returnValue = (0, _moment2.default)(value).format(options.momentFormat);
+      } else if (options.numeralFormat) {
+        returnValue = (0, _numeral2.default)(value).format(options.numeralFormat);
       } else if (options.icon && value) {
         // console.debug({value})
         if (typeof value !== 'string' && Array.isArray(value)) {

@@ -2,12 +2,14 @@ import React, { Component, PropTypes, } from 'react';
 import { Link, } from 'react-router';
 import * as rb from 're-bulma';
 import moment from 'moment';
+import numeral from 'numeral';
 import utilities from '../../util';
 import qs from 'querystring';
 import debounce from 'debounce';
 import flatten from 'flat';
 import { getRenderedComponent, } from '../AppLayoutMap';
 import capitalize from 'capitalize';
+import pluralize from 'pluralize';
 import FileReaderInput from 'react-file-reader-input';
 import path from 'path';
 import { csv2json, } from 'json-2-csv';
@@ -89,8 +91,8 @@ const defaultProps = {
   insertSelectedRowHeaderIndex:0,
 };
 
-function getOptionsHeaders(props) {
-  let headers = (props.headers || []).concat([]);
+function getOptionsHeaders(props, propHeaders) {
+  let headers = (propHeaders || props.headers || []).concat([]);
   // console.debug('original', { headers });
   if (props.selectOptionSortId) {
     headers.unshift({
@@ -109,7 +111,16 @@ class ResponsiveTable extends Component {
     super(props);
     // console.debug('this.props.getState()',this.props.getState());
     let rows = props.rows || [];
-    let headers = getOptionsHeaders(props);
+    let headers = ((!props.headers || !props.headers.length) && rows[ 0 ])
+      ? Object.keys(rows[ 0 ]).map(rowkey => {
+        return {
+          label: capitalize(pluralize(rowkey)),
+          sortid: rowkey,
+          sortable: true,
+        };
+      })
+      : props.headers;
+    headers = getOptionsHeaders(props, headers);
     if (props.flattenRowData) {
       rows = rows.map(row => Object.assign({}, row, flatten(row, props.flattenRowDataOptions)));
     }
@@ -147,7 +158,16 @@ class ResponsiveTable extends Component {
   }
   componentWillReceiveProps(nextProps) {
     let rows = nextProps.rows || [];
-    let headers = getOptionsHeaders(nextProps);
+    let headers = ((!nextProps.headers || !nextProps.headers.length) && rows[ 0 ])
+      ? Object.keys(rows[ 0 ]).map(rowkey => {
+        return {
+          label: capitalize(pluralize(rowkey)),
+          sortid: rowkey,
+          sortable: true,
+        };
+      })
+      : nextProps.headers;
+    headers = getOptionsHeaders(nextProps);
     if (nextProps.flattenRowData) {
       rows = rows.map(row => Object.assign({}, row, flatten(row, nextProps.flattenRowDataOptions)));
     }
@@ -420,6 +440,8 @@ class ResponsiveTable extends Component {
     }
     if (options.momentFormat) {
       returnValue = moment(value).format(options.momentFormat);
+    } else if (options.numeralFormat) {
+      returnValue = numeral(value).format(options.numeralFormat);
     } else if (options.icon && value) {
         // console.debug({value})
       if (typeof value !== 'string' && Array.isArray(value)) {

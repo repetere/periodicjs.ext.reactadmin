@@ -62,6 +62,22 @@ var _index = require('../../constants/index');
 
 var _index2 = _interopRequireDefault(_index);
 
+var _pluralize = require('pluralize');
+
+var _pluralize2 = _interopRequireDefault(_pluralize);
+
+var _numeral = require('numeral');
+
+var _numeral2 = _interopRequireDefault(_numeral);
+
+var _capitalize = require('capitalize');
+
+var _capitalize2 = _interopRequireDefault(_capitalize);
+
+var _moment = require('moment');
+
+var _moment2 = _interopRequireDefault(_moment);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // import constants from '../../constants';
@@ -155,8 +171,7 @@ var AppConfigSettings = {
 
 // import logo from './logo.svg';
 // import './App.css';
-// import capitalize from 'capitalize';
-// import moment from 'moment';
+
 // import debounce from 'debounce';
 var history = (0, _history.getHistory)(_history.historySettings, AppConfigSettings, _stores2.default);
 
@@ -171,7 +186,14 @@ var mapStateToProps = function mapStateToProps(state) {
     notification: state.notification
   };
 };
-window.__reactadmin = (0, _assign2.default)({}, window.__reactadmin);
+window.__reactadmin = (0, _assign2.default)({}, {
+  __ra_helpers: {
+    numeral: _numeral2.default,
+    moment: _moment2.default,
+    capitalize: _capitalize2.default,
+    pluralize: _pluralize2.default
+  }
+}, window.__reactadmin);
 window.__reactadmin.setDynamicData = function (prop, val) {
   return _stores2.default.dispatch(_actions2.default.dynamic.setDynamicData(prop, val));
 };
