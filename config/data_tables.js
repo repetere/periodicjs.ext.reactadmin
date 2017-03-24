@@ -13,7 +13,7 @@ const usertables = [
       maxWidth: 200,
       overflow: 'hidden',
       textOverflow: 'ellipsis',
-    }
+    },
   }),
   data_tables.tableCreatedDate,
   data_tables.tableField({
@@ -54,7 +54,7 @@ module.exports = {
         maxWidth: 150,
         // overflow: 'hidden',
         // textOverflow: 'ellipsis',
-      }
+      },
     }),
     data_tables.tableField({
       title: 'Role ID',
