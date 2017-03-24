@@ -4,6 +4,10 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _extends2 = require('babel-runtime/helpers/extends');
+
+var _extends3 = _interopRequireDefault(_extends2);
+
 var _assign = require('babel-runtime/core-js/object/assign');
 
 var _assign2 = _interopRequireDefault(_assign);
@@ -34,6 +38,12 @@ var _react2 = _interopRequireDefault(_react);
 
 var _AppLayoutMap = require('../AppLayoutMap');
 
+var _recharts = require('recharts');
+
+var recharts = _interopRequireWildcard(_recharts);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var DynamicChart = function (_Component) {
@@ -57,9 +67,10 @@ var DynamicChart = function (_Component) {
   }, {
     key: 'render',
     value: function render() {
+
       return _react2.default.createElement(
-        'div',
-        { style: this.props.style },
+        _recharts.ResponsiveContainer,
+        (0, _extends3.default)({ key: new Date().valueOf() + '-' + Math.random() }, this.props.passProps),
         this.getRenderedComponent({
           component: 'recharts.' + this.props.chartComponent,
           props: (0, _assign2.default)({}, this.props.chartProps, this.state),

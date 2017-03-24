@@ -34,6 +34,8 @@ var _react2 = _interopRequireDefault(_react);
 
 var _AppLayoutMap = require('../AppLayoutMap');
 
+var _reBulma = require('re-bulma');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var DynamicLayout = function (_Component) {
@@ -68,21 +70,34 @@ var DynamicLayout = function (_Component) {
     value: function render() {
       var _this2 = this;
 
-      // console.debug('this.state.items', this.state.items,'Array.isArray(this.state.items)',Array.isArray(this.state.items));
-      return _react2.default.createElement(
-        'div',
-        { style: (0, _assign2.default)({
-            flexDirection: 'rows',
-            display: 'flex'
-          }, this.props.style) },
-        this.state.items && Array.isArray(this.state.items) && this.state.items.length ? this.state.items.map(function (item) {
+      try {
+        var mappedItemLayout = this.state.items && Array.isArray(this.state.items) && this.state.items.length ? this.state.items.map(function (item) {
           var mergedLayout = (0, _assign2.default)({}, _this2.props.layout, {
             props: (0, _assign2.default)({}, _this2.props.layout.props, item)
           });
           // console.debug({ mergedLayout });
           return _this2.getRenderedComponent(mergedLayout);
-        }) : null
-      );
+        }) : null;
+
+        var dynamicComponentLayout = this.props.isColumns ? _react2.default.createElement(
+          _reBulma.Columns,
+          this.props.columnsProps,
+          mappedItemLayout
+        ) : _react2.default.createElement(
+          'div',
+          { style: (0, _assign2.default)({
+              flexDirection: 'rows',
+              display: 'flex'
+            }, this.props.style) },
+          mappedItemLayout
+        );
+        // console.debug({dynamicComponentLayout})
+        return dynamicComponentLayout;
+      } catch (e) {
+        console.debug(e, 'this.state', this.state, 'this.props', this.props);
+        return null;
+      }
+      // console.debug('this.state.items', this.state.items,'Array.isArray(this.state.items)',Array.isArray(this.state.items));
     }
   }]);
   return DynamicLayout;

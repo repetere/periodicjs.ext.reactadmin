@@ -77,7 +77,7 @@ module.exports = (options) => {
     },
     {
       component: 'ResponsiveCard',
-      props: Object.assign({}, customCardProps, {
+      props: Object.assign({}, customCardProps, options.cardprops, {
         cardTitle: 'Database Overview',
       }),
       children: [
@@ -157,7 +157,7 @@ module.exports = (options) => {
     },
     {
       component: 'ResponsiveCard',
-      props: Object.assign({}, customCardProps, {
+      props: Object.assign({}, customCardProps, options.cardprops, {
         cardTitle: 'Extensions Overview',
       }),
       children: [
@@ -199,47 +199,43 @@ module.exports = (options) => {
         },
       ],
     },
-    // {
-    //   component: 'ResponsiveCard',
-    //   props: cardprops({
-    //     cardTitle: 'Document Feed',
-    //   }),
-    //     props: Object.assign({}, customCardProps, {
-    // //     cardTitle: 'Document Feed',
-    //     }),
-    //   children: [
-    //     {
-    //       component: 'DynamicLayout',
-    //       props: {
-    //         style:{},
-    //       },
-    //       asyncprops: {
-    //         items:['contentstats', 'contentcounts', 'databaseFeedData', ],
-    //       },
-    //       layout: {
-    //         component: 'Columns',
-    //       //   bindprops:true,
-    //       //   children: [
-    //       //     {
-    //       //       component: 'Column',
-    //       //       props: {
-    //       //         size: 'isOneQuarter',
-    //       //       },
-    //       //       bindprops: true,
-    //       //       children: [
-    //       //         {
-    //       //           component: 'Message',
-    //       //           thisprops: {
-    //       //             header: [ 'title', ],
-    //       //             children: [ 'description', ],
-    //       //           },
-    //       //         },
-    //       //       ],
-    //       //     },
-    //       //   ],
-    //       },
-    //     },
-    //   ],
-    // },
+    {
+      component: 'ResponsiveCard',
+      props: Object.assign({}, customCardProps, options.cardprops, {
+        cardTitle: 'Document Feed',
+      }),
+      children: [
+        {
+          component: 'DynamicLayout',
+          props: {
+            layout: {
+              component: 'Column',
+              props: {
+                size: 'isOneQuarter',
+              },
+              bindprops: true,
+              children: [
+                {
+                  component: 'Message',
+                  thisprops: {
+                    header: [ 'title', ],
+                    children: [ 'description', ],
+                  },
+                },
+              ],
+            },
+            columnsProps: {
+              isMultiline:true,
+            },
+            style: {
+              display:'block'
+            }
+          },
+          asyncprops: {
+            items: [ 'contentstats', 'contentcounts', 'databaseFeedData', ],
+          },
+        },
+      ],
+    },
   ];
 };

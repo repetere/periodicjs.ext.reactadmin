@@ -1,6 +1,6 @@
 'use strict';
 
-function getTestChart() {
+function getTestChart(defaultDisplay) {
   const data = [
     { name: 'A', uv: 4000, pv: 2400, amt: 2400, },
     { name: 'B', uv: 3000, pv: 1398, amt: 2210, },
@@ -12,12 +12,25 @@ function getTestChart() {
   ];
 
   return {
-    component: 'recharts.LineChart',
-    props: {
-      width: 600,
-      height: 300,
-      data,
-    },
+    component: (defaultDisplay)?'recharts.LineChart':'DynamicChart',
+    props: (defaultDisplay)
+      ? {
+        width: 600,
+        height: 300,
+        data,
+      }
+      : {
+        passProps: {
+          width: 600,
+          height: 300,
+        },
+        chartComponent: 'LineChart',
+        chartProps: {
+          width: 600,
+          height: 300,
+          data,
+        },
+      },
     children: [ {
       component: 'recharts.XAxis',
       props: {
@@ -106,7 +119,10 @@ module.exports = {
                       marginTop:'20px',
                     },
                   },
-                  children: [ getTestChart(), ],
+                  children: [
+                    getTestChart(),
+                    getTestChart(2),
+                  ],
                 },
                 { 
                   component: 'ResponsiveForm',

@@ -4,9 +4,8 @@ import ResponsiveCard from '../ResponsiveCard';
 import { getRenderedComponent, } from '../AppLayoutMap';
 import utilities from '../../util';
 import { getFormTextInputArea, getFormCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, getFormTextArea, /*getFormEditor,*/ getFormLink, getHiddenInput, getFormGroup, getImage, getFormDatalist, getRawInput, getSliderInput, getFormDatatable, } from './FormElements';
-import { getCallbackFromString, setFormNameFields, assignHiddenFields, } from './FormHelpers';
+import { getCallbackFromString, setFormNameFields, assignHiddenFields, validateForm, assignFormBody, handleFormSubmitNotification, handleSuccessCallbacks, submitThisDotPropsFunc, submitWindowFunc, validateFormElement, } from './FormHelpers';
 import flatten from 'flat';
-import validate from 'validate.js';
 import qs from 'querystring';
 // function getCallbackFromString(fetchOptions.successCallback) {
 
@@ -99,6 +98,7 @@ class ResponsiveForm extends Component{
     this.getFormLink = getFormLink.bind(this);
     this.getFormGroup = getFormGroup.bind(this);
     this.getImage = getImage.bind(this);
+    this.validateFormElement = validateFormElement.bind(this);
   }
   componentWillReceiveProps(nextProps) {
     // console.debug('componentWillReceiveProps', nextProps);
@@ -137,16 +137,18 @@ class ResponsiveForm extends Component{
     const getCBFromString = getCallbackFromString.bind(this);
     const formNameFields = setFormNameFields.bind(this);
     const getAssigedHiddenField = assignHiddenFields.bind(this);
+    const getFormValidations = validateForm.bind(this);
+    const getFormBody = assignFormBody.bind(this);
+    const formSubmitNotification = handleFormSubmitNotification.bind(this);
+    const formSuccessCallbacks = handleSuccessCallbacks.bind(this);
     const __formStateUpdate = () => {
       this.setState({
         __formDataStatusDate: new Date().toString(),
-        // __formStateRandUpdate: Math.random(),
       });
     };
     
     delete formdata.formDataLists;
     delete formdata.__formDataStatusDate;
-    // delete formdata.__formStateRandUpdate;
     delete formdata.formDataTables;
 
     let assigedHiddenFields = getAssigedHiddenField({ formdata, hiddenInputs, submitFormData, });
@@ -158,25 +160,18 @@ class ResponsiveForm extends Component{
     formElementFields = updatedFormFieldsAndData.formElementFields;
     formdata = updatedFormFieldsAndData.formdata;
 
-    if (this.props.validations) {
-      this.props.validations.forEach(validation => {
-        // console.debug(formdata[ validation.name ], { validation, });
-        let validationerror = validate({ [ validation.name ]: formdata[ validation.name ], }, validation.constraints);
-        if (validationerror) {
-          validationErrors[ validation.name ] = validationerror[ validation.name ];
-        }
-      });
-    } else {
-      delete formdata.formDataErrors;
-    }
+    let validatedFormData = getFormValidations({ formdata, validationErrors, });
+    validationErrors = validatedFormData.validationErrors;
+    formdata = validatedFormData.formdata;
+
     if (formElementFields && formElementFields.length) {
       formElementFields.forEach(formElmField => {
         submitFormData[ formElmField ] = formdata[ formElmField ];
       });
     }
-    // console.debug({ submitFormData, formdata });
+    // console.debug({ submitFormData, formdata, validationErrors });
     if (validationErrors && Object.keys(validationErrors).length < 1) {
-      __formStateUpdate();
+      this.setState({ formDataErrors: {}, });
     }
     if (validationErrors && Object.keys(validationErrors).length > 0) {
       this.setState({ formDataErrors: validationErrors, });
@@ -185,74 +180,32 @@ class ResponsiveForm extends Component{
       this.props.debug(submitFormData);
       __formStateUpdate();
     } else if (typeof this.props.onSubmit === 'string' && this.props.onSubmit.indexOf('func:this.props') !== -1) {
-      delete formdata.formDataFiles;
-      delete formdata.formDataErrors;
-      if (this.props.onSubmit === 'func:this.props.setDynamicData') {
-        // console.debug('this.props', this.props);
-        this.props.setDynamicData(this.props.dynamicField, submitFormData);
-      } else {
-        this.props[this.props.onSubmit.replace('func:this.props.', '')](submitFormData);
-      }
+      submitThisDotPropsFunc.call(this, { formdata, submitFormData, });
       __formStateUpdate();
     } else if (typeof this.props.onSubmit === 'string' && this.props.onSubmit.indexOf('func:window') !== -1) {
-      delete formdata.formDataFiles;
-      delete formdata.formDataErrors;
-      window[ this.props.onSubmit.replace('func:this.props.', '') ].call(this, submitFormData);
+      submitWindowFunc.call(this, { formdata, submitFormData, });
       __formStateUpdate();
     } else if (typeof this.props.onSubmit !== 'function') {
       let fetchOptions = this.props.onSubmit;
       let formBody = new FormData();
       let fetchPostBody;
+      let updatedFormBody = getFormBody({ formdata, headers, formBody, submitFormData, fetchPostBody, fetchOptions, });
+      let isGetRequest = updatedFormBody.isGetRequest;
+      formdata = updatedFormBody.formdata;
+      headers = updatedFormBody.headers;
+      formBody = updatedFormBody.formBody;
+      submitFormData = updatedFormBody.submitFormData;
+      fetchPostBody = updatedFormBody.fetchPostBody;
+      fetchOptions = updatedFormBody.fetchOptions;
 
-      //if file
-      if (Object.keys(formdata.formDataFiles).length) {
-        delete headers[ 'Content-Type' ];
-        delete headers[ 'content-type' ];
-        Object.keys(formdata.formDataFiles).forEach((formFileName) => {
-          let fileList = formdata.formDataFiles[ formFileName ].files;
-          for (let x = 0; x < fileList.length; x++){
-            formBody.append(formFileName, fileList.item(x));
-          }
-        });
-        delete formdata.formDataErrors;
-        delete formdata.formDataFiles;
-        Object.keys(submitFormData).forEach(form_name => {
-          formBody.append(form_name, submitFormData[ form_name ]);
-        });
-        fetchPostBody = formBody;
-      } else {
-        delete formdata.formDataErrors;
-        delete formdata.formDataFiles;
-        fetchPostBody = JSON.stringify(submitFormData);        
-      }
-      let isGetRequest = fetchOptions.options && fetchOptions.options.method && fetchOptions.options.method.toUpperCase() === 'GET';
-      let bodyForFetch = (isGetRequest)
-        ? {}
-        : {
-          body: fetchPostBody,
-        };
-      fetchOptions.options = Object.assign(
-        {
-          headers,
-        },
-        fetchOptions.options,
-        bodyForFetch);
-      fetch(this.getFormSumitUrl(`${fetchOptions.url}${(isGetRequest && fetchOptions.url.indexOf('?')!==-1)?'&':'?'}${(isGetRequest)?qs.stringify(submitFormData):''}`, fetchOptions.params, formdata),
+      fetch(
+        this.getFormSumitUrl(`${fetchOptions.url}${(isGetRequest && fetchOptions.url.indexOf('?') !== -1) ? '&' : '?'}${(isGetRequest) ? qs.stringify(submitFormData) : ''}`, fetchOptions.params, formdata),
         fetchOptions.options
       )
         .then(utilities.checkStatus)
         .then(res => {
           if (fetchOptions.success) {
-            if (fetchOptions.success.modal) {
-              this.props.createModal(fetchOptions.success.modal);
-            } else if (fetchOptions.success.notification) {
-              this.props.createNotification(fetchOptions.success.notification);
-            } else {
-              this.props.createNotification({ text: 'Saved', timeout:4000, type:'success',  });
-            }
-            if (!fetchOptions.successCallback && !fetchOptions.responseCallback){
-              __formStateUpdate();
-            }
+            formSubmitNotification({ fetchOptions, __formStateUpdate, });
           } 
           if (fetchOptions.successCallback || fetchOptions.responseCallback) {
             let successCallback = (fetchOptions.successCallback)
@@ -262,29 +215,9 @@ class ResponsiveForm extends Component{
               ? getCBFromString(fetchOptions.responseCallback)
               : false;
             
-            
             res.json()
               .then(successData => {
-                if (fetchOptions.successCallback === 'func:this.props.setDynamicData') {
-                  this.props.setDynamicData(this.props.dynamicField, submitFormData);
-                } else {
-                  if(fetchOptions.setDynamicData){
-                    this.props.setDynamicData(this.props.dynamicField, submitFormData);
-                  }
-                  if (successCallback) {
-                    successCallback(fetchOptions.successProps || successData, submitFormData);
-                  }
-                }
-                if (responseCallback) {
-                  if (fetchOptions.responseCallback === 'func:this.props.setDynamicData') {
-                    this.props.setDynamicData(this.props.dynamicResponseField, successData);
-                  } else {
-                    if(fetchOptions.setDynamicResponseData){
-                      this.props.setDynamicData(this.props.dynamicResponseField, successData);
-                    }
-                    responseCallback(successData, submitFormData);
-                  }
-                }
+                formSuccessCallbacks({ fetchOptions, submitFormData, successData, successCallback, responseCallback, });
                 __formStateUpdate();
               });
           } else {

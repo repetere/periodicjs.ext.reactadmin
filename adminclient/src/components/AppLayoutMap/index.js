@@ -105,14 +105,16 @@ export function getRenderedComponent(componentObject, resources, debug) {
     } else if (typeof componentObject.conditionalprops !== 'undefined'
       && !Object.keys(utilities.traverse(componentObject.conditionalprops, renderedCompProps)).filter(key => utilities.traverse(componentObject.conditionalprops, renderedCompProps)[ key ]).length) {
       return null;
-    }    else {
+    } else {
       return createElement(
         //element component
-        (React.DOM[ componentObject.component ])
-          ? componentObject.component
-          : (recharts[ componentObject.component.replace('recharts.', '') ])
-            ? recharts[ componentObject.component.replace('recharts.', '') ]
-            : AppLayoutMap[ componentObject.component ],
+        (typeof componentObject.component === 'string')
+          ? (React.DOM[ componentObject.component ])
+            ? componentObject.component
+            : (recharts[ componentObject.component.replace('recharts.', '') ])
+              ? recharts[ componentObject.component.replace('recharts.', '') ]
+              : AppLayoutMap[ componentObject.component ]
+          : componentObject.component,
         //element props
         renderedCompProps,
         //props children

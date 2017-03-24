@@ -12,10 +12,6 @@ var _keys = require('babel-runtime/core-js/object/keys');
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _defineProperty2 = require('babel-runtime/helpers/defineProperty');
-
-var _defineProperty3 = _interopRequireDefault(_defineProperty2);
-
 var _stringify = require('babel-runtime/core-js/json/stringify');
 
 var _stringify2 = _interopRequireDefault(_stringify);
@@ -67,10 +63,6 @@ var _FormHelpers = require('./FormHelpers');
 var _flat = require('flat');
 
 var _flat2 = _interopRequireDefault(_flat);
-
-var _validate2 = require('validate.js');
-
-var _validate3 = _interopRequireDefault(_validate2);
 
 var _querystring = require('querystring');
 
@@ -161,6 +153,7 @@ var ResponsiveForm = function (_Component) {
     _this.getFormLink = _FormElements.getFormLink.bind(_this);
     _this.getFormGroup = _FormElements.getFormGroup.bind(_this);
     _this.getImage = _FormElements.getImage.bind(_this);
+    _this.validateFormElement = _FormHelpers.validateFormElement.bind(_this);
     return _this;
   }
 
@@ -200,6 +193,10 @@ var ResponsiveForm = function (_Component) {
       var getCBFromString = _FormHelpers.getCallbackFromString.bind(this);
       var formNameFields = _FormHelpers.setFormNameFields.bind(this);
       var getAssigedHiddenField = _FormHelpers.assignHiddenFields.bind(this);
+      var getFormValidations = _FormHelpers.validateForm.bind(this);
+      var getFormBody = _FormHelpers.assignFormBody.bind(this);
+      var formSubmitNotification = _FormHelpers.handleFormSubmitNotification.bind(this);
+      var formSuccessCallbacks = _FormHelpers.handleSuccessCallbacks.bind(this);
       var __formStateUpdate = function __formStateUpdate() {
         _this2.setState({
           __formDataStatusDate: new Date().toString()
@@ -208,7 +205,6 @@ var ResponsiveForm = function (_Component) {
 
       delete formdata.formDataLists;
       delete formdata.__formDataStatusDate;
-      // delete formdata.__formStateRandUpdate;
       delete formdata.formDataTables;
 
       var assigedHiddenFields = getAssigedHiddenField({ formdata: formdata, hiddenInputs: hiddenInputs, submitFormData: submitFormData });
@@ -220,25 +216,18 @@ var ResponsiveForm = function (_Component) {
       formElementFields = updatedFormFieldsAndData.formElementFields;
       formdata = updatedFormFieldsAndData.formdata;
 
-      if (this.props.validations) {
-        this.props.validations.forEach(function (validation) {
-          // console.debug(formdata[ validation.name ], { validation, });
-          var validationerror = (0, _validate3.default)((0, _defineProperty3.default)({}, validation.name, formdata[validation.name]), validation.constraints);
-          if (validationerror) {
-            validationErrors[validation.name] = validationerror[validation.name];
-          }
-        });
-      } else {
-        delete formdata.formDataErrors;
-      }
+      var validatedFormData = getFormValidations({ formdata: formdata, validationErrors: validationErrors });
+      validationErrors = validatedFormData.validationErrors;
+      formdata = validatedFormData.formdata;
+
       if (formElementFields && formElementFields.length) {
         formElementFields.forEach(function (formElmField) {
           submitFormData[formElmField] = formdata[formElmField];
         });
       }
-      // console.debug({ submitFormData, formdata });
+      // console.debug({ submitFormData, formdata, validationErrors });
       if (validationErrors && (0, _keys2.default)(validationErrors).length < 1) {
-        __formStateUpdate();
+        this.setState({ formDataErrors: {} });
       }
       if (validationErrors && (0, _keys2.default)(validationErrors).length > 0) {
         this.setState({ formDataErrors: validationErrors });
@@ -247,91 +236,34 @@ var ResponsiveForm = function (_Component) {
         this.props.debug(submitFormData);
         __formStateUpdate();
       } else if (typeof this.props.onSubmit === 'string' && this.props.onSubmit.indexOf('func:this.props') !== -1) {
-        delete formdata.formDataFiles;
-        delete formdata.formDataErrors;
-        if (this.props.onSubmit === 'func:this.props.setDynamicData') {
-          // console.debug('this.props', this.props);
-          this.props.setDynamicData(this.props.dynamicField, submitFormData);
-        } else {
-          this.props[this.props.onSubmit.replace('func:this.props.', '')](submitFormData);
-        }
+        _FormHelpers.submitThisDotPropsFunc.call(this, { formdata: formdata, submitFormData: submitFormData });
         __formStateUpdate();
       } else if (typeof this.props.onSubmit === 'string' && this.props.onSubmit.indexOf('func:window') !== -1) {
-        delete formdata.formDataFiles;
-        delete formdata.formDataErrors;
-        window[this.props.onSubmit.replace('func:this.props.', '')].call(this, submitFormData);
+        _FormHelpers.submitWindowFunc.call(this, { formdata: formdata, submitFormData: submitFormData });
         __formStateUpdate();
       } else if (typeof this.props.onSubmit !== 'function') {
         var fetchOptions = this.props.onSubmit;
         var formBody = new FormData();
         var fetchPostBody = void 0;
+        var updatedFormBody = getFormBody({ formdata: formdata, headers: headers, formBody: formBody, submitFormData: submitFormData, fetchPostBody: fetchPostBody, fetchOptions: fetchOptions });
+        var isGetRequest = updatedFormBody.isGetRequest;
+        formdata = updatedFormBody.formdata;
+        headers = updatedFormBody.headers;
+        formBody = updatedFormBody.formBody;
+        submitFormData = updatedFormBody.submitFormData;
+        fetchPostBody = updatedFormBody.fetchPostBody;
+        fetchOptions = updatedFormBody.fetchOptions;
 
-        //if file
-        if ((0, _keys2.default)(formdata.formDataFiles).length) {
-          delete headers['Content-Type'];
-          delete headers['content-type'];
-          (0, _keys2.default)(formdata.formDataFiles).forEach(function (formFileName) {
-            var fileList = formdata.formDataFiles[formFileName].files;
-            for (var x = 0; x < fileList.length; x++) {
-              formBody.append(formFileName, fileList.item(x));
-            }
-          });
-          delete formdata.formDataErrors;
-          delete formdata.formDataFiles;
-          (0, _keys2.default)(submitFormData).forEach(function (form_name) {
-            formBody.append(form_name, submitFormData[form_name]);
-          });
-          fetchPostBody = formBody;
-        } else {
-          delete formdata.formDataErrors;
-          delete formdata.formDataFiles;
-          fetchPostBody = (0, _stringify2.default)(submitFormData);
-        }
-        var isGetRequest = fetchOptions.options && fetchOptions.options.method && fetchOptions.options.method.toUpperCase() === 'GET';
-        var bodyForFetch = isGetRequest ? {} : {
-          body: fetchPostBody
-        };
-        fetchOptions.options = (0, _assign2.default)({
-          headers: headers
-        }, fetchOptions.options, bodyForFetch);
         fetch(this.getFormSumitUrl('' + fetchOptions.url + (isGetRequest && fetchOptions.url.indexOf('?') !== -1 ? '&' : '?') + (isGetRequest ? _querystring2.default.stringify(submitFormData) : ''), fetchOptions.params, formdata), fetchOptions.options).then(_util2.default.checkStatus).then(function (res) {
           if (fetchOptions.success) {
-            if (fetchOptions.success.modal) {
-              _this2.props.createModal(fetchOptions.success.modal);
-            } else if (fetchOptions.success.notification) {
-              _this2.props.createNotification(fetchOptions.success.notification);
-            } else {
-              _this2.props.createNotification({ text: 'Saved', timeout: 4000, type: 'success' });
-            }
-            if (!fetchOptions.successCallback && !fetchOptions.responseCallback) {
-              __formStateUpdate();
-            }
+            formSubmitNotification({ fetchOptions: fetchOptions, __formStateUpdate: __formStateUpdate });
           }
           if (fetchOptions.successCallback || fetchOptions.responseCallback) {
             var successCallback = fetchOptions.successCallback ? getCBFromString(fetchOptions.successCallback) : false;
             var responseCallback = fetchOptions.responseCallback ? getCBFromString(fetchOptions.responseCallback) : false;
 
             res.json().then(function (successData) {
-              if (fetchOptions.successCallback === 'func:this.props.setDynamicData') {
-                _this2.props.setDynamicData(_this2.props.dynamicField, submitFormData);
-              } else {
-                if (fetchOptions.setDynamicData) {
-                  _this2.props.setDynamicData(_this2.props.dynamicField, submitFormData);
-                }
-                if (successCallback) {
-                  successCallback(fetchOptions.successProps || successData, submitFormData);
-                }
-              }
-              if (responseCallback) {
-                if (fetchOptions.responseCallback === 'func:this.props.setDynamicData') {
-                  _this2.props.setDynamicData(_this2.props.dynamicResponseField, successData);
-                } else {
-                  if (fetchOptions.setDynamicResponseData) {
-                    _this2.props.setDynamicData(_this2.props.dynamicResponseField, successData);
-                  }
-                  responseCallback(successData, submitFormData);
-                }
-              }
+              formSuccessCallbacks({ fetchOptions: fetchOptions, submitFormData: submitFormData, successData: successData, successCallback: successCallback, responseCallback: responseCallback });
               __formStateUpdate();
             });
           } else {

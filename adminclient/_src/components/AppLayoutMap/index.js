@@ -205,7 +205,7 @@ function getRenderedComponent(componentObject, resources, debug) {
     } else {
       return (0, _react.createElement)(
       //element component
-      _react2.default.DOM[componentObject.component] ? componentObject.component : recharts[componentObject.component.replace('recharts.', '')] ? recharts[componentObject.component.replace('recharts.', '')] : AppLayoutMap[componentObject.component],
+      typeof componentObject.component === 'string' ? _react2.default.DOM[componentObject.component] ? componentObject.component : recharts[componentObject.component.replace('recharts.', '')] ? recharts[componentObject.component.replace('recharts.', '')] : AppLayoutMap[componentObject.component] : componentObject.component,
       //element props
       renderedCompProps,
       //props children

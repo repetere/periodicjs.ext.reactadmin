@@ -75,13 +75,27 @@ module.exports = {
                     formdata: {
                       latest_contact: {
                         address_state: 'new york',
-                        address_postal_code:10007
-                      }
+                        address_postal_code:10007,
+                      },
                     },
                     flattenFormData: true,
                     style: {
                       marginBottom:'20px',
                     },
+                    'validations': [
+                      {
+                        'name': 'testData',
+                        'constraints': {
+                          'testData': {
+                            'presence': 'true',
+                            'length': {
+                              'minimum': 3,
+                              'message': 'has to be atleast 3 chars',
+                            },
+                          },
+                        },
+                      },  
+                    ],
                     formgroups: [
                       {
                         gridProps: {},
@@ -91,11 +105,15 @@ module.exports = {
                             type: 'text',
                             name: 'testData',
                             label: 'test dynamic data',
-                            value:'set on initial'
+                            value: 'sa',
+                            keyUp: true,
+                            validateOnKeyup: true,
+                            errorIconRight:true,
                           },
                           {
                             type: 'submit',
                             value: 'update',
+                            confirmModal:true,
                           },
                         ],
                       },
@@ -117,7 +135,8 @@ module.exports = {
                                 background: 'none',
                               },
                             },
-                            leftLabel:'$3,000',
+                            leftLabel: '$3,000',
+                            numeralFormat:'$0,0',
                           },
                         ],
                       },
@@ -218,7 +237,7 @@ module.exports = {
                                 },
                               },
                               thisprops: {
-                                formdata:['formdata'],
+                                formdata:['formdata',],
                               },
                             },
                           },

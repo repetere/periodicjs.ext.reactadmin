@@ -4,6 +4,10 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _stringify = require('babel-runtime/core-js/json/stringify');
+
+var _stringify2 = _interopRequireDefault(_stringify);
+
 var _keys = require('babel-runtime/core-js/object/keys');
 
 var _keys2 = _interopRequireDefault(_keys);
@@ -12,28 +16,80 @@ var _assign = require('babel-runtime/core-js/object/assign');
 
 var _assign2 = _interopRequireDefault(_assign);
 
+var _defineProperty2 = require('babel-runtime/helpers/defineProperty');
+
+var _defineProperty3 = _interopRequireDefault(_defineProperty2);
+
+exports.validateFormElement = validateFormElement;
+exports.validateForm = validateForm;
 exports.assignHiddenFields = assignHiddenFields;
 exports.getCallbackFromString = getCallbackFromString;
 exports.setAddNameToName = setAddNameToName;
 exports.setFormNameFields = setFormNameFields;
+exports.assignFormBody = assignFormBody;
+exports.handleFormSubmitNotification = handleFormSubmitNotification;
+exports.handleSuccessCallbacks = handleSuccessCallbacks;
+exports.submitThisDotPropsFunc = submitThisDotPropsFunc;
+exports.submitWindowFunc = submitWindowFunc;
 
 var _flat = require('flat');
 
 var _flat2 = _interopRequireDefault(_flat);
 
+var _validate3 = require('validate.js');
+
+var _validate4 = _interopRequireDefault(_validate3);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function validateFormElement(options) {
+  try {
+    var formElement = options.formElement;
+
+    var validation = this.props.validations.filter(function (validation) {
+      return validation.name === formElement.name;
+    });
+    validation = validation.length > 0 ? validation[0] : false;
+    if (validation) {
+      var validationerror = (0, _validate4.default)((0, _defineProperty3.default)({}, validation.name, this.state[validation.name]), validation.constraints);
+      var validationErrors = void 0;
+      if (validationerror) {
+        validationErrors = (0, _assign2.default)({}, this.state.formDataErrors);
+        validationErrors[validation.name] = validationerror[validation.name];
+      } else {
+        validationErrors = (0, _assign2.default)({}, this.state.formDataErrors);
+        delete validationErrors[validation.name];
+      }
+      this.setState({ formDataErrors: validationErrors });
+      // console.debug('has errors', validationErrors, 'this.state[formElement.name]', this.state[ formElement.name ]);
+    }
+  } catch (e) {
+    console.debug('validation check error', e);
+  }
+}
+
+function validateForm(options) {
+  // console.debug('testin valdation',this.props.validations)
+  var formdata = options.formdata,
+      validationErrors = options.validationErrors;
+
+  if (this.props.validations) {
+    this.props.validations.forEach(function (validation) {
+      var validationerror = (0, _validate4.default)((0, _defineProperty3.default)({}, validation.name, formdata[validation.name]), validation.constraints);
+      // console.debug(formdata[ validation.name ], { validation, validationerror, });
+      if (validationerror) {
+        validationErrors[validation.name] = validationerror[validation.name];
+      }
+    });
+  } else {
+    delete formdata.formDataErrors;
+  }
+  return { formdata: formdata, validationErrors: validationErrors };
+}
 
 function assignHiddenFields(options) {
   var _this = this;
 
-  // console.debug('this.props.formgroups', this.props.formgroups, { hiddenInputs, });
-  // if (this.props.hiddenFields) {
-  //   this.props.hiddenFields.forEach(hiddenField => {
-  //     hiddenInputs[ hiddenField.form_name ] = this.state[ hiddenField.form_val ] || hiddenField.form_static_val; 
-  //     submitFormData[ hiddenField.form_name ] = this.state[ hiddenField.form_val ] || hiddenField.form_static_val; 
-  //   });
-  //   formdata = Object.assign(formdata, hiddenInputs);
-  // }
   var formdata = options.formdata,
       hiddenInputs = options.hiddenInputs,
       submitFormData = options.submitFormData;
@@ -57,6 +113,7 @@ function assignHiddenFields(options) {
   formdata = (0, _assign2.default)(formdata, hiddenInputs, dynamicFields);
   return { formdata: formdata, hiddenInputs: hiddenInputs, submitFormData: submitFormData };
 }
+
 function getCallbackFromString(successCBProp) {
   var successCallback = void 0;
   if (typeof successCBProp === 'string' && successCBProp.indexOf('func:this.props.reduxRouter') !== -1) {
@@ -68,6 +125,7 @@ function getCallbackFromString(successCBProp) {
   }
   return successCallback;
 }
+
 function setAddNameToName(options) {
   var formdata = options.formdata,
       formElementFields = options.formElementFields,
@@ -111,6 +169,7 @@ function setAddNameToName(options) {
   }
   return { formdata: formdata, formElementFields: formElementFields, formElement: formElm };
 }
+
 function setFormNameFields(options) {
   var formElementFields = options.formElementFields,
       formdata = options.formdata;
@@ -158,4 +217,112 @@ function setFormNameFields(options) {
     });
   }
   return { formElementFields: formElementFields, formdata: formdata };
+}
+
+function assignFormBody(options) {
+  var formdata = options.formdata,
+      headers = options.headers,
+      formBody = options.formBody,
+      submitFormData = options.submitFormData,
+      fetchPostBody = options.fetchPostBody,
+      fetchOptions = options.fetchOptions;
+  //if file
+
+  if ((0, _keys2.default)(formdata.formDataFiles).length) {
+    delete headers['Content-Type'];
+    delete headers['content-type'];
+    (0, _keys2.default)(formdata.formDataFiles).forEach(function (formFileName) {
+      var fileList = formdata.formDataFiles[formFileName].files;
+      for (var x = 0; x < fileList.length; x++) {
+        formBody.append(formFileName, fileList.item(x));
+      }
+    });
+    delete formdata.formDataErrors;
+    delete formdata.formDataFiles;
+    (0, _keys2.default)(submitFormData).forEach(function (form_name) {
+      formBody.append(form_name, submitFormData[form_name]);
+    });
+    fetchPostBody = formBody;
+  } else {
+    delete formdata.formDataErrors;
+    delete formdata.formDataFiles;
+    fetchPostBody = (0, _stringify2.default)(submitFormData);
+  }
+  var isGetRequest = fetchOptions.options && fetchOptions.options.method && fetchOptions.options.method.toUpperCase() === 'GET';
+  var bodyForFetch = isGetRequest ? {} : {
+    body: fetchPostBody
+  };
+  fetchOptions.options = (0, _assign2.default)({
+    headers: headers
+  }, fetchOptions.options, bodyForFetch);
+
+  return { formdata: formdata, headers: headers, formBody: formBody, submitFormData: submitFormData, fetchPostBody: fetchPostBody, fetchOptions: fetchOptions, isGetRequest: isGetRequest };
+}
+
+function handleFormSubmitNotification(options) {
+  var fetchOptions = options.fetchOptions,
+      __formStateUpdate = options.__formStateUpdate;
+
+  if (fetchOptions.success.modal) {
+    this.props.createModal(fetchOptions.success.modal);
+  } else if (fetchOptions.success.notification) {
+    this.props.createNotification(fetchOptions.success.notification);
+  } else {
+    this.props.createNotification({ text: 'Saved', timeout: 4000, type: 'success' });
+  }
+  if (!fetchOptions.successCallback && !fetchOptions.responseCallback) {
+    __formStateUpdate();
+  }
+}
+
+function handleSuccessCallbacks(options) {
+  var fetchOptions = options.fetchOptions,
+      submitFormData = options.submitFormData,
+      successData = options.successData,
+      successCallback = options.successCallback,
+      responseCallback = options.responseCallback;
+
+  if (fetchOptions.successCallback === 'func:this.props.setDynamicData') {
+    this.props.setDynamicData(this.props.dynamicField, submitFormData);
+  } else {
+    if (fetchOptions.setDynamicData) {
+      this.props.setDynamicData(this.props.dynamicField, submitFormData);
+    }
+    if (successCallback) {
+      successCallback(fetchOptions.successProps || successData, submitFormData);
+    }
+  }
+  if (responseCallback) {
+    if (fetchOptions.responseCallback === 'func:this.props.setDynamicData') {
+      this.props.setDynamicData(this.props.dynamicResponseField, successData);
+    } else {
+      if (fetchOptions.setDynamicResponseData) {
+        this.props.setDynamicData(this.props.dynamicResponseField, successData);
+      }
+      responseCallback(successData, submitFormData);
+    }
+  }
+}
+
+function submitThisDotPropsFunc(options) {
+  var formdata = options.formdata,
+      submitFormData = options.submitFormData;
+
+  delete formdata.formDataFiles;
+  delete formdata.formDataErrors;
+  if (this.props.onSubmit === 'func:this.props.setDynamicData') {
+    // console.debug('this.props', this.props);
+    this.props.setDynamicData(this.props.dynamicField, submitFormData);
+  } else {
+    this.props[this.props.onSubmit.replace('func:this.props.', '')](submitFormData);
+  }
+}
+
+function submitWindowFunc(options) {
+  var formdata = options.formdata,
+      submitFormData = options.submitFormData;
+
+  delete formdata.formDataFiles;
+  delete formdata.formDataErrors;
+  window[this.props.onSubmit.replace('func:this.props.', '')].call(this, submitFormData);
 }

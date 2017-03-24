@@ -88,7 +88,13 @@ const defaultProps = {
   selectOptionSortId: false,
   selectOptionSortIdLabel: false,
   addNewRows: true,
-  insertSelectedRowHeaderIndex:0,
+  fixCSVRow: true,
+  insertSelectedRowHeaderIndex: 0,
+  csvEOL: {
+    // eol: '\r\n',
+    trimHeaderValues: true,
+    trimFieldValues: true,
+  },
 };
 
 function getOptionsHeaders(props, propHeaders) {
@@ -258,13 +264,17 @@ class ResponsiveTable extends Component {
         ? this.replaceRows
         : this.addingRows;
       try {
-        console.debug({ e, results });
+        console.debug({ e, results, });
         results.forEach(result => { 
-          const [ e, file ] = result;
+          const [ e, file, ] = result;
           if (path.extname(file.name) === '.csv') {
             csv2json(e.target.result, (err, newRows) => {
               if (err) throw err;
+              // console.debug({ newRows, }, 'e.target.result', e.target.result);
               updatefunction(newRows);
+            }, {
+              options: this.props.csvOptions,
+              // keys: this.state.headers.map(header => header.sortid),  
             });
           } else {
             let newRows = JSON.parse(e.target.result);
@@ -274,8 +284,7 @@ class ResponsiveTable extends Component {
       } catch (e) {
         this.props.errorNotification(e);
       }
-      
-    }
+    };
   }
   updateTableData(options) {
     let updatedState = {};
@@ -400,6 +409,7 @@ class ResponsiveTable extends Component {
     } else if (this.props.useInputRows && header && header.formtype && header.formtype==='textarea') {
       return <rb.Textarea
         {...header.textareaProps}
+        value={value}
         onChange={(event) => {
           let text = event.target.value;
           let name = header.sortid;
@@ -409,6 +419,7 @@ class ResponsiveTable extends Component {
       >{value}</rb.Textarea>;
     } else if (this.props.useInputRows && header && header.formtype && header.formtype==='text') {
       return <rb.Input
+        value={value}
         {...header.inputProps}
         onChange={(event) => {
           let text = event.target.value;
@@ -442,20 +453,22 @@ class ResponsiveTable extends Component {
       returnValue = moment(value).format(options.momentFormat);
     } else if (options.numeralFormat) {
       returnValue = numeral(value).format(options.numeralFormat);
+    } else if (header.wrapPreOutput) {
+      returnValue = <pre {...header.wrapPreOutputProps}>{value}</pre>;
     } else if (options.icon && value) {
         // console.debug({value})
       if (typeof value !== 'string' && Array.isArray(value)) {
         let icons = value.map((val, i) => <rb.Icon key={i+Math.random()} {...options.iconProps} icon={val} />);
         return icons;
       } else {
-        return <rb.Icon {...options.iconProps} icon={value} />
+        return <rb.Icon {...options.iconProps} icon={value} />;
       }
     } else if (options.image && value) {
       if (typeof value !== 'string' && Array.isArray(value)) {
         let images = value.map((val, i) => <rb.Image key={i} {...options.imageProps} src={val} />);
         return { images, };
       } else {
-        return <rb.Image {...options.imageProps} src={value} />
+        return <rb.Image {...options.imageProps} src={value} />;
       }
     }
     return returnValue;

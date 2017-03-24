@@ -184,7 +184,13 @@ var defaultProps = {
   selectOptionSortId: false,
   selectOptionSortIdLabel: false,
   addNewRows: true,
-  insertSelectedRowHeaderIndex: 0
+  fixCSVRow: true,
+  insertSelectedRowHeaderIndex: 0,
+  csvEOL: {
+    // eol: '\r\n',
+    trimHeaderValues: true,
+    trimFieldValues: true
+  }
 };
 
 function getOptionsHeaders(props, propHeaders) {
@@ -394,7 +400,10 @@ var ResponsiveTable = function (_Component) {
             if (_path2.default.extname(file.name) === '.csv') {
               (0, _json2Csv.csv2json)(e.target.result, function (err, newRows) {
                 if (err) throw err;
+                // console.debug({ newRows, }, 'e.target.result', e.target.result);
                 updatefunction(newRows);
+              }, {
+                options: _this2.props.csvOptions
               });
             } else {
               var newRows = JSON.parse(e.target.result);
@@ -534,6 +543,7 @@ var ResponsiveTable = function (_Component) {
         return _react2.default.createElement(
           rb.Textarea,
           (0, _extends3.default)({}, header.textareaProps, {
+            value: value,
             onChange: function onChange(event) {
               var text = event.target.value;
               var name = header.sortid;
@@ -546,7 +556,9 @@ var ResponsiveTable = function (_Component) {
       } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'text') {
         return _react2.default.createElement(
           rb.Input,
-          (0, _extends3.default)({}, header.inputProps, {
+          (0, _extends3.default)({
+            value: value
+          }, header.inputProps, {
             onChange: function onChange(event) {
               var text = event.target.value;
               var name = header.sortid;
@@ -587,6 +599,12 @@ var ResponsiveTable = function (_Component) {
         returnValue = (0, _moment2.default)(value).format(options.momentFormat);
       } else if (options.numeralFormat) {
         returnValue = (0, _numeral2.default)(value).format(options.numeralFormat);
+      } else if (header.wrapPreOutput) {
+        returnValue = _react2.default.createElement(
+          'pre',
+          header.wrapPreOutputProps,
+          value
+        );
       } else if (options.icon && value) {
         // console.debug({value})
         if (typeof value !== 'string' && Array.isArray(value)) {

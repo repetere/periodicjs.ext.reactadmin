@@ -173,14 +173,17 @@ function getPassablePropsKeyEvents(passableProps, formElement) {
   var _this2 = this;
 
   if (formElement.keyPress) {
-    var customKeyPress = void 0;
-    if (formElement.keyPress.indexOf('func:this.props') !== -1) {
+    var customKeyPress = function customKeyPress() {};
+    if (typeof formElement.keyPress === 'string' && formElement.keyPress.indexOf('func:this.props') !== -1) {
       customKeyPress = this.props[formElement.keyPress.replace('func:this.props.', '')];
-    } else if (formElement.keyPress.indexOf('func:window') !== -1 && typeof window[formElement.keyPress.replace('func:window.', '')] === 'function') {
+    } else if (typeof formElement.keyPress === 'string' && formElement.keyPress.indexOf('func:window') !== -1 && typeof window[formElement.keyPress.replace('func:window.', '')] === 'function') {
       customKeyPress = window[formElement.keyPress.replace('func:window.', '')].bind(this);
       // console.debug({ customKeyPress });
     }
     passableProps.onKeyPress = function (e) {
+      if (formElement.validateOnKeypress) {
+        _this2.validateFormElement({ formElement: formElement });
+      }
       customKeyPress(e, formElement);
       // console.debug('custom press');
     };
@@ -192,24 +195,30 @@ function getPassablePropsKeyEvents(passableProps, formElement) {
     };
   }
   if (formElement.onBlur) {
-    var customonBlur = void 0;
-    if (formElement.onBlur.indexOf('func:this.props') !== -1) {
+    var customonBlur = function customonBlur() {};
+    if (typeof formElement.onBlur === 'string' && formElement.onBlur.indexOf('func:this.props') !== -1) {
       customonBlur = this.props[formElement.onBlur.replace('func:this.props.', '')];
-    } else if (formElement.onBlur.indexOf('func:window') !== -1 && typeof window[formElement.onBlur.replace('func:window.', '')] === 'function') {
+    } else if (typeof formElement.onBlur === 'string' && formElement.onBlur.indexOf('func:window') !== -1 && typeof window[formElement.onBlur.replace('func:window.', '')] === 'function') {
       customonBlur = window[formElement.onBlur.replace('func:window.', '')].bind(this);
     }
     passableProps.onBlur = function (e) {
+      if (formElement.validateOnBlur) {
+        _this2.validateFormElement({ formElement: formElement });
+      }
       customonBlur(e, formElement);
     };
   }
   if (formElement.keyUp) {
-    var customkeyUp = void 0;
-    if (formElement.keyUp.indexOf('func:this.props') !== -1) {
+    var customkeyUp = function customkeyUp() {};
+    if (typeof formElement.keyUp === 'string' && formElement.keyUp.indexOf('func:this.props') !== -1) {
       customkeyUp = this.props[formElement.keyUp.replace('func:this.props.', '')];
-    } else if (formElement.keyUp.indexOf('func:window') !== -1 && typeof window[formElement.keyUp.replace('func:window.', '')] === 'function') {
+    } else if (typeof formElement.keyUp === 'string' && formElement.keyUp.indexOf('func:window') !== -1 && typeof window[formElement.keyUp.replace('func:window.', '')] === 'function') {
       customkeyUp = window[formElement.keyUp.replace('func:window.', '')].bind(this);
     }
     passableProps.onKeyUp = function (e) {
+      if (formElement.validateOnKeyup) {
+        _this2.validateFormElement({ formElement: formElement });
+      }
       customkeyUp(e, formElement);
     };
   }
@@ -318,7 +327,7 @@ function getFormDatalist(options) {
     passableProps: {
       help: getFormElementHelp(hasError, this.state, formElement.name),
       color: hasError ? 'isDanger' : undefined,
-      icon: hasError ? 'fa fa-warning' : undefined,
+      icon: hasError ? formElement.errorIcon || 'fa fa-warning' : undefined,
       placeholder: formElement.placeholder,
       style: {
         width: '100%'
@@ -384,7 +393,8 @@ function getFormTextInputArea(options) {
     _react2.default.createElement(_reBulma.Input, (0, _extends3.default)({}, passableProps, {
       help: getFormElementHelp(hasError, this.state, formElement.name),
       color: hasError ? 'isDanger' : undefined,
-      icon: hasError ? 'fa fa-warning' : undefined,
+      icon: hasError ? formElement.errorIcon || 'fa fa-warning' : undefined,
+      hasIconRight: formElement.errorIconRight,
       onChange: onChange,
       placeholder: formElement.placeholder,
       value: initialValue }))
@@ -418,8 +428,9 @@ function getFormTextArea(options) {
         return _onChange()(event);
       },
       help: getFormElementHelp(hasError, this.state, formElement.name),
-      icon: hasError ? 'fa fa-warning' : undefined,
+      icon: hasError ? formElement.errorIcon || 'fa fa-warning' : undefined,
       color: hasError ? 'isDanger' : undefined,
+      hasIconRight: formElement.errorIconRight,
       placeholder: formElement.placeholder || formElement.label,
       value: this.state[formElement.name] || initialValue }))
   );
@@ -580,6 +591,7 @@ function getSliderInput(options) {
     }
   }, formElement.wrapperProps);
   var passableProps = (0, _assign2.default)({}, formElement.passProps);
+  var customCallbackfunction = function customCallbackfunction() {};
   if (formElement.handle) {
     passableProps.handle = function (_ref2) {
       var value = _ref2.value,
@@ -593,6 +605,13 @@ function getSliderInput(options) {
       );
     };
   }
+  if (formElement.customOnChange) {
+    if (formElement.customOnChange.indexOf('func:this.props') !== -1) {
+      customCallbackfunction = this.props[formElement.customOnChange.replace('func:this.props.', '')];
+    } else if (formElement.customOnChange.indexOf('func:window') !== -1 && typeof window[formElement.customOnChange.replace('func:window.', '')] === 'function') {
+      customCallbackfunction = window[formElement.customOnChange.replace('func:window.', '')].bind(this);
+    }
+  }
   if (!onValueChange) {
     onValueChange = function onValueChange(val) {
       // console.debug({ val });
@@ -600,16 +619,8 @@ function getSliderInput(options) {
       updatedStateProp[formElement.name] = val;
       // console.log({ updatedStateProp });
       _this8.setState(updatedStateProp);
+      customCallbackfunction(val);
     };
-  }
-  if (formElement.customOnChange) {
-    var customCallbackfunction = void 0;
-    if (formElement.customOnChange.indexOf('func:this.props') !== -1) {
-      customCallbackfunction = this.props[formElement.customOnChange.replace('func:this.props.', '')];
-    } else if (formElement.customOnChange.indexOf('func:window') !== -1 && typeof window[formElement.customOnChange.replace('func:window.', '')] === 'function') {
-      customCallbackfunction = window[formElement.customOnChange.replace('func:window.', '')].bind(this);
-    }
-    passableProps.onAfterChange = customCallbackfunction;
   }
 
   return _react2.default.createElement(
@@ -828,15 +839,19 @@ function getFormSubmit(options) {
   var formElement = options.formElement,
       i = options.i;
 
+  var passableProps = (0, _assign2.default)({
+    state: formElement.confirmModal && (0, _keys2.default)(this.state.formDataErrors).length > 0 ? 'isDisabled' : undefined
+  }, formElement.passProps);
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps),
     getFormLabel(formElement),
     _react2.default.createElement(
       _reBulma.Button,
-      (0, _extends3.default)({}, formElement.passProps, {
+      (0, _extends3.default)({}, passableProps, {
         onClick: function onClick() {
-          formElement.confirmModal ? _this9.props.createModal((0, _assign2.default)({
+          console.debug('this.state.formDataErrors', _this9.state.formDataErrors);
+          formElement.confirmModal && (0, _keys2.default)(_this9.state.formDataErrors).length < 1 ? _this9.props.createModal((0, _assign2.default)({
             title: 'Please Confirm',
             text: {
               component: 'div',
