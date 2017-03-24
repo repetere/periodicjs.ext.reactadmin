@@ -19,7 +19,7 @@ module.exports = (options) => {
     },
     {
       component: 'ResponsiveCard',
-      props: Object.assign({}, customCardProps, {
+      props: Object.assign({}, customCardProps, options.cardprops, {
         cardTitle: 'Application Overview',
       }),
       children: [
