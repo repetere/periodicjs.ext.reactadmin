@@ -165,7 +165,15 @@ var readConfigurations = function (filePath, configurationType) {
       if (path.extname(_path) === '.js') return utility.reloader(_path, handleConfigurationReload(configurationType));
       else return utility.reloader(_path, handleConfigurationReload(configurationType));
     }
-    return (path.extname(_path) === '.js') ? Promisie.resolve(require(_path)) : fs.readJsonAsync(_path);
+    if (path.extname(_path) !== '.js') {
+      return fs.readJsonAsync(_path);
+    } else {
+      let requiredFile = require(_path);
+      requiredFile = (typeof requiredFile === 'function')
+        ? requiredFile(periodic)
+        : requiredFile;
+      return Promisie.resolve(requiredFile);
+    }
   };
   return fs.statAsync(filePath)
     .then(stats => {

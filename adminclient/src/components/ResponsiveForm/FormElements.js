@@ -601,7 +601,7 @@ export function getFormCode(options) {
   let hasError = getErrorStatus(this.state, formElement.name);
   let initialVal = getInitialValue(formElement, this.state);
   let CodeMirrorProps = Object.assign({
-    codeMirrorProps: {
+    codeMirrorProps: Object.assign({
       lineNumbers: true,
       value: (formElement.stringify)?JSON.stringify(initialVal, null, 2):initialVal, //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
       //value: this.state[ formElement.name ] || formElement.value,
@@ -615,8 +615,8 @@ export function getFormCode(options) {
         updatedStateProp[ formElement.name ] = newvalue;
         this.setState(updatedStateProp);
       }.bind(this) : onValueChange,
-    },
-    wrapperProps: {
+    }, formElement.codeMirrorProps),
+    wrapperProps: Object.assign({
       style: {
         overflow: 'auto',
         backgroundColor: 'white',
@@ -625,7 +625,7 @@ export function getFormCode(options) {
         height:'auto',
         boxShadow: 'inset 0 1px 2px rgba(17,17,17,.1)',
       },
-    },
+    }, formElement.codeMirrorWrapperProps),
   }, formElement.passProps);
 
   return (<FormItem key={i} {...formElement.layoutProps} >
