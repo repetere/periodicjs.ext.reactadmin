@@ -38,6 +38,11 @@
         console.debug(this.state[formElement.name]);
         return debugdata;
       }
+
+      var testWindowFuncOnChange = function(data) {
+        console.debug("this is form on change");
+        console.debug("testdata", data);
+      }
     </script>
   </body>
 </html>
