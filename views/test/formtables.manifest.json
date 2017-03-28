@@ -92,7 +92,9 @@
                               "value":"pizza"  
                             },
                             {
-                              "value":"chicken"  
+                              "value":"chicken",
+                              "label":"CHICKIES",
+                              "disabled":true
                             },
                             {
                               "value":"kale"  

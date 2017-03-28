@@ -475,7 +475,7 @@ class ResponsiveTable extends Component {
           this.updateInlineRowText({ name, text, rowIndex, });
         }}>
         {selectOptions.map((opt, k) => {
-          return <option key={k} value={opt.value}>{opt.label || opt.value}</option>;
+          return <option key={k} disabled={opt.disabled} value={opt.value}>{opt.label || opt.value}</option>;
         })}
       </rb.Select>;
     } else if (typeof options.idx !=='undefined' && typeof returnValue==='string' && returnValue.indexOf('--idx--')!==-1) {
@@ -530,7 +530,7 @@ class ResponsiveTable extends Component {
           this.updateNewRowText({ name, text, });
         }}>
         {header.formoptions.map((opt, k) => {
-          return <option key={k} value={opt.value}>{opt.label || opt.value}</option>;
+          return <option key={k} disabled={opt.disabled} value={opt.value}>{opt.label || opt.value}</option>;
         })}
       </rb.Select>);
       // break;  

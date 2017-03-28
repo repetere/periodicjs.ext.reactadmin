@@ -365,7 +365,6 @@ export function getFormTextArea(options) {
 }
 
 export function getFormSelect(options) {
-  // let { formElement, i, formgroup, width, onValueChange, onSelect, } = options;
   let { formElement, i, /*formgroup, width,*/ onChange, } = options;
   let initialValue = getInitialValue(formElement, this.state); //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
   let hasError = getErrorStatus(this.state, formElement.name);
@@ -389,7 +388,7 @@ export function getFormSelect(options) {
       placeholder={formElement.placeholder||formElement.label}
       value={this.state[ formElement.name ] || initialValue} >
       {selectOptions.map((opt, k) => {
-        return <option key={k} value={opt.value}>{opt.label || opt.value}</option>;
+        return <option key={k} disabled={opt.disabled} value={opt.value}>{opt.label || opt.value}</option>;
       })}
     </Select>
   </FormItem>);

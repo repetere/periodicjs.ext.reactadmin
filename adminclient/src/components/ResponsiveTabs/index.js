@@ -1,5 +1,5 @@
 import React, { Component, PropTypes, } from 'react';
-import { Tabs, TabGroup, Tab, Button, } from 're-bulma';
+import { Tabs, TabGroup, Tab, Button, Select, } from 're-bulma';
 import styles from '../../styles';
 import { getRenderedComponent, } from '../AppLayoutMap';
 
