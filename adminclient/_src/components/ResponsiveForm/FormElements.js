@@ -448,7 +448,6 @@ function getFormTextArea(options) {
 }
 
 function getFormSelect(options) {
-  // let { formElement, i, formgroup, width, onValueChange, onSelect, } = options;
   var formElement = options.formElement,
       i = options.i,
       _onChange2 = options.onChange;
@@ -481,7 +480,7 @@ function getFormSelect(options) {
       selectOptions.map(function (opt, k) {
         return _react2.default.createElement(
           'option',
-          { key: k, value: opt.value },
+          { key: k, disabled: opt.disabled, value: opt.value },
           opt.label || opt.value
         );
       })
@@ -869,13 +868,20 @@ function getFormSubmit(options) {
               props: {
                 style: {
                   textAlign: 'center'
-                }
+                },
+                className: '__ra_rf_fe_s_cm'
               },
               children: [{
                 component: 'div',
+                props: {
+                  className: '__ra_rf_fe_s_cm_t'
+                },
                 children: formElement.confirmModal.textContent || ''
               }, {
                 component: 'div',
+                props: (0, _assign2.default)({
+                  className: '__ra_rf_fe_s_cm_bc'
+                }, formElement.confirmModal.buttonWrapperProps),
                 children: [{
                   component: 'ResponsiveButton',
                   props: (0, _assign2.default)({

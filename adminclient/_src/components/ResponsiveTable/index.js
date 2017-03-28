@@ -106,6 +106,10 @@ var _path2 = _interopRequireDefault(_path);
 
 var _json2Csv = require('json-2-csv');
 
+var _RACodeMirror = require('../RACodeMirror');
+
+var _RACodeMirror2 = _interopRequireDefault(_RACodeMirror);
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -539,6 +543,37 @@ var ResponsiveTable = function (_Component) {
       }
       if (header && header.selectedOptionRowHeader) {
         return _react2.default.createElement('input', { type: 'radio', checked: options.rowIndex === this.state.selectedRowIndex ? true : false });
+      } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'code') {
+        var CodeMirrorProps = (0, _assign2.default)({}, {
+          codeMirrorProps: {
+            lineNumbers: true,
+            value: value, //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
+            //value: this.state[ formElement.name ] || formElement.value,
+            style: {
+              minHeight: 200
+            },
+            lineWrapping: true,
+            onChange: function (text) {
+              // console.log({ newvalue });
+              var name = header.sortid;
+              var rowIndex = options.rowIndex;
+              this.updateInlineRowText({ name: name, text: text, rowIndex: rowIndex });
+            }.bind(this)
+          }
+        }, header.CodeMirrorProps);
+        var codeProps = (0, _assign2.default)({
+          wrapperProps: {
+            style: {
+              overflow: 'auto',
+              backgroundColor: 'white',
+              border: '1px solid #d3d6db',
+              borderRadius: 3,
+              height: 'auto',
+              boxShadow: 'inset 0 1px 2px rgba(17,17,17,.1)'
+            }
+          }
+        }, header.codeProps);
+        return _react2.default.createElement(_RACodeMirror2.default, (0, _extends3.default)({}, CodeMirrorProps, codeProps));
       } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'textarea') {
         return _react2.default.createElement(
           rb.Textarea,
@@ -584,7 +619,7 @@ var ResponsiveTable = function (_Component) {
           selectOptions.map(function (opt, k) {
             return _react2.default.createElement(
               'option',
-              { key: k, value: opt.value },
+              { key: k, disabled: opt.disabled, value: opt.value },
               opt.label || opt.value
             );
           })
@@ -599,7 +634,7 @@ var ResponsiveTable = function (_Component) {
         returnValue = (0, _moment2.default)(value).format(options.momentFormat);
       } else if (options.numeralFormat) {
         returnValue = (0, _numeral2.default)(value).format(options.numeralFormat);
-      } else if (header.wrapPreOutput) {
+      } else if (header && header.wrapPreOutput) {
         returnValue = _react2.default.createElement(
           'pre',
           header.wrapPreOutputProps,
@@ -658,7 +693,7 @@ var ResponsiveTable = function (_Component) {
             header.formoptions.map(function (opt, k) {
               return _react2.default.createElement(
                 'option',
-                { key: k, value: opt.value },
+                { key: k, disabled: opt.disabled, value: opt.value },
                 opt.label || opt.value
               );
             })

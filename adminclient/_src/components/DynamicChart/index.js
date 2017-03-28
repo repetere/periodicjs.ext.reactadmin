@@ -40,11 +40,9 @@ var _AppLayoutMap = require('../AppLayoutMap');
 
 var _recharts = require('recharts');
 
-var recharts = _interopRequireWildcard(_recharts);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// import * as recharts from 'recharts';
 
 var DynamicChart = function (_Component) {
   (0, _inherits3.default)(DynamicChart, _Component);

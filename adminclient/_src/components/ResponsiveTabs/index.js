@@ -95,6 +95,9 @@ var ResponsiveTabs = function (_Component) {
   (0, _createClass3.default)(ResponsiveTabs, [{
     key: 'changeTab',
     value: function changeTab(tab) {
+      if (this.state.tabsType === 'select') {
+        tab = this.state.tabs[Number(tab)];
+      }
       var currentLayout = tab.layout && (0, _keys2.default)(tab.layout).length >= 1 ? this.getRenderedComponent(tab.layout) : '';
       // window.location.hash = tab.name;
       this.setState({
@@ -114,6 +117,35 @@ var ResponsiveTabs = function (_Component) {
     key: 'render',
     value: function render() {
       var _this2 = this;
+
+      if (this.state.tabsType === 'select') {
+        return _react2.default.createElement(
+          'div',
+          null,
+          _react2.default.createElement(
+            _reBulma.Tabs,
+            this.state.tabsProps,
+            _react2.default.createElement(
+              _reBulma.TabGroup,
+              null,
+              _react2.default.createElement(
+                _reBulma.Select,
+                (0, _extends3.default)({}, this.state.tabgroupProps, { onChange: function onChange(e) {
+                    _this2.changeTab(e.target.value);
+                  } }),
+                this.props.tabs.map(function (tab, idx) {
+                  return _react2.default.createElement(
+                    'option',
+                    (0, _extends3.default)({ key: idx, value: idx }, tab.tabProps),
+                    tab.name
+                  );
+                })
+              )
+            )
+          ),
+          this.state.currentLayout
+        );
+      }
 
       if (this.state.tabsType === 'pageToggle') {
         return _react2.default.createElement(
