@@ -150,7 +150,7 @@
                               "selectOptionSortId":"favorite",
                               "tableHeaderType":{
                                 "food":"select",
-                                "recipe":"textarea"
+                                "recipe":"code"
                               },
                               "ignoreTableHeaders":["favorite"],
                               "name":"log",

@@ -713,14 +713,21 @@ export function getFormSubmit(options) {
                 style: {
                   textAlign:'center',
                 },
+                className:'__ra_rf_fe_s_cm',
               },
               children: [
                 {
                   component: 'div',
-                  children:formElement.confirmModal.textContent||'',
+                  props: {
+                    className:'__ra_rf_fe_s_cm_t',
+                  },
+                  children: formElement.confirmModal.textContent || '',
                 },
                 {
                   component: 'div',
+                  props: Object.assign({
+                    className:'__ra_rf_fe_s_cm_bc',
+                  }, formElement.confirmModal.buttonWrapperProps),
                   children: [
                     {
                       component: 'ResponsiveButton',

@@ -1,7 +1,7 @@
 import React, { Component, } from 'react';
 import { getRenderedComponent, } from '../AppLayoutMap';
 import { ResponsiveContainer, } from 'recharts';
-import * as recharts from 'recharts';
+// import * as recharts from 'recharts';
 
 class DynamicChart extends Component {
   constructor(props) {

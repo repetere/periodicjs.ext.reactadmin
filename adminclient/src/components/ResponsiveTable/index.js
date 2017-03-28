@@ -13,6 +13,7 @@ import pluralize from 'pluralize';
 import FileReaderInput from 'react-file-reader-input';
 import path from 'path';
 import { csv2json, } from 'json-2-csv';
+import RACodeMirror from '../RACodeMirror';
 // import styles from '../styles';
 
 const propTypes = {
@@ -406,6 +407,40 @@ class ResponsiveTable extends Component {
     }
     if (header && header.selectedOptionRowHeader) {
       return <input type="radio" checked={(options.rowIndex===this.state.selectedRowIndex)?true:false} />;
+    } else if (this.props.useInputRows && header && header.formtype && header.formtype==='code') {
+      let CodeMirrorProps = Object.assign({}, {
+        codeMirrorProps: {
+          lineNumbers: true,
+          value: value, //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
+          //value: this.state[ formElement.name ] || formElement.value,
+          style: {
+            minHeight:200,
+          },
+          lineWrapping:true,
+          onChange: function (text){
+            // console.log({ newvalue });
+            let name = header.sortid;
+            let rowIndex = options.rowIndex;
+            this.updateInlineRowText({ name, text, rowIndex, });
+          }.bind(this),
+        },
+      }, header.CodeMirrorProps);
+      let codeProps = Object.assign({
+        wrapperProps: {
+          style: {
+            overflow: 'auto',
+            backgroundColor: 'white',
+            border: '1px solid #d3d6db',
+            borderRadius: 3,
+            height: 'auto',
+            boxShadow: 'inset 0 1px 2px rgba(17,17,17,.1)',
+          },
+        },
+      }, header.codeProps);
+      return <RACodeMirror
+        {...CodeMirrorProps}
+        {...codeProps}
+      />;
     } else if (this.props.useInputRows && header && header.formtype && header.formtype==='textarea') {
       return <rb.Textarea
         {...header.textareaProps}
@@ -453,7 +488,7 @@ class ResponsiveTable extends Component {
       returnValue = moment(value).format(options.momentFormat);
     } else if (options.numeralFormat) {
       returnValue = numeral(value).format(options.numeralFormat);
-    } else if (header.wrapPreOutput) {
+    } else if (header && header.wrapPreOutput) {
       returnValue = <pre {...header.wrapPreOutputProps}>{value}</pre>;
     } else if (options.icon && value) {
         // console.debug({value})
