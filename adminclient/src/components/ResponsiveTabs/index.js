@@ -44,6 +44,9 @@ class ResponsiveTabs extends Component {
   }
 
   changeTab(tab) {
+    if(this.state.tabsType === 'select'){
+      tab = this.state.tabs[Number(tab)];
+    }
     let currentLayout = (tab.layout && (Object.keys(tab.layout).length >= 1)) ? this.getRenderedComponent(tab.layout) : '';
     // window.location.hash = tab.name;
     this.setState({
@@ -61,6 +64,26 @@ class ResponsiveTabs extends Component {
   
 
   render() {
+
+    if (this.state.tabsType === 'select') {
+      return (
+        <div>
+          <Tabs {...this.state.tabsProps}>
+            <TabGroup>
+              <Select { ...this.state.tabgroupProps } onChange={(e) => {this.changeTab(e.target.value)}}>
+                {this.props.tabs.map((tab, idx) => {
+                  return <option key={idx} value={idx} {...tab.tabProps}>
+                          {tab.name}
+                        </option>  
+                })}
+              </Select> 
+            </TabGroup> 
+          </Tabs> 
+          {this.state.currentLayout} 
+        </div>
+      )
+    }
+
     if (this.state.tabsType === 'pageToggle') {
       return (
       <div>
