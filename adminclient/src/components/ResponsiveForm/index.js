@@ -255,7 +255,7 @@ class ResponsiveForm extends Component{
           this.props[this.props.onChange.replace('func:this.props.', '')](submitFormData);
         }
       } else if (typeof this.props.onChange === 'string' && this.props.onChange.indexOf('func:window') !== -1) {
-        window[this.props.onChange.replace('func:this.props.', '')].call(this, submitFormData);
+        window[this.props.onChange.replace('func:window.', '')].call(this, submitFormData);
       } else if(typeof this.props.onChange ==='function') {
         this.props.onChange(nextState);
       }
