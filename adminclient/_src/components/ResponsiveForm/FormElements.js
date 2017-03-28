@@ -752,7 +752,7 @@ function getFormCode(options) {
   var hasError = getErrorStatus(this.state, formElement.name);
   var initialVal = getInitialValue(formElement, this.state);
   var CodeMirrorProps = (0, _assign2.default)({
-    codeMirrorProps: {
+    codeMirrorProps: (0, _assign2.default)({
       lineNumbers: true,
       value: formElement.stringify ? (0, _stringify2.default)(initialVal, null, 2) : initialVal, //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
       //value: this.state[ formElement.name ] || formElement.value,
@@ -766,8 +766,8 @@ function getFormCode(options) {
         updatedStateProp[formElement.name] = newvalue;
         this.setState(updatedStateProp);
       }.bind(this) : onValueChange
-    },
-    wrapperProps: {
+    }, formElement.codeMirrorProps),
+    wrapperProps: (0, _assign2.default)({
       style: {
         overflow: 'auto',
         backgroundColor: 'white',
@@ -776,7 +776,7 @@ function getFormCode(options) {
         height: 'auto',
         boxShadow: 'inset 0 1px 2px rgba(17,17,17,.1)'
       }
-    }
+    }, formElement.codeMirrorWrapperProps)
   }, formElement.passProps);
 
   return _react2.default.createElement(

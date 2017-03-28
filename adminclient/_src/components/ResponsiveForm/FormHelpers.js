@@ -324,5 +324,5 @@ function submitWindowFunc(options) {
 
   delete formdata.formDataFiles;
   delete formdata.formDataErrors;
-  window[this.props.onSubmit.replace('func:this.props.', '')].call(this, submitFormData);
+  window[this.props.onSubmit.replace('func:window.', '')].call(this, submitFormData);
 }
