@@ -545,6 +545,39 @@ class ResponsiveTable extends Component {
         }}>
       </rb.Textarea>);    
       // break;  
+    case 'code':
+      var CodeMirrorProps = Object.assign({}, {
+        codeMirrorProps: {
+          lineNumbers: true,
+          value: this.state.newRowData[ header.sortid ] || '', //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
+          //value: this.state[ formElement.name ] || formElement.value,
+          style: {
+            minHeight:200,
+          },
+          lineWrapping:true,
+          onChange: function (text){
+            // console.log({ newvalue });
+            let name = header.sortid;
+            this.updateNewRowText({ name, text, });
+          }.bind(this),
+        },
+      }, header.CodeMirrorProps);
+      var codeProps = Object.assign({
+        wrapperProps: {
+          style: {
+            overflow: 'auto',
+            backgroundColor: 'white',
+            border: '1px solid #d3d6db',
+            borderRadius: 3,
+            height: 'auto',
+            boxShadow: 'inset 0 1px 2px rgba(17,17,17,.1)',
+          },
+        },
+      }, header.codeProps);
+      return (<RACodeMirror
+        {...CodeMirrorProps}
+        {...codeProps}
+      />);  
     case 'text':
     default:
       return (<rb.Input

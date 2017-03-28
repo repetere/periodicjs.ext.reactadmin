@@ -708,6 +708,36 @@ var ResponsiveTable = function (_Component) {
               _this5.updateNewRowText({ name: name, text: text });
             } }));
         // break;  
+        case 'code':
+          var CodeMirrorProps = (0, _assign2.default)({}, {
+            codeMirrorProps: {
+              lineNumbers: true,
+              value: this.state.newRowData[header.sortid] || '', //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
+              //value: this.state[ formElement.name ] || formElement.value,
+              style: {
+                minHeight: 200
+              },
+              lineWrapping: true,
+              onChange: function (text) {
+                // console.log({ newvalue });
+                var name = header.sortid;
+                this.updateNewRowText({ name: name, text: text });
+              }.bind(this)
+            }
+          }, header.CodeMirrorProps);
+          var codeProps = (0, _assign2.default)({
+            wrapperProps: {
+              style: {
+                overflow: 'auto',
+                backgroundColor: 'white',
+                border: '1px solid #d3d6db',
+                borderRadius: 3,
+                height: 'auto',
+                boxShadow: 'inset 0 1px 2px rgba(17,17,17,.1)'
+              }
+            }
+          }, header.codeProps);
+          return _react2.default.createElement(_RACodeMirror2.default, (0, _extends3.default)({}, CodeMirrorProps, codeProps));
         case 'text':
         default:
           return _react2.default.createElement(rb.Input, (0, _extends3.default)({}, header.footerFormElementPassProps, {
