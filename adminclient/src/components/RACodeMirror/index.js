@@ -32,18 +32,24 @@ import 'codemirror/mode/css/css';
 import 'codemirror/mode/htmlembedded/htmlembedded';
 
 const propTypes = {};
-const defaultProps = {};
+const defaultProps = {
+  codeMirrorProps: {
+    options: {},
+  },
+};
 
 class RACodeMirror extends Component {
   render() {
-    let options = Object.assign({
-      options: {
-        lineNumbers: true,
-        lineWrapping: true,
-        foldGutter: true,
-        gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
-      },
-    }, this.props.codeMirrorProps);
+    let options = Object.assign({},
+      this.props.codeMirrorProps,
+      {
+        options: Object.assign({}, {
+          lineNumbers: true,
+          lineWrapping: true,
+          foldGutter: true,
+          gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter', ],
+        }, this.props.codeMirrorProps.options),
+      });
   
     return <div {...this.props.wrapperProps}><CodeMirror {...options}>{this.props.children}</CodeMirror></div>;
   }

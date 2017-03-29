@@ -24,7 +24,7 @@ var flushCached = function (filepath, fn, isModule) {
   });
 };
 
-var watcher = function (filepath, onChange) {
+var watcher = function (filepath, onChange, periodic) {
   let isModule = (path.extname(filepath) === '.js');
   if (!WATCHED.has(filepath)) {
     let listener;
@@ -33,7 +33,15 @@ var watcher = function (filepath, onChange) {
     fs.watch(filepath, 'utf8', listener);
     WATCHED.set(filepath, true);
   }
-  return (isModule) ? Promisie.resolve(require(filepath)) : fs.readJsonAsync(filepath);
+  if (isModule) {
+    let requiredFile = require(filepath);
+    requiredFile = (typeof requiredFile === 'function')
+      ? requiredFile(periodic)
+      : requiredFile;
+    return Promisie.resolve(requiredFile);
+  } else {
+    return fs.readJsonAsync(filepath);
+  }
 };
 
 module.exports = watcher;

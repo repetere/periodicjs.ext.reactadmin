@@ -160,12 +160,22 @@ var handleConfigurationReload = function (type) {
 var readConfigurations = function (filePath, configurationType) {
   filePath = path.join(__dirname, '../../../', filePath);
   let _import = function (_path) {
-    if (path.extname(_path) !== '.js' && path.extname(_path) !== '.json') return undefined;
+    if (path.extname(_path) !== '.js' && path.extname(_path) !== '.json') {
+      return undefined;
+    }
     if (extsettings.hot_reload) {
-      if (path.extname(_path) === '.js') return utility.reloader(_path, handleConfigurationReload(configurationType));
+      if (path.extname(_path) === '.js') return utility.reloader(_path, handleConfigurationReload(configurationType), periodic);
       else return utility.reloader(_path, handleConfigurationReload(configurationType));
     }
-    return (path.extname(_path) === '.js') ? Promisie.resolve(require(_path)) : fs.readJsonAsync(_path);
+    if (path.extname(_path) !== '.js') {
+      return fs.readJsonAsync(_path);
+    } else {
+      let requiredFile = require(_path);
+      requiredFile = (typeof requiredFile === 'function')
+        ? requiredFile(periodic)
+        : requiredFile;
+      return Promisie.resolve(requiredFile);
+    }
   };
   return fs.statAsync(filePath)
     .then(stats => {
