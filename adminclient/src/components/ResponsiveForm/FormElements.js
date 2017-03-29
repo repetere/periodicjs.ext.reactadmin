@@ -60,7 +60,10 @@ function valueChangeHandler(formElement) {
     // console.debug({ text, formElement, });
     let updatedStateProp = {};
     updatedStateProp[ formElement.name ] = text;
-    this.setState(updatedStateProp);
+    this.setState(updatedStateProp, () => {
+      if(formElement.validateOnChange){
+      this.validateFormElement({ formElement, });
+    }});
   };
 }
 
