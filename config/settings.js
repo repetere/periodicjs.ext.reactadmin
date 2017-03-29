@@ -1,6 +1,6 @@
 'use strict';
 
-const data_tables = require('./data_tables');
+const data_tables = require('../utility/index_data_tables');
 
 function getReactAdminConfig (options, overwrites) {
   return Object.assign({
