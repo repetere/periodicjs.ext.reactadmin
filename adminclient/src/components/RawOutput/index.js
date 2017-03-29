@@ -2,12 +2,12 @@ import React from 'react';
 import flatten from 'flat';
 
 const RawOutput = (props) => {
-  console.debug('GOT TO RAWOUTPUT')
+  // console.debug('GOT TO RAWOUTPUT')
   let displayProp='';
   let displayData='';
   try {
     let propData = Object.assign({}, props, this.props.getState());
-    console.debug({propData})
+    // console.debug({propData})
     if (props.flattenRawData) {
       let flattenedProps = Object({}, flatten(propData));
       displayProp = (props.select) ? flattenedProps[ props.select ] : flattenedProps;

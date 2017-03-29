@@ -2,7 +2,7 @@
 // const pluralize = require('pluralize');
 // const capitalize = require('capitalize');
 
-exports.getDataPrefix = function (prefix, dbname = 'periodic', schema, label, options) {
+exports.getDataPrefix = function (prefix, dbname = 'standard', schema, label, options) {
   let customDBName = (options && options.extsettings && options.extsettings.extension_overrides && options.extsettings.extension_overrides.customdb && options.extsettings.extension_overrides.customdb[ label ] && options.extsettings.extension_overrides.customdb[ label ])
     ? options.extsettings.extension_overrides.customdb[label]
     : dbname;
@@ -68,7 +68,7 @@ exports.getCustomCardProps = function (options) {
   return customCardProps;
 };
 
-exports.getManifestPathPrefix = function (prefix, dbname ='periodic') {
+exports.getManifestPathPrefix = function (prefix, dbname ='standard') {
   let manifestPrefix =  (prefix)
     ? `/${prefix}/${dbname}`
     : `/${dbname}`;

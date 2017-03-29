@@ -23,12 +23,12 @@ var _flat2 = _interopRequireDefault(_flat);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var RawOutput = function RawOutput(props) {
-  console.debug('GOT TO RAWOUTPUT');
+  // console.debug('GOT TO RAWOUTPUT')
   var displayProp = '';
   var displayData = '';
   try {
     var propData = (0, _assign2.default)({}, props, undefined.props.getState());
-    console.debug({ propData: propData });
+    // console.debug({propData})
     if (props.flattenRawData) {
       var flattenedProps = Object({}, (0, _flat2.default)(propData));
       displayProp = props.select ? flattenedProps[props.select] : flattenedProps;
