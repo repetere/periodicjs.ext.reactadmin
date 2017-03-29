@@ -87,7 +87,27 @@ module.exports = {
                             },
                           },
                         },
-                      },  
+                      },
+                      {
+                        'name': 'testSelect',
+                        'constraints': {
+                          'testSelect': {
+                            'presence': 'true',
+                          },
+                        },
+                      },
+                      {
+                        'name': 'testTextArea',
+                        'constraints': {
+                          'testTextArea': {
+                            'presence': 'true',
+                            'length': {
+                              'minimum': 10,
+                              'message': 'has to be atleast 10 chars',
+                            },
+                          },
+                        },
+                      },
                     ],
                     formgroups: [
                       {
@@ -102,6 +122,30 @@ module.exports = {
                             keyUp: true,
                             validateOnKeyup: true,
                             errorIconRight:true,
+                          },
+                          {
+                            type: 'select',
+                            name: 'testSelect',
+                            label: 'Select Test',
+                            options: [
+                              {
+                                label: 'option1',
+                                value: 'option1',
+                              },
+                              {
+                                value: 'option2',
+                                label: 'option2',
+                              },
+                            ],
+                            validateOnChange: true,
+                            errorIconRight:true,
+                          },
+                          {
+                            type: 'textarea',
+                            name: 'testTextArea',
+                            label: 'testTextArea',
+                            value: 'tt',
+                            validateOnChange: true,
                           },
                           {
                             type: 'submit',
