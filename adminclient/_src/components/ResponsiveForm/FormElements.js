@@ -87,11 +87,10 @@ var _styles = require('../../styles');
 
 var _styles2 = _interopRequireDefault(_styles);
 
+var _FormHelpers = require('./FormHelpers');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// import RAEditor from '../RAEditor';
-// import ResponsiveButton from '../ResponsiveButton';
-// import { EditorState, } from 'draft-js';
 function getPropertyAttribute(options) {
   var property = options.property,
       element = options.element;
@@ -113,6 +112,10 @@ function getPropertyAttribute(options) {
     return returnVal;
   }
 }
+// import RAEditor from '../RAEditor';
+// import ResponsiveButton from '../ResponsiveButton';
+// import { EditorState, } from 'draft-js';
+
 
 function getErrorStatus(state, name) {
   return state.formDataErrors && state.formDataErrors[name];
@@ -510,10 +513,14 @@ function getFormCheckbox(options) {
         // event.target.value = 'on';
         updatedStateProp[formElement.name] = formElement.value || 'on';
       } else {
-        updatedStateProp[formElement.name] = _this6.state[formElement.name] ? false : 'on';
+        updatedStateProp[formElement.name] = _this6.state[formElement.name] ? 0 : 1;
       }
       // console.debug('after', { updatedStateProp, formElement, }, event.target);
-      _this6.setState(updatedStateProp);
+      _this6.setState(updatedStateProp, function () {
+        if (formElement.validateOnChange) {
+          _this6.validateFormElement({ formElement: formElement });
+        }
+      });
     };
   }
 
@@ -864,62 +871,64 @@ function getFormSubmit(options) {
       _reBulma.Button,
       (0, _extends3.default)({}, passableProps, {
         onClick: function onClick() {
-          console.debug('this.state.formDataErrors', _this9.state.formDataErrors);
-          formElement.confirmModal && (0, _keys2.default)(_this9.state.formDataErrors).length < 1 ? _this9.props.createModal((0, _assign2.default)({
-            title: 'Please Confirm',
-            text: {
-              component: 'div',
-              props: {
-                style: {
-                  textAlign: 'center'
-                },
-                className: '__ra_rf_fe_s_cm'
-              },
-              children: [{
+          var validated_formdata = _FormHelpers.validateForm.call(_this9, { formdata: _this9.state, validationErrors: {} });
+          _this9.setState({ formDataErrors: validated_formdata.validationErrors }, function () {
+            formElement.confirmModal && (0, _keys2.default)(_this9.state.formDataErrors).length < 1 ? _this9.props.createModal((0, _assign2.default)({
+              title: 'Please Confirm',
+              text: {
                 component: 'div',
                 props: {
-                  className: '__ra_rf_fe_s_cm_t'
+                  style: {
+                    textAlign: 'center'
+                  },
+                  className: '__ra_rf_fe_s_cm'
                 },
-                children: formElement.confirmModal.textContent || ''
-              }, {
-                component: 'div',
-                props: (0, _assign2.default)({
-                  className: '__ra_rf_fe_s_cm_bc'
-                }, formElement.confirmModal.buttonWrapperProps),
                 children: [{
-                  component: 'ResponsiveButton',
-                  props: (0, _assign2.default)({
-                    style: {
-                      margin: 10
-                    },
-                    buttonProps: {
-                      size: 'isMedium',
-
-                      color: 'isPrimary'
-                    },
-                    onClick: function onClick() {
-                      _this9.props.hideModal('last');
-                      _this9.submitForm.call(_this9);
-                    },
-                    onclickProps: 'last'
-                  }, formElement.confirmModal.yesButtonProps),
-                  children: formElement.confirmModal.yesButtonText || 'Yes'
+                  component: 'div',
+                  props: {
+                    className: '__ra_rf_fe_s_cm_t'
+                  },
+                  children: formElement.confirmModal.textContent || ''
                 }, {
-                  component: 'ResponsiveButton',
+                  component: 'div',
                   props: (0, _assign2.default)({
-                    style: {
-                      margin: 10
-                    },
-                    buttonProps: {
-                      size: 'isMedium'
-                    },
-                    onClick: 'func:this.props.hideModal',
-                    onclickProps: 'last'
-                  }, formElement.confirmModal.noButtonProps),
-                  children: formElement.confirmModal.noButtonText || 'No'
+                    className: '__ra_rf_fe_s_cm_bc'
+                  }, formElement.confirmModal.buttonWrapperProps),
+                  children: [{
+                    component: 'ResponsiveButton',
+                    props: (0, _assign2.default)({
+                      style: {
+                        margin: 10
+                      },
+                      buttonProps: {
+                        size: 'isMedium',
+
+                        color: 'isPrimary'
+                      },
+                      onClick: function onClick() {
+                        _this9.props.hideModal('last');
+                        _this9.submitForm.call(_this9);
+                      },
+                      onclickProps: 'last'
+                    }, formElement.confirmModal.yesButtonProps),
+                    children: formElement.confirmModal.yesButtonText || 'Yes'
+                  }, {
+                    component: 'ResponsiveButton',
+                    props: (0, _assign2.default)({
+                      style: {
+                        margin: 10
+                      },
+                      buttonProps: {
+                        size: 'isMedium'
+                      },
+                      onClick: 'func:this.props.hideModal',
+                      onclickProps: 'last'
+                    }, formElement.confirmModal.noButtonProps),
+                    children: formElement.confirmModal.noButtonText || 'No'
+                  }]
                 }]
-              }]
-            } }, formElement.confirmModal)) : _this9.submitForm.call(_this9);
+              } }, formElement.confirmModal)) : _this9.submitForm.call(_this9);
+          });
         } }),
       formElement.value
     )

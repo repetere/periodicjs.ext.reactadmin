@@ -123,11 +123,18 @@ var fetchErrorContent = exports.fetchErrorContent = function _fetchErrorContent(
  * @param  {Boolean} hasParams If true will attempt to assign dynamic params to resource path
  */
 var fetchSuccessContent = exports.fetchSuccessContent = function _fetchSuccessContent(pathname, hasParams) {
+  var _this2 = this;
+
   try {
     var getState = _getState.call(this);
     var state = getState();
     var containers = state.manifest.containers;
     var layout = (0, _assign2.default)({}, containers[pathname].layout);
+    if (containers[pathname].dynamic && (0, _typeof3.default)(containers[pathname].dynamic) === 'object') {
+      (0, _keys2.default)(containers[pathname].dynamic).forEach(function (dynamicProp) {
+        _this2.props.setDynamicData(dynamicProp, containers[pathname].dynamic[dynamicProp]);
+      });
+    }
     if (containers[pathname].resources && (0, _typeof3.default)(containers[pathname].resources) === 'object') {
       var container = containers[pathname];
       var resources = container.resources;
@@ -185,7 +192,7 @@ var fetchDynamicContent = exports.fetchDynamicContent = function _fetchDynamicCo
 };
 
 var fetchAction = exports.fetchAction = function _fetchAction(pathname, fetchOptions, success) {
-  var _this2 = this;
+  var _this3 = this;
 
   // console.debug('in fetch action this', this,{ pathname, fetchOptions, success, customThis, });
   var state = _getState.call(this)();
@@ -200,25 +207,25 @@ var fetchAction = exports.fetchAction = function _fetchAction(pathname, fetchOpt
   fetch(pathname, fetchOptions).then(_index2.default.checkStatus).then(function (res) {
     if (success.success) {
       if (success.success.modal) {
-        _this2.props.createModal(success.success.modal);
+        _this3.props.createModal(success.success.modal);
       } else if (success.success.notification) {
-        _this2.props.createNotification(success.success.notification);
+        _this3.props.createNotification(success.success.notification);
       } else {
-        _this2.props.createNotification({ text: 'Saved', timeout: 4000, type: 'success' });
+        _this3.props.createNotification({ text: 'Saved', timeout: 4000, type: 'success' });
       }
     }
     if (success.successCallback) {
       res.json().then(function (successData) {
         var successCallbackProp = success.successCallback;
         if (typeof successCallbackProp === 'string' && successCallbackProp.indexOf('func:this.props.reduxRouter') !== -1) {
-          successCallback = _this2.props.reduxRouter[successCallbackProp.replace('func:this.props.reduxRouter.', '')];
+          successCallback = _this3.props.reduxRouter[successCallbackProp.replace('func:this.props.reduxRouter.', '')];
         } else if (typeof successCallbackProp === 'string' && successCallbackProp.indexOf('func:this.props') !== -1) {
-          successCallback = _this2.props[success.successCallback.replace('func:this.props.', '')];
+          successCallback = _this3.props[success.successCallback.replace('func:this.props.', '')];
         } else if (typeof successCallbackProp === 'string' && successCallbackProp.indexOf('func:window') !== -1 && typeof window[success.successCallback.replace('func:window.', '')] === 'function') {
-          successCallback = window[success.successCallback.replace('func:window.', '')].bind(_this2);
+          successCallback = window[success.successCallback.replace('func:window.', '')].bind(_this3);
         }
         if (fetchOptions.successCallback === 'func:this.props.setDynamicData') {
-          _this2.props.setDynamicData(success.dynamicField, success.successProps || successData);
+          _this3.props.setDynamicData(success.dynamicField, success.successProps || successData);
         } else {
           successCallback(success.successProps || successData);
         }

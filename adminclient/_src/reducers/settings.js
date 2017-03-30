@@ -171,6 +171,13 @@ var defaultUserNavigation = {
             label: 'Dynamics',
             id: 'dynamics'
           }
+        }, {
+          component: 'MenuAppLink',
+          props: {
+            href: '/r-admin/content/testform_window',
+            label: 'Test Form Window',
+            id: 'form_window'
+          }
         }]
       }]
     }, {
