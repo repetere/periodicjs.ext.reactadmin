@@ -13,6 +13,7 @@ import moment from 'moment';
 import numeral from 'numeral';
 import flatten, { unflatten, } from 'flat';
 import styles from '../../styles';
+import { validateForm } from './FormHelpers';
 
 export function getPropertyAttribute(options) {
   let { property, element, } = options;
@@ -408,12 +409,15 @@ export function getFormCheckbox(options) {
       // console.debug('before', { updatedStateProp, formElement, }, event.target);
       if (formElement.type === 'radio') {
         // event.target.value = 'on';
-        updatedStateProp[ formElement.name ] = formElement.value ||'on';
+        updatedStateProp[ formElement.name ] = formElement.value || 'on';
       } else {
-        updatedStateProp[ formElement.name ] = (this.state[ formElement.name ] ) ? false : 'on';
+        updatedStateProp[ formElement.name ] = (this.state[ formElement.name ] ) ? 0 : 1;
       }
       // console.debug('after', { updatedStateProp, formElement, }, event.target);
-      this.setState(updatedStateProp);
+      this.setState(updatedStateProp, () => {
+        if(formElement.validateOnChange){
+          this.validateFormElement({ formElement, });
+      }});
     };
   }
 
@@ -705,70 +709,72 @@ export function getFormSubmit(options) {
     {getFormLabel(formElement)}  
     <Button {...passableProps}
       onClick={() => { 
-        console.debug('this.state.formDataErrors', this.state.formDataErrors);
-        (formElement.confirmModal && Object.keys(this.state.formDataErrors).length<1)
-          ? this.props.createModal(Object.assign({
-            title: 'Please Confirm',
-            text: {
-              component: 'div',
-              props: {
-                style: {
-                  textAlign:'center',
-                },
-                className:'__ra_rf_fe_s_cm',
-              },
-              children: [
-                {
-                  component: 'div',
-                  props: {
-                    className:'__ra_rf_fe_s_cm_t',
+        let validated_formdata = validateForm.call(this, {formdata: this.state, validationErrors: {}});
+        this.setState({formDataErrors: validated_formdata.validationErrors}, () => {
+          (formElement.confirmModal && Object.keys(this.state.formDataErrors).length<1)
+            ? this.props.createModal(Object.assign({
+              title: 'Please Confirm',
+              text: {
+                component: 'div',
+                props: {
+                  style: {
+                    textAlign:'center',
                   },
-                  children: formElement.confirmModal.textContent || '',
+                  className:'__ra_rf_fe_s_cm',
                 },
-                {
-                  component: 'div',
-                  props: Object.assign({
-                    className:'__ra_rf_fe_s_cm_bc',
-                  }, formElement.confirmModal.buttonWrapperProps),
-                  children: [
-                    {
-                      component: 'ResponsiveButton',
-                      props: Object.assign({
-                        style:{
-                          margin:10,
-                        },
-                        buttonProps: {
-                          size:'isMedium',
-                          
-                          color:'isPrimary',
-                        },
-                        onClick: () => {
-                          this.props.hideModal('last');
-                          this.submitForm.call(this);
-                        },
-                        onclickProps:'last',
-                      }, formElement.confirmModal.yesButtonProps),  
-                      children:formElement.confirmModal.yesButtonText||'Yes', 
+                children: [
+                  {
+                    component: 'div',
+                    props: {
+                      className:'__ra_rf_fe_s_cm_t',
                     },
-                    {
-                      component: 'ResponsiveButton',
-                      props: Object.assign({
-                        style:{
-                          margin:10,
-                        },
-                        buttonProps: {
-                          size:'isMedium',
-                        },
-                        onClick: 'func:this.props.hideModal',
-                        onclickProps:'last',
-                      }, formElement.confirmModal.noButtonProps),  
-                      children:formElement.confirmModal.noButtonText||'No',
-                    },
-                  ], 
-                },
-              ],
-            } ,}, formElement.confirmModal))
-          : this.submitForm.call(this);
+                    children: formElement.confirmModal.textContent || '',
+                  },
+                  {
+                    component: 'div',
+                    props: Object.assign({
+                      className:'__ra_rf_fe_s_cm_bc',
+                    }, formElement.confirmModal.buttonWrapperProps),
+                    children: [
+                      {
+                        component: 'ResponsiveButton',
+                        props: Object.assign({
+                          style:{
+                            margin:10,
+                          },
+                          buttonProps: {
+                            size:'isMedium',
+                            
+                            color:'isPrimary',
+                          },
+                          onClick: () => {
+                            this.props.hideModal('last');
+                            this.submitForm.call(this);
+                          },
+                          onclickProps:'last',
+                        }, formElement.confirmModal.yesButtonProps),  
+                        children:formElement.confirmModal.yesButtonText||'Yes', 
+                      },
+                      {
+                        component: 'ResponsiveButton',
+                        props: Object.assign({
+                          style:{
+                            margin:10,
+                          },
+                          buttonProps: {
+                            size:'isMedium',
+                          },
+                          onClick: 'func:this.props.hideModal',
+                          onclickProps:'last',
+                        }, formElement.confirmModal.noButtonProps),  
+                        children:formElement.confirmModal.noButtonText||'No',
+                      },
+                    ], 
+                  },
+                ],
+              } ,}, formElement.confirmModal))
+            : this.submitForm.call(this);
+        });
       }}>
       {formElement.value}
     </Button>

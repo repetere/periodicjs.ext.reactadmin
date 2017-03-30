@@ -105,6 +105,11 @@ export const fetchSuccessContent = function _fetchSuccessContent (pathname, hasP
     let state = getState();
     let containers = state.manifest.containers;
     let layout = Object.assign({}, containers[pathname].layout);
+    if (containers[pathname].dynamic && typeof containers[pathname].dynamic === 'object') {
+      Object.keys(containers[pathname].dynamic).forEach(dynamicProp => {
+        this.props.setDynamicData(dynamicProp, containers[pathname].dynamic[dynamicProp]);
+      });
+    }
     if (containers[pathname].resources && typeof containers[pathname].resources === 'object') {
       let container = containers[pathname];
       let resources = container.resources;

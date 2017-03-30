@@ -51,17 +51,7 @@ module.exports = {
                   component: 'Title',
                   children:'TEST FORM',
                 },
-                {
-                  component: 'RawStateOutput',
-                  props: {
-                    select: 'dynamic',
-                    style: {
-                      padding:'10px',
-                      margin: '10px',
-                      border:'1px solid black',
-                    },
-                  },
-                },
+                
                 { 
                   component: 'ResponsiveForm',
                   // thisprops: {
@@ -69,8 +59,10 @@ module.exports = {
                   // },
                   props: {
                     cardForm: {},
+                    dynamicField:'testform',
                     onSubmit: 'func:this.props.setDynamicData',
-                    onChange: 'func:window.testWindowFuncOnChange',
+                    onChange: 'func:this.props.setDynamicData',
+                    // onChange: 'func:window.testWindowFuncOnChange',
                     flattenFormData: true,
                     style: {
                       marginBottom:'20px',
@@ -93,6 +85,18 @@ module.exports = {
                         'constraints': {
                           'testSelect': {
                             'presence': 'true',
+                          },
+                        },
+                      },
+                      {
+                        'name': 'BofA',
+                        'constraints': {
+                          'BofA': {
+                            'presence': 'true',
+                            'numericality': {
+                              'greaterThan': 0,
+                              'message': '^Must be checked',
+                            }
                           },
                         },
                       },
@@ -127,6 +131,7 @@ module.exports = {
                             type: 'select',
                             name: 'testSelect',
                             label: 'Select Test',
+                            value: 'option3',
                             options: [
                               {
                                 label: 'option1',
@@ -136,6 +141,21 @@ module.exports = {
                                 value: 'option2',
                                 label: 'option2',
                               },
+                              {
+                                value: 'option3',
+                                label: 'option3',
+                                disabled: true,
+                              },
+                              {
+                                value: 'option4',
+                                label: 'option4',
+                                disabled: true,
+                              },
+                              {
+                                value: 'option5',
+                                label: 'option5',
+                              },
+
                             ],
                             validateOnChange: true,
                             errorIconRight:true,
@@ -148,12 +168,61 @@ module.exports = {
                             validateOnChange: true,
                           },
                           {
+                            type: 'checkbox',
+                            name: 'BofA',
+                            label:'Bank of America',
+                            placeholder:'Bank of America Account',
+                            validateOnChange: true,
+                          },
+                        ],
+                      },
+                      {
+                        formElements: [
+                          {
+                            type: 'radio',
+                            name: 'apple',
+                            label:'apple',
+                            value: 'apple val',
+                            placeholder:'Apple',
+                            validateOnChange: true,
+                          },
+                          {
+                            type: 'radio',
+                            name: 'orange',
+                            label:'orange',
+                            value: 'orange val',
+                            placeholder:'Orange',
+                            validateOnChange: true,
+                          },
+                        ],
+                      },
+                      {
+                        formElements: [
+                          {
                             type: 'submit',
                             value: 'update',
                             confirmModal:true,
                           },
                         ],
                       },
+                      {
+                        formElements:[
+                          {
+                            type:'layout',
+                            value: {
+                              component: 'RawStateOutput',
+                              props: {
+                                select: 'dynamic',
+                                style: {
+                                  padding:'10px',
+                                  margin: '10px',
+                                  border:'1px solid black',
+                                },
+                              },
+                            },
+                          }
+                        ]
+                      }
                     ],
                   },
                 },
@@ -166,6 +235,9 @@ module.exports = {
       // 'resources':{
       //   // 'tabledata':'/r-admin/contentdata/users?format=json&limit=10',
       // },
+      dynamic: {
+        dummydata: [1,2,3,4,5],
+      },
       'onFinish':'render',
       'pageData':{
         'title':'Home',
