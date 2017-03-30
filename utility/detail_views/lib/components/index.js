@@ -24,9 +24,11 @@ const constructDetail = function (schema, label, options = {}, newEntity) {
   let customHeader = helpers.getExtensionOverride('customDetailHeader', schema, label, options);
 
   return {
-    resources: (newEntity)?undefined: {
-      [ helpers.getDetailLabel(label) ]: `${usablePrefix}/${pluralize(label)}/:id?format=json`,
-    },
+    resources: (newEntity)
+      ? {}
+      : {
+        [ helpers.getDetailLabel(label) ]: `${usablePrefix}/${pluralize(label)}/:id?format=json`,
+      },
     onFinish:'render',
     pageData: (customPageData)
       ? customPageData

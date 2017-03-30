@@ -144,7 +144,11 @@ function valueChangeHandler(formElement) {
     // console.debug({ text, formElement, });
     var updatedStateProp = {};
     updatedStateProp[formElement.name] = text;
-    _this.setState(updatedStateProp);
+    _this.setState(updatedStateProp, function () {
+      if (formElement.validateOnChange) {
+        _this.validateFormElement({ formElement: formElement });
+      }
+    });
   };
 }
 

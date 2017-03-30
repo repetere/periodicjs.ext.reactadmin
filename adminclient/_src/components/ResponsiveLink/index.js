@@ -62,10 +62,12 @@ var ResponsiveLink = function (_Component) {
       var _this2 = this;
 
       return _react2.default.createElement(
-        'span',
-        (0, _extends3.default)({}, this.props.passProps, { onClick: function onClick() {
+        'a',
+        (0, _extends3.default)({}, this.props.passProps, { href: this.props.location, onClick: function onClick(e) {
+            e.preventDefault();
             // console.log('this.props.location', this.props.location);
             _this2.props.reduxRouter.push(_this2.props.location);
+            return false;
           }, style: (0, _assign2.default)({ cursor: 'pointer' }, this.props.style) }),
         this.props.children
       );

@@ -79,10 +79,10 @@ function getReactAdminConfig (options, overwrites) {
       },
     },   
     data_tables: {
-      periodic: data_tables,
+      standard: data_tables,
     },
     data_table_props: {
-      periodic: {
+      standard: {
         asset: {
           flattenRowDataOptions: {
             maxDepth: 2,

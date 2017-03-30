@@ -6,25 +6,31 @@ const DICTIONARY = require('../dictionary');
 pluralize.addIrregularRule('data', 'datas');
 
 var generateTableElement = function (label, data) {
-  if (data.length > 1) {
-    data = data.reduce((result, val, index) => {
-      result[0] = result[0] || {};
-      if (val && typeof val === 'object') return [Object.assign(result[0], val), ];
-      else result[0][index] = val;
-    }, []);
-  }
-  let elem = data[0];
-  if (Array.isArray(elem)) return generateTableElement(label, elem);
-  else {
-    if (elem !== null && elem !== undefined) {
-      elem = (elem && elem.type && DICTIONARY[Symbol.for(elem.type)]) ? elem.type : elem;
-      if (DICTIONARY[Symbol.for(elem)]) return [{ label: 'values', }, ];
-      else return Object.keys(elem).reduce((result, key) => {
-        result.push({ label: key, });
-        return result;
+  try {
+    if (data.length > 1) {
+      data = data.reduce((result, val, index) => {
+        result[0] = result[0] || {};
+        if (val && typeof val === 'object') return [Object.assign(result[0], val), ];
+        else result[0][index] = val;
       }, []);
     }
+    let elem = data[0];
+    if (Array.isArray(elem)) return generateTableElement(label, elem);
+    else {
+      if (elem !== null && elem !== undefined) {
+        elem = (elem && elem.type && DICTIONARY[Symbol.for(elem.type)]) ? elem.type : elem;
+        if (DICTIONARY[Symbol.for(elem)]) return [{ label: 'values', }, ];
+        else return Object.keys(elem).reduce((result, key) => {
+          result.push({ label: key, });
+          return result;
+        }, []);
+      }
+    } 
+  } catch (e) {
+    console.log({ label, data, }, e);
+    return false;
   }
+ 
 };
 
 var handleTable = function (label, data, schema, options) {
@@ -134,22 +140,30 @@ var buildInputComponent = function (label, type, schema, options) {
 };
 
 var handleFormElements = function (label, value, schema, options) {
-  value = (value && value.type && DICTIONARY[Symbol.for(value.type)]) ? value.type : value;
-  let type = DICTIONARY[ Symbol.for(value) ];
-  if (!type) {
-    if (Array.isArray(value)) {
-      type = DICTIONARY[ Symbol.for(value) ] || '_id';
-      if (Array.isArray(value) && value.length && typeof value[0]!=='undefined' && value[0].ref) {
-        value = value[ 0 ];
+  try {
+    value = (value && value.type && DICTIONARY[ Symbol.for(value.type) ]) ? value.type : value;
+    let type = DICTIONARY[ Symbol.for(value) ];
+    if (!type) {
+      if (Array.isArray(value)) {
+        type = DICTIONARY[ Symbol.for(value) ] || '_id';
+        if (Array.isArray(value) && value.length && typeof value[0]!=='undefined' && value[0].ref) {
+          value = value[ 0 ];
+        }
       }
     }
+    // if (schema && schema.entitytype && schema.entitytype.default && schema.entitytype.default==='credit_engine'){
+    //   console.log('handleFormElements', { label, type, value });
+    // }
+    if (type && type !== 'array' && !Array.isArray(value)) return buildInputComponent(label, type, schema, options);  
+    else if (value && typeof value === 'object' && !Array.isArray(value)) return buildFormGroup(label, value);
+    else if (Array.isArray(value)) return handleTable(label, value, schema, options);
+  } catch (e) {
+    console.log({ label, value, schema, }, e);
+    return {
+      type: 'text',
+      name: label,
+    };
   }
-  // if (schema && schema.entitytype && schema.entitytype.default && schema.entitytype.default==='credit_engine'){
-  //   console.log('handleFormElements', { label, type, value });
-  // }
-  if (type && type !== 'array' && !Array.isArray(value)) return buildInputComponent(label, type, schema, options);  
-  else if (value && typeof value === 'object' && !Array.isArray(value)) return buildFormGroup(label, value);
-  else if (Array.isArray(value)) return handleTable(label, value, schema, options);
 };
 
 var buildFormGroup = function (label, data, isRoot = false, schema, options) {

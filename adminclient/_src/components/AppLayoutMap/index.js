@@ -219,7 +219,7 @@ function getRenderedComponent(componentObject, resources, debug) {
     }
   } catch (e) {
     console.error(e, e.stack ? e.stack : 'no stack');
-    console.error({ componentObject: componentObject, resources: resources }, this);
+    console.error({ componentObject: componentObject, resources: resources }, 'this', this);
     return (0, _react.createElement)('div', {}, e.toString());
   }
 }

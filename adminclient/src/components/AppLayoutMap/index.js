@@ -139,8 +139,8 @@ export function getRenderedComponent(componentObject, resources, debug) {
     }
    
   } catch (e) {
-    console.error(e, (e.stack)?e.stack:'no stack');
-    console.error({ componentObject, resources, }, this);
+    console.error(e, (e.stack) ? e.stack:'no stack');
+    console.error({ componentObject, resources, }, 'this', this);
     return createElement('div', {}, e.toString());
   }
 }

@@ -394,119 +394,131 @@ class ResponsiveTable extends Component {
     }
   }
   formatValue(value, row, options, header) {
-    // console.debug({ value, row, options, header, });
-    // console.debug(options.rowIndex,this.state.selectedRowIndex)
-    let returnValue = value;
-    if (header && header.stringify) {
-      value = JSON.stringify(value, null, 2);
-      returnValue = JSON.stringify(value, null, 2);
-    }
-    if (header && header.tostring) {
-      value = value.toString();
-      returnValue = value.toString();
-    }
-    if (header && header.selectedOptionRowHeader) {
-      return <input type="radio" checked={(options.rowIndex===this.state.selectedRowIndex)?true:false} />;
-    } else if (this.props.useInputRows && header && header.formtype && header.formtype==='code') {
-      let CodeMirrorProps = Object.assign({}, {
-        codeMirrorProps: {
-          lineNumbers: true,
-          value: value, //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
-          //value: this.state[ formElement.name ] || formElement.value,
-          style: {
-            minHeight:200,
+   
+    try {
+       // console.debug({ value, row, options, header, });
+      // console.debug(options.rowIndex,this.state.selectedRowIndex)
+      let returnValue = value;
+      if (header && header.stringify) {
+        value = JSON.stringify(value, null, 2);
+        returnValue = JSON.stringify(value, null, 2);
+      }
+      if (header && header.tostring) {
+        value = value.toString();
+        returnValue = value.toString();
+      }
+      if (header && header.selectedOptionRowHeader) {
+        return <input type="radio" checked={(options.rowIndex===this.state.selectedRowIndex)?true:false} />;
+      } else if (this.props.useInputRows && header && header.formtype && header.formtype==='code') {
+        let CodeMirrorProps = Object.assign({}, {
+          codeMirrorProps: {
+            lineNumbers: true,
+            value: value, //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
+            //value: this.state[ formElement.name ] || formElement.value,
+            style: {
+              minHeight:200,
+            },
+            lineWrapping:true,
+            onChange: function (text){
+              // console.log({ newvalue });
+              let name = header.sortid;
+              let rowIndex = options.rowIndex;
+              this.updateInlineRowText({ name, text, rowIndex, });
+            }.bind(this),
           },
-          lineWrapping:true,
-          onChange: function (text){
-            // console.log({ newvalue });
+        }, header.CodeMirrorProps);
+        let codeProps = Object.assign({
+          wrapperProps: {
+            style: {
+              overflow: 'auto',
+              backgroundColor: 'white',
+              border: '1px solid #d3d6db',
+              borderRadius: 3,
+              height: 'auto',
+              boxShadow: 'inset 0 1px 2px rgba(17,17,17,.1)',
+            },
+          },
+        }, header.codeProps);
+        return <RACodeMirror
+          {...CodeMirrorProps}
+          {...codeProps}
+        />;
+      } else if (this.props.useInputRows && header && header.formtype && header.formtype==='textarea') {
+        return <rb.Textarea
+          {...header.textareaProps}
+          value={value}
+          onChange={(event) => {
+            let text = event.target.value;
             let name = header.sortid;
             let rowIndex = options.rowIndex;
             this.updateInlineRowText({ name, text, rowIndex, });
-          }.bind(this),
-        },
-      }, header.CodeMirrorProps);
-      let codeProps = Object.assign({
-        wrapperProps: {
-          style: {
-            overflow: 'auto',
-            backgroundColor: 'white',
-            border: '1px solid #d3d6db',
-            borderRadius: 3,
-            height: 'auto',
-            boxShadow: 'inset 0 1px 2px rgba(17,17,17,.1)',
-          },
-        },
-      }, header.codeProps);
-      return <RACodeMirror
-        {...CodeMirrorProps}
-        {...codeProps}
-      />;
-    } else if (this.props.useInputRows && header && header.formtype && header.formtype==='textarea') {
-      return <rb.Textarea
-        {...header.textareaProps}
-        value={value}
-        onChange={(event) => {
-          let text = event.target.value;
-          let name = header.sortid;
-          let rowIndex = options.rowIndex;
-          this.updateInlineRowText({ name, text, rowIndex, });
-        }}
-      >{value}</rb.Textarea>;
-    } else if (this.props.useInputRows && header && header.formtype && header.formtype==='text') {
-      return <rb.Input
-        value={value}
-        {...header.inputProps}
-        onChange={(event) => {
-          let text = event.target.value;
-          let name = header.sortid;
-          let rowIndex = options.rowIndex;
-          this.updateInlineRowText({ name, text, rowIndex, });
-        }}
-      >{value}</rb.Input>;
-    } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'select') {
-      let selectOptions = header.formoptions || [];
-      return <rb.Select
-        value={value}
-        {...header.selectProps}
-        onChange={(event) => {
-          let text = event.target.value;
-          let name = header.sortid;
-          let rowIndex = options.rowIndex;
-          this.updateInlineRowText({ name, text, rowIndex, });
-        }}>
-        {selectOptions.map((opt, k) => {
-          return <option key={k} disabled={opt.disabled} value={opt.value}>{opt.label || opt.value}</option>;
-        })}
-      </rb.Select>;
-    } else if (typeof options.idx !=='undefined' && typeof returnValue==='string' && returnValue.indexOf('--idx--')!==-1) {
-      returnValue = returnValue.replace('--idx--', options.idx);
-    }
-    if (typeof options.idx !=='undefined' && typeof returnValue==='string' && returnValue.indexOf('--idx-ctr--')!==-1) {
-      returnValue = returnValue.replace('--idx-ctr--', (options.idx+1));
-    }
-    if (options.momentFormat) {
-      returnValue = moment(value).format(options.momentFormat);
-    } else if (options.numeralFormat) {
-      returnValue = numeral(value).format(options.numeralFormat);
-    } else if (header && header.wrapPreOutput) {
-      returnValue = <pre {...header.wrapPreOutputProps}>{value}</pre>;
-    } else if (options.icon && value) {
-        // console.debug({value})
-      if (typeof value !== 'string' && Array.isArray(value)) {
-        let icons = value.map((val, i) => <rb.Icon key={i+Math.random()} {...options.iconProps} icon={val} />);
-        return icons;
-      } else {
-        return <rb.Icon {...options.iconProps} icon={value} />;
+          }}
+        >{value}</rb.Textarea>;
+      } else if (this.props.useInputRows && header && header.formtype && header.formtype==='text') {
+        return <rb.Input
+          value={value}
+          {...header.inputProps}
+          onChange={(event) => {
+            let text = event.target.value;
+            let name = header.sortid;
+            let rowIndex = options.rowIndex;
+            this.updateInlineRowText({ name, text, rowIndex, });
+          }}
+        >{value}</rb.Input>;
+      } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'select') {
+        let selectOptions = header.formoptions || [];
+        return <rb.Select
+          value={value}
+          {...header.selectProps}
+          onChange={(event) => {
+            let text = event.target.value;
+            let name = header.sortid;
+            let rowIndex = options.rowIndex;
+            this.updateInlineRowText({ name, text, rowIndex, });
+          }}>
+          {selectOptions.map((opt, k) => {
+            return <option key={k} disabled={opt.disabled} value={opt.value}>{opt.label || opt.value}</option>;
+          })}
+        </rb.Select>;
+      } else if (typeof options.idx !=='undefined' && typeof returnValue==='string' && returnValue.indexOf('--idx--')!==-1) {
+        returnValue = returnValue.replace('--idx--', options.idx);
       }
-    } else if (options.image && value) {
-      if (typeof value !== 'string' && Array.isArray(value)) {
-        let images = value.map((val, i) => <rb.Image key={i} {...options.imageProps} src={val} />);
-        return { images, };
-      } else {
-        return <rb.Image {...options.imageProps} src={value} />;
+      if (typeof options.idx !=='undefined' && typeof returnValue==='string' && returnValue.indexOf('--idx-ctr--')!==-1) {
+        returnValue = returnValue.replace('--idx-ctr--', (options.idx+1));
       }
+      if (options.momentFormat) {
+        returnValue = moment(value).format(options.momentFormat);
+      } else if (options.numeralFormat) {
+        returnValue = numeral(value).format(options.numeralFormat);
+      } else if (header && header.wrapPreOutput) {
+        returnValue = <pre {...header.wrapPreOutputProps}>{value}</pre>;
+      } else if (options.icon && value) {
+          // console.debug({value})
+        if (typeof value !== 'string' && Array.isArray(value)) {
+          let icons = value.map((val, i) => <rb.Icon key={i+Math.random()} {...options.iconProps} icon={val} />);
+          return icons;
+        } else {
+          return <rb.Icon {...options.iconProps} icon={value} />;
+        }
+      } else if (options.image && value) {
+        if (typeof value !== 'string' && Array.isArray(value)) {
+          let images = value.map((val, i) => <rb.Image key={i} {...options.imageProps} src={val} />);
+          return { images, };
+        } else {
+          return <rb.Image {...options.imageProps} src={value} />;
+        }
+      }
+      if (typeof returnValue === 'undefined') {
+        return '';
+      // } else if (typeof returnValue !== 'object') {
+      //   return JSON.stringify(returnValue);
+      } else {
+        return returnValue.toString();
+      }
+    } catch (e) {
+      console.log({ value, row, options, header, }, e);
+      return 'invalid';
     }
-    return returnValue;
   }
   getHeaderLinkURL(link, row) {
     let returnLink = link.baseUrl;

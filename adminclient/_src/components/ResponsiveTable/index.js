@@ -530,137 +530,148 @@ var ResponsiveTable = function (_Component) {
     value: function formatValue(value, row, options, header) {
       var _this4 = this;
 
-      // console.debug({ value, row, options, header, });
-      // console.debug(options.rowIndex,this.state.selectedRowIndex)
-      var returnValue = value;
-      if (header && header.stringify) {
-        value = (0, _stringify2.default)(value, null, 2);
-        returnValue = (0, _stringify2.default)(value, null, 2);
-      }
-      if (header && header.tostring) {
-        value = value.toString();
-        returnValue = value.toString();
-      }
-      if (header && header.selectedOptionRowHeader) {
-        return _react2.default.createElement('input', { type: 'radio', checked: options.rowIndex === this.state.selectedRowIndex ? true : false });
-      } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'code') {
-        var CodeMirrorProps = (0, _assign2.default)({}, {
-          codeMirrorProps: {
-            lineNumbers: true,
-            value: value, //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
-            //value: this.state[ formElement.name ] || formElement.value,
-            style: {
-              minHeight: 200
-            },
-            lineWrapping: true,
-            onChange: function (text) {
-              // console.log({ newvalue });
-              var name = header.sortid;
-              var rowIndex = options.rowIndex;
-              this.updateInlineRowText({ name: name, text: text, rowIndex: rowIndex });
-            }.bind(this)
-          }
-        }, header.CodeMirrorProps);
-        var codeProps = (0, _assign2.default)({
-          wrapperProps: {
-            style: {
-              overflow: 'auto',
-              backgroundColor: 'white',
-              border: '1px solid #d3d6db',
-              borderRadius: 3,
-              height: 'auto',
-              boxShadow: 'inset 0 1px 2px rgba(17,17,17,.1)'
-            }
-          }
-        }, header.codeProps);
-        return _react2.default.createElement(_RACodeMirror2.default, (0, _extends3.default)({}, CodeMirrorProps, codeProps));
-      } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'textarea') {
-        return _react2.default.createElement(
-          rb.Textarea,
-          (0, _extends3.default)({}, header.textareaProps, {
-            value: value,
-            onChange: function onChange(event) {
-              var text = event.target.value;
-              var name = header.sortid;
-              var rowIndex = options.rowIndex;
-              _this4.updateInlineRowText({ name: name, text: text, rowIndex: rowIndex });
-            }
-          }),
-          value
-        );
-      } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'text') {
-        return _react2.default.createElement(
-          rb.Input,
-          (0, _extends3.default)({
-            value: value
-          }, header.inputProps, {
-            onChange: function onChange(event) {
-              var text = event.target.value;
-              var name = header.sortid;
-              var rowIndex = options.rowIndex;
-              _this4.updateInlineRowText({ name: name, text: text, rowIndex: rowIndex });
-            }
-          }),
-          value
-        );
-      } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'select') {
-        var selectOptions = header.formoptions || [];
-        return _react2.default.createElement(
-          rb.Select,
-          (0, _extends3.default)({
-            value: value
-          }, header.selectProps, {
-            onChange: function onChange(event) {
-              var text = event.target.value;
-              var name = header.sortid;
-              var rowIndex = options.rowIndex;
-              _this4.updateInlineRowText({ name: name, text: text, rowIndex: rowIndex });
-            } }),
-          selectOptions.map(function (opt, k) {
-            return _react2.default.createElement(
-              'option',
-              { key: k, disabled: opt.disabled, value: opt.value },
-              opt.label || opt.value
-            );
-          })
-        );
-      } else if (typeof options.idx !== 'undefined' && typeof returnValue === 'string' && returnValue.indexOf('--idx--') !== -1) {
-        returnValue = returnValue.replace('--idx--', options.idx);
-      }
-      if (typeof options.idx !== 'undefined' && typeof returnValue === 'string' && returnValue.indexOf('--idx-ctr--') !== -1) {
-        returnValue = returnValue.replace('--idx-ctr--', options.idx + 1);
-      }
-      if (options.momentFormat) {
-        returnValue = (0, _moment2.default)(value).format(options.momentFormat);
-      } else if (options.numeralFormat) {
-        returnValue = (0, _numeral2.default)(value).format(options.numeralFormat);
-      } else if (header && header.wrapPreOutput) {
-        returnValue = _react2.default.createElement(
-          'pre',
-          header.wrapPreOutputProps,
-          value
-        );
-      } else if (options.icon && value) {
-        // console.debug({value})
-        if (typeof value !== 'string' && Array.isArray(value)) {
-          var icons = value.map(function (val, i) {
-            return _react2.default.createElement(rb.Icon, (0, _extends3.default)({ key: i + Math.random() }, options.iconProps, { icon: val }));
-          });
-          return icons;
-        } else {
-          return _react2.default.createElement(rb.Icon, (0, _extends3.default)({}, options.iconProps, { icon: value }));
+      try {
+        // console.debug({ value, row, options, header, });
+        // console.debug(options.rowIndex,this.state.selectedRowIndex)
+        var returnValue = value;
+        if (header && header.stringify) {
+          value = (0, _stringify2.default)(value, null, 2);
+          returnValue = (0, _stringify2.default)(value, null, 2);
         }
-      } else if (options.image && value) {
-        if (typeof value !== 'string' && Array.isArray(value)) {
-          var images = value.map(function (val, i) {
-            return _react2.default.createElement(rb.Image, (0, _extends3.default)({ key: i }, options.imageProps, { src: val }));
-          });
-          return { images: images };
-        } else {
-          return _react2.default.createElement(rb.Image, (0, _extends3.default)({}, options.imageProps, { src: value }));
+        if (header && header.tostring) {
+          value = value.toString();
+          returnValue = value.toString();
         }
+        if (header && header.selectedOptionRowHeader) {
+          return _react2.default.createElement('input', { type: 'radio', checked: options.rowIndex === this.state.selectedRowIndex ? true : false });
+        } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'code') {
+          var CodeMirrorProps = (0, _assign2.default)({}, {
+            codeMirrorProps: {
+              lineNumbers: true,
+              value: value, //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
+              //value: this.state[ formElement.name ] || formElement.value,
+              style: {
+                minHeight: 200
+              },
+              lineWrapping: true,
+              onChange: function (text) {
+                // console.log({ newvalue });
+                var name = header.sortid;
+                var rowIndex = options.rowIndex;
+                this.updateInlineRowText({ name: name, text: text, rowIndex: rowIndex });
+              }.bind(this)
+            }
+          }, header.CodeMirrorProps);
+          var codeProps = (0, _assign2.default)({
+            wrapperProps: {
+              style: {
+                overflow: 'auto',
+                backgroundColor: 'white',
+                border: '1px solid #d3d6db',
+                borderRadius: 3,
+                height: 'auto',
+                boxShadow: 'inset 0 1px 2px rgba(17,17,17,.1)'
+              }
+            }
+          }, header.codeProps);
+          return _react2.default.createElement(_RACodeMirror2.default, (0, _extends3.default)({}, CodeMirrorProps, codeProps));
+        } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'textarea') {
+          return _react2.default.createElement(
+            rb.Textarea,
+            (0, _extends3.default)({}, header.textareaProps, {
+              value: value,
+              onChange: function onChange(event) {
+                var text = event.target.value;
+                var name = header.sortid;
+                var rowIndex = options.rowIndex;
+                _this4.updateInlineRowText({ name: name, text: text, rowIndex: rowIndex });
+              }
+            }),
+            value
+          );
+        } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'text') {
+          return _react2.default.createElement(
+            rb.Input,
+            (0, _extends3.default)({
+              value: value
+            }, header.inputProps, {
+              onChange: function onChange(event) {
+                var text = event.target.value;
+                var name = header.sortid;
+                var rowIndex = options.rowIndex;
+                _this4.updateInlineRowText({ name: name, text: text, rowIndex: rowIndex });
+              }
+            }),
+            value
+          );
+        } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'select') {
+          var selectOptions = header.formoptions || [];
+          return _react2.default.createElement(
+            rb.Select,
+            (0, _extends3.default)({
+              value: value
+            }, header.selectProps, {
+              onChange: function onChange(event) {
+                var text = event.target.value;
+                var name = header.sortid;
+                var rowIndex = options.rowIndex;
+                _this4.updateInlineRowText({ name: name, text: text, rowIndex: rowIndex });
+              } }),
+            selectOptions.map(function (opt, k) {
+              return _react2.default.createElement(
+                'option',
+                { key: k, disabled: opt.disabled, value: opt.value },
+                opt.label || opt.value
+              );
+            })
+          );
+        } else if (typeof options.idx !== 'undefined' && typeof returnValue === 'string' && returnValue.indexOf('--idx--') !== -1) {
+          returnValue = returnValue.replace('--idx--', options.idx);
+        }
+        if (typeof options.idx !== 'undefined' && typeof returnValue === 'string' && returnValue.indexOf('--idx-ctr--') !== -1) {
+          returnValue = returnValue.replace('--idx-ctr--', options.idx + 1);
+        }
+        if (options.momentFormat) {
+          returnValue = (0, _moment2.default)(value).format(options.momentFormat);
+        } else if (options.numeralFormat) {
+          returnValue = (0, _numeral2.default)(value).format(options.numeralFormat);
+        } else if (header && header.wrapPreOutput) {
+          returnValue = _react2.default.createElement(
+            'pre',
+            header.wrapPreOutputProps,
+            value
+          );
+        } else if (options.icon && value) {
+          // console.debug({value})
+          if (typeof value !== 'string' && Array.isArray(value)) {
+            var icons = value.map(function (val, i) {
+              return _react2.default.createElement(rb.Icon, (0, _extends3.default)({ key: i + Math.random() }, options.iconProps, { icon: val }));
+            });
+            return icons;
+          } else {
+            return _react2.default.createElement(rb.Icon, (0, _extends3.default)({}, options.iconProps, { icon: value }));
+          }
+        } else if (options.image && value) {
+          if (typeof value !== 'string' && Array.isArray(value)) {
+            var images = value.map(function (val, i) {
+              return _react2.default.createElement(rb.Image, (0, _extends3.default)({ key: i }, options.imageProps, { src: val }));
+            });
+            return { images: images };
+          } else {
+            return _react2.default.createElement(rb.Image, (0, _extends3.default)({}, options.imageProps, { src: value }));
+          }
+        }
+        if (typeof returnValue === 'undefined') {
+          return '';
+          // } else if (typeof returnValue !== 'object') {
+          //   return JSON.stringify(returnValue);
+        } else {
+          return returnValue.toString();
+        }
+      } catch (e) {
+        console.log({ value: value, row: row, options: options, header: header }, e);
+        return 'invalid';
       }
-      return returnValue;
     }
   }, {
     key: 'getHeaderLinkURL',

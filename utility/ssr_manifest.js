@@ -35,6 +35,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 require('isomorphic-fetch');
 
+console.debug = console.log;
 
 module.exports = function (options) {
   return new _promise2.default(function (resolve, reject) {

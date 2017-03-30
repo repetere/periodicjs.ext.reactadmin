@@ -1,8 +1,9 @@
 'use strict';
 
+const path = require('path');
 const capitalize = require('capitalize');
 const helpers = require('../helpers');
-const data_tables = require('../../../data_tables');
+const data_tables = require(path.resolve(__dirname, '../../../data_tables'));
 const pluralize = require('pluralize');
 pluralize.addIrregularRule('data', 'datas');
 
@@ -72,7 +73,7 @@ const getTableHeader = function _getTableHeader(schemas, label, options) {
     let customheaders = customIndexHeader.map(header => header.call(null, schemas, label, options));
     // console.log({ customheaders });
     return customheaders;
-  } else if(options.extsettings.data_tables && options.extsettings.data_tables[options.dbname] && options.extsettings.data_tables[options.dbname][label]) {
+  } else if(options.extsettings && options.extsettings.data_tables && options.extsettings.data_tables[options.dbname] && options.extsettings.data_tables[options.dbname][label]) {
     return options.extsettings.data_tables[options.dbname][label].map(header=>header.call(null, schemas, label, options));
   } else {
     return getDefaultHeaders(schemas, label, options);
