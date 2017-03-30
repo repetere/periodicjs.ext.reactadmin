@@ -18,10 +18,43 @@ pluralize.addIrregularRule('data', 'datas');
  * @param {*} options 
  */
 const constructDetail = function (schema, label, options = {}, newEntity) {
-  let usablePrefix = helpers.getDataPrefix(options.prefix, undefined, schema, label, options);
+  let usablePrefix = helpers.getDataPrefix(options.prefix, options.dbname, schema, label, options);
   let customPageData = helpers.getExtensionOverride('customDetailPageData', schema, label, options);
   let customTabs = helpers.getExtensionOverride('customDetailTabs', schema, label, options);
   let customHeader = helpers.getExtensionOverride('customDetailHeader', schema, label, options);
+  let customDetailEditor = helpers.getExtensionOverride('customDetailEditor', schema, label, options);
+  let detailPageBasicEditor =
+    {
+      name: 'Basic Editor',
+      layout: {
+        component: 'div',
+        children: buildDetail(schema, label, options, newEntity),
+      },
+    };
+  let detailPageAdvancedEditor = {
+    name: 'Advanced Editor',
+    layout: {
+      component: 'div',
+      children: buildAdvancedDetail(schema, label, options, newEntity),
+    },
+  };
+  let detailPageTabs = [];
+  if (customDetailEditor) {
+    if (customDetailEditor.base) {
+      detailPageTabs.push(detailPageBasicEditor);
+    }
+    if (customDetailEditor.advanced) {
+      detailPageTabs.push(detailPageAdvancedEditor);
+    }
+    if (customDetailEditor.customTabs) {
+      detailPageTabs.push(...customDetailEditor.customTabs);
+    }
+    if (customDetailEditor.customTab) {
+      detailPageTabs.push(customDetailEditor.customTabs);
+    }
+  } else {
+    detailPageTabs.push(detailPageBasicEditor, detailPageAdvancedEditor);
+  }
 
   return {
     resources: (newEntity)
@@ -72,22 +105,7 @@ const constructDetail = function (schema, label, options = {}, newEntity) {
                   },
                   className:'__ra_no_border',
                 },
-                tabs: [
-                  {
-                    name: 'Basic Editor',
-                    layout: {
-                      component: 'div',
-                      children: buildDetail(schema, label, options, newEntity),
-                    },
-                  },
-                  {
-                    name: 'Advanced Editor',
-                    layout: {
-                      component: 'div',
-                      children: buildAdvancedDetail(schema, label, options, newEntity),
-                    },
-                  },
-                ],
+                tabs: detailPageTabs,
               },
               // children:'',
             },
@@ -108,7 +126,7 @@ const constructDetail = function (schema, label, options = {}, newEntity) {
  */
 const constructIndex = function (schema, label, options = {}) {
   // console.log('constructIndex', { schema, label, options })
-  let usablePrefix = helpers.getDataPrefix(options.prefix, undefined, schema, label, options);
+  let usablePrefix = helpers.getDataPrefix(options.prefix, options.dbname, schema, label, options);
   let manifestPrefix = helpers.getManifestPathPrefix(options.prefix);
   let customPageData = helpers.getExtensionOverride('customIndexPageData', schema, label, options);
   let customTabs = helpers.getExtensionOverride('customIndexTabs', schema, label, options);
