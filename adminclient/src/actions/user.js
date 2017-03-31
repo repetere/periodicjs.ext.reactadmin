@@ -572,7 +572,9 @@ const user = {
         })
         .then(() => {
           dispatch(this.recievedLoginUser(url, fetchResponse, cachedResponseData));
-          dispatch(notification.createNotification({ text: 'Welcome back', timeout:4000, type:'success', }));
+          if(!getState().settings.notifications.hide_login_notification){
+            dispatch(notification.createNotification({ text: 'Welcome back', timeout:4000, type:'success', }));
+          }
           return this.enforceMFA()(dispatch, getState);
         })
         .catch((error) => {

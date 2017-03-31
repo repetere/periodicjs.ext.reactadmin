@@ -37,6 +37,7 @@ const propTypes = {
   tableForm: PropTypes.bool,
   tableFormAddButtonProps: PropTypes.bool,
   selectEntireRow: PropTypes.bool,
+  suppressNullValues: PropTypes.bool,
   useInputRows: PropTypes.bool,
   replaceButton: PropTypes.bool,
   replaceButtonProps: PropTypes.any,
@@ -88,6 +89,7 @@ const defaultProps = {
   useInputRows: false,
   selectOptionSortId: false,
   selectOptionSortIdLabel: false,
+  suppressNullValues: false,
   addNewRows: true,
   fixCSVRow: true,
   insertSelectedRowHeaderIndex: 0,
@@ -508,11 +510,13 @@ class ResponsiveTable extends Component {
           return <rb.Image {...options.imageProps} src={value} />;
         }
       }
-      if (typeof returnValue === 'undefined') {
+      if (typeof returnValue === 'undefined' || (returnValue === null && this.props.suppressNullValues)) {
         return '';
       // } else if (typeof returnValue !== 'object') {
       //   return JSON.stringify(returnValue);
-      } else {
+    } else if (returnValue === null) {
+      return 'null';
+    } else {
         return returnValue.toString();
       }
     } catch (e) {

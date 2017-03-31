@@ -264,6 +264,72 @@
                     "thisprops": {
                       "userdata":["user","userdata"]
                     }  
+                  },
+                  {
+                    "component": "Title",
+                    "props": {
+                      "style": {
+                        "marginTop": 60
+                      }
+                    },
+                    "children": "Suppress Null Values"
+                  },
+                  {
+                    "component":"ResponsiveTable",
+                    "props":{
+                      "headers":[
+                        { "label": "#", "value":"--idx-ctr--" },
+                        { "label": "Email", "sortid":"email", "sortable":true },
+                        {"label":"Likes","sortid":"likes"}
+                      ],
+                      "suppressNullValues": true,
+                      "limit":10,
+                      "numItems":20,
+                      "rows":[
+                        {
+                          "email":"med@gmail.com",
+                          "likes": null
+                        },
+                        {
+                          "email":"yaw.etse@gmail.com",
+                          "likes":300
+                        },
+                        {
+                          "email":"odlyaw@gmail.com",
+                          "likes": null
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "component": "Title",
+                    "children": "Don't Suppress Null Values"
+                  },
+                  {
+                    "component":"ResponsiveTable",
+                    "props":{
+                      "headers":[
+                        { "label": "#", "value":"--idx-ctr--" },
+                        { "label": "Email", "sortid":"email", "sortable":true },
+                        {"label":"Likes","sortid":"likes"}
+                      ],
+                      "limit":10,
+                      "numItems":20,
+                      "rows":[
+                        {
+                          "email":"med@gmail.com",
+                          "likes": null
+                        },
+                        {
+                          "email":"yaw.etse@gmail.com",
+                          "likes":300
+                        },
+                        {
+                          "email":"odlyaw@gmail.com",
+                          "likes": null
+                        }
+                      ]
+                    }
                   }
                 ]
               }
