@@ -9,10 +9,17 @@ module.exports = function(periodic) {
   let appenvironment = periodic.settings.application.environment;
   let defaultConfig = require(path.join(__dirname, '../config/settings.js')).development;
   let config = require(path.join(__dirname, '../../../content/config/extensions/periodicjs.ext.reactadmin/settings.js'));
-  let extensionConfig = Object.assign({}, defaultConfig, { adminPath: 'p-admin', }, config[ appenvironment ]);
+  let extensionConfig = Object.assign({}, defaultConfig, { adminPath: 'r-admin', }, config[ appenvironment ]);
   // console.log({ extensionConfig });
   
-  periodic.app.controller.extension.reactadmin = Object.assign({}, periodic.app.controller.extension.reactadmin, { settings:extensionConfig, });
+  periodic.app.controller.extension.reactadmin = Object.assign({}, periodic.app.controller.extension.reactadmin, {
+    settings: extensionConfig,
+    manifest_prefix: `${(extensionConfig.adminPath === '')
+      ? ''
+      : (extensionConfig.adminPath && extensionConfig.adminPath.chartAt(0) === '/')
+        ? extensionConfig.adminPath
+        : '/'+extensionConfig.adminPath}`,
+  });
 
     // periodic.app.controller.extension.reactadmin.settings.getDBConnection = mongooseLogger.getDBConnection;
     // periodic.app.locals.reactadmin_util = require('../lib/log_tables')(periodic);
@@ -21,6 +28,7 @@ module.exports = function(periodic) {
   periodic.app.locals.extension = Object.assign({}, periodic.app.locals.extension, {
     reactadmin: {
       settings: periodic.app.controller.extension.reactadmin.settings,
+      
     },
   });
 
