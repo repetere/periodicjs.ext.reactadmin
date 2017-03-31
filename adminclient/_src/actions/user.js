@@ -587,6 +587,7 @@ var user = {
       var fetchResponse = void 0;
       var cachedResponseData = void 0;
       var loginSettings = getState().settings.login;
+      var notificationsSettings = getState().settings.ui.notifications;
       var url = loginSettings.url;
 
       dispatch(_this9.loginRequest(url));
@@ -615,7 +616,9 @@ var user = {
         })), _serverSideReactNative.AsyncStorage.setItem(_constants2.default.jwt_token.PROFILE_JSON, (0, _stringify2.default)(responseData.user)), _this9.initializeAuthenticatedUser(responseData.token, false, __global__returnURL)(dispatch, getState)]);
       }).then(function () {
         dispatch(_this9.recievedLoginUser(url, fetchResponse, cachedResponseData));
-        dispatch(_notification2.default.createNotification({ text: 'Welcome back', timeout: 4000, type: 'success' }));
+        if (!notificationsSettings.hide_login_notification) {
+          dispatch(_notification2.default.createNotification({ text: 'Welcome back', timeout: 4000, type: 'success' }));
+        }
         return _this9.enforceMFA()(dispatch, getState);
       }).catch(function (error) {
         dispatch(_notification2.default.errorNotification(error));

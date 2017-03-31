@@ -211,7 +211,8 @@ function getRenderedComponent(componentObject, resources, debug) {
       //props children
       componentObject.children && Array.isArray(componentObject.children) && typeof componentObject.children !== 'string' ? componentObject.children.map(function (childComponentObject) {
         return getRenderedComponent.call(_this, componentObject.bindprops ? (0, _assign2.default)({}, childComponentObject, {
-          props: (0, _assign2.default)({}, renderedCompProps, {
+          props: (0, _assign2.default)({}, renderedCompProps, childComponentObject.thisprops && childComponentObject.thisprops.style || // this is to make sure when you bind props, if you've defined props in a dynamic property, to not use bind props to  remove passing down styles
+          childComponentObject.asyncprops && childComponentObject.asyncprops.style || childComponentObject.windowprops && childComponentObject.windowprops.style ? {} : {
             style: {}
           }, childComponentObject.props, { key: renderIndex + Math.random() })
         }) : childComponentObject, resources);

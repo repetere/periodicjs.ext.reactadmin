@@ -25,9 +25,9 @@ module.exports = function(periodic) {
     manifest_prefix,
   };
   // console.log({
-  //   route_prefix,
-  //   admin_prefix,
-  //   manifest_prefix,
+  //   route_prefix, /r-admin
+  //   admin_prefix, r-admin
+  //   manifest_prefix, /r-admin/
   // });
 
   periodic.app.controller.extension.reactadmin = Object.assign({}, periodic.app.controller.extension.reactadmin, reactadminConfig);

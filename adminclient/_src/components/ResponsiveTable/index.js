@@ -137,6 +137,7 @@ var propTypes = {
   tableForm: _react.PropTypes.bool,
   tableFormAddButtonProps: _react.PropTypes.bool,
   selectEntireRow: _react.PropTypes.bool,
+  suppressNullValues: _react.PropTypes.bool,
   useInputRows: _react.PropTypes.bool,
   replaceButton: _react.PropTypes.bool,
   replaceButtonProps: _react.PropTypes.any,
@@ -187,6 +188,7 @@ var defaultProps = {
   useInputRows: false,
   selectOptionSortId: false,
   selectOptionSortIdLabel: false,
+  suppressNullValues: false,
   addNewRows: true,
   fixCSVRow: true,
   insertSelectedRowHeaderIndex: 0,
@@ -661,10 +663,12 @@ var ResponsiveTable = function (_Component) {
             return _react2.default.createElement(rb.Image, (0, _extends3.default)({}, options.imageProps, { src: value }));
           }
         }
-        if (typeof returnValue === 'undefined') {
+        if (typeof returnValue === 'undefined' || returnValue === null && this.props.suppressNullValues) {
           return '';
           // } else if (typeof returnValue !== 'object') {
           //   return JSON.stringify(returnValue);
+        } else if (returnValue === null) {
+          return 'null';
         } else {
           return returnValue.toString();
         }
