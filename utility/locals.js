@@ -9,14 +9,14 @@ module.exports = function(periodic) {
   let appenvironment = periodic.settings.application.environment;
   let defaultConfig = require(path.join(__dirname, '../config/settings.js')).development;
   let config = require(path.join(__dirname, '../../../content/config/extensions/periodicjs.ext.reactadmin/settings.js'));
-  let extensionConfig = Object.assign({}, defaultConfig, { adminPath: 'r-admin', }, config[ appenvironment ]);
-  // console.log({ extensionConfig });
-  
+  let extensionConfig = Object.assign({}, defaultConfig, { adminPath: 'r-admin', }, config[appenvironment]);
+    // console.log({ extensionConfig });
+
   periodic.app.controller.extension.reactadmin = Object.assign({}, periodic.app.controller.extension.reactadmin, {
     settings: extensionConfig,
     manifest_prefix: `${(extensionConfig.adminPath === '')
       ? ''
-      : (extensionConfig.adminPath && extensionConfig.adminPath.chartAt(0) === '/')
+      : (extensionConfig.adminPath && extensionConfig.adminPath.charAt(0) === '/')
         ? extensionConfig.adminPath
         : '/'+extensionConfig.adminPath}`,
   });
@@ -28,7 +28,6 @@ module.exports = function(periodic) {
   periodic.app.locals.extension = Object.assign({}, periodic.app.locals.extension, {
     reactadmin: {
       settings: periodic.app.controller.extension.reactadmin.settings,
-      
     },
   });
 
