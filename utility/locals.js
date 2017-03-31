@@ -11,14 +11,24 @@ module.exports = function(periodic) {
   let config = require(path.join(__dirname, '../../../content/config/extensions/periodicjs.ext.reactadmin/settings.js'));
   let extensionConfig = Object.assign({}, defaultConfig, { adminPath: 'r-admin', }, config[appenvironment]);
     // console.log({ extensionConfig });
+  let route_prefix = `${(extensionConfig.adminPath === '')
+    ? '/'
+    : (extensionConfig.adminPath && extensionConfig.adminPath.charAt(0) === '/')
+      ? extensionConfig.adminPath
+      : '/' + extensionConfig.adminPath}`;
+  let admin_prefix = route_prefix.substr(1);
+  let manifest_prefix = (admin_prefix.length>0) ? `/${admin_prefix}/` : '/'
   let reactadminConfig = {
     settings: extensionConfig,
-    manifest_prefix: `${(extensionConfig.adminPath === '')
-      ? ''
-      : (extensionConfig.adminPath && extensionConfig.adminPath.charAt(0) === '/')
-        ? extensionConfig.adminPath
-        : '/' + extensionConfig.adminPath}`,
+    route_prefix,
+    admin_prefix,
+    manifest_prefix,
   };
+  // console.log({
+  //   route_prefix,
+  //   admin_prefix,
+  //   manifest_prefix,
+  // });
 
   periodic.app.controller.extension.reactadmin = Object.assign({}, periodic.app.controller.extension.reactadmin, reactadminConfig);
 
