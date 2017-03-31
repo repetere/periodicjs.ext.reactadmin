@@ -251,45 +251,55 @@ var recursivePrivilegesFilter = function (privileges, config = {}, isRoot = fals
  * @return {null}        does not return a value
  */
 var admin_index = function (req, res, next) {
-  let viewtemplate = {
-    viewname: 'admin/index',
-    themefileext: appSettings.templatefileextension,
-    extname: 'periodicjs.ext.reactadmin',
-  };
-  let viewdata = {
-    pagedata: {
-      // title: 'React Admin',
-      // toplink: '&raquo; Multi-Factor Authenticator',
-    },
-    user: req.user,
-    // adminPostRoute: adminPostRoute
-  };
+  if (req.query.format !== 'json' && req.query.format !== 'json&') {
+    // logger.silly('render reactadmin, ssr', extsettings.server_side_react);
+    // logger.silly('render reactadmin, req.query.format',req.query.format);
+    let viewtemplate = {
+      viewname: 'admin/index',
+      themefileext: appSettings.templatefileextension,
+      extname: 'periodicjs.ext.reactadmin',
+    };
+    let viewdata = {
+      pagedata: {
+        // title: 'React Admin',
+        // toplink: '&raquo; Multi-Factor Authenticator',
+      },
+      user: req.user,
+      // adminPostRoute: adminPostRoute
+    };
 
-  if (extsettings.server_side_react) {
-    return pullConfigurationSettings(false)
-      .then(() => {
-        // logger.silly('req._parsedOriginalUrl.pathname', req._parsedOriginalUrl.pathname);
-        // logger.silly({ unauthenticatedManifestSettings });
-        if (unauthenticatedManifestSettings &&
-          unauthenticatedManifestSettings.containers &&
-          Object.keys(unauthenticatedManifestSettings.containers).length) {
-          let layoutPath = utility.findMatchingRoute(unauthenticatedManifestSettings.containers, req._parsedOriginalUrl.pathname);
-          let manifest = (layoutPath) ? unauthenticatedManifestSettings.containers[ layoutPath ] :false;
-          // console.log({ layoutPath, manifest });
-          return utility.ssr_manifest({ layoutPath, manifest, req_url: req._parsedOriginalUrl.pathname, basename:extsettings.basename, });
-        } else {
-          return Promise.resolve({}, {});
-        }
-      })
-      .then((results) => {
-        let { body, pagedata, } = results;
-        // console.log({ body, pagedata });
-        viewdata = Object.assign({}, viewdata, { body ,}, { pagedata ,});
-        CoreController.renderView(req, res, viewtemplate, viewdata);
-      })
-      .catch(next);
+    if (extsettings.server_side_react) {
+      return pullConfigurationSettings(false)
+        .then(() => {
+          // logger.silly('req._parsedOriginalUrl.pathname', req._parsedOriginalUrl.pathname);
+          // logger.silly({ unauthenticatedManifestSettings });
+          if (unauthenticatedManifestSettings &&
+            unauthenticatedManifestSettings.containers &&
+            Object.keys(unauthenticatedManifestSettings.containers).length) {
+            let layoutPath = utility.findMatchingRoute(unauthenticatedManifestSettings.containers, req._parsedOriginalUrl.pathname);
+            let manifest = (layoutPath) ? unauthenticatedManifestSettings.containers[ layoutPath ] :false;
+            // console.log({ layoutPath, manifest });
+            return utility.ssr_manifest({ layoutPath, manifest, req_url: req._parsedOriginalUrl.pathname, basename:extsettings.basename, });
+          } else {
+            return Promise.resolve({}, {});
+          }
+        })
+        .then((results) => {
+          let { body, pagedata, } = results;
+          // console.log({ body, pagedata });
+          viewdata = Object.assign({}, viewdata, { body ,}, { pagedata ,});
+          CoreController.renderView(req, res, viewtemplate, viewdata);
+        })
+        .catch(next);
+    } else {
+      CoreController.renderView(req, res, viewtemplate, viewdata);
+    }
   } else {
-    CoreController.renderView(req, res, viewtemplate, viewdata);
+    // console.log('SKIPPING REACTADMIN req._parsedOriginalUrl.pathname', req._parsedOriginalUrl.pathname);
+    // console.log('SKIPPING REACTADMIN: req._parsedOriginalUrl.pathname.indexOf(/extensiondata/) === -1', req._parsedOriginalUrl.pathname.indexOf('/extensiondata/') === -1);
+    // console.log('SKIPPING REACTADMIN req.query.format !== json',req.query.format !== 'json');
+    // console.log('SKIPPING REACTADMIN req.query.format !== json&',req.query.format !== 'json&');
+    next();
   }
 };
 
