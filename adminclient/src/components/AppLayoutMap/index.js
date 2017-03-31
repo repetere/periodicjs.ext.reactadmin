@@ -125,9 +125,13 @@ export function getRenderedComponent(componentObject, resources, debug) {
                 childComponentObject, {
                   props: Object.assign({},
                     renderedCompProps,
-                    {
-                      style: {},
-                    },
+                    ((childComponentObject.thisprops && childComponentObject.thisprops.style) // this is to make sure when you bind props, if you've defined props in a dynamic property, to not use bind props to  remove passing down styles
+                      || (childComponentObject.asyncprops && childComponentObject.asyncprops.style)
+                        || (childComponentObject.windowprops && childComponentObject.windowprops.style))
+                        ? {}
+                        : {
+                          style: {},
+                        },
                     childComponentObject.props,
                     { key: renderIndex + Math.random(), }),
                 })
