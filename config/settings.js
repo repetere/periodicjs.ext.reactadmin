@@ -1,6 +1,15 @@
 'use strict';
 
-const data_tables = require('../utility/index_data_tables');
+const fs = require('fs-extra');
+let data_tables_setting = {};
+if (fs.existsSync('../utility/index_data_tables')) {
+  let index_data_tables = require('../utility/index_data_tables');
+  data_tables_setting = {
+    data_tables: {
+      standard: index_data_tables,
+    },
+  };
+}
 
 function getReactAdminConfig (options, overwrites) {
   return Object.assign({
@@ -78,8 +87,12 @@ function getReactAdminConfig (options, overwrites) {
         'headers':options.profileheaders,
       },
     },   
-    data_tables: {
-      standard: data_tables,
+    // data_tables: {
+    //   standard: data_tables,
+    // },
+    auth:{
+      logged_in_homepage:'/r-admin/home',
+      logged_out_path:'/r-admin/login',
     },
     data_table_props: {
       standard: {
@@ -90,7 +103,7 @@ function getReactAdminConfig (options, overwrites) {
         },
       },
     },
-  }, overwrites);
+  }, data_tables_setting, overwrites);
 }
 
 module.exports = {
@@ -127,5 +140,7 @@ module.exports = {
       'clientid':'CLIENT**ID**NEEDED',
       'entitytype':'account',
     },
-  }, {}), 
+  }, {
+    hot_reload: true,
+  }), 
 };
