@@ -212,6 +212,9 @@ var reduxActions = {
     // console.debug('in redux actions this', this);
     return _util2.default.fetchAction.call(this, pathname, fetchOptions, success);
   }, //.dispatch(actions.user.getUserStatus()),
+  redirect: function redirect(location) {
+    window.location = location;
+  },
   getUserProfile: function getUserProfile(jwt_token) {
     return _stores2.default.dispatch(_actions2.default.user.getUserProfile(jwt_token));
   },
