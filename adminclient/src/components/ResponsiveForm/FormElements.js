@@ -212,6 +212,7 @@ export function getFormDatatable(options){
       selectOptionSortIdLabel: formElement.selectOptionSortIdLabel,
       flattenRowData: formElement.flattenRowData,
       addNewRows: formElement.addNewRows,
+      sortable: formElement.sortable,
       replaceButton: false,
       uploadAddButton: true,
       useInputRows: formElement.useInputRows,
