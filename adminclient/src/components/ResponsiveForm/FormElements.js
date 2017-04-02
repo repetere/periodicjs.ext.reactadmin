@@ -166,7 +166,9 @@ export function getFormDatatable(options){
       return {
         label: capitalize(rowkey),
         sortid: rowkey,
-        sortable: true,
+        sortable: (formElement.sortable)
+          ? formElement.sortable
+          : true,
         formtype: (formElement.tableHeaderType && formElement.tableHeaderType[rowkey])
           ? formElement.tableHeaderType[rowkey]
           : 'text',
