@@ -166,7 +166,9 @@ export function getFormDatatable(options){
       return {
         label: capitalize(rowkey),
         sortid: rowkey,
-        sortable: true,
+        sortable: (formElement.sortable)
+          ? formElement.sortable
+          : true,
         formtype: (formElement.tableHeaderType && formElement.tableHeaderType[rowkey])
           ? formElement.tableHeaderType[rowkey]
           : 'text',
@@ -210,6 +212,7 @@ export function getFormDatatable(options){
       selectOptionSortIdLabel: formElement.selectOptionSortIdLabel,
       flattenRowData: formElement.flattenRowData,
       addNewRows: formElement.addNewRows,
+      sortable: formElement.sortable,
       replaceButton: false,
       uploadAddButton: true,
       useInputRows: formElement.useInputRows,
