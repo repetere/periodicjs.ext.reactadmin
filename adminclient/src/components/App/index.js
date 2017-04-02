@@ -58,8 +58,13 @@ const reduxActions = {
     // console.debug('in redux actions this', this);
     return utilities.fetchAction.call(this, pathname, fetchOptions, success);
   }, //.dispatch(actions.user.getUserStatus()),
-  redirect: (location) => {
-    window.location = location;
+  redirect: (locationURL) => {
+    console.debug({ locationURL });
+    if (typeof location === 'string') {
+      window.location = locationURL;
+    } else {
+      window.location = locationURL.location;
+    }
   },
   getUserProfile: (jwt_token) => store.dispatch(actions.user.getUserProfile(jwt_token)),
   setNavLabel: (label) => store.dispatch(actions.ui.setNavLabel(label)),
