@@ -37,6 +37,7 @@ const propTypes = {
   tableForm: PropTypes.bool,
   tableFormAddButtonProps: PropTypes.bool,
   selectEntireRow: PropTypes.bool,
+  sortable: PropTypes.bool,
   suppressNullValues: PropTypes.bool,
   useInputRows: PropTypes.bool,
   replaceButton: PropTypes.bool,
@@ -89,6 +90,7 @@ const defaultProps = {
   useInputRows: false,
   selectOptionSortId: false,
   selectOptionSortIdLabel: false,
+  sortable: true,
   suppressNullValues: false,
   addNewRows: true,
   fixCSVRow: true,
@@ -125,7 +127,7 @@ class ResponsiveTable extends Component {
         return {
           label: capitalize(pluralize(rowkey)),
           sortid: rowkey,
-          sortable: true,
+          sortable: props.sortable,
         };
       })
       : props.headers;
