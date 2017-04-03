@@ -21,7 +21,8 @@ function getReactAdminConfig (options, overwrites) {
     'skip_catch_all_route':false,
     'adminPath':'/r-admin',
     'name':'Admin Panel',
-    'title':'Admin Panel',
+    'title': 'Admin Panel',
+    include_index_route:true,
     'includeCoreData': {
       'manifest': true,
       'navigation': false,
