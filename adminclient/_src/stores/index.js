@@ -51,7 +51,8 @@ var AppConfigSettings = {
     notifications: {
       error_timeout: 10000,
       timed_timeout: 10000,
-      hide_login_notification: false
+      hide_login_notification: false,
+      supressResourceErrors: false
     },
     fixedSidebar: true,
     sidebarBG: '#ffffff',

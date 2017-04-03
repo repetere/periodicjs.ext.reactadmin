@@ -397,7 +397,7 @@ function getFormTextInputArea(options) {
       if (passableProps && passableProps.type === 'file') {
         updatedStateProp.formDataFiles = (0, _assign2.default)({}, _this5.state.formDataFiles, (0, _defineProperty3.default)({}, formElement.name, document.querySelector('.' + fileClassname + ' input')));
       } else {
-        updatedStateProp[formElement.name] = passableProps.maxLength ? text.substring(0, passableProps.maxLength - 1) : text;
+        updatedStateProp[formElement.name] = passableProps.maxLength ? text.substring(0, passableProps.maxLength) : text;
       }
       _this5.setState(updatedStateProp);
     };

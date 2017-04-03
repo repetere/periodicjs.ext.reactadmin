@@ -81,8 +81,11 @@ var _handleComponentLifecycle = function _handleComponentLifecycle() {
     window.scrollTo(0, 0);
   }
   var parentState = this.props.getState();
-  var pathname = this.props.location.pathname ? this.props.location.pathname : window.location.href || window.location.pathname;
+  var pathname = this.props.location.pathname && this.props.location.pathname === window.location.pathname ? this.props.location.pathname : window.location.pathname || window.location.href;
   var isAuthenticated = isLoggedIn();
+  var mfapath = _util2.default.getMFAPath(parentState);
+  var mfasetup = _util2.default.getMFASetupPath(parentState);
+  // console.debug({mfasetup})
   var loginRedirect = function loginRedirect() {
     return _this.props.reduxRouter.replace({
       pathname: pathname.indexOf('p-admin') !== -1 ? '/p-admin/login?return_url=' + pathname : '/login?return_url=' + pathname,
@@ -111,7 +114,14 @@ var _handleComponentLifecycle = function _handleComponentLifecycle() {
     }
     return this.fetchDynamicErrorContent();
   } else if (parentState.manifest && parentState.manifest.hasLoaded) {
-    if (pathname === '/mfa' && window.location.pathname === '/mfa') {
+    // console.debug('OUTSIDE CONDITION', {
+    //   pathname, mfasetup,
+    // });
+    // console.debug('window.location.pathname', window.location.pathname);
+    // console.debug('this.props.location.pathname', this.props.location.pathname);
+    // console.debug('window.location.href', window.location.href);
+    if (pathname === mfapath && window.location.pathname === mfapath || pathname === mfasetup && window.location.pathname === mfasetup) {
+      // console.debug('OK LOAD', { pathname, mfasetup, }, 'window.location.pathname', window.location.pathname);
       return this.fetchData();
     } else {
       var isValid = this.props.enforceMFA(true);

@@ -113,7 +113,7 @@ var fetchErrorContent = exports.fetchErrorContent = function _fetchErrorContent(
   // console.debug({ errorComponents });
 
   get404Error({
-    getState: getState, _handleFetchPaths: _handleFetchPaths, /*state,*/custom404Error: custom404Error, componentData: componentData, windowTitle: windowTitle, navLabel: navLabel, errorComponents: errorComponents, errorCode: errorCode, resources: resources
+    getState: getState, _handleFetchPaths: _handleFetchPaths, state: state, custom404Error: custom404Error, componentData: componentData, windowTitle: windowTitle, navLabel: navLabel, errorComponents: errorComponents, errorCode: errorCode, resources: resources, e: e
   });
 };
 

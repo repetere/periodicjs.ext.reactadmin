@@ -321,7 +321,7 @@ export function getFormTextInputArea(options) {
           [ formElement.name ]: document.querySelector(`.${fileClassname} input`),
         });
       } else {
-        updatedStateProp[ formElement.name ] =(passableProps.maxLength)? text.substring(0, passableProps.maxLength-1): text;
+        updatedStateProp[ formElement.name ] =(passableProps.maxLength)? text.substring(0, passableProps.maxLength): text;
       }
       this.setState(updatedStateProp);
     };

@@ -1,5 +1,5 @@
 import React, { Component, PropTypes, } from 'react';
-import { Columns, Card, CardContent, CardFooter, CardFooterItem, Notification, Column, Label, } from 're-bulma'; 
+import { Columns, Card, CardHeader, CardHeaderTitle, CardContent, CardFooter, CardFooterItem, Notification, Column, Label, } from 're-bulma'; 
 import ResponsiveCard from '../ResponsiveCard';
 import { getRenderedComponent, } from '../AppLayoutMap';
 import utilities from '../../util';
@@ -16,6 +16,7 @@ const propTypes = {
   useFormOptions: PropTypes.bool,
   setInitialValues: PropTypes.bool,
   flattenDataOptions: PropTypes.object,
+  useErrorNotification: PropTypes.bool,
   useDynamicData: PropTypes.bool,
   cardForm: PropTypes.bool,
   cardFormProps: PropTypes.object,
@@ -38,6 +39,7 @@ const defaultProps = {
   useFormOptions: false,
   useDynamicData: false,
   setInitialValues: true,
+  useErrorNotification:true,
   dynamicResponseField: false,
   dynamicField: false,
   cardForm: false,
@@ -225,9 +227,14 @@ class ResponsiveForm extends Component{
           }
         })
         .catch(e => {
-          if (typeof this.props.onError !== 'function') {
+          let errorCB = getCBFromString(this.props.errorCallback);
+          if (this.props.useErrorNotification) {
             console.error(e);
             this.props.errorNotification(e);
+          }
+          if (errorCB) {
+            let errorProps = (this.props.useErrorMessageProp) ? e.message : e;
+            errorCB(errorProps);
           } else {
             this.props.onError(e);
           }
@@ -408,6 +415,9 @@ class ResponsiveForm extends Component{
       return (<Card className="__ra_rf" {...Object.assign({}, {
         isFullwidth: true,
       }, this.props.cardFormProps) }>
+        {(this.props.cardFormTitle)
+          ? (<CardHeader><CardHeaderTitle>{this.props.cardFormTitle}</CardHeaderTitle></CardHeader>)
+          : null}  
         <CardContent>
           {formGroupData}
           {this.props.children}

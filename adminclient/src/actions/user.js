@@ -313,13 +313,17 @@ const user = {
       let formReturnURL = (!__global__returnURL && state && state.routing && state.routing.locationBeforeTransitions && state.routing.locationBeforeTransitions.pathname && state.dynamic && state.dynamic.formdata && (state.dynamic.formdata.__loginReturnURL || state.dynamic.formdata.__loginLastURL))
         ? state.dynamic.formdata.__loginReturnURL || state.routing.locationBeforeTransitions.pathname
         : false;  
-      let returnUrl = (queryparams.return_url)
+      let returnUrl = (!__global__returnURL && queryparams.return_url)
         ? queryparams.return_url
         : __returnURL || __global__returnURL || formReturnURL || false;
       if (state.routing && state.routing.locationBeforeTransitions && state.routing.locationBeforeTransitions.pathname && state.routing.locationBeforeTransitions.pathname === returnUrl) {
         returnUrl = false;
       }
       console.debug({ formReturnURL, returnUrl, });
+      // console.log('state.settings.auth', state.settings.auth);
+      // console.log('state.user.isMFAAuthenticated', state.user.isMFAAuthenticated);
+      // console.log('state.manifest.containers[/mfa]', state.manifest.containers[ '/mfa' ]);
+      // console.log('state.manifest.containers[${state.settings.adminPath}/mfa]', state.manifest.containers[ `${state.settings.adminPath}/mfa` ]);
       if (state.settings.auth.enforce_mfa || (extensionattributes && extensionattributes.login_mfa)) {
         if (state.user.isMFAAuthenticated) {
           if (!noRedirect) {
@@ -328,10 +332,20 @@ const user = {
           }
           return true;
         } else {
-          if (!state.manifest.containers || (state.manifest.containers && !state.manifest.containers['/mfa'])) {
+          if (!state.manifest.containers || (state.manifest.containers && !state.manifest.containers['/mfa']  && !state.manifest.containers[`${state.settings.adminPath}/mfa`])) {
             dispatch(notification.errorNotification(new Error('Multi-Factor Authentication not Properly Configured')));
             this.logoutUser()(dispatch, getState);
-          } else dispatch(push(`/mfa${(returnUrl)?'?return_url='+returnUrl:''}`));
+          } else {
+            // console.log('utilities.getMFAPath(state)')
+            let mfapath = utilities.getMFAPath(state);
+            if (!returnUrl && window.location.href && window.location.href.indexOf(mfapath) === -1) {
+              returnUrl = window.location.href;
+            }
+            __global__returnURL = returnUrl;
+            // console.debug({ mfapath,returnUrl }, 'window.location.href', window.location.href);
+            
+            dispatch(push(`${mfapath}${(returnUrl) ? '?return_url=' + returnUrl : ''}`));
+          }
           return false;
         }
       } else {

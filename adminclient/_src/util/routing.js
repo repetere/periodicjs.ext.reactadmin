@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.requireAuth = exports.isLoggedIn = undefined;
+exports.getMFASetupPath = exports.getMFAPath = exports.requireAuth = exports.isLoggedIn = undefined;
 
 var _constants = require('../constants');
 
@@ -26,4 +26,16 @@ var requireAuth = exports.requireAuth = function requireAuth(nextState, replaceS
       }
     });
   }
+};
+
+var getMFAPath = exports.getMFAPath = function getMFAPath(state) {
+  var mfapath = state.manifest.containers[state.settings.adminPath + '/mfa'] ? state.settings.adminPath + '/mfa' : '/mfa';
+  // console.log({ mfapath });
+  return mfapath;
+};
+
+var getMFASetupPath = exports.getMFASetupPath = function getMFASetupPath(state) {
+  var mfasetuppath = state.manifest.containers[state.settings.adminPath + '/auth/login-otp-setup'] ? state.settings.adminPath + '/auth/login-otp-setup' : '/auth/login-otp-setup';
+  // console.log({ mfasetuppath });
+  return mfasetuppath;
 };

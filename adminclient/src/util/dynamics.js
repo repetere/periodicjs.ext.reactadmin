@@ -90,7 +90,7 @@ export const fetchErrorContent = function _fetchErrorContent (e, type, resources
   // console.debug({ errorComponents });
 
   get404Error({
-    getState, _handleFetchPaths, /*state,*/ custom404Error, componentData, windowTitle, navLabel, errorComponents, errorCode, resources,
+    getState, _handleFetchPaths, state, custom404Error, componentData, windowTitle, navLabel, errorComponents, errorCode, resources, e,
   });
 };
 

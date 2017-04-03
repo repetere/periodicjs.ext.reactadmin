@@ -79,6 +79,7 @@ var propTypes = {
   useFormOptions: _react.PropTypes.bool,
   setInitialValues: _react.PropTypes.bool,
   flattenDataOptions: _react.PropTypes.object,
+  useErrorNotification: _react.PropTypes.bool,
   useDynamicData: _react.PropTypes.bool,
   cardForm: _react.PropTypes.bool,
   cardFormProps: _react.PropTypes.object,
@@ -98,6 +99,7 @@ var defaultProps = {
   useFormOptions: false,
   useDynamicData: false,
   setInitialValues: true,
+  useErrorNotification: true,
   dynamicResponseField: false,
   dynamicField: false,
   cardForm: false,
@@ -270,9 +272,14 @@ var ResponsiveForm = function (_Component) {
             return res.json();
           }
         }).catch(function (e) {
-          if (typeof _this2.props.onError !== 'function') {
+          var errorCB = getCBFromString(_this2.props.errorCallback);
+          if (_this2.props.useErrorNotification) {
             console.error(e);
             _this2.props.errorNotification(e);
+          }
+          if (errorCB) {
+            var errorProps = _this2.props.useErrorMessageProp ? e.message : e;
+            errorCB(errorProps);
           } else {
             _this2.props.onError(e);
           }
@@ -499,6 +506,15 @@ var ResponsiveForm = function (_Component) {
           (0, _extends3.default)({ className: '__ra_rf' }, (0, _assign2.default)({}, {
             isFullwidth: true
           }, this.props.cardFormProps)),
+          this.props.cardFormTitle ? _react2.default.createElement(
+            _reBulma.CardHeader,
+            null,
+            _react2.default.createElement(
+              _reBulma.CardHeaderTitle,
+              null,
+              this.props.cardFormTitle
+            )
+          ) : null,
           _react2.default.createElement(
             _reBulma.CardContent,
             null,

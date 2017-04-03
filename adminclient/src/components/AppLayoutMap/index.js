@@ -74,7 +74,7 @@ export function getRenderedComponent(componentObject, resources, debug) {
         }
         let propcompares = utilities.traverse(compares, renderedCompProps);
         let opscompares = Object.assign({}, comp, propcompares);
-        // console.debug({ opscompares });
+        // console.debug({ opscompares, compares, renderedCompProps });
         if (opscompares.operation === 'eq') {
           return opscompares.left == opscompares.right;
         } else if (opscompares.operation === 'dneq') {

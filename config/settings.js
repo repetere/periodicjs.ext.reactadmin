@@ -1,8 +1,9 @@
 'use strict';
 
 const fs = require('fs-extra');
+const path = require('path');
 let data_tables_setting = {};
-if (fs.existsSync('../utility/index_data_tables')) {
+if (fs.existsSync(path.resolve(path.join(__dirname, '../utility/index_data_tables')))) {
   let index_data_tables = require('../utility/index_data_tables');
   data_tables_setting = {
     data_tables: {
@@ -50,6 +51,8 @@ function getReactAdminConfig (options, overwrites) {
       'notifications':{
         'error_timeout':10000,
         'timed_timeout':10000,
+        'hide_login_notification': false,
+        'supressResourceErrors':false,
       },
       'fixedSidebar':true,
       'sidebarBG':'#ffffff',

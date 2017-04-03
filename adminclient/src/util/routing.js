@@ -16,3 +16,19 @@ export const requireAuth = (nextState, replaceState) => {
     });
   }
 };
+
+export const getMFAPath = (state) => {
+  let mfapath = (state.manifest.containers[ `${state.settings.adminPath}/mfa` ])
+    ? `${state.settings.adminPath}/mfa`
+    : '/mfa';
+  // console.log({ mfapath });
+  return mfapath;
+};
+
+export const getMFASetupPath = (state) => {
+  let mfasetuppath = (state.manifest.containers[ `${state.settings.adminPath}/auth/login-otp-setup` ])
+    ? `${state.settings.adminPath}/auth/login-otp-setup`
+    : '/auth/login-otp-setup';
+  // console.log({ mfasetuppath });
+  return mfasetuppath;
+};

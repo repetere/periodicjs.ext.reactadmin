@@ -22,16 +22,20 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var get404Error = exports.get404Error = function _get404Error(options) {
   var getState = options.getState,
       _handleFetchPaths = options._handleFetchPaths,
+      state = options.state,
       custom404Error = options.custom404Error,
       componentData = options.componentData,
       windowTitle = options.windowTitle,
       navLabel = options.navLabel,
       errorComponents = options.errorComponents,
       errorCode = options.errorCode,
-      resources = options.resources;
+      resources = options.resources,
+      e = options.e;
 
-  console.debug('using get404Error', errorCode);
   var customErrorComponent = void 0;
+  if (e && !state.settings.ui.notifications.supressResourceErrors) {
+    this.props.errorNotification(e.message || e.toString());
+  }
   if (errorComponents && errorComponents[errorCode]) {
     customErrorComponent = errorComponents[errorCode];
   } else if (errorComponents && errorComponents['404']) {

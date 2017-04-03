@@ -39,5 +39,7 @@ exports.default = {
   loadCacheConfigurations: _cache_configuration.loadCacheConfigurations,
   get404Error: _errors.get404Error,
   _handleDynamicParams: _dynamics._handleDynamicParams,
-  sortObject: _traverse.sortObject
+  sortObject: _traverse.sortObject,
+  getMFAPath: _routing.getMFAPath,
+  getMFASetupPath: _routing.getMFASetupPath
 };

@@ -167,7 +167,7 @@ function getRenderedComponent(componentObject, resources, debug) {
         }
         var propcompares = _util2.default.traverse(compares, renderedCompProps);
         var opscompares = (0, _assign2.default)({}, comp, propcompares);
-        // console.debug({ opscompares });
+        // console.debug({ opscompares, compares, renderedCompProps });
         if (opscompares.operation === 'eq') {
           return opscompares.left == opscompares.right;
         } else if (opscompares.operation === 'dneq') {

@@ -3,9 +3,11 @@ import React from 'react';
 import AppError404 from '../components/AppError404';
 
 export const get404Error = function _get404Error(options) {
-  let { getState, _handleFetchPaths, /*state,*/ custom404Error, componentData, windowTitle, navLabel, errorComponents, errorCode, resources, /*e, type,*/ } = options;
-  console.debug('using get404Error', errorCode);
+  let { getState, _handleFetchPaths, state, custom404Error, componentData, windowTitle, navLabel, errorComponents, errorCode, resources, e, /* type,*/ } = options;
   let customErrorComponent;
+  if (e && !state.settings.ui.notifications.supressResourceErrors) {
+    this.props.errorNotification(e.message || e.toString());
+  }
   if (errorComponents && errorComponents[ errorCode ]) {
     customErrorComponent = errorComponents[ errorCode ];
   } else if (errorComponents && errorComponents[ '404' ]) { 
