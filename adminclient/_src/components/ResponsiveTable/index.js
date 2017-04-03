@@ -137,6 +137,7 @@ var propTypes = {
   tableForm: _react.PropTypes.bool,
   tableFormAddButtonProps: _react.PropTypes.bool,
   selectEntireRow: _react.PropTypes.bool,
+  sortable: _react.PropTypes.bool,
   suppressNullValues: _react.PropTypes.bool,
   useInputRows: _react.PropTypes.bool,
   replaceButton: _react.PropTypes.bool,
@@ -188,6 +189,7 @@ var defaultProps = {
   useInputRows: false,
   selectOptionSortId: false,
   selectOptionSortIdLabel: false,
+  sortable: true,
   suppressNullValues: false,
   addNewRows: true,
   fixCSVRow: true,
@@ -228,7 +230,7 @@ var ResponsiveTable = function (_Component) {
       return {
         label: (0, _capitalize2.default)((0, _pluralize2.default)(rowkey)),
         sortid: rowkey,
-        sortable: true
+        sortable: props.sortable
       };
     }) : props.headers;
     headers = getOptionsHeaders(props, headers);

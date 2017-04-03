@@ -258,7 +258,7 @@ function getFormDatatable(options) {
       return {
         label: (0, _capitalize2.default)(rowkey),
         sortid: rowkey,
-        sortable: true,
+        sortable: formElement.sortable ? formElement.sortable : true,
         formtype: formElement.tableHeaderType && formElement.tableHeaderType[rowkey] ? formElement.tableHeaderType[rowkey] : 'text',
         defaultValue: formElement.tableHeaderDefaultValue && formElement.tableHeaderDefaultValue[rowkey] ? formElement.tableHeaderDefaultValue[rowkey] : selectOptions.length ? selectOptions[0].value : undefined,
         formoptions: selectOptions,
@@ -289,6 +289,7 @@ function getFormDatatable(options) {
     selectOptionSortIdLabel: formElement.selectOptionSortIdLabel,
     flattenRowData: formElement.flattenRowData,
     addNewRows: formElement.addNewRows,
+    sortable: formElement.sortable,
     replaceButton: false,
     uploadAddButton: true,
     useInputRows: formElement.useInputRows,
