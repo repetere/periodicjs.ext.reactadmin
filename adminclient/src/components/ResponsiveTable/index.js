@@ -702,7 +702,7 @@ class ResponsiveTable extends Component {
       fbts = <rb.Button {...this.props.filterButtonProps}>Filters</rb.Button>;
     }
     return (
-      <rb.Container>
+      <rb.Container {...this.props.containerProps}>
         
         {(this.props.tableSearch)
           ? (<rb.Addons
