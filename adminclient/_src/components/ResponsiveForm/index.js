@@ -118,7 +118,7 @@ var ResponsiveForm = function (_Component) {
     // console.debug({ props });
     var _this = (0, _possibleConstructorReturn3.default)(this, (ResponsiveForm.__proto__ || (0, _getPrototypeOf2.default)(ResponsiveForm)).call(this, props));
 
-    var formdata = (0, _assign2.default)({}, _FormHelpers.setFormNameFields.call({ props: props }, { formElementFields: [], formdata: {} }).formdata, props.flattenFormData && props.formdata ? (0, _flat2.default)(props.formdata, props.flattenDataOptions) : props.formdata);
+    var formdata = (0, _assign2.default)({}, _FormHelpers.setFormNameFields.call({ props: props }, { formElementFields: [], formdata: {} }).formdata, props.flattenFormData && props.formdata ? (0, _flat2.default)((0, _assign2.default)({}, props.formdata), props.flattenDataOptions) : props.formdata);
     // console.debug('initial', { formdata });
     if (props.stringyFormData) {
       formdata.genericdocjson = (0, _stringify2.default)(props.formdata, null, 2);
@@ -164,7 +164,7 @@ var ResponsiveForm = function (_Component) {
     key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps(nextProps) {
       // console.debug('componentWillReceiveProps', nextProps);
-      var formdata = nextProps.flattenFormData ? (0, _flat2.default)(nextProps.formdata, nextProps.flattenDataOptions) : nextProps.formdata;
+      var formdata = nextProps.flattenFormData ? (0, _flat2.default)((0, _assign2.default)({}, nextProps.formdata), nextProps.flattenDataOptions) : nextProps.formdata;
       formdata = (0, _assign2.default)({}, nextProps.useDynamicData ? this.props.getState().dynamic.formdata : {}, formdata);
       var __formOptions = nextProps.useFormOptions ? (0, _assign2.default)({}, nextProps.useDynamicData && nextProps.getState() ? nextProps.getState().dynamic.__formOptions : {}, nextProps.__formOptions) : undefined;
       formdata.__formOptions = __formOptions;

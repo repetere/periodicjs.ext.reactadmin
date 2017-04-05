@@ -5,7 +5,7 @@ import AppError404 from '../components/AppError404';
 export const get404Error = function _get404Error(options) {
   let { getState, _handleFetchPaths, state, custom404Error, componentData, windowTitle, navLabel, errorComponents, errorCode, resources, e, /* type,*/ } = options;
   let customErrorComponent;
-  if (e && !state.settings.ui.notifications.supressResourceErrors) {
+  if (e && !state.settings.ui.notifications.supressResourceErrors && this.props && typeof this.props.errorNotification==='function') {
     this.props.errorNotification(e.message || e.toString());
   }
   if (errorComponents && errorComponents[ errorCode ]) {

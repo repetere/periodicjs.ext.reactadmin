@@ -56,7 +56,7 @@ class ResponsiveForm extends Component{
     let formdata = Object.assign({},
       setFormNameFields.call({ props, }, { formElementFields: [], formdata: {}, }).formdata,  
       (props.flattenFormData && props.formdata) 
-        ? flatten(props.formdata, props.flattenDataOptions)
+        ? flatten(Object.assign({}, props.formdata), props.flattenDataOptions)
         : props.formdata);
     // console.debug('initial', { formdata });
     if (props.stringyFormData) {
@@ -106,7 +106,7 @@ class ResponsiveForm extends Component{
   componentWillReceiveProps(nextProps) {
     // console.debug('componentWillReceiveProps', nextProps);
     let formdata = (nextProps.flattenFormData)
-      ? flatten(nextProps.formdata, nextProps.flattenDataOptions)
+      ? flatten(Object.assign({}, nextProps.formdata), nextProps.flattenDataOptions)
       : nextProps.formdata;
     formdata = Object.assign({},
       (nextProps.useDynamicData)

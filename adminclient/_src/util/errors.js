@@ -33,7 +33,7 @@ var get404Error = exports.get404Error = function _get404Error(options) {
       e = options.e;
 
   var customErrorComponent = void 0;
-  if (e && !state.settings.ui.notifications.supressResourceErrors) {
+  if (e && !state.settings.ui.notifications.supressResourceErrors && this.props && typeof this.props.errorNotification === 'function') {
     this.props.errorNotification(e.message || e.toString());
   }
   if (errorComponents && errorComponents[errorCode]) {
