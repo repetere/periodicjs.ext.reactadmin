@@ -94,6 +94,7 @@ const defaultProps = {
   suppressNullValues: false,
   addNewRows: true,
   fixCSVRow: true,
+  excludeEmptyHeaders:true,
   insertSelectedRowHeaderIndex: 0,
   csvEOL: {
     // eol: '\r\n',
@@ -117,21 +118,53 @@ function getOptionsHeaders(props, propHeaders) {
   return headers;
 }
 
+function getHeadersFromRows(options) {
+  let { rows, sortable, excludeEmptyHeaders, } = options;
+  console.debug({ rows, sortable, excludeEmptyHeaders, });
+  let headerRow = Object.assign({}, rows[ 0 ]);
+  console.debug({ headerRow });
+  let headersFromRow = Object.keys(headerRow);
+  let headers = headersFromRow.map(rowkey => {
+    return {
+      label: capitalize(pluralize(rowkey)),
+      sortid: rowkey,
+      sortable: sortable,
+    };
+  });
+  return headers;
+}
+
+function excludeEmptyHeaders(options) {
+  let { headers, excludeEmptyHeaders, } = options;
+  // console.debug({ headers, excludeEmptyHeaders, });
+  if (excludeEmptyHeaders) {
+    headers.forEach((header, i) => {
+      // console.debug('headers[ i ]', headers[ i ], { header, });
+      if (!headers[ i ].sortid && !headers[ i ].label) {
+        delete headers[ i ];
+      }
+    });
+  }
+  return headers;
+}
+
 class ResponsiveTable extends Component {
   constructor(props) {
     super(props);
     // console.debug('this.props.getState()',this.props.getState());
     let rows = props.rows || [];
     let headers = ((!props.headers || !props.headers.length) && rows[ 0 ])
-      ? Object.keys(rows[ 0 ]).map(rowkey => {
-        return {
-          label: capitalize(pluralize(rowkey)),
-          sortid: rowkey,
-          sortable: props.sortable,
-        };
+      ? getHeadersFromRows({
+        rows: props.rows,
+        sortable: props.sortable,
+        excludeEmptyHeaders: props.excludeEmptyHeaders,
       })
       : props.headers;
     headers = getOptionsHeaders(props, headers);
+    headers = excludeEmptyHeaders({
+      headers,
+      excludeEmptyHeaders: props.excludeEmptyHeaders,
+    });
     if (props.flattenRowData) {
       rows = rows.map(row => Object.assign({}, row, flatten(row, props.flattenRowDataOptions)));
     }
@@ -170,15 +203,17 @@ class ResponsiveTable extends Component {
   componentWillReceiveProps(nextProps) {
     let rows = nextProps.rows || [];
     let headers = ((!nextProps.headers || !nextProps.headers.length) && rows[ 0 ])
-      ? Object.keys(rows[ 0 ]).map(rowkey => {
-        return {
-          label: capitalize(pluralize(rowkey)),
-          sortid: rowkey,
-          sortable: true,
-        };
+      ? getHeadersFromRows({
+        rows,
+        sortable: nextProps.sortable,
+        excludeEmptyHeaders: nextProps.excludeEmptyHeaders,
       })
       : nextProps.headers;
     headers = getOptionsHeaders(nextProps);
+    headers = excludeEmptyHeaders({
+      headers,
+      excludeEmptyHeaders: nextProps.excludeEmptyHeaders,
+    });
     if (nextProps.flattenRowData) {
       rows = rows.map(row => Object.assign({}, row, flatten(row, nextProps.flattenRowDataOptions)));
     }

@@ -188,10 +188,10 @@ const user = {
           dispatch(uiActions.closeUISidebar());
           dispatch(this.authenticatedMFA(false));
           dispatch(push(state.settings.auth.logged_out_path || '/'));
-          // let t = setTimeout(() => {
-          //   clearTimeout(t);
-          //   window.location.pathname = state.settings.auth.logged_out_path || '/';
-          // }, 4000);
+          let t = setImmediate(() => {
+            clearImmediate(t);
+            window.location.reload();
+          });
         })
         .catch(error => { 
           dispatch(notification.errorNotification(error));
@@ -199,10 +199,10 @@ const user = {
           dispatch(pageActions.initialAppLoaded());
           dispatch(uiActions.closeUISidebar());
           dispatch(push(state.settings.auth.logged_out_path || '/'));
-          let t = setTimeout(() => {
-            clearTimeout(t);
-            window.location.pathname = state.settings.auth.logged_out_path || '/';
-          }, 4000);
+          let t = setImmediate(() => {
+            clearImmediate(t);
+            window.location.reload();
+          });
         });
     };
   },

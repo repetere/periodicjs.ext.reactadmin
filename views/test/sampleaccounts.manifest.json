@@ -51,7 +51,7 @@
                                   "onclickProps": "/crm/applications",
                                   "onclickBaseUrl":"/r-admin/contentdata/customer/:id",
                                   "onclickThisProp":"buttonPropsAdded",
-                                  "onclickLinkParams":[{"key":":id","val":"headerHost"}]
+                                  "onclickLinkParams":[{"key":":id","val":"userlimit"}]
                                 }
                               },
                               "application":{
@@ -61,7 +61,7 @@
                                   "onclickProps": "/crm/applications",
                                   "onclickBaseUrl":"/r-admin/contentdata/application/:id",
                                   "onclickThisProp":"buttonPropsAdded",
-                                  "onclickLinkParams":[{"key":":id","val":"headerHost"}]
+                                  "onclickLinkParams":[{"key":":id","val":"userlimit"}]
                                 }
                               },
                               "loan":{
@@ -71,7 +71,7 @@
                                   "onclickProps": "/crm/loans",
                                   "onclickBaseUrl":"/r-admin/contentdata/loan/:id",
                                   "onclickThisProp":"buttonPropsAdded",
-                                  "onclickLinkParams":[{"key":":id","val":"headerHost"}]
+                                  "onclickLinkParams":[{"key":":id","val":"userlimit"}]
                                 }
                               },
                               "cards":{
@@ -81,14 +81,14 @@
                                   "onclickProps": "/crm/cardss",
                                   "onclickBaseUrl":"/r-admin/contentdata/cards/:id",
                                   "onclickThisProp":"buttonPropsAdded",
-                                  "onclickLinkParams":[{"key":":id","val":"headerHost"}]
+                                  "onclickLinkParams":[{"key":":id","val":"userlimit"}]
                                 }
                               }
                             }
                           }
                         },
                         "asyncprops":{
-                          "buttonPropsAdded":["tabledata","request"]
+                          "buttonPropsAdded":["tabledata"]
                         },
                         "children": "customer"      
                       }]
@@ -103,11 +103,11 @@
                           "onClick": "func:this.props.reduxRouter.push",
                           "onclickProps": "/crm/applications",
                           "onclickBaseUrl":"/r-admin/contentdata/accounts/:id",
-                          "onclickLinkParams":[{"key":":id","val":"headerHost"}],
+                          "onclickLinkParams":[{"key":":id","val":"userlimit"}],
                           "style": {}
                         },
                         "asyncprops":{
-                          "onclickPropObject":["tabledata","request"]
+                          "onclickPropObject":["tabledata"]
                         },
                         "children": "application"      
                       }]
@@ -344,8 +344,8 @@
                             "onclickProps": "/crm/applications",
                             "onclickBaseUrl":"/r-admin/contentdata/accounts/:id",
                             "onclickThisProp":"formdata",
-                            "displayThisProps":"headerHost",
-                            "onclickLinkParams":[{"key":":id","val":"headerHost"}],
+                            "displayThisProps":"userlimit",
+                            "onclickLinkParams":[{"key":":id","val":"userlimit"}],
                             "style": {
                               "width":"100%"
                             }
@@ -455,7 +455,7 @@
                     }]
                   },
                   "asyncprops":{
-                    "formdata":["tabledata","request"]
+                    "formdata":["tabledata"]
                   }
                 },
                 {
@@ -561,7 +561,7 @@
         ]
       },
       "resources":{
-        "tabledata":"/r-admin/contentdata/users?format=json&limit=10"
+        "tabledata":"/r-admin/contentdata/standard/users?format=json&limit=10"
       },
       "onFinish":"render",
       "pageData":{

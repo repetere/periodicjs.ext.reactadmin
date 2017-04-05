@@ -22,6 +22,34 @@
                 },
                 "children":[
                   {
+                    "component":"ResponsiveTabs",
+                    "props":{
+                      "tabsType":"navBar",
+                      "tabLabel":"navpages",
+                      "tabLabelProps":{
+                        "style":{
+                          "color":"red"
+                        }
+                      },
+                      "tabs":[
+                        {
+                          "name":"tab 1",
+                          "layout":{
+                            "component":"Section",
+                            "children":"tab content 1"
+                          }
+                        },
+                        {
+                          "name":"tab 2",
+                          "layout":{
+                            "component":"Section",
+                            "children":"tab content 2"
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
                     "component":"div",
                     "props":{
                       "dangerouslySetInnerHTML":{

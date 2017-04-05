@@ -35,7 +35,7 @@ class FloatingNav extends Component {
         position: 'fixed',
         width:'100%',
       }, styles.mainContainer, styles.floatingSidebarContainer, navigationContainer.style)}
-        className={(this.props.ui.sidebar_is_open) ? 'animated fadeInDown Nav-Sidebar-Speed' : 'animated slideOutUp Nav-Sidebar-Speed'}
+        className={(this.props.ui.sidebar_is_open) ? 'animated fadeInDown Nav-Sidebar-Speed __ra_f_sc' : 'animated slideOutUp Nav-Sidebar-Speed  __ra_f_sc'}
       onClick={this.props.toggleUISidebar}
       >
         <Container {...navigationFloatingContainer}>
@@ -46,8 +46,14 @@ class FloatingNav extends Component {
             maxHeight: '20rem',
             width: '20rem',
           },
-          navigationWrapper.style)}>
-            {this.getRenderedComponent((navigationLayout && typeof navigationLayout === 'object') ? navigationLayout : {})}
+            navigationWrapper.style)}
+            className=" __ra_f_w"
+          >
+            {
+              this.getRenderedComponent((navigationLayout && typeof navigationLayout === 'object')
+              ? navigationLayout
+              : {})
+            }
           </div>
         </Container>
       </div>

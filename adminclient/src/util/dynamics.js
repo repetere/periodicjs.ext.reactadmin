@@ -174,7 +174,13 @@ export const fetchDynamicContent = function _fetchDynamicContent (_pathname, onS
   }
 };
 
-export const fetchAction = function _fetchAction (pathname, fetchOptions, success) {
+export const fetchAction = function _fetchAction(pathname, fetchOptions, success) {
+  // let pathname, fetchOptions, success;
+  if (typeof pathname === 'object') {
+    pathname = pathname.pathname;
+    fetchOptions = pathname.fetchOptions;
+    success = pathname.success;
+  }
   // console.debug('in fetch action this', this,{ pathname, fetchOptions, success, customThis, });
   let state = _getState.call(this)();
   let headers = (state.settings && state.settings.userprofile && state.settings.userprofile.options && state.settings.userprofile.options.headers)

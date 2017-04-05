@@ -60,7 +60,8 @@
                       "headers":[
                         { "label": "#", "value":"--idx-ctr--" },
                         { "label": "Email", "sortid":"email", "sortable":true },
-                        {"label":"Likes","sortid":"likes"}
+                        {"label":"Likes","sortid":"likes"},
+                        {"invalidheaderprop":true}
                       ],
                       "limit":10,
                       "numItems":20,
@@ -338,8 +339,9 @@
         ]
       },
       "resources":{
-        "tabledata":"/r-admin/contentdata/users?format=json&limit=10"
+        "tabledata":"/r-admin/contentdata/standard/users?format=json&limit=10"
       },
+      "callbacks":["func:this.props.debug","func:window.getEORG"],
       "onFinish":"render",
       "pageData":{
         "title":"Home",

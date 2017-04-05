@@ -3,8 +3,8 @@
 const fs = require('fs-extra');
 const path = require('path');
 let data_tables_setting = {};
-if (fs.existsSync(path.resolve(path.join(__dirname, '../utility/index_data_tables')))) {
-  let index_data_tables = require('../utility/index_data_tables');
+if (fs.existsSync(path.resolve(path.join(__dirname, '../utility/index_data_tables.js')))) {
+  let index_data_tables = require('../utility/index_data_tables.js');
   data_tables_setting = {
     data_tables: {
       standard: index_data_tables,

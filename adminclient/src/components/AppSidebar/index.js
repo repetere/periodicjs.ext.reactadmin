@@ -33,13 +33,19 @@ class AppSidebar extends Component {
 
 
       <div style={Object.assign({ padding: '1rem', borderRight:'1px solid black', }, styles.fullHeight, styles.mainContainer, styles.sidebarContainer, navigationContainer.style)}
-        className={(this.props.ui.sidebar_is_open) ? 'animated fadeInLeft Nav-Sidebar-Speed' : 'animated slideOutLeft Nav-Sidebar-Speed'}>
+        className={(this.props.ui.sidebar_is_open) ? 'animated fadeInLeft Nav-Sidebar-Speed  __ra_sb_s' : 'animated slideOutLeft Nav-Sidebar-Speed  __ra_sb_s'}>
         <div style={Object.assign({
           position: 'fixed',
           height: '100%',
           overflowY:'auto',
-        }, navigationWrapper.style)}>
-          {this.getRenderedComponent((navigationLayout && typeof navigationLayout === 'object') ? navigationLayout : {})}
+        }, navigationWrapper.style)}
+          className=" __ra_sb_w"
+        >
+          {
+            this.getRenderedComponent((navigationLayout && typeof navigationLayout === 'object')
+              ? navigationLayout
+              : {})
+          }
         </div>
       </div>
     );

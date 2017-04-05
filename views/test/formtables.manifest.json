@@ -286,7 +286,7 @@
         ]
       },
       "resources":{
-        "tabledata":"/r-admin/contentdata/users?format=json&limit=10"
+        "tabledata":"/r-admin/contentdata/standard/users?format=json&limit=10"
       },
       "onFinish":"render",
       "pageData":{

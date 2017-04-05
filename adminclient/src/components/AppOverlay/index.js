@@ -102,6 +102,7 @@ class Overlay extends Component {
   render() {
     // console.log('Overlay this.props.notification', this.props.notification);
     window.overlayProps = this.props;
+    let overlayStyleOverrides = this.props.getState().settings.ui.overlayStyleProps;
     let notices = (this.props.notification.notifications && this.props.notification.notifications.length > 0)
       ? this.props.notification.notifications.map((notice, key) => <NotificationUI dynamicRenderComponent={this.getRenderedComponent} hide={{
         onClick: () => {
@@ -109,14 +110,16 @@ class Overlay extends Component {
         },
       }} key={key} {...notice} />)
       : null;
-    let modal = (this.props.notification.modals && this.props.notification.modals.length > 0) ? <ModalUI {...this.props.notification.modals[this.props.notification.modals.length - 1]}
-      getState={this.props.getState}
-      hide={() => {
-        this.props.hideModal(this.props.notification.modals[0].id);
-      } }  
-      dynamicRenderComponent={this.getRenderedComponent} /> : null;
+    let modal = (this.props.notification.modals && this.props.notification.modals.length > 0)
+      ? <ModalUI {...this.props.notification.modals[ this.props.notification.modals.length - 1 ]}
+        getState={this.props.getState}
+        hide={() => {
+          this.props.hideModal(this.props.notification.modals[0].id);
+        } }  
+        dynamicRenderComponent={this.getRenderedComponent} />
+      : null;
     return (
-      <div className="__reactadmin_overlay" style={{ position: 'fixed', bottom: 0, width: 'auto', zIndex:100000, }}>
+      <div className="__reactadmin_overlay" {...overlayStyleOverrides} style={{ position: 'fixed', bottom: 0, width: 'auto', zIndex:100000, }}>
         {modal}
         {notices}
       </div>
