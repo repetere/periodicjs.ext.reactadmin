@@ -13,6 +13,7 @@ import RawStateOutput from '../RawOutput/RawStateOutput';
 import MenuAppLink from '../AppSidebar/MenuAppLink';
 import SubMenuLinks from '../AppSidebar/SubMenuLinks';
 import CodeMirror from '../RACodeMirror';
+import PreviewEditor from '../RACodeMirror/PreviewEditor';
 import ResponsiveDatalist from '../ResponsiveDatalist';
 // import Editor from '../RAEditor';
 import ResponsiveTable from '../ResponsiveTable';
@@ -28,12 +29,10 @@ import utilities from '../../util';
 let renderIndex = 0;
 
 export let AppLayoutMap = Object.assign({}, {
-  recharts, ResponsiveForm, DynamicLayout, DynamicForm, RawOutput, RawStateOutput, FormItem, MenuAppLink, SubMenuLinks, ResponsiveTable, ResponsiveCard, DynamicChart, ResponsiveBar, ResponsiveTabs, ResponsiveDatalist, CodeMirror, Range, Slider, GoogleMap, Carousel, /* Editor,*/
+  recharts, ResponsiveForm, DynamicLayout, DynamicForm, RawOutput, RawStateOutput, FormItem, MenuAppLink, SubMenuLinks, ResponsiveTable, ResponsiveCard, DynamicChart, ResponsiveBar, ResponsiveTabs, ResponsiveDatalist, CodeMirror, Range, Slider, GoogleMap, Carousel, PreviewEditor, /* Editor,*/
 }, React.DOM, rebulma, { Link, });
 
 // console.log({ AppLayoutMap });
-// console.log({ ReactDOM: React.DOM['div'] });
-
 
 export function getRenderedComponent(componentObject, resources, debug) {
   AppLayoutMap.ResponsiveLink = ResponsiveLink.bind(this);

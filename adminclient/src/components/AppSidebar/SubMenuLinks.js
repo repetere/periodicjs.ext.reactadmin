@@ -4,7 +4,7 @@ class SubMenuLinks extends Component {
   render() {
     return (
     	<li>
-      	<ul>{ this.props.children }</ul>
+        <ul>{this.props.children}</ul>
     	</li>
     );
   }

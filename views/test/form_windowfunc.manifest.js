@@ -17,6 +17,18 @@ module.exports = {
           props:{},
           children: [
             {
+              component: 'CodeMirror',
+              props: {
+                editorType:'editor',
+                codeMirrorProps: {
+                  value: '<p>this is the start</p>',
+                },
+                codeMirrorPropsOptions: {
+                  // mode:'javascript',
+                },
+              },
+            },
+            {
               component: 'Container',
               props:{},
               children:[

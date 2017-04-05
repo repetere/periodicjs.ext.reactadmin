@@ -1,4 +1,4 @@
-import React, { Component, /*PropTypes,*/ } from 'react';
+import React, { Component, PropTypes, } from 'react';
 import CodeMirror from 'react-codemirror';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/addon/fold/foldcode';
@@ -31,10 +31,19 @@ import 'codemirror/addon/fold/foldgutter';
 import 'codemirror/mode/css/css';
 import 'codemirror/mode/htmlembedded/htmlembedded';
 
-const propTypes = {};
+const propTypes = {
+  editorType: PropTypes.string,
+};
 const defaultProps = {
+  editorType:'code',
   codeMirrorProps: {
-    options: {},
+    options: {
+      mode:'javascript',
+      lineNumbers: true,
+      lineWrapping: true,
+      foldGutter: true,
+      gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter', ],
+    },
   },
 };
 
@@ -45,17 +54,25 @@ class RACodeMirror extends Component {
       {
         options: Object.assign({}, {
           lineNumbers: true,
+          // mode:'application/x-ejs',
           lineWrapping: true,
           foldGutter: true,
           gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter', ],
-        }, this.props.codeMirrorProps.options),
+        },
+          this.props.codeMirrorPropsOptions, this.props.codeMirrorProps.options),
       });
-  
-    return <div {...this.props.wrapperProps}><CodeMirror {...options}>{this.props.children}</CodeMirror></div>;
+    if (this.props.editorType === 'editor') {
+      options.options.mode = 'application/x-ejs';
+      console.debug({ options, });
+      return (<div {...this.props.wrapperProps}>
+        <CodeMirror {...options}>{this.props.children}</CodeMirror>
+        </div>);
+    } else {
+      return <div {...this.props.wrapperProps}><CodeMirror {...options}>{this.props.children}</CodeMirror></div>;
+    }
   }
 }
 
-//ok
 RACodeMirror.propTypes = propTypes;
 RACodeMirror.defaultProps = defaultProps;
 
