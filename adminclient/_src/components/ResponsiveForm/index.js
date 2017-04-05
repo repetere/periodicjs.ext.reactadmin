@@ -102,6 +102,7 @@ var defaultProps = {
   useErrorNotification: true,
   dynamicResponseField: false,
   dynamicField: false,
+  blockPageUI: false,
   cardForm: false,
   onSubmit: 'func:this.props.debug',
   formgroups: []
@@ -185,6 +186,9 @@ var ResponsiveForm = function (_Component) {
     value: function submitForm() {
       var _this2 = this;
 
+      if (this.props.blockPageUI) {
+        this.props.setUILoadedState(false);
+      }
       var state = this.props.getState();
       var headers = state.settings.userprofile ? state.settings.userprofile.options.headers : {};
       var formdata = (0, _assign2.default)({}, this.state);
@@ -203,6 +207,10 @@ var ResponsiveForm = function (_Component) {
         _this2.setState({
           __formDataStatusDate: new Date().toString()
         });
+
+        if (_this2.props.blockPageUI) {
+          _this2.props.setUILoadedState(true);
+        }
       };
 
       delete formdata.formDataLists;
@@ -234,6 +242,9 @@ var ResponsiveForm = function (_Component) {
       if (validationErrors && (0, _keys2.default)(validationErrors).length > 0) {
         this.setState({ formDataErrors: validationErrors });
         console.debug('has errors', validationErrors, { submitFormData: submitFormData });
+        if (this.props.blockPageUI) {
+          this.props.setUILoadedState(true);
+        }
       } else if (!this.props.onSubmit) {
         this.props.debug(submitFormData);
         __formStateUpdate();

@@ -69,9 +69,9 @@ export function getCallbackFromString(successCBProp) {
   let successCallback;
   if (typeof successCBProp === 'string' && successCBProp.indexOf('func:this.props.reduxRouter') !== -1) {
     successCallback = this.props.reduxRouter[ successCBProp.replace('func:this.props.reduxRouter.', '') ];
-  } else if (successCBProp.indexOf('func:window') !== -1 && typeof window[ successCBProp.replace('func:window.', '') ] ==='function'){
+  } else if (typeof successCBProp === 'string' && successCBProp.indexOf('func:window') !== -1 && typeof window[ successCBProp.replace('func:window.', '') ] ==='function'){
     successCallback= window[ successCBProp.replace('func:window.', '') ].bind(this);
-  } else {
+  } else if (typeof successCBProp === 'string') {
     successCallback = this.props[ successCBProp.replace('func:this.props.', '') ];
   }
   return successCallback;

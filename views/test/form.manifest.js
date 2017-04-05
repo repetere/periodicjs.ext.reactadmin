@@ -68,6 +68,7 @@ module.exports = {
                   //   formdata:[ 'dynamic', ],
                   // },
                   props: {
+                    blockPageUI:true,
                     cardForm: {},
                     onSubmit: 'func:this.props.setDynamicData',
                     onChange: 'func:this.props.setDynamicData',

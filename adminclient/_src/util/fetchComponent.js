@@ -56,7 +56,7 @@ var fetchComponent = exports.fetchComponent = function fetchComponent(url) {
   var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
   return function () {
-    console.debug({ url: url, options: options });
+    // console.debug({ url, options });
     return fetch(url, (0, _assign2.default)({}, options)).then(checkStatus).then(function (res) {
       return res.json();
     }).catch(function (e) {
