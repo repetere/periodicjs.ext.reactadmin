@@ -39,6 +39,11 @@ var getDynamicFunctionName = function (function_name) {
   return function_name.replace(FUNCTION_NAME_REGEXP, '$1');
 };
 
+/**
+ * Takes a single function name or an array of function name and fires them if they exist on window, this.props or this.props.reduxRouter
+ * @param  {string|string[]} function_names A single function name or array of function names in a specific format ie. "func:this.props"
+ * @return {Object}                Returns a Promise which resolves after all functions have resolved
+ */
 export const _invokeWebhooks = function (function_names) {
   if (typeof function_names !== 'string' && (!Array.isArray(function_names) || (Array.isArray(function_names) && !function_names.length))) {
     return false;
