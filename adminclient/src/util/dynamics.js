@@ -34,6 +34,37 @@ export const _handleDynamicParams = function (pathname, resources, current) {
   }, {});
 };
 
+const FUNCTION_NAME_REGEXP = /func:(?:this\.props|window)(?:\.reduxRouter)?\.(\D.+)*/;
+var getDynamicFunctionName = function (function_name) {
+  return function_name.replace(FUNCTION_NAME_REGEXP, '$1');
+};
+
+/**
+ * Takes a single function name or an array of function name and fires them if they exist on window, this.props or this.props.reduxRouter
+ * @param  {string|string[]} function_names A single function name or array of function names in a specific format ie. "func:this.props"
+ * @return {Object}                Returns a Promise which resolves after all functions have resolved
+ */
+export const _invokeWebhooks = function (function_names) {
+  if (typeof function_names !== 'string' && (!Array.isArray(function_names) || (Array.isArray(function_names) && !function_names.length))) {
+    return false;
+  }
+  function_names = (Array.isArray(function_names)) ? function_names : [function_names];
+  let fns = function_names.reduce((result, name) => {
+    if (typeof name === 'string') {
+      let clean_name = getDynamicFunctionName(name);
+      if (name.indexOf('func:this.props.reduxRouter') !== -1) {
+        result.push((typeof this.props.reduxRouter[clean_name] === 'function') ? this.props.reduxRouter[clean_name]() : undefined);
+      } else if (name.indexOf('func:this.props') !== -1) {
+        result.push((typeof this.props[clean_name] === 'function') ? this.props[clean_name]() : undefined);
+      } else if (name.indexOf('func:window') !== -1) {
+        result.push((typeof window[clean_name] === 'function') ? window[clean_name].call(this) : undefined);
+      }
+    }
+    return result;
+  }, []);
+  return Promise.all(fns);
+};
+
 /**
  * Handles making fetch requests for resource paths
  * @param  {Object} layout    Configuration for dynamic page, component or modal
@@ -55,18 +86,12 @@ export const _handleFetchPaths = function (layout, resources = {}, options = {})
   return utilities.fetchPaths(state.settings.basename, resources, headers)
     .then((typeof options.onSuccess === 'function') ? options.onSuccess : _resources => {
       this.uiLayout = this.getRenderedComponent(layout, _resources);
-      // if(window && window.scrollTo){
-      //   window.scrollTo(0, 0);
-      // }
       this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
+      if (options.callbacks) _invokeWebhooks.call(this, options.callbacks);
     })
     .catch((typeof options.onError === 'function') ? e => options.onError( e, 'fetchResources', resources) : e => {
-      // console.debug('USING FALLBACK ONERROR ');
       if (this.props && this.props.errorNotification) this.props.errorNotification(e);
       else console.error(e);
-      // if(window && window.scrollTo){
-      //   window.scrollTo(0, 0);
-      // }
       this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
     });
 };
@@ -120,8 +145,10 @@ export const fetchSuccessContent = function _fetchSuccessContent (pathname, hasP
       return _handleFetchPaths.call(this, layout, resources, { 
         getState,
         onError: fetchErrorContent.bind(this), 
+        callbacks: containers[pathname].callbacks,
       });
     } else {
+      if (containers[pathname].callbacks) _invokeWebhooks.call(this, containers[pathname].callbacks);
       this.uiLayout = this.getRenderedComponent(containers[pathname].layout);
       // if(window && window.scrollTo){
       //   window.scrollTo(0, 0);
