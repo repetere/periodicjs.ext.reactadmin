@@ -90,14 +90,16 @@ var AppSidebar = function (_Component) {
         _react2.default.createElement(
           'div',
           { style: (0, _assign2.default)({ padding: '1rem', borderRight: '1px solid black' }, _styles2.default.fullHeight, _styles2.default.mainContainer, _styles2.default.sidebarContainer, navigationContainer.style),
-            className: this.props.ui.sidebar_is_open ? 'animated fadeInLeft Nav-Sidebar-Speed' : 'animated slideOutLeft Nav-Sidebar-Speed' },
+            className: this.props.ui.sidebar_is_open ? 'animated fadeInLeft Nav-Sidebar-Speed  __ra_sb_s' : 'animated slideOutLeft Nav-Sidebar-Speed  __ra_sb_s' },
           _react2.default.createElement(
             'div',
             { style: (0, _assign2.default)({
                 position: 'fixed',
                 height: '100%',
                 overflowY: 'auto'
-              }, navigationWrapper.style) },
+              }, navigationWrapper.style),
+              className: ' __ra_sb_w'
+            },
             this.getRenderedComponent(navigationLayout && (typeof navigationLayout === 'undefined' ? 'undefined' : (0, _typeof3.default)(navigationLayout)) === 'object' ? navigationLayout : {})
           )
         )

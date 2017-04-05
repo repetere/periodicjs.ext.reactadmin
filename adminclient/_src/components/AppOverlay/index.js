@@ -203,6 +203,7 @@ var Overlay = function (_Component3) {
 
       // console.log('Overlay this.props.notification', this.props.notification);
       window.overlayProps = this.props;
+      var overlayStyleOverrides = this.props.getState().settings.ui.overlayStyleProps;
       var notices = this.props.notification.notifications && this.props.notification.notifications.length > 0 ? this.props.notification.notifications.map(function (notice, key) {
         return _react2.default.createElement(NotificationUI, (0, _extends3.default)({ dynamicRenderComponent: _this5.getRenderedComponent, hide: {
             onClick: function onClick() {
@@ -218,7 +219,7 @@ var Overlay = function (_Component3) {
         dynamicRenderComponent: this.getRenderedComponent })) : null;
       return _react2.default.createElement(
         'div',
-        { className: '__reactadmin_overlay', style: { position: 'fixed', bottom: 0, width: 'auto', zIndex: 100000 } },
+        (0, _extends3.default)({ className: '__reactadmin_overlay' }, overlayStyleOverrides, { style: { position: 'fixed', bottom: 0, width: 'auto', zIndex: 100000 } }),
         modal,
         notices
       );

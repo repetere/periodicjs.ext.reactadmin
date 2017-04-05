@@ -118,98 +118,79 @@ var ResponsiveTabs = function (_Component) {
     value: function render() {
       var _this2 = this;
 
-      if (this.state.tabsType === 'select') {
-        return _react2.default.createElement(
-          'div',
-          null,
-          _react2.default.createElement(
-            _reBulma.Tabs,
-            this.state.tabsProps,
-            _react2.default.createElement(
-              _reBulma.TabGroup,
-              null,
-              _react2.default.createElement(
-                _reBulma.Select,
-                (0, _extends3.default)({}, this.state.tabgroupProps, { onChange: function onChange(e) {
-                    _this2.changeTab(e.target.value);
-                  } }),
-                this.props.tabs.map(function (tab, idx) {
-                  return _react2.default.createElement(
-                    'option',
-                    (0, _extends3.default)({ key: idx, value: idx }, tab.tabProps),
-                    tab.name
-                  );
-                })
-              )
-            )
-          ),
-          this.state.currentLayout
-        );
-      }
-
+      var TabSelector = null;
       if (this.state.tabsType === 'pageToggle') {
-        return _react2.default.createElement(
-          'div',
-          null,
-          _react2.default.createElement(
-            _reBulma.Tabs,
-            this.state.tabsProps,
+        TabSelector = this.state.tabs.map(function (tab) {
+          var active = tab.name === _this2.state.currentTab.name ? true : false;
+          var buttonStyle = tab.name === _this2.state.currentTab.name ? _styles2.default.activeButton : {};
+          if (_this2.state.isButton) return _react2.default.createElement(
+            _reBulma.Tab,
+            (0, _extends3.default)({}, tab.tabProps, { isActive: active, onClick: function onClick() {
+                return _this2.changeTab(tab);
+              } }),
             _react2.default.createElement(
-              _reBulma.TabGroup,
-              this.state.tabgroupProps,
-              this.state.tabs.map(function (tab) {
-                var active = tab.name === _this2.state.currentTab.name ? true : false;
-                var buttonStyle = tab.name === _this2.state.currentTab.name ? _styles2.default.activeButton : {};
-                if (_this2.state.isButton) return _react2.default.createElement(
-                  _reBulma.Tab,
-                  (0, _extends3.default)({}, tab.tabProps, { isActive: active, onClick: function onClick() {
-                      return _this2.changeTab(tab);
-                    } }),
-                  _react2.default.createElement(
-                    _reBulma.Button,
-                    { style: buttonStyle },
-                    tab.name
-                  )
-                );
-                return _react2.default.createElement(
-                  _reBulma.Tab,
-                  (0, _extends3.default)({}, tab.tabProps, { isActive: active, onClick: function onClick() {
-                      return _this2.changeTab(tab);
-                    } }),
-                  tab.name
-                );
-              })
+              _reBulma.Button,
+              { style: buttonStyle },
+              tab.name
             )
-          ),
-          this.state.currentLayout
+          );
+          return _react2.default.createElement(
+            _reBulma.Tab,
+            (0, _extends3.default)({}, tab.tabProps, { isActive: active, onClick: function onClick() {
+                return _this2.changeTab(tab);
+              } }),
+            tab.name
+          );
+        });
+      }
+      if (this.state.tabsType === 'select') {
+        TabSelector = _react2.default.createElement(
+          _reBulma.Select,
+          (0, _extends3.default)({}, this.state.tabgroupProps, {
+            onChange: function onChange(e) {
+              _this2.changeTab(e.target.value);
+            } }),
+          this.props.tabs.map(function (tab, idx) {
+            return _react2.default.createElement(
+              'option',
+              (0, _extends3.default)({ key: idx, value: idx }, tab.tabProps),
+              tab.name
+            );
+          })
         );
+      }
+      if (this.state.tabsType === 'navBar') {
+        TabSelector = this.state.tabs.map(function (tab, idx) {
+          var active = tab.name === _this2.state.currentTab.name ? true : false;
+          return _react2.default.createElement(
+            _reBulma.Tab,
+            (0, _extends3.default)({}, tab.tabProps, { key: idx, isActive: active, onClick: function onClick() {
+                return _this2.changeTab(tab);
+              } }),
+            tab.name
+          );
+        });
       }
 
-      if (this.state.tabsType === 'navBar') {
-        return _react2.default.createElement(
-          'div',
-          null,
+      return _react2.default.createElement(
+        'div',
+        this.props.tabContainer,
+        _react2.default.createElement(
+          _reBulma.Tabs,
+          this.state.tabsProps,
           _react2.default.createElement(
-            _reBulma.Tabs,
-            this.state.tabsProps,
-            _react2.default.createElement(
-              _reBulma.TabGroup,
-              this.state.tabgroupProps,
-              this.state.tabs.map(function (tab, idx) {
-                var active = tab.name === _this2.state.currentTab.name ? true : false;
-                return _react2.default.createElement(
-                  _reBulma.Tab,
-                  (0, _extends3.default)({}, tab.tabProps, { key: idx, isActive: active, onClick: function onClick() {
-                      return _this2.changeTab(tab);
-                    } }),
-                  tab.name
-                );
-              })
-            )
-          ),
-          this.state.currentLayout
-        );
-      }
+            _reBulma.TabGroup,
+            this.state.tabgroupProps,
+            this.props.tabLabel ? _react2.default.createElement(
+              _reBulma.Label,
+              this.props.tabLabelProps,
+              this.props.tabLabel
+            ) : null,
+            TabSelector
+          )
+        ),
+        this.state.currentLayout
+      );
     }
   }]);
   return ResponsiveTabs;

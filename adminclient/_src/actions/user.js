@@ -16,6 +16,14 @@ var _assign = require('babel-runtime/core-js/object/assign');
 
 var _assign2 = _interopRequireDefault(_assign);
 
+var _clearImmediate2 = require('babel-runtime/core-js/clear-immediate');
+
+var _clearImmediate3 = _interopRequireDefault(_clearImmediate2);
+
+var _setImmediate2 = require('babel-runtime/core-js/set-immediate');
+
+var _setImmediate3 = _interopRequireDefault(_setImmediate2);
+
 var _promise = require('babel-runtime/core-js/promise');
 
 var _promise2 = _interopRequireDefault(_promise);
@@ -235,20 +243,20 @@ var user = {
         dispatch(_ui2.default.closeUISidebar());
         dispatch(_this.authenticatedMFA(false));
         dispatch((0, _reactRouterRedux.push)(state.settings.auth.logged_out_path || '/'));
-        // let t = setTimeout(() => {
-        //   clearTimeout(t);
-        //   window.location.pathname = state.settings.auth.logged_out_path || '/';
-        // }, 4000);
+        var t = (0, _setImmediate3.default)(function () {
+          (0, _clearImmediate3.default)(t);
+          window.location.reload();
+        });
       }).catch(function (error) {
         dispatch(_notification2.default.errorNotification(error));
         dispatch(_this.failedLogoutRequest(error));
         dispatch(_pages2.default.initialAppLoaded());
         dispatch(_ui2.default.closeUISidebar());
         dispatch((0, _reactRouterRedux.push)(state.settings.auth.logged_out_path || '/'));
-        var t = setTimeout(function () {
-          clearTimeout(t);
-          window.location.pathname = state.settings.auth.logged_out_path || '/';
-        }, 4000);
+        var t = (0, _setImmediate3.default)(function () {
+          (0, _clearImmediate3.default)(t);
+          window.location.reload();
+        });
       });
     };
   },

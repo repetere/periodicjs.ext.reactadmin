@@ -24,14 +24,6 @@ var _defineProperty2 = require('babel-runtime/helpers/defineProperty');
 
 var _defineProperty3 = _interopRequireDefault(_defineProperty2);
 
-var _assign = require('babel-runtime/core-js/object/assign');
-
-var _assign2 = _interopRequireDefault(_assign);
-
-var _keys = require('babel-runtime/core-js/object/keys');
-
-var _keys2 = _interopRequireDefault(_keys);
-
 var _getPrototypeOf = require('babel-runtime/core-js/object/get-prototype-of');
 
 var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
@@ -51,6 +43,14 @@ var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorRet
 var _inherits2 = require('babel-runtime/helpers/inherits');
 
 var _inherits3 = _interopRequireDefault(_inherits2);
+
+var _keys = require('babel-runtime/core-js/object/keys');
+
+var _keys2 = _interopRequireDefault(_keys);
+
+var _assign = require('babel-runtime/core-js/object/assign');
+
+var _assign2 = _interopRequireDefault(_assign);
 
 var _react = require('react');
 
@@ -193,6 +193,7 @@ var defaultProps = {
   suppressNullValues: false,
   addNewRows: true,
   fixCSVRow: true,
+  excludeEmptyHeaders: true,
   insertSelectedRowHeaderIndex: 0,
   csvEOL: {
     // eol: '\r\n',
@@ -216,6 +217,41 @@ function getOptionsHeaders(props, propHeaders) {
   return headers;
 }
 
+function getHeadersFromRows(options) {
+  var rows = options.rows,
+      sortable = options.sortable,
+      excludeEmptyHeaders = options.excludeEmptyHeaders;
+
+  console.debug({ rows: rows, sortable: sortable, excludeEmptyHeaders: excludeEmptyHeaders });
+  var headerRow = (0, _assign2.default)({}, rows[0]);
+  console.debug({ headerRow: headerRow });
+  var headersFromRow = (0, _keys2.default)(headerRow);
+  var headers = headersFromRow.map(function (rowkey) {
+    return {
+      label: (0, _capitalize2.default)((0, _pluralize2.default)(rowkey)),
+      sortid: rowkey,
+      sortable: sortable
+    };
+  });
+  return headers;
+}
+
+function excludeEmptyHeaders(options) {
+  var headers = options.headers,
+      excludeEmptyHeaders = options.excludeEmptyHeaders;
+  // console.debug({ headers, excludeEmptyHeaders, });
+
+  if (excludeEmptyHeaders) {
+    headers.forEach(function (header, i) {
+      // console.debug('headers[ i ]', headers[ i ], { header, });
+      if (!headers[i].sortid && !headers[i].label) {
+        delete headers[i];
+      }
+    });
+  }
+  return headers;
+}
+
 var ResponsiveTable = function (_Component) {
   (0, _inherits3.default)(ResponsiveTable, _Component);
 
@@ -226,14 +262,16 @@ var ResponsiveTable = function (_Component) {
     var _this = (0, _possibleConstructorReturn3.default)(this, (ResponsiveTable.__proto__ || (0, _getPrototypeOf2.default)(ResponsiveTable)).call(this, props));
 
     var rows = props.rows || [];
-    var headers = (!props.headers || !props.headers.length) && rows[0] ? (0, _keys2.default)(rows[0]).map(function (rowkey) {
-      return {
-        label: (0, _capitalize2.default)((0, _pluralize2.default)(rowkey)),
-        sortid: rowkey,
-        sortable: props.sortable
-      };
+    var headers = (!props.headers || !props.headers.length) && rows[0] ? getHeadersFromRows({
+      rows: props.rows,
+      sortable: props.sortable,
+      excludeEmptyHeaders: props.excludeEmptyHeaders
     }) : props.headers;
     headers = getOptionsHeaders(props, headers);
+    headers = excludeEmptyHeaders({
+      headers: headers,
+      excludeEmptyHeaders: props.excludeEmptyHeaders
+    });
     if (props.flattenRowData) {
       rows = rows.map(function (row) {
         return (0, _assign2.default)({}, row, (0, _flat2.default)(row, props.flattenRowDataOptions));
@@ -277,14 +315,16 @@ var ResponsiveTable = function (_Component) {
     key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps(nextProps) {
       var rows = nextProps.rows || [];
-      var headers = (!nextProps.headers || !nextProps.headers.length) && rows[0] ? (0, _keys2.default)(rows[0]).map(function (rowkey) {
-        return {
-          label: (0, _capitalize2.default)((0, _pluralize2.default)(rowkey)),
-          sortid: rowkey,
-          sortable: true
-        };
+      var headers = (!nextProps.headers || !nextProps.headers.length) && rows[0] ? getHeadersFromRows({
+        rows: rows,
+        sortable: nextProps.sortable,
+        excludeEmptyHeaders: nextProps.excludeEmptyHeaders
       }) : nextProps.headers;
       headers = getOptionsHeaders(nextProps);
+      headers = excludeEmptyHeaders({
+        headers: headers,
+        excludeEmptyHeaders: nextProps.excludeEmptyHeaders
+      });
       if (nextProps.flattenRowData) {
         rows = rows.map(function (row) {
           return (0, _assign2.default)({}, row, (0, _flat2.default)(row, nextProps.flattenRowDataOptions));
@@ -917,7 +957,7 @@ var ResponsiveTable = function (_Component) {
       }
       return _react2.default.createElement(
         rb.Container,
-        null,
+        this.props.containerProps,
         this.props.tableSearch ? _react2.default.createElement(
           rb.Addons,
           this.props.filterAddonProps,

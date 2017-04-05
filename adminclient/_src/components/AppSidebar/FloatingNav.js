@@ -92,7 +92,7 @@ var FloatingNav = function (_Component) {
             position: 'fixed',
             width: '100%'
           }, _styles2.default.mainContainer, _styles2.default.floatingSidebarContainer, navigationContainer.style),
-          className: this.props.ui.sidebar_is_open ? 'animated fadeInDown Nav-Sidebar-Speed' : 'animated slideOutUp Nav-Sidebar-Speed',
+          className: this.props.ui.sidebar_is_open ? 'animated fadeInDown Nav-Sidebar-Speed __ra_f_sc' : 'animated slideOutUp Nav-Sidebar-Speed  __ra_f_sc',
           onClick: this.props.toggleUISidebar
         },
         _react2.default.createElement(
@@ -106,7 +106,9 @@ var FloatingNav = function (_Component) {
                 backgroundColor: 'white',
                 maxHeight: '20rem',
                 width: '20rem'
-              }, navigationWrapper.style) },
+              }, navigationWrapper.style),
+              className: ' __ra_f_w'
+            },
             this.getRenderedComponent(navigationLayout && (typeof navigationLayout === 'undefined' ? 'undefined' : (0, _typeof3.default)(navigationLayout)) === 'object' ? navigationLayout : {})
           )
         )

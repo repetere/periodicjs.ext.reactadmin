@@ -111,51 +111,60 @@ var MainApp = function (_Component) {
     value: function componentDidMount() {
       var _this2 = this;
 
-      _promise2.default.all([_serverSideReactNative.AsyncStorage.getItem(_constants2.default.jwt_token.TOKEN_NAME), _serverSideReactNative.AsyncStorage.getItem(_constants2.default.jwt_token.TOKEN_DATA), _serverSideReactNative.AsyncStorage.getItem(_constants2.default.jwt_token.PROFILE_JSON), this.props.fetchMainComponent(), this.props.fetchErrorComponents(), this.props.fetchUnauthenticatedManifest(), _serverSideReactNative.AsyncStorage.getItem(_constants2.default.user.MFA_AUTHENTICATED)]).then(function (results) {
-        try {
-          if (results[results.length - 1] === 'true') {
-            _this2.props.authenticatedMFA();
-          }
-          var jwt_token = results[0];
-          var jwt_token_data = JSON.parse(results[1]);
-          var jwt_user_profile = JSON.parse(results[2]);
-          if (jwt_token_data && jwt_user_profile) {
-            var url = '/api/jwt/token';
-            var response = {};
-            var json = {
-              token: jwt_token_data.token,
-              expires: jwt_token_data.expires,
-              timeout: jwt_token_data.timeout,
-              user: jwt_user_profile
-            };
-            var currentTime = new Date();
-
-            if ((0, _moment2.default)(jwt_token_data.expires).isBefore(currentTime)) {
-              var expiredTokenError = new Error('Access Token Expired ' + (0, _moment2.default)(jwt_token_data.expires).format('LLLL'));
-              _this2.props.logoutUser();
-              throw expiredTokenError;
-            } else {
-              _this2.props.saveUserProfile(url, response, json);
-              _this2.props.initializeAuthenticatedUser(json.token, false);
-            }
-          } else if (jwt_token) {
-            _this2.props.getUserProfile(jwt_token);
-            _this2.props.initializeAuthenticatedUser(jwt_token, false);
-            _this2.props.createNotification({ text: 'welcome back', timeout: 4000 });
-          } else {
-            console.log('MAIN componentDidMount USER IS NOT LOGGED IN');
-          }
+      if (this.state.settings.noauth) {
+        this.props.fetchUnauthenticatedManifest().then(function () {
           _this2.props.setUILoadedState(true);
-        } catch (e) {
-          _this2.props.errorNotification(e);
-          // console.log(e);
-        }
-      }).catch(function (error) {
-        _this2.props.errorNotification(error);
-        // console.error('MAIN componentDidMount: JWT USER Login Error.', error);
-        _this2.props.logoutUser();
-        _this2.props.setUILoadedState(true);
-      });
+        }).catch(function (error) {
+          _this2.props.errorNotification(error);
+          _this2.props.setUILoadedState(true);
+        });
+      } else {
+        _promise2.default.all([_serverSideReactNative.AsyncStorage.getItem(_constants2.default.jwt_token.TOKEN_NAME), _serverSideReactNative.AsyncStorage.getItem(_constants2.default.jwt_token.TOKEN_DATA), _serverSideReactNative.AsyncStorage.getItem(_constants2.default.jwt_token.PROFILE_JSON), this.props.fetchMainComponent(), this.props.fetchErrorComponents(), this.props.fetchUnauthenticatedManifest(), _serverSideReactNative.AsyncStorage.getItem(_constants2.default.user.MFA_AUTHENTICATED)]).then(function (results) {
+          try {
+            if (results[results.length - 1] === 'true') {
+              _this2.props.authenticatedMFA();
+            }
+            var jwt_token = results[0];
+            var jwt_token_data = JSON.parse(results[1]);
+            var jwt_user_profile = JSON.parse(results[2]);
+            if (jwt_token_data && jwt_user_profile) {
+              var url = '/api/jwt/token';
+              var response = {};
+              var json = {
+                token: jwt_token_data.token,
+                expires: jwt_token_data.expires,
+                timeout: jwt_token_data.timeout,
+                user: jwt_user_profile
+              };
+              var currentTime = new Date();
+
+              if ((0, _moment2.default)(jwt_token_data.expires).isBefore(currentTime)) {
+                var expiredTokenError = new Error('Access Token Expired ' + (0, _moment2.default)(jwt_token_data.expires).format('LLLL'));
+                _this2.props.logoutUser();
+                throw expiredTokenError;
+              } else {
+                _this2.props.saveUserProfile(url, response, json);
+                _this2.props.initializeAuthenticatedUser(json.token, false);
+              }
+            } else if (jwt_token) {
+              _this2.props.getUserProfile(jwt_token);
+              _this2.props.initializeAuthenticatedUser(jwt_token, false);
+              _this2.props.createNotification({ text: 'welcome back', timeout: 4000 });
+            } else {
+              console.log('MAIN componentDidMount USER IS NOT LOGGED IN');
+            }
+            _this2.props.setUILoadedState(true);
+          } catch (e) {
+            _this2.props.errorNotification(e);
+            // console.log(e);
+          }
+        }).catch(function (error) {
+          _this2.props.errorNotification(error);
+          // console.error('MAIN componentDidMount: JWT USER Login Error.', error);
+          _this2.props.logoutUser();
+          _this2.props.setUILoadedState(true);
+        });
+      }
       if (document && document.body && document.body.classList && document.body.classList.add) {
         document.body.classList.add('__ra_mc_loaded');
       } else if (document && document.body && document.body.className) {
@@ -176,7 +185,8 @@ var MainApp = function (_Component) {
       var headerNav = this.state.settings.ui.initialization.show_header || this.state.user.isLoggedIn ? _react2.default.createElement(_AppHeader2.default, (0, _extends3.default)({ className: 'reactadmin__app_header' }, this.state)) : null;
       var footerNav = this.state.settings.ui.initialization.show_footer || this.state.user.isLoggedIn ? _react2.default.createElement(_AppFooter2.default, (0, _extends3.default)({ className: 'reactadmin__app_footer' }, this.state)) : null;
 
-      var overlay = this.props.ui.sidebar_is_open && this.state.settings.ui.initialization.show_sidebar_overlay ? _react2.default.createElement('div', { style: _styles2.default.sidebarOverlay, onClick: this.props.toggleUISidebar }) : null;
+      var overlay = this.props.ui.sidebar_is_open && this.state.settings.ui.initialization.show_sidebar_overlay ? _react2.default.createElement('div', { style: _styles2.default.sidebarOverlay, className: '__ra_show_sidebar_overlay',
+        onClick: this.props.toggleUISidebar }) : null;
 
       return this.state.ui.ui_is_loaded === false ? _react2.default.createElement(
         _AppSectionLoading2.default,
