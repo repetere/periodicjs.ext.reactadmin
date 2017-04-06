@@ -3,13 +3,14 @@ const helper = require('./helper');
 const asset = require('./asset');
 
 module.exports = (periodic) => {
+  let reactadmin = periodic.app.locals.extension.reactadmin;
   return {
     GET: {
-      [helper.getAdminPathname(periodic, '/contentdata/standard/assets/:id')]: [
+      [ `${reactadmin.manifest_prefix}contentdata/standard/assets/:id` ]: [
         asset.formatAssetItem(periodic),
         asset.getFileMetaInfo(periodic),
       ],
-      [ helper.getAdminPathname(periodic, '/contentdata/standard/assets') ]: [
+      [ `${reactadmin.manifest_prefix}contentdata/standard/assets` ]: [
         asset.formatAssetIndex(periodic),
       ],
     },
