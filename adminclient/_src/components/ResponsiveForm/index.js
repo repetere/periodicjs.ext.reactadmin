@@ -8,6 +8,10 @@ var _extends2 = require('babel-runtime/helpers/extends');
 
 var _extends3 = _interopRequireDefault(_extends2);
 
+var _typeof2 = require('babel-runtime/helpers/typeof');
+
+var _typeof3 = _interopRequireDefault(_typeof2);
+
 var _keys = require('babel-runtime/core-js/object/keys');
 
 var _keys2 = _interopRequireDefault(_keys);
@@ -152,7 +156,7 @@ var ResponsiveForm = function (_Component) {
     _this.getSliderInput = _FormElements.getSliderInput.bind(_this);
     _this.getFormDatatable = _FormElements.getFormDatatable.bind(_this);
     _this.getHiddenInput = _FormElements.getHiddenInput.bind(_this);
-    // this.getFormEditor = getFormEditor.bind(this);
+    _this.getFormEditor = _FormElements.getFormEditor.bind(_this);
     _this.getFormLink = _FormElements.getFormLink.bind(_this);
     _this.getFormGroup = _FormElements.getFormGroup.bind(_this);
     _this.getImage = _FormElements.getImage.bind(_this);
@@ -276,6 +280,12 @@ var ResponsiveForm = function (_Component) {
             var responseCallback = fetchOptions.responseCallback ? getCBFromString(fetchOptions.responseCallback) : false;
 
             res.json().then(function (successData) {
+              if (successData && typeof successData.successCallback === 'string') {
+                successCallback = getCBFromString(fetchOptions.successCallback);
+              }
+              if (successData && typeof successData.responseCallback === 'string') {
+                responseCallback = getCBFromString(fetchOptions.responseCallback);
+              }
               formSuccessCallbacks({ fetchOptions: fetchOptions, submitFormData: submitFormData, successData: successData, successCallback: successCallback, responseCallback: responseCallback });
               __formStateUpdate();
             });
@@ -283,16 +293,21 @@ var ResponsiveForm = function (_Component) {
             return res.json();
           }
         }).catch(function (e) {
-          var errorCB = getCBFromString(_this2.props.errorCallback);
-          if (_this2.props.useErrorNotification) {
-            console.error(e);
-            _this2.props.errorNotification(e);
-          }
-          if (errorCB) {
-            var errorProps = _this2.props.useErrorMessageProp ? e.message : e;
-            errorCB(errorProps);
+          if ((typeof e === 'undefined' ? 'undefined' : (0, _typeof3.default)(e)) === 'object' && typeof e.callback === 'string' && e.callbackProps) {
+            var errorCB = getCBFromString(e.callback);
+            errorCB(e.callbackProps);
           } else {
-            _this2.props.onError(e);
+            var _errorCB = getCBFromString(_this2.props.errorCallback);
+            if (_this2.props.useErrorNotification) {
+              console.error(e);
+              _this2.props.errorNotification(e);
+            }
+            if (_errorCB) {
+              var errorProps = _this2.props.useErrorMessageProp ? e.message : e;
+              _errorCB(errorProps);
+            } else {
+              _this2.props.onError(e);
+            }
           }
           __formStateUpdate();
         });
@@ -374,8 +389,8 @@ var ResponsiveForm = function (_Component) {
             );
           } else if (formElement.type === 'code') {
             return _this3.getFormCode({ formElement: formElement, i: j, formgroup: formgroup });
-            // } else if (formElement.type === 'editor') {
-            //   return this.getFormEditor({ formElement,  i:j, formgroup, }); 
+          } else if (formElement.type === 'editor') {
+            return _this3.getFormEditor({ formElement: formElement, i: j, formgroup: formgroup });
           } else if (formElement.type === 'link') {
             return _this3.getFormLink({
               formElement: formElement, i: j, button: _this3.getRenderedComponent(formElement.value, undefined, true)

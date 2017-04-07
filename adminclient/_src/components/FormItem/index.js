@@ -47,14 +47,16 @@ var FormItem = function (_Component) {
   (0, _createClass3.default)(FormItem, [{
     key: 'render',
     value: function render() {
+      var className = this.props.hasValue ? '__form_element_has_value' : '';
+      className = this.props.hasError ? (className ? className + ' ' : '') + '__form_element_has_error' : className;
       if (this.props.innerFormItem) {
         return this.props.horizontalform ? _react2.default.createElement(
           _reBulma.FormHorizontal,
-          { style: (0, _assign2.default)({ width: '100%' }, this.props.formItemStyle) },
+          { className: className, style: (0, _assign2.default)({ width: '100%' }, this.props.formItemStyle) },
           this.props.children
         ) : _react2.default.createElement(
           'span',
-          { style: (0, _assign2.default)({ width: '100%' }, this.props.formItemStyle) },
+          { className: className, style: (0, _assign2.default)({ width: '100%' }, this.props.formItemStyle) },
           this.props.children
         );
       } else {
@@ -63,11 +65,11 @@ var FormItem = function (_Component) {
           this.props,
           this.props.horizontalform ? _react2.default.createElement(
             _reBulma.FormHorizontal,
-            { style: (0, _assign2.default)({ width: '100%' }, this.props.formItemStyle) },
+            { className: className, style: (0, _assign2.default)({ width: '100%' }, this.props.formItemStyle) },
             this.props.children
           ) : _react2.default.createElement(
             'span',
-            { style: (0, _assign2.default)({ width: '100%' }, this.props.formItemStyle) },
+            { className: className, style: (0, _assign2.default)({ width: '100%' }, this.props.formItemStyle) },
             this.props.children
           )
         );

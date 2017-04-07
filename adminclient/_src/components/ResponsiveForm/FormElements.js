@@ -38,6 +38,7 @@ exports.getImage = getImage;
 exports.getFormLink = getFormLink;
 exports.getFormGroup = getFormGroup;
 exports.getFormCode = getFormCode;
+exports.getFormEditor = getFormEditor;
 exports.getFormSubmit = getFormSubmit;
 exports.getCardFooterItem = getCardFooterItem;
 
@@ -52,6 +53,10 @@ var _FormItem2 = _interopRequireDefault(_FormItem);
 var _RACodeMirror = require('../RACodeMirror');
 
 var _RACodeMirror2 = _interopRequireDefault(_RACodeMirror);
+
+var _PreviewEditor = require('../PreviewEditor');
+
+var _PreviewEditor2 = _interopRequireDefault(_PreviewEditor);
 
 var _ResponsiveDatalist = require('../ResponsiveDatalist');
 
@@ -381,6 +386,7 @@ function getFormTextInputArea(options) {
   var getPassablePropkeyevents = getPassablePropsKeyEvents.bind(this);
   var fileClassname = '__reactadmin_file_' + formElement.name;
   var hasError = getErrorStatus(this.state, formElement.name);
+  var hasValue = formElement.name && this.state[formElement.name] ? true : false;
   var passableProps = (0, _assign2.default)({
     type: formElement.type || 'text'
   }, formElement.passProps);
@@ -407,7 +413,7 @@ function getFormTextInputArea(options) {
   // console.debug({ passableProps });
   return _react2.default.createElement(
     _FormItem2.default,
-    (0, _extends3.default)({ key: i }, formElement.layoutProps),
+    (0, _extends3.default)({ key: i }, formElement.layoutProps, { hasError: hasError, hasValue: hasValue }),
     getFormLabel(formElement),
     _react2.default.createElement(_reBulma.Input, (0, _extends3.default)({}, passableProps, {
       help: getFormElementHelp(hasError, this.state, formElement.name),
@@ -427,6 +433,7 @@ function getFormTextArea(options) {
 
   var initialValue = getInitialValue(formElement, this.state); //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
   var hasError = getErrorStatus(this.state, formElement.name);
+  var hasValue = formElement.name && this.state[formElement.name] ? true : false;
   var passableProps = (0, _assign2.default)({}, formElement.passProps);
   var getPassablePropkeyevents = getPassablePropsKeyEvents.bind(this);
   passableProps = getPassablePropkeyevents(passableProps, formElement);
@@ -440,7 +447,7 @@ function getFormTextArea(options) {
 
   return _react2.default.createElement(
     _FormItem2.default,
-    (0, _extends3.default)({ key: i }, formElement.layoutProps),
+    (0, _extends3.default)({ key: i }, formElement.layoutProps, { hasError: hasError, hasValue: hasValue }),
     getFormLabel(formElement),
     _react2.default.createElement(_reBulma.Textarea, (0, _extends3.default)({}, passableProps, {
       onChange: function onChange(event) {
@@ -462,6 +469,7 @@ function getFormSelect(options) {
 
   var initialValue = getInitialValue(formElement, this.state); //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
   var hasError = getErrorStatus(this.state, formElement.name);
+  var hasValue = formElement.name && this.state[formElement.name] ? true : false;
   var selectOptions = this.state.__formOptions && this.state.__formOptions[formElement.name] ? this.state.__formOptions[formElement.name] : formElement.options || [];
 
   if (typeof initialValue !== 'string') {
@@ -473,7 +481,7 @@ function getFormSelect(options) {
 
   return _react2.default.createElement(
     _FormItem2.default,
-    (0, _extends3.default)({ key: i }, formElement.layoutProps),
+    (0, _extends3.default)({ key: i }, formElement.layoutProps, { hasError: hasError, hasValue: hasValue }),
     getFormLabel(formElement),
     _react2.default.createElement(
       _reBulma.Select,
@@ -504,7 +512,7 @@ function getFormCheckbox(options) {
       onValueChange = options.onValueChange;
 
   var hasError = getErrorStatus(this.state, formElement.name);
-
+  var hasValue = formElement.name && this.state[formElement.name] ? true : false;
   if (!onValueChange) {
     onValueChange = function onValueChange() /*event*/{
       // let text = event.target.value;
@@ -527,7 +535,7 @@ function getFormCheckbox(options) {
 
   return _react2.default.createElement(
     _FormItem2.default,
-    (0, _extends3.default)({ key: i }, formElement.layoutProps),
+    (0, _extends3.default)({ key: i }, formElement.layoutProps, { hasError: hasError, hasValue: hasValue }),
     getFormLabel(formElement),
     _react2.default.createElement('input', (0, _extends3.default)({}, formElement.passProps, {
       type: formElement.type || 'checkbox',
@@ -799,64 +807,57 @@ function getFormCode(options) {
     getCustomErrorLabel(hasError, this.state, formElement)
   );
 }
-/*
-export function getFormEditor(options) {
-  let { formElement, i, onValueChange, } = options;
-  let editorStateProp = EditorState.createEmpty();
-  let editorPropOnChange = (editorstate) => {
-    // console.log(editorstate.value)
-    // console.debug({ editorstate, });
-    // let contentstate = editorstate.getCurrentContent();
-    // console.debug('contentstate.getPlainText()',contentstate.getPlainText())
-    // console.debug({ contentstate, });
-  };
-  // let onContentStateChange = (contentstate) => {
-  //   console.debug('contentstate.getPlainText()',contentstate.getPlainText())
-  //   console.debug({ contentstate, });
-  // };
-  let EditorProps = Object.assign({
+
+function getFormEditor(options) {
+  var _this9 = this;
+
+  var formElement = options.formElement,
+      i = options.i,
+      onValueChange = options.onValueChange;
+
+  var initialVal = getInitialValue(formElement, this.state);
+  if (!onValueChange) {
+    onValueChange = function onValueChange(newvalue) {
+      // console.debug({ newvalue, });
+      var updatedStateProp = {};
+      updatedStateProp[formElement.name] = newvalue.target.value;
+      _this9.setState(updatedStateProp);
+    };
+  }
+  // console.debug({ initialVal });
+  var EditorProps = (0, _assign2.default)({
     wrapperProps: {
       style: {
         overflow: 'hidden',
         backgroundColor: 'white',
         border: '1px solid #d3d6db',
         borderRadius: 3,
-        boxShadow: 'inset 0 1px 2px rgba(17,17,17,.1)',
-      },
+        minHeight: '2rem',
+        display: 'flex',
+        boxShadow: 'inset 0 1px 2px rgba(17,17,17,.1)'
+      }
     },
     passProps: {
       toolbarStyle: {
         borderTop: 'none',
         borderLeft: 'none',
         borderRight: 'none',
-        padding: '5px 0 0',
-      },
-      editorState: editorStateProp,
-      onChange:editorPropOnChange,
-      // onContentStateChange:onContentStateChange,
+        padding: '5px 0 0'
+      }
     },
-    // contentState:this.state[ formElement.name ],
-    value:this.state[ formElement.name ] || formElement.value,
+    onChange: onValueChange
   }, formElement.passProps);
-  if (!onValueChange) {
-    onValueChange = (newvalue) => {
-      console.debug({ newvalue, });
-      let updatedStateProp = {};
-      updatedStateProp[ formElement.name ] = newvalue;
-      this.setState(updatedStateProp);
-    };
-  }
 
-  return (<FormItem key={i} {...formElement.layoutProps} >
-    {getFormLabel(formElement)}  
-    <RAEditor key={i} {...EditorProps} />
-  </FormItem>
+  return _react2.default.createElement(
+    _FormItem2.default,
+    (0, _extends3.default)({ key: i }, formElement.layoutProps),
+    getFormLabel(formElement),
+    _react2.default.createElement(_PreviewEditor2.default, (0, _extends3.default)({ key: i }, EditorProps, { value: initialVal }))
   );
 }
 
-*/
 function getFormSubmit(options) {
-  var _this9 = this;
+  var _this10 = this;
 
   var formElement = options.formElement,
       i = options.i;
@@ -872,9 +873,9 @@ function getFormSubmit(options) {
       _reBulma.Button,
       (0, _extends3.default)({}, passableProps, {
         onClick: function onClick() {
-          var validated_formdata = _FormHelpers.validateForm.call(_this9, { formdata: _this9.state, validationErrors: {} });
-          _this9.setState({ formDataErrors: validated_formdata.validationErrors }, function () {
-            formElement.confirmModal && (0, _keys2.default)(_this9.state.formDataErrors).length < 1 ? _this9.props.createModal((0, _assign2.default)({
+          var validated_formdata = _FormHelpers.validateForm.call(_this10, { formdata: _this10.state, validationErrors: {} });
+          _this10.setState({ formDataErrors: validated_formdata.validationErrors }, function () {
+            formElement.confirmModal && (0, _keys2.default)(_this10.state.formDataErrors).length < 1 ? _this10.props.createModal((0, _assign2.default)({
               title: 'Please Confirm',
               text: {
                 component: 'div',
@@ -907,8 +908,8 @@ function getFormSubmit(options) {
                         color: 'isPrimary'
                       },
                       onClick: function onClick() {
-                        _this9.props.hideModal('last');
-                        _this9.submitForm.call(_this9);
+                        _this10.props.hideModal('last');
+                        _this10.submitForm.call(_this10);
                       },
                       onclickProps: 'last'
                     }, formElement.confirmModal.yesButtonProps),
@@ -928,7 +929,7 @@ function getFormSubmit(options) {
                     children: formElement.confirmModal.noButtonText || 'No'
                   }]
                 }]
-              } }, formElement.confirmModal)) : _this9.submitForm.call(_this9);
+              } }, formElement.confirmModal)) : _this10.submitForm.call(_this10);
           });
         } }),
       formElement.value

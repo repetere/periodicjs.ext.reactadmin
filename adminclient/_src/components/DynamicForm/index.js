@@ -80,7 +80,7 @@ var DynamicForm = function (_Component) {
     _this.getSliderInput = _FormElements.getSliderInput.bind(_this);
     _this.getFormDatatable = _FormElements.getFormDatatable.bind(_this);
     _this.getHiddenInput = _FormElements.getHiddenInput.bind(_this);
-    // this.getFormEditor = getFormEditor.bind(this);
+    _this.getFormEditor = _FormElements.getFormEditor.bind(_this);
     _this.getFormLink = _FormElements.getFormLink.bind(_this);
     _this.getFormGroup = _FormElements.getFormGroup.bind(_this);
     _this.getImage = _FormElements.getImage.bind(_this);
@@ -159,8 +159,8 @@ var DynamicForm = function (_Component) {
             );
           } else if (formElement.type === 'code') {
             return _this2.getFormCode({ formElement: formElement, i: j, formgroup: formgroup });
-            // } else if (formElement.type === 'editor') {
-            //   return this.getFormEditor({ formElement,  i:j, formgroup, }); 
+          } else if (formElement.type === 'editor') {
+            return _this2.getFormEditor({ formElement: formElement, i: j, formgroup: formgroup });
           } else if (formElement.type === 'link') {
             return _this2.getFormLink({
               formElement: formElement, i: j, button: _this2.getRenderedComponent(formElement.value, undefined, true)
