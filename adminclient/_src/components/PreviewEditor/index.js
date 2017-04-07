@@ -40,18 +40,55 @@ var _reactDom = require('react-dom');
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
+var _reBulma = require('re-bulma');
+
+var rb = _interopRequireWildcard(_reBulma);
+
+var _editorHelper = require('./editorHelper');
+
+var editorHelper = _interopRequireWildcard(_editorHelper);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 //http://stackoverflow.com/questions/22677931/react-js-onchange-event-for-contenteditable
 
+var _saveSelection = function _saveSelection() {
+  if (window.getSelection) {
+    var sel = window.getSelection();
+    if (sel.getRangeAt && sel.rangeCount) {
+      return sel.getRangeAt(0);
+    }
+  } else if (document.selection && document.selection.createRange) {
+    return document.selection.createRange();
+  }
+  return null;
+};
+
+var _restoreSelection = function _restoreSelection(range) {
+  if (range) {
+    if (window.getSelection) {
+      var sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    } else if (document.selection && range.select) {
+      range.select();
+    }
+  }
+};
+
 var propTypes = {
   toolbarProps: _react.PropTypes.object,
-  wrapperProps: _react.PropTypes.object
+  wrapperProps: _react.PropTypes.object,
+  buttonProps: _react.PropTypes.object,
+  useToolbar: _react.PropTypes.bool
 };
 var defaultProps = {
   toolbarProps: {
     style: {
-      padding: '0.25rem'
+      padding: '0.25rem',
+      borderBottom: '1px solid #d3d6db'
     }
   },
   wrapperProps: {
@@ -62,9 +99,19 @@ var defaultProps = {
       borderRadius: 3,
       minHeight: '2rem',
       display: 'flex',
+      flexDirection: 'column',
       boxShadow: 'inset 0 1px 2px rgba(17,17,17,.1)'
     }
-  }
+  },
+  buttonProps: {
+    style: {
+      paddingRight: 0,
+      paddingLeft: '0.25rem',
+      marginRight: '0.25rem'
+    },
+    size: 'isSmall'
+  },
+  useToolbar: true
 };
 
 var PreviewEditor = function (_Component) {
@@ -76,6 +123,54 @@ var PreviewEditor = function (_Component) {
     var _this = (0, _possibleConstructorReturn3.default)(this, (PreviewEditor.__proto__ || (0, _getPrototypeOf2.default)(PreviewEditor)).call(this, props));
 
     _this.state = (0, _assign2.default)({}, props);
+    _this.buttons = [{
+      onClickFunction: editorHelper.button_gobold,
+      icon: 'fa fa-bold'
+    }, {
+      onClickFunction: editorHelper.button_goitalic,
+      icon: 'fa fa-italic'
+    }, {
+      onClickFunction: editorHelper.button_gounderline,
+      icon: 'fa fa-underline'
+    }, {
+      icon: 'sep'
+    }, {
+      onClickFunction: editorHelper.button_gotext_left,
+      icon: 'fa fa-align-left'
+    }, {
+      onClickFunction: editorHelper.button_gotext_center,
+      icon: 'fa fa-align-center'
+    }, {
+      onClickFunction: editorHelper.button_gotext_right,
+      icon: 'fa fa-align-right'
+    }, {
+      onClickFunction: editorHelper.button_gotext_justifyfull,
+      icon: 'fa fa-align-justify'
+    }, {
+      icon: 'sep'
+    }, {
+      onClickFunction: editorHelper.button_golist,
+      icon: 'fa fa-list-ol'
+    }, {
+      onClickFunction: editorHelper.button_gobullet,
+      icon: 'fa fa-list-ul'
+    }, {
+      onClickFunction: editorHelper.button_go_outdent,
+      icon: 'fa fa-outdent'
+    }, {
+      onClickFunction: editorHelper.button_go_indent,
+      icon: 'fa fa-indent'
+    }, {
+      icon: 'sep'
+    }, {
+      onClickFunction: editorHelper.button_gotextlink.bind(_this),
+      icon: 'fa fa-link'
+    }, {
+      onClickFunction: editorHelper.button_goimg.bind(_this),
+      icon: 'fa fa-picture-o'
+    }].concat(props.customButttons || []);
+    _this.contentIndex = props.useToolbar ? 1 : 0;
+    _this.options = {};
     return _this;
   }
 
@@ -88,11 +183,28 @@ var PreviewEditor = function (_Component) {
   }, {
     key: 'render',
     value: function render() {
+      var _this2 = this;
+
       return _react2.default.createElement(
         'div',
-        this.props.wrapperProps,
-        _react2.default.createElement('div', this.props.toolbarProps),
-        _react2.default.createElement('div', (0, _extends3.default)({}, this.props.passProps, {
+        (0, _extends3.default)({ className: '__ra_pe_w' }, this.props.wrapperProps),
+        _react2.default.createElement(
+          'div',
+          (0, _extends3.default)({ className: '__ra_pe_tb' }, this.props.toolbarProps),
+          this.buttons.map(function (button, i) {
+            if (button.icon === 'sep') {
+              return _react2.default.createElement(
+                'span',
+                { style: {
+                    marginRight: '0.25rem'
+                  } },
+                ' '
+              );
+            }
+            return _react2.default.createElement(rb.Button, (0, _extends3.default)({ onClick: button.onClickFunction, icon: button.icon }, _this2.props.buttonProps));
+          })
+        ),
+        _react2.default.createElement('div', (0, _extends3.default)({ className: '__ra_pe_ce' }, this.props.passProps, {
           className: 'contenteditable',
           onInput: this.emitChange.bind(this),
           onBlur: this.emitChange.bind(this),
@@ -105,7 +217,7 @@ var PreviewEditor = function (_Component) {
   }, {
     key: 'getInnerHTML',
     value: function getInnerHTML() {
-      return _reactDom2.default.findDOMNode(this).children[0].innerHTML;
+      return _reactDom2.default.findDOMNode(this).children[this.contentIndex].innerHTML;
     }
   }, {
     key: 'shouldComponentUpdate',
@@ -116,7 +228,7 @@ var PreviewEditor = function (_Component) {
     key: 'componentDidUpdate',
     value: function componentDidUpdate() {
       if (this.props.value !== this.getInnerHTML()) {
-        _reactDom2.default.findDOMNode(this).children[0].innerHTML = this.props.value;
+        _reactDom2.default.findDOMNode(this).children[this.contentIndex].innerHTML = this.props.value;
       }
     }
   }, {
@@ -127,7 +239,7 @@ var PreviewEditor = function (_Component) {
       if (this.props.onChange && typeof this.props.onChange === 'function' && html !== this.lastHtml) {
         this.props.onChange({
           target: {
-            value: _reactDom2.default.findDOMNode(this).children[0].innerHTML
+            value: this.getInnerHTML()
           }
         });
       }
@@ -135,6 +247,17 @@ var PreviewEditor = function (_Component) {
         this.props.setDynamicData(this.props.dynamicField, html);
       }
       this.lastHtml = html;
+    }
+  }, {
+    key: 'saveSelection',
+    value: function saveSelection() {
+      this.options.selection = _saveSelection() ? _saveSelection() : null;
+    }
+  }, {
+    key: 'restoreSelection',
+    value: function restoreSelection() {
+      this.options.preview_selection = this.options.selection;
+      _restoreSelection(this.options.selection);
     }
   }]);
   return PreviewEditor;

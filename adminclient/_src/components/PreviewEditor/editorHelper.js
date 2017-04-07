@@ -34,6 +34,7 @@ function button_goitalic() {
 }
 
 function button_golink() {
+  console.debug('this.props', this.props);
   window.document.execCommand('createLink', true, '');
 }
 
@@ -47,13 +48,74 @@ function button_gobullet() {
 
 function button_goimg() {
   // document.execCommand('insertImage', false, 'http://lorempixel.com/40/20/sports/');
+
+
   this.saveSelection();
   window.editorModals.show(this.options.elementContainer.getAttribute('data-original-id') + '-insertimage-modal');
 }
 
 function button_gotextlink() {
+  var _this = this;
+
   // console.log(this.options.elementContainer.getAttribute('data-original-id'));
+  var linkHref = '';
   this.saveSelection();
+  this.props.createModal({
+    title: 'Insert a link',
+    text: {
+      component: 'div',
+      children: [{
+        component: 'Columns',
+        children: [{
+          component: 'Column',
+          children: [{
+            component: 'FormHorizontal',
+            children: [{
+              component: 'ControlLabel',
+              children: 'URL'
+            }, {
+              component: 'Input',
+              props: {
+                onChange: function onChange(e) {
+                  console.debug({
+                    e: e
+                  });
+                }
+              }
+            }]
+          }]
+        }]
+      }, {
+        component: 'Columns',
+        children: [{
+          component: 'Column',
+          children: [{
+            component: 'FormHorizontal',
+            children: [{
+              component: 'Group',
+              props: {
+                style: {
+                  justifyContent: 'space-around'
+                }
+              },
+              children: [{
+                component: 'Button',
+                children: 'Insert link'
+              }, {
+                component: 'Button',
+                props: {
+                  onClick: function onClick() {
+                    _this.props.hideModal('last');
+                  }
+                },
+                children: 'Cancel'
+              }]
+            }]
+          }]
+        }]
+      }]
+    }
+  });
   window.editorModals.show(this.options.elementContainer.getAttribute('data-original-id') + '-inserttext-modal');
 }
 
@@ -68,16 +130,16 @@ function add_image_to_editor() {
 }
 
 function button_gofullscreen() {
-  // console.log('button_gofullscreen this', this);
-  // if()
-  classie.toggle(this.options.elementContainer, 'ts-editor-fullscreen');
-  classie.toggle(this.options.buttons.fullscreenButton, 'ts-button-primary-text-color');
+  // // console.log('button_gofullscreen this', this);
+  // // if()
+  // classie.toggle(this.options.elementContainer, 'ts-editor-fullscreen');
+  // classie.toggle(this.options.buttons.fullscreenButton, 'ts-button-primary-text-color');
 }
 
 function button_togglecodeeditor() {
-  classie.toggle(this.options.codemirror.getWrapperElement(), 'ts-hidden');
-  classie.toggle(this.options.buttons.codeButton, 'ts-button-primary-text-color');
-  this.options.codemirror.refresh();
+  // classie.toggle(this.options.codemirror.getWrapperElement(), 'ts-hidden');
+  // classie.toggle(this.options.buttons.codeButton, 'ts-button-primary-text-color');
+  // this.options.codemirror.refresh();
 }
 
 function button_gotext_left() {

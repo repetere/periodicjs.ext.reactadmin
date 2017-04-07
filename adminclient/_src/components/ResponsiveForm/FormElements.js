@@ -825,18 +825,18 @@ function getFormEditor(options) {
     };
   }
   // console.debug({ initialVal });
-  var EditorProps = (0, _assign2.default)({
-    wrapperProps: {
-      style: {
-        overflow: 'hidden',
-        backgroundColor: 'white',
-        border: '1px solid #d3d6db',
-        borderRadius: 3,
-        minHeight: '2rem',
-        display: 'flex',
-        boxShadow: 'inset 0 1px 2px rgba(17,17,17,.1)'
-      }
-    },
+  var EditorProps = (0, _assign2.default)({}, this.props, {
+    // wrapperProps: {
+    //   style: {
+    //     overflow: 'hidden',
+    //     backgroundColor: 'white',
+    //     border: '1px solid #d3d6db',
+    //     borderRadius: 3,
+    //     minHeight:'2rem',
+    //     display:'flex',
+    //     boxShadow: 'inset 0 1px 2px rgba(17,17,17,.1)',
+    //   },
+    // },
     passProps: {
       toolbarStyle: {
         borderTop: 'none',
