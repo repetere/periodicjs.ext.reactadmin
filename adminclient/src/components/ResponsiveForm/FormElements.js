@@ -304,6 +304,7 @@ export function getFormTextInputArea(options) {
   let getPassablePropkeyevents = getPassablePropsKeyEvents.bind(this);
   let fileClassname = `__reactadmin_file_${formElement.name}`;
   let hasError = getErrorStatus(this.state, formElement.name);
+  let hasValue = (formElement.name && this.state[formElement.name])? true : false;
   let passableProps = Object.assign({
     type: formElement.type || 'text',
   }, formElement.passProps);
@@ -330,7 +331,7 @@ export function getFormTextInputArea(options) {
   passableProps = getPassablePropkeyevents(passableProps, formElement);
 
   // console.debug({ passableProps });
-  return (<FormItem key={i} {...formElement.layoutProps} >
+  return (<FormItem key={i} {...formElement.layoutProps} hasError={hasError} hasValue={hasValue} >
     {getFormLabel(formElement)}  
     <Input {...passableProps}
       help={getFormElementHelp(hasError, this.state, formElement.name)}
@@ -347,6 +348,7 @@ export function getFormTextArea(options) {
   let { formElement, i, /*formgroup, width,*/ onChange, } = options;
   let initialValue = getInitialValue(formElement, this.state); //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
   let hasError = getErrorStatus(this.state, formElement.name);
+  let hasValue = (formElement.name && this.state[formElement.name])? true : false;
   let passableProps = Object.assign({
   }, formElement.passProps);
   let getPassablePropkeyevents = getPassablePropsKeyEvents.bind(this);
@@ -359,7 +361,7 @@ export function getFormTextArea(options) {
     onChange = valueChangeHandler.bind(this, formElement);
   }
 
-  return (<FormItem key={i} {...formElement.layoutProps} >
+  return (<FormItem key={i} {...formElement.layoutProps} hasError={hasError} hasValue={hasValue} >
     {getFormLabel(formElement)}  
     <Textarea {...passableProps}
       onChange={(event)=>onChange()(event)}
@@ -376,6 +378,7 @@ export function getFormSelect(options) {
   let { formElement, i, /*formgroup, width,*/ onChange, } = options;
   let initialValue = getInitialValue(formElement, this.state); //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
   let hasError = getErrorStatus(this.state, formElement.name);
+  let hasValue = (formElement.name && this.state[formElement.name])? true : false;
   let selectOptions = (this.state.__formOptions && this.state.__formOptions[ formElement.name ])
     ? this.state.__formOptions[ formElement.name ]
     : formElement.options || [];
@@ -387,7 +390,7 @@ export function getFormSelect(options) {
     onChange = valueChangeHandler.bind(this, formElement);
   }  
 
-  return (<FormItem key={i} {...formElement.layoutProps} >
+  return (<FormItem key={i} {...formElement.layoutProps} hasError={hasError} hasValue={hasValue} >
     {getFormLabel(formElement)}  
     <Select {...formElement.passProps}
       help={getFormElementHelp(hasError, this.state, formElement.name)}
@@ -405,7 +408,7 @@ export function getFormSelect(options) {
 export function getFormCheckbox(options) {
   let { formElement, i, onValueChange, } = options;
   let hasError = getErrorStatus(this.state, formElement.name);
-
+  let hasValue = (formElement.name && this.state[formElement.name])? true : false;
   if (!onValueChange) {
     onValueChange = (/*event*/) => {
       // let text = event.target.value;
@@ -425,7 +428,7 @@ export function getFormCheckbox(options) {
     };
   }
 
-  return (<FormItem key={i} {...formElement.layoutProps} >
+  return (<FormItem key={i} {...formElement.layoutProps} hasError={hasError} hasValue={hasValue} >
     {getFormLabel(formElement)}  
     <input {...formElement.passProps}
       type={formElement.type || 'checkbox'}

@@ -150,6 +150,17 @@ module.exports = {
                           },
                         },
                       },
+                      {
+                        'name': 'fruit',
+                        'constraints': {
+                          'fruit': {
+                            'presence': 'true',
+                            'length': {
+                              minimum: 1,
+                            },
+                          },
+                        },
+                      },
                     ],
                     formgroups: [
                       {
@@ -169,7 +180,6 @@ module.exports = {
                             type: 'select',
                             name: 'testSelect',
                             label: 'Select Test',
-                            value: 'option3',
                             options: [
                               {
                                 label: 'option1',
@@ -218,7 +228,7 @@ module.exports = {
                         formElements: [
                           {
                             type: 'radio',
-                            name: 'apple',
+                            name: 'fruit',
                             label:'apple',
                             value: 'apple val',
                             placeholder:'Apple',
@@ -226,7 +236,7 @@ module.exports = {
                           },
                           {
                             type: 'radio',
-                            name: 'orange',
+                            name: 'fruit',
                             label:'orange',
                             value: 'orange val',
                             placeholder:'Orange',
