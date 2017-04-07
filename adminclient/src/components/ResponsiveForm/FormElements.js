@@ -662,18 +662,18 @@ export function getFormEditor(options) {
     };
   }
   // console.debug({ initialVal });
-  let EditorProps = Object.assign({
-    wrapperProps: {
-      style: {
-        overflow: 'hidden',
-        backgroundColor: 'white',
-        border: '1px solid #d3d6db',
-        borderRadius: 3,
-        minHeight:'2rem',
-        display:'flex',
-        boxShadow: 'inset 0 1px 2px rgba(17,17,17,.1)',
-      },
-    },
+  let EditorProps = Object.assign({}, this.props, {
+    // wrapperProps: {
+    //   style: {
+    //     overflow: 'hidden',
+    //     backgroundColor: 'white',
+    //     border: '1px solid #d3d6db',
+    //     borderRadius: 3,
+    //     minHeight:'2rem',
+    //     display:'flex',
+    //     boxShadow: 'inset 0 1px 2px rgba(17,17,17,.1)',
+    //   },
+    // },
     passProps: {
       toolbarStyle: {
         borderTop: 'none',
