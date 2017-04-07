@@ -3,7 +3,7 @@ import { Columns, Card, CardHeader, CardHeaderTitle, CardContent, CardFooter, Ca
 import ResponsiveCard from '../ResponsiveCard';
 import { getRenderedComponent, } from '../AppLayoutMap';
 import utilities from '../../util';
-import { getFormTextInputArea, getFormCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, getFormTextArea, /*getFormEditor,*/ getFormLink, getHiddenInput, getFormGroup, getImage, getFormDatalist, getRawInput, getSliderInput, getFormDatatable, } from './FormElements';
+import { getFormTextInputArea, getFormCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, getFormTextArea, getFormEditor, getFormLink, getHiddenInput, getFormGroup, getImage, getFormDatalist, getRawInput, getSliderInput, getFormDatatable, } from './FormElements';
 import { getCallbackFromString, setFormNameFields, assignHiddenFields, validateForm, assignFormBody, handleFormSubmitNotification, handleSuccessCallbacks, submitThisDotPropsFunc, submitWindowFunc, validateFormElement, } from './FormHelpers';
 import flatten from 'flat';
 import qs from 'querystring';
@@ -97,7 +97,7 @@ class ResponsiveForm extends Component{
     this.getSliderInput = getSliderInput.bind(this);
     this.getFormDatatable = getFormDatatable.bind(this);
     this.getHiddenInput = getHiddenInput.bind(this);
-    // this.getFormEditor = getFormEditor.bind(this);
+    this.getFormEditor = getFormEditor.bind(this);
     this.getFormLink = getFormLink.bind(this);
     this.getFormGroup = getFormGroup.bind(this);
     this.getImage = getImage.bind(this);
@@ -230,6 +230,12 @@ class ResponsiveForm extends Component{
             
             res.json()
               .then(successData => {
+                if (successData && typeof successData.successCallback === 'string') {
+                  successCallback = getCBFromString(fetchOptions.successCallback);
+                }
+                if (successData && typeof successData.responseCallback === 'string') {
+                  responseCallback = getCBFromString(fetchOptions.responseCallback);
+                }
                 formSuccessCallbacks({ fetchOptions, submitFormData, successData, successCallback, responseCallback, });
                 __formStateUpdate();
               });
@@ -238,16 +244,21 @@ class ResponsiveForm extends Component{
           }
         })
         .catch(e => {
-          let errorCB = getCBFromString(this.props.errorCallback);
-          if (this.props.useErrorNotification) {
-            console.error(e);
-            this.props.errorNotification(e);
-          }
-          if (errorCB) {
-            let errorProps = (this.props.useErrorMessageProp) ? e.message : e;
-            errorCB(errorProps);
+          if (typeof e === 'object' && typeof e.callback === 'string' &&  e.callbackProps) {
+            let errorCB = getCBFromString(e.callback);
+            errorCB(e.callbackProps);
           } else {
-            this.props.onError(e);
+            let errorCB = getCBFromString(this.props.errorCallback);
+            if (this.props.useErrorNotification) {
+              console.error(e);
+              this.props.errorNotification(e);
+            }
+            if (errorCB) {
+              let errorProps = (this.props.useErrorMessageProp) ? e.message : e;
+              errorCB(errorProps);
+            } else {
+              this.props.onError(e);
+            }
           }
           __formStateUpdate();
         });
@@ -315,8 +326,8 @@ class ResponsiveForm extends Component{
           </Column>);
         } else if (formElement.type === 'code') {
           return this.getFormCode({ formElement,  i:j, formgroup, }); 
-        // } else if (formElement.type === 'editor') {
-        //   return this.getFormEditor({ formElement,  i:j, formgroup, }); 
+        } else if (formElement.type === 'editor') {
+          return this.getFormEditor({ formElement,  i:j, formgroup, }); 
         } else if (formElement.type === 'link') {
           return this.getFormLink({
             formElement, i: j, button: this.getRenderedComponent(formElement.value, undefined, true),

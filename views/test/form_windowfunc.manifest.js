@@ -17,16 +17,42 @@ module.exports = {
           props:{},
           children: [
             {
-              component: 'CodeMirror',
-              props: {
-                editorType:'editor',
-                codeMirrorProps: {
-                  value: '<p>this is the start</p>',
+              component: 'Container',
+              children: [
+                {
+                  component: 'Columns',
+                  children: [
+                    {
+                      component: 'Column',
+                      children: [
+                        {
+                          component: 'CodeMirror',
+                          props: {
+                            editorType:'editor',
+                            codeMirrorProps: {
+                              value: '<p>this is the start</p>',
+                            },
+                            codeMirrorPropsOptions: {
+                              // mode:'javascript',
+                            },
+                          },
+                        },
+                      ],
+                    },
+                    {
+                      component: 'Column',
+                      children: [
+                        {
+                          component: 'PreviewEditor',
+                          props: {
+                            value: '<p>this is the start</p>',
+                          },
+                        },
+                      ],
+                    },
+                  ],
                 },
-                codeMirrorPropsOptions: {
-                  // mode:'javascript',
-                },
-              },
+              ],
             },
             {
               component: 'Container',
@@ -108,7 +134,7 @@ module.exports = {
                             'numericality': {
                               'greaterThan': 0,
                               'message': '^Must be checked',
-                            }
+                            },
                           },
                         },
                       },
@@ -173,10 +199,10 @@ module.exports = {
                             errorIconRight:true,
                           },
                           {
-                            type: 'textarea',
+                            type: 'editor',
                             name: 'testTextArea',
                             label: 'testTextArea',
-                            value: 'tt',
+                            value: '<div>this is the start in form</div>',
                             validateOnChange: true,
                           },
                           {
@@ -232,9 +258,9 @@ module.exports = {
                                 },
                               },
                             },
-                          }
-                        ]
-                      }
+                          },
+                        ],
+                      },
                     ],
                   },
                 },
@@ -248,7 +274,7 @@ module.exports = {
       //   // 'tabledata':'/r-admin/contentdata/users?format=json&limit=10',
       // },
       dynamic: {
-        dummydata: [1,2,3,4,5],
+        dummydata: [1, 2, 3, 4, 5,],
       },
       'onFinish':'render',
       'pageData':{

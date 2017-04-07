@@ -13,7 +13,7 @@ import RawStateOutput from '../RawOutput/RawStateOutput';
 import MenuAppLink from '../AppSidebar/MenuAppLink';
 import SubMenuLinks from '../AppSidebar/SubMenuLinks';
 import CodeMirror from '../RACodeMirror';
-import PreviewEditor from '../RACodeMirror/PreviewEditor';
+import PreviewEditor from '../PreviewEditor';
 import ResponsiveDatalist from '../ResponsiveDatalist';
 // import Editor from '../RAEditor';
 import ResponsiveTable from '../ResponsiveTable';

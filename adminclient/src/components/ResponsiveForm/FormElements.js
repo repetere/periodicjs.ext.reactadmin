@@ -1,6 +1,7 @@
 import React from 'react';
 import FormItem from '../FormItem';
 import RACodeMirror from '../RACodeMirror';
+import PreviewEditor from '../PreviewEditor';
 import ResponsiveDatalist from '../ResponsiveDatalist';
 import ResponsiveTable from '../ResponsiveTable';
 import capitalize from 'capitalize';
@@ -645,21 +646,19 @@ export function getFormCode(options) {
   </FormItem>
   );
 }
-/*
+
 export function getFormEditor(options) {
   let { formElement, i, onValueChange, } = options;
-  let editorStateProp = EditorState.createEmpty();
-  let editorPropOnChange = (editorstate) => {
-    // console.log(editorstate.value)
-    // console.debug({ editorstate, });
-    // let contentstate = editorstate.getCurrentContent();
-    // console.debug('contentstate.getPlainText()',contentstate.getPlainText())
-    // console.debug({ contentstate, });
-  };
-  // let onContentStateChange = (contentstate) => {
-  //   console.debug('contentstate.getPlainText()',contentstate.getPlainText())
-  //   console.debug({ contentstate, });
-  // };
+  let initialVal = getInitialValue(formElement, this.state);
+  if (!onValueChange) {
+    onValueChange = (newvalue) => {
+      // console.debug({ newvalue, });
+      let updatedStateProp = {};
+      updatedStateProp[ formElement.name ] = newvalue.target.value;
+      this.setState(updatedStateProp);
+    };
+  }
+  // console.debug({ initialVal });
   let EditorProps = Object.assign({
     wrapperProps: {
       style: {
@@ -667,6 +666,8 @@ export function getFormEditor(options) {
         backgroundColor: 'white',
         border: '1px solid #d3d6db',
         borderRadius: 3,
+        minHeight:'2rem',
+        display:'flex',
         boxShadow: 'inset 0 1px 2px rgba(17,17,17,.1)',
       },
     },
@@ -677,30 +678,17 @@ export function getFormEditor(options) {
         borderRight: 'none',
         padding: '5px 0 0',
       },
-      editorState: editorStateProp,
-      onChange:editorPropOnChange,
-      // onContentStateChange:onContentStateChange,
     },
-    // contentState:this.state[ formElement.name ],
-    value:this.state[ formElement.name ] || formElement.value,
+    onChange:onValueChange,
   }, formElement.passProps);
-  if (!onValueChange) {
-    onValueChange = (newvalue) => {
-      console.debug({ newvalue, });
-      let updatedStateProp = {};
-      updatedStateProp[ formElement.name ] = newvalue;
-      this.setState(updatedStateProp);
-    };
-  }
 
   return (<FormItem key={i} {...formElement.layoutProps} >
     {getFormLabel(formElement)}  
-    <RAEditor key={i} {...EditorProps} />
+    <PreviewEditor key={i} {...EditorProps} value={initialVal} />
   </FormItem>
   );
 }
 
-*/
 export function getFormSubmit(options) {
   let { formElement, i, } = options;
   let passableProps = Object.assign({
