@@ -23,104 +23,116 @@ export function button_gobullet() {
   window.document.execCommand('insertUnorderedList', true, '');
 }
 
+function getInsertModal(options) {
+  
+  return {
+    title: (options.type==='link') ? 'Insert a link':'Insert an image',
+    text: {
+      component: 'div',
+      children: [ {
+        component: 'Columns',
+        children: [ {
+          component: 'Column',
+          children: [ {
+            component: 'FormHorizontal',
+            children: [ {
+              component: 'ControlLabel',
+              props: {
+                style: {
+                  flex: 1,
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                },
+              },
+              children: 'URL',
+            },
+            {
+              component: 'Input',
+              props: {
+                onChange: (e) => {
+                  if (options.type === 'link') {
+                    this.options.inputlink = e.target.value;
+                  } else {
+                    this.options.inputimage = e.target.value;
+                  }
+                },
+              },
+            },
+            ],
+          }, ],
+        }, ],
+      },
+      {
+        component: 'Columns',
+        children: [ {
+          component: 'Column',
+          children: [ {
+            component: 'FormHorizontal',
+            children: [ {
+              component: 'Group',
+              props: {
+                style: {
+                  justifyContent: 'space-around',
+                },
+              },
+              children: [ {
+                component: 'Button',
+                children: (options.type==='link') ? 'Insert link':'Insert image',
+                props: {
+                  onClick: () => {
+                    if (options.type === 'link') {
+                      add_link_to_editor.call(this);
+                    } else {
+                      add_image_to_editor.call(this);
+                    }
+                    this.props.hideModal('last');
+                  }
+                }
+              },
+              {
+                component: 'Button',
+                props: {
+                  onClick: () => {
+                    this.props.hideModal('last');
+                  },
+                },
+                children: 'Cancel',
+              },
+              ],
+            }, ],
+          }, ],
+        }, ],
+      },
+      ],
+    },
+  };
+}
+
 export function button_goimg() {
-  // document.execCommand('insertImage', false, 'http://lorempixel.com/40/20/sports/');
-
-
+  const getModal = getInsertModal.bind(this);
   this.saveSelection();
-  window.editorModals.show(this.options.elementContainer.getAttribute('data-original-id') + '-insertimage-modal');
+  this.props.createModal(getModal({
+    type:'image',
+  }));
 }
 
 export function button_gotextlink() {
-  // console.log(this.options.elementContainer.getAttribute('data-original-id'));
-  let linkHref = '';
+  const getModal = getInsertModal.bind(this);
   this.saveSelection();
-  this.props.createModal({
-    title: 'Insert a link',
-    text: {
-      component: 'div',
-      children: [
-        {
-          component: 'Columns',
-          children: [
-            {
-              component: 'Column',
-              children: [
-                {
-                  component: 'FormHorizontal',
-                  children: [
-                    {
-                      component: 'ControlLabel',
-                      children:'URL',
-                    },
-                    {
-                      component: 'Input',
-                      props: {
-                        onChange: (e) => {
-                          console.debug({
-                            e,
-                          });
-                        },
-                      },
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
-        },
-        {
-          component: 'Columns',
-          children: [
-            {
-              component: 'Column',
-              children: [
-                {
-                  component: 'FormHorizontal',
-                  children: [
-                    {
-                      component: 'Group',
-                      props: {
-                        style: {
-                          justifyContent: 'space-around',
-                        },
-                      },
-                      children: [
-                        {
-                          component: 'Button',
-                          children:'Insert link',
-                        },
-                        {
-                          component: 'Button',
-                          props: {
-                            onClick: () => {
-                              this.props.hideModal('last');
-                            },
-                          },
-                          children:'Cancel',
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    },
-  });
-  window.editorModals.show(this.options.elementContainer.getAttribute('data-original-id') + '-inserttext-modal');
+  this.props.createModal(getModal({
+    type:'link',
+  }));
 }
 
 export function add_link_to_editor() {
   this.restoreSelection();
-  window.document.execCommand('createLink', false, this.options.forms.add_link_form.querySelector('.ts-link_url').value);
+  window.document.execCommand('createLink', false, this.options.inputlink);
 }
 
 export function add_image_to_editor() {
   this.restoreSelection();
-  window.document.execCommand('insertImage', false, this.options.forms.add_image_form.querySelector('.ts-image_url').value);
+  window.document.execCommand('insertImage', false, this.options.inputimage);
 }
 
 export function button_gofullscreen() {
@@ -131,6 +143,14 @@ export function button_gofullscreen() {
 }
 
 export function button_togglecodeeditor() {
+  console.debug('this.getInnerHTML()', this.getInnerHTML());
+  let codeState = {
+    showEditor: !this.state.showEditor,
+    value: this.getInnerHTML(),
+    // date: new Date().toString(),
+  };
+  console.debug('clicked toggler', 'codeState',codeState);
+  this.setState(codeState);
   // classie.toggle(this.options.codemirror.getWrapperElement(), 'ts-hidden');
   // classie.toggle(this.options.buttons.codeButton, 'ts-button-primary-text-color');
   // this.options.codemirror.refresh();
@@ -151,10 +171,6 @@ export function button_gotext_right() {
 export function button_gotext_justifyfull() {
   window.document.execCommand('justifyFull', true, '');
 }
-
-// export function button_gotext_left() {
-// 	document.execCommand('justifyLeft', true, '');
-// }
 
 export function button_go_outdent() {
   window.document.execCommand('outdent', true, '');

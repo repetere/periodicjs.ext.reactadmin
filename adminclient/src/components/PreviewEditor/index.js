@@ -63,12 +63,17 @@ const defaultProps = {
     size:'isSmall',
   },
   useToolbar:true,
+  showEditor:false,
 };
 
 class PreviewEditor extends Component {
   constructor(props) {
     super(props);
-    this.state = Object.assign({}, props);
+    this.state = {
+      useToolbar: props.useToolbar,
+      showEditor: props.showEditor,
+      value: props.value,
+    };
     this.buttons = [
       {
         onClickFunction: editorHelper.button_gobold,
@@ -131,6 +136,13 @@ class PreviewEditor extends Component {
         onClickFunction: editorHelper.button_goimg.bind(this),
         icon:'fa fa-picture-o',
       },
+      {
+        icon:'sep',
+      },
+      {
+        onClickFunction: editorHelper.button_togglecodeeditor.bind(this),
+        icon:'fa fa-code',
+      },
     ].concat(props.customButttons || []);
     this.contentIndex = (props.useToolbar) ? 1 : 0;
     this.options = {};
@@ -140,15 +152,21 @@ class PreviewEditor extends Component {
     this.setState(Object.assign({}, nextProps));
   }
   render() {
+    console.debug('this.state', this.state);
     return (<div className="__ra_pe_w" {...this.props.wrapperProps}>
       <div className="__ra_pe_tb" {...this.props.toolbarProps}>
         {this.buttons.map((button, i) => {
           if (button.icon === 'sep') {
-            return <span style={{
+            return <span key={i} style={{
               marginRight:'0.25rem',
             }}> </span>;
           }
-          return (<rb.Button onClick={button.onClickFunction} icon={button.icon} {...this.props.buttonProps }/>
+          return (<rb.Button
+            key={i}
+            onClick={button.onClickFunction}
+            icon={button.icon}
+            color={(this.state.showEditor && button.icon==='fa fa-code')?'isBlack':undefined}
+            {...this.props.buttonProps } />
           );
         })}  
       </div>  
@@ -160,17 +178,29 @@ class PreviewEditor extends Component {
       dangerouslySetInnerHTML={{
         __html: this.state.value,
       }}></div>
+      {
+        (this.state.showEditor)
+          ? <div>editor</div>
+          : null
+      }
     </div>);
   }
   getInnerHTML() {
     return ReactDOM.findDOMNode(this).children[ this.contentIndex ].innerHTML;
   }
   shouldComponentUpdate(nextProps) {
-    return nextProps.value !== this.getInnerHTML();
+    console.debug('nextProps.value', nextProps.value);
+    console.debug('this.getInnerHTML()', this.getInnerHTML() );
+    console.debug('this.state.showEditor', this.state.showEditor );
+    console.debug('nextProps.showEditor',  nextProps.showEditor);
+    console.debug('nextProps.value !== this.getInnerHTML()', nextProps.value !== this.getInnerHTML() );
+    console.debug('this.state.showEditor!== nextProps.showEditor', this.state.showEditor !== nextProps.showEditor);
+    console.debug('nextProps.value !== this.getInnerHTML() || this.state.showEditor!== nextProps.showEditor', nextProps.value !== this.getInnerHTML() || this.state.showEditor !== nextProps.showEditor);
+    return nextProps.value !== this.getInnerHTML() || this.state.showEditor!== nextProps.showEditor;
   }
   componentDidUpdate() {
-    if ( this.props.value !== this.getInnerHTML() ) {
-      ReactDOM.findDOMNode(this).children[this.contentIndex].innerHTML = this.props.value;
+    if ( this.state.value !== this.getInnerHTML() ) {
+      ReactDOM.findDOMNode(this).children[this.contentIndex].innerHTML = this.state.value;
     }
   }
   emitChange() {

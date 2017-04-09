@@ -14,7 +14,7 @@ import moment from 'moment';
 import numeral from 'numeral';
 import flatten, { unflatten, } from 'flat';
 import styles from '../../styles';
-import { validateForm } from './FormHelpers';
+import { validateForm, } from './FormHelpers';
 
 export function getPropertyAttribute(options) {
   let { property, element, } = options;
@@ -675,12 +675,12 @@ export function getFormEditor(options) {
     //   },
     // },
     passProps: {
-      toolbarStyle: {
-        borderTop: 'none',
-        borderLeft: 'none',
-        borderRight: 'none',
-        padding: '5px 0 0',
-      },
+      // toolbarStyle: {
+      //   borderTop: 'none',
+      //   borderLeft: 'none',
+      //   borderRight: 'none',
+      //   padding: '5px 0 0',
+      // },
     },
     onChange:onValueChange,
   }, formElement.passProps);
