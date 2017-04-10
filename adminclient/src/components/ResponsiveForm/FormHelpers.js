@@ -48,8 +48,11 @@ export function assignHiddenFields(options) {
 
   if (this.props.hiddenFields) {
     this.props.hiddenFields.forEach(hiddenField => {
-      hiddenInputs[ hiddenField.form_name ] = this.state[ hiddenField.form_val ] || hiddenField.form_static_val; 
-      submitFormData[ hiddenField.form_name ] = this.state[ hiddenField.form_val ] || hiddenField.form_static_val; 
+      let hiddenFormValue = (typeof this.state[ hiddenField.form_val ] === 'undefined')
+        ? hiddenField.form_static_val
+        : this.state[ hiddenField.form_val ];
+      hiddenInputs[ hiddenField.form_name ] = hiddenFormValue; 
+      submitFormData[ hiddenField.form_name ] = hiddenFormValue; 
     });
   }
   if (this.props.dynamicFields) {
@@ -57,8 +60,11 @@ export function assignHiddenFields(options) {
       ? Object.assign({}, ApplicationState.dynamic, flatten(ApplicationState.dynamic))
       : ApplicationState.dynamic;
     this.props.dynamicFields.forEach(dynamicHiddenField => {
-      dynamicFields[ dynamicHiddenField.form_name ] = mergedDynamicField[ dynamicHiddenField.form_val ] || dynamicHiddenField.form_static_val; 
-      submitFormData[ dynamicHiddenField.form_name ] = mergedDynamicField[ dynamicHiddenField.form_val ] || dynamicHiddenField.form_static_val; 
+      let hiddenFormValue = (typeof mergedDynamicField[ dynamicHiddenField.form_val ] === 'undefined')
+        ? dynamicHiddenField.form_static_val
+        : mergedDynamicField[ dynamicHiddenField.form_val ];
+      dynamicFields[ dynamicHiddenField.form_name ] = hiddenFormValue; 
+      submitFormData[ dynamicHiddenField.form_name ] = hiddenFormValue; 
     });
   }
   formdata = Object.assign(formdata, hiddenInputs, dynamicFields);

@@ -148,6 +148,57 @@ class PreviewEditor extends Component {
     this.contentIndex = (props.useToolbar) ? 1 : 0;
     this.options = {};
   }
+
+  getInnerHTML() {
+    return ReactDOM.findDOMNode(this).children[ this.contentIndex ].innerHTML;
+  }
+  toggleEditor() {
+    let codeState = {
+      showEditor: (this.state.showEditor) ? false : true,
+      value: this.getInnerHTML(),
+      // date: new Date().toString(),
+    };
+    // console.debug('clicked toggler', 'codeState',codeState);
+    this.setState(codeState);
+    this.forceUpdate();
+
+  }
+  emitChange() {
+    var html = this.getInnerHTML();
+    // console.debug({ html });
+    if (this.refs && this.refs.RAC ) {
+      // console.debug('this.refs.RAC.setState', this.refs.RAC.setState);
+      // console.debug('this.refs.RAC.props', this.refs.RAC.props);
+      this.refs.RAC.props.codeMirrorProps.value = html;
+      this.refs.RAC.forceUpdate();
+    }
+    if (this.props.onChange && typeof this.props.onChange==='function' && html !== this.lastHtml) {
+      this.props.onChange({
+        target: {
+          value:  this.getInnerHTML(),
+        },
+      });
+    }
+    if (this.props.setDynamicData && typeof this.props.setDynamicData === 'string' && html !== this.lastHtml) {
+      this.props.setDynamicData(this.props.dynamicField, html);
+    }
+    this.lastHtml = html;
+  }
+  saveSelection() {
+    this.options.selection = (saveSelection()) ? saveSelection() : null;
+  }
+  restoreSelection() {
+    this.options.preview_selection = this.options.selection;
+    restoreSelection(this.options.selection);
+  }
+  shouldComponentUpdate(nextProps) {
+    return nextProps.value !== this.getInnerHTML() || this.state.showEditor!== nextProps.showEditor;
+  }
+  componentDidUpdate() {
+    if ( this.state.value !== this.getInnerHTML() ) {
+      ReactDOM.findDOMNode(this).children[this.contentIndex].innerHTML = this.state.value;
+    }
+  }
   componentWillReceiveProps(nextProps) {
     // console.debug({ nextProps });
     this.setState(Object.assign({}, nextProps));
@@ -172,7 +223,6 @@ class PreviewEditor extends Component {
         })}  
       </div>  
       <div  className="__ra_pe_ce" {...this.props.passProps}
-        className="contenteditable" 
       onInput={this.emitChange.bind(this)} 
       onBlur={this.emitChange.bind(this)}
       contentEditable
@@ -200,54 +250,6 @@ class PreviewEditor extends Component {
       }
     </div>);
   }
-  getInnerHTML() {
-    return ReactDOM.findDOMNode(this).children[ this.contentIndex ].innerHTML;
-  }
-  shouldComponentUpdate(nextProps) {
-    return nextProps.value !== this.getInnerHTML() || this.state.showEditor!== nextProps.showEditor;
-  }
-  componentDidUpdate() {
-    if ( this.state.value !== this.getInnerHTML() ) {
-      ReactDOM.findDOMNode(this).children[this.contentIndex].innerHTML = this.state.value;
-    }
-  }
-  toggleEditor() {
-    let codeState = {
-      showEditor: (this.state.showEditor) ? false : true,
-      value: this.getInnerHTML(),
-      // date: new Date().toString(),
-    };
-    // console.debug('clicked toggler', 'codeState',codeState);
-    this.setState(codeState);
-    this.forceUpdate();
-
-  }
-  emitChange() {
-    var html = this.getInnerHTML();
-    // console.debug({ html });
-    if (this.refs && this.refs.RAC && typeof this.refs.RAC.setValue === 'function') {
-      this.refs.RAC.setValue(html);
-    }
-    if (this.props.onChange && typeof this.props.onChange==='function' && html !== this.lastHtml) {
-      this.props.onChange({
-        target: {
-          value:  this.getInnerHTML(),
-        },
-      });
-    }
-    if (this.props.setDynamicData && typeof this.props.setDynamicData === 'string' && html !== this.lastHtml) {
-      this.props.setDynamicData(this.props.dynamicField, html);
-    }
-    this.lastHtml = html;
-  }
-  saveSelection() {
-    this.options.selection = (saveSelection()) ? saveSelection() : null;
-  }
-  restoreSelection() {
-    this.options.preview_selection = this.options.selection;
-    restoreSelection(this.options.selection);
-  }
-
 }  
 
 PreviewEditor.propTypes = propTypes;

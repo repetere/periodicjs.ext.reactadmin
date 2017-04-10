@@ -47,6 +47,11 @@ const fixCodeMirrorSubmit = (req, res, next) => {
       }
     });
   }
+  if (!req.controllerData.denyHTMLxss) {
+    req.controllerData = Object.assign({},
+      req.controllerData,
+      { html_xss: true, });
+  }
   next();
 };
 
