@@ -48,6 +48,10 @@ var _editorHelper = require('./editorHelper');
 
 var editorHelper = _interopRequireWildcard(_editorHelper);
 
+var _RACodeMirror = require('../RACodeMirror');
+
+var _RACodeMirror2 = _interopRequireDefault(_RACodeMirror);
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -111,7 +115,8 @@ var defaultProps = {
     },
     size: 'isSmall'
   },
-  useToolbar: true
+  useToolbar: true,
+  showEditor: false
 };
 
 var PreviewEditor = function (_Component) {
@@ -122,7 +127,11 @@ var PreviewEditor = function (_Component) {
 
     var _this = (0, _possibleConstructorReturn3.default)(this, (PreviewEditor.__proto__ || (0, _getPrototypeOf2.default)(PreviewEditor)).call(this, props));
 
-    _this.state = (0, _assign2.default)({}, props);
+    _this.state = {
+      useToolbar: props.useToolbar,
+      showEditor: props.showEditor,
+      value: props.value
+    };
     _this.buttons = [{
       onClickFunction: editorHelper.button_gobold,
       icon: 'fa fa-bold'
@@ -168,6 +177,11 @@ var PreviewEditor = function (_Component) {
     }, {
       onClickFunction: editorHelper.button_goimg.bind(_this),
       icon: 'fa fa-picture-o'
+    }, {
+      icon: 'sep'
+    }, {
+      onClickFunction: _this.toggleEditor.bind(_this),
+      icon: 'fa fa-code'
     }].concat(props.customButttons || []);
     _this.contentIndex = props.useToolbar ? 1 : 0;
     _this.options = {};
@@ -175,67 +189,32 @@ var PreviewEditor = function (_Component) {
   }
 
   (0, _createClass3.default)(PreviewEditor, [{
-    key: 'componentWillReceiveProps',
-    value: function componentWillReceiveProps(nextProps) {
-      // console.debug({ nextProps });
-      this.setState((0, _assign2.default)({}, nextProps));
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      var _this2 = this;
-
-      return _react2.default.createElement(
-        'div',
-        (0, _extends3.default)({ className: '__ra_pe_w' }, this.props.wrapperProps),
-        _react2.default.createElement(
-          'div',
-          (0, _extends3.default)({ className: '__ra_pe_tb' }, this.props.toolbarProps),
-          this.buttons.map(function (button, i) {
-            if (button.icon === 'sep') {
-              return _react2.default.createElement(
-                'span',
-                { style: {
-                    marginRight: '0.25rem'
-                  } },
-                ' '
-              );
-            }
-            return _react2.default.createElement(rb.Button, (0, _extends3.default)({ onClick: button.onClickFunction, icon: button.icon }, _this2.props.buttonProps));
-          })
-        ),
-        _react2.default.createElement('div', (0, _extends3.default)({ className: '__ra_pe_ce' }, this.props.passProps, {
-          className: 'contenteditable',
-          onInput: this.emitChange.bind(this),
-          onBlur: this.emitChange.bind(this),
-          contentEditable: true,
-          dangerouslySetInnerHTML: {
-            __html: this.state.value
-          } }))
-      );
-    }
-  }, {
     key: 'getInnerHTML',
     value: function getInnerHTML() {
       return _reactDom2.default.findDOMNode(this).children[this.contentIndex].innerHTML;
     }
   }, {
-    key: 'shouldComponentUpdate',
-    value: function shouldComponentUpdate(nextProps) {
-      return nextProps.value !== this.getInnerHTML();
-    }
-  }, {
-    key: 'componentDidUpdate',
-    value: function componentDidUpdate() {
-      if (this.props.value !== this.getInnerHTML()) {
-        _reactDom2.default.findDOMNode(this).children[this.contentIndex].innerHTML = this.props.value;
-      }
+    key: 'toggleEditor',
+    value: function toggleEditor() {
+      var codeState = {
+        showEditor: this.state.showEditor ? false : true,
+        value: this.getInnerHTML()
+      };
+      // console.debug('clicked toggler', 'codeState',codeState);
+      this.setState(codeState);
+      this.forceUpdate();
     }
   }, {
     key: 'emitChange',
     value: function emitChange() {
       var html = this.getInnerHTML();
       // console.debug({ html });
+      if (this.refs && this.refs.RAC) {
+        // console.debug('this.refs.RAC.setState', this.refs.RAC.setState);
+        // console.debug('this.refs.RAC.props', this.refs.RAC.props);
+        this.refs.RAC.props.codeMirrorProps.value = html;
+        this.refs.RAC.forceUpdate();
+      }
       if (this.props.onChange && typeof this.props.onChange === 'function' && html !== this.lastHtml) {
         this.props.onChange({
           target: {
@@ -258,6 +237,78 @@ var PreviewEditor = function (_Component) {
     value: function restoreSelection() {
       this.options.preview_selection = this.options.selection;
       _restoreSelection(this.options.selection);
+    }
+  }, {
+    key: 'shouldComponentUpdate',
+    value: function shouldComponentUpdate(nextProps) {
+      return nextProps.value !== this.getInnerHTML() || this.state.showEditor !== nextProps.showEditor;
+    }
+  }, {
+    key: 'componentDidUpdate',
+    value: function componentDidUpdate() {
+      if (this.state.value !== this.getInnerHTML()) {
+        _reactDom2.default.findDOMNode(this).children[this.contentIndex].innerHTML = this.state.value;
+      }
+    }
+  }, {
+    key: 'componentWillReceiveProps',
+    value: function componentWillReceiveProps(nextProps) {
+      // console.debug({ nextProps });
+      this.setState((0, _assign2.default)({}, nextProps));
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this2 = this;
+
+      // console.debug('---RENDER--- this.state.showEditor', this.state.showEditor);
+      return _react2.default.createElement(
+        'div',
+        (0, _extends3.default)({ className: '__ra_pe_w' }, this.props.wrapperProps),
+        _react2.default.createElement(
+          'div',
+          (0, _extends3.default)({ className: '__ra_pe_tb' }, this.props.toolbarProps),
+          this.buttons.map(function (button, i) {
+            if (button.icon === 'sep') {
+              return _react2.default.createElement(
+                'span',
+                { key: i, style: {
+                    marginRight: '0.25rem'
+                  } },
+                ' '
+              );
+            }
+            return _react2.default.createElement(rb.Button, (0, _extends3.default)({
+              key: i,
+              onClick: button.onClickFunction,
+              icon: button.icon,
+              color: _this2.state.showEditor && button.icon === 'fa fa-code' ? 'isBlack' : undefined
+            }, _this2.props.buttonProps));
+          })
+        ),
+        _react2.default.createElement('div', (0, _extends3.default)({ className: '__ra_pe_ce' }, this.props.passProps, {
+          onInput: this.emitChange.bind(this),
+          onBlur: this.emitChange.bind(this),
+          contentEditable: true,
+          dangerouslySetInnerHTML: {
+            __html: this.state.value
+          } })),
+        this.state.showEditor ? _react2.default.createElement(_RACodeMirror2.default, {
+          ref: 'RAC',
+          editorType: 'editor',
+          wrapperProps: {
+            style: {
+              borderTop: '1px solid #d3d6db'
+            }
+          },
+          codeMirrorProps: {
+            value: this.state.value,
+            onChange: function onChange(value) {
+              _reactDom2.default.findDOMNode(_this2).children[_this2.contentIndex].innerHTML = value;
+            }
+          }
+        }) : null
+      );
     }
   }]);
   return PreviewEditor;

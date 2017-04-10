@@ -838,12 +838,12 @@ function getFormEditor(options) {
     //   },
     // },
     passProps: {
-      toolbarStyle: {
-        borderTop: 'none',
-        borderLeft: 'none',
-        borderRight: 'none',
-        padding: '5px 0 0'
-      }
+      // toolbarStyle: {
+      //   borderTop: 'none',
+      //   borderLeft: 'none',
+      //   borderRight: 'none',
+      //   padding: '5px 0 0',
+      // },
     },
     onChange: onValueChange
   }, formElement.passProps);

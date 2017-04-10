@@ -55,7 +55,7 @@ var AppConfigSettings = {
     }
   },
   auth: {
-    logged_in_homepage: '/home',
+    logged_in_homepage: '/r-admin/dashboard',
     logged_out_path: '/login'
   },
   login: {

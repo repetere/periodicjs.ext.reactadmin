@@ -66,7 +66,7 @@ var appDefaultSettings = {
     }
   },
   auth: {
-    logged_in_homepage: '/home',
+    logged_in_homepage: '/r-admin/dashboard',
     logged_out_path: '/login'
   },
   login: {
@@ -113,93 +113,22 @@ var defaultUserNavigation = {
     },
     children: [{
       component: 'MenuLabel',
-      children: 'Generals'
+      children: 'System'
     }, {
       component: 'MenuList',
       children: [{
+        component: 'MenuAppLink',
+        props: {
+          href: '/dashboard',
+          label: 'Dashboard',
+          id: 'dashboard'
+        }
+      }, {
         component: 'MenuAppLink',
         props: {
           href: '/#logout',
           label: 'Logout',
           onClick: 'func:this.props.logoutUser'
-        }
-      }]
-    }, {
-      component: 'MenuLabel',
-      children: 'Administration'
-    }, {
-      component: 'MenuList',
-      children: [{
-        component: 'SubMenuLinks',
-        children: [{
-          component: 'MenuAppLink',
-          props: {
-            href: '/r-admin/documentation',
-            label: 'Documentation',
-            id: 'documentation'
-          }
-        }, {
-          component: 'MenuAppLink',
-          props: {
-            href: '/r-admin/content/testcharts',
-            label: 'Test Charts',
-            id: 'testcharts'
-          }
-        }, {
-          component: 'MenuAppLink',
-          props: {
-            href: '/r-admin/content/testtables',
-            label: 'Test Tables',
-            id: 'testtables'
-          }
-        }, {
-          component: 'MenuAppLink',
-          props: {
-            href: '/r-admin/content/testformtables',
-            label: 'Test Form Tables',
-            id: 'testformtables'
-          }
-        }, {
-          component: 'MenuAppLink',
-          props: {
-            href: '/r-admin/content/testform',
-            label: 'Test Form',
-            id: 'tforms'
-          }
-        }, {
-          component: 'MenuAppLink',
-          props: {
-            href: '/r-admin/content/dynamics',
-            label: 'Dynamics',
-            id: 'dynamics'
-          }
-        }, {
-          component: 'MenuAppLink',
-          props: {
-            href: '/r-admin/content/testform_window',
-            label: 'Test Form Window',
-            id: 'form_window'
-          }
-        }]
-      }]
-    }, {
-      component: 'MenuLabel',
-      children: 'Content Manager'
-    }, {
-      component: 'MenuList',
-      children: [{
-        component: 'MenuAppLink',
-        props: {
-          href: '/r-admin/content/accounts_sample',
-          label: 'TestAccounts',
-          id: 'testaccounts'
-        }
-      }, {
-        component: 'MenuAppLink',
-        props: {
-          href: '/r-admin/content/testtables',
-          label: 'Test Tables',
-          id: 'testtables'
         }
       }]
     }]

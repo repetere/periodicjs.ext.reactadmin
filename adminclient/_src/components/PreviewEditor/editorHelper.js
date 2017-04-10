@@ -34,7 +34,7 @@ function button_goitalic() {
 }
 
 function button_golink() {
-  console.debug('this.props', this.props);
+  // console.debug('this.props', this.props);
   window.document.execCommand('createLink', true, '');
 }
 
@@ -46,22 +46,11 @@ function button_gobullet() {
   window.document.execCommand('insertUnorderedList', true, '');
 }
 
-function button_goimg() {
-  // document.execCommand('insertImage', false, 'http://lorempixel.com/40/20/sports/');
-
-
-  this.saveSelection();
-  window.editorModals.show(this.options.elementContainer.getAttribute('data-original-id') + '-insertimage-modal');
-}
-
-function button_gotextlink() {
+function getInsertModal(options) {
   var _this = this;
 
-  // console.log(this.options.elementContainer.getAttribute('data-original-id'));
-  var linkHref = '';
-  this.saveSelection();
-  this.props.createModal({
-    title: 'Insert a link',
+  return {
+    title: options.type === 'link' ? 'Insert a link' : 'Insert an image',
     text: {
       component: 'div',
       children: [{
@@ -72,14 +61,24 @@ function button_gotextlink() {
             component: 'FormHorizontal',
             children: [{
               component: 'ControlLabel',
+              props: {
+                style: {
+                  flex: 1,
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center'
+                }
+              },
               children: 'URL'
             }, {
               component: 'Input',
               props: {
                 onChange: function onChange(e) {
-                  console.debug({
-                    e: e
-                  });
+                  if (options.type === 'link') {
+                    _this.options.inputlink = e.target.value;
+                  } else {
+                    _this.options.inputimage = e.target.value;
+                  }
                 }
               }
             }]
@@ -100,7 +99,17 @@ function button_gotextlink() {
               },
               children: [{
                 component: 'Button',
-                children: 'Insert link'
+                children: options.type === 'link' ? 'Insert link' : 'Insert image',
+                props: {
+                  onClick: function onClick() {
+                    if (options.type === 'link') {
+                      add_link_to_editor.call(_this);
+                    } else {
+                      add_image_to_editor.call(_this);
+                    }
+                    _this.props.hideModal('last');
+                  }
+                }
               }, {
                 component: 'Button',
                 props: {
@@ -115,18 +124,33 @@ function button_gotextlink() {
         }]
       }]
     }
-  });
-  window.editorModals.show(this.options.elementContainer.getAttribute('data-original-id') + '-inserttext-modal');
+  };
+}
+
+function button_goimg() {
+  var getModal = getInsertModal.bind(this);
+  this.saveSelection();
+  this.props.createModal(getModal({
+    type: 'image'
+  }));
+}
+
+function button_gotextlink() {
+  var getModal = getInsertModal.bind(this);
+  this.saveSelection();
+  this.props.createModal(getModal({
+    type: 'link'
+  }));
 }
 
 function add_link_to_editor() {
   this.restoreSelection();
-  window.document.execCommand('createLink', false, this.options.forms.add_link_form.querySelector('.ts-link_url').value);
+  window.document.execCommand('createLink', false, this.options.inputlink);
 }
 
 function add_image_to_editor() {
   this.restoreSelection();
-  window.document.execCommand('insertImage', false, this.options.forms.add_image_form.querySelector('.ts-image_url').value);
+  window.document.execCommand('insertImage', false, this.options.inputimage);
 }
 
 function button_gofullscreen() {
@@ -137,9 +161,16 @@ function button_gofullscreen() {
 }
 
 function button_togglecodeeditor() {
-  // classie.toggle(this.options.codemirror.getWrapperElement(), 'ts-hidden');
-  // classie.toggle(this.options.buttons.codeButton, 'ts-button-primary-text-color');
-  // this.options.codemirror.refresh();
+  console.debug('button_togglecodeeditor');
+  // console.debug('this.getInnerHTML()', this.getInnerHTML());
+  // console.debug('this.state.showEditor', this.state.showEditor);
+  // let codeState = {
+  //   showEditor: !this.state.showEditor,
+  //   value: this.getInnerHTML(),
+  //   // date: new Date().toString(),
+  // };
+  // console.debug('clicked toggler', 'codeState',codeState);
+  // this.setState(codeState);
 }
 
 function button_gotext_left() {
@@ -157,10 +188,6 @@ function button_gotext_right() {
 function button_gotext_justifyfull() {
   window.document.execCommand('justifyFull', true, '');
 }
-
-// export function button_gotext_left() {
-// 	document.execCommand('justifyLeft', true, '');
-// }
 
 function button_go_outdent() {
   window.document.execCommand('outdent', true, '');
