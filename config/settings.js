@@ -95,7 +95,7 @@ function getReactAdminConfig (options, overwrites) {
     //   standard: data_tables,
     // },
     auth:{
-      logged_in_homepage:'/r-admin/home',
+      logged_in_homepage:'/r-admin/dashboard',
       logged_out_path:'/r-admin/login',
     },
     data_table_props: {

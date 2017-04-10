@@ -305,7 +305,7 @@ const user = {
     };
   },
   enforceMFA(noRedirect, __returnURL) {
-    // console.debug({ __returnURL, __global__returnURL });
+    // console.debug('enforceMFA', { noRedirect, __returnURL, __global__returnURL, });
     return (dispatch, getState) => {
       let state = getState();
       let extensionattributes = (state.user.userdata) ? state.user.userdata.extensionattributes : false;
@@ -339,6 +339,7 @@ const user = {
             // console.log('utilities.getMFAPath(state)')
             let mfapath = utilities.getMFAPath(state);
             if (!returnUrl && window.location.href && window.location.href.indexOf(mfapath) === -1) {
+              // console.debug({ returnUrl, mfapath, }, ' window.location.href', window.location.href);
               returnUrl = window.location.href;
             }
             __global__returnURL = returnUrl;
@@ -492,6 +493,7 @@ const user = {
     };
   },
   initializeAuthenticatedUser(token, ensureMFA, __returnURL) {
+    // console.debug('initializeAuthenticatedUser', { token, ensureMFA, __returnURL, __global__returnURL, });
     // console.debug({ __returnURL });
     return (dispatch, getState) => {
       let requestOptions = {
@@ -545,7 +547,7 @@ const user = {
   * @param {function} responseFormatter custom reponse formatter, must be a function that returns a promise that resolves to json/javascript object
   */
   loginUser(loginData, __returnURL) {
-    // console.debug({ loginData });
+    // console.debug('loginUser', { loginData, __returnURL, });
     return (dispatch, getState) => {
       let fetchResponse;
       let cachedResponseData;

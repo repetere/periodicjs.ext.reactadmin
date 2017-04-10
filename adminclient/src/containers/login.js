@@ -193,6 +193,8 @@ class Login extends Component {
     let returnUrl = (queryStrings.return_url) ? queryStrings.return_url : false;
     if (this.props.isLoggedIn() && returnUrl) {
       this.props.reduxRouter.push(returnUrl);
+    } else if (this.props.isLoggedIn() && this.props.getState().settings.auth.logged_in_homepage) {
+      this.props.reduxRouter.push(this.props.getState().settings.auth.logged_in_homepage);
     }
     this.props.fetchLoginComponent()
       .then(() => {
@@ -202,7 +204,13 @@ class Login extends Component {
       });
   }
   componentWillReceiveProps(nextProps) {
-    this.setState(nextProps);
+    let state = this.props.getState();
+    // console.debug('componentWillReceiveProps', { nextProps, state, });
+    if (state.user.isLoggedIn()) {
+      this.props.reduxRouter.push(state.settings.auth.logged_in_homepage);
+    } else {
+      this.setState(nextProps);
+    }
   }
   render() {
     if (!this.state.componentIsLoaded) return (<AppSectionLoading />);

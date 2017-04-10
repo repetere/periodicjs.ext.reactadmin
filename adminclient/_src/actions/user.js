@@ -363,7 +363,7 @@ var user = {
   enforceMFA: function enforceMFA(noRedirect, __returnURL) {
     var _this5 = this;
 
-    // console.debug({ __returnURL, __global__returnURL });
+    // console.debug('enforceMFA', { noRedirect, __returnURL, __global__returnURL, });
     return function (dispatch, getState) {
       var state = getState();
       var extensionattributes = state.user.userdata ? state.user.userdata.extensionattributes : false;
@@ -392,6 +392,7 @@ var user = {
             // console.log('utilities.getMFAPath(state)')
             var mfapath = _util2.default.getMFAPath(state);
             if (!returnUrl && window.location.href && window.location.href.indexOf(mfapath) === -1) {
+              // console.debug({ returnUrl, mfapath, }, ' window.location.href', window.location.href);
               returnUrl = window.location.href;
             }
             __global__returnURL = returnUrl;
@@ -549,6 +550,7 @@ var user = {
   initializeAuthenticatedUser: function initializeAuthenticatedUser(token, ensureMFA, __returnURL) {
     var _this8 = this;
 
+    // console.debug('initializeAuthenticatedUser', { token, ensureMFA, __returnURL, __global__returnURL, });
     // console.debug({ __returnURL });
     return function (dispatch, getState) {
       var requestOptions = {
@@ -604,7 +606,7 @@ var user = {
   loginUser: function loginUser(loginData, __returnURL) {
     var _this9 = this;
 
-    // console.debug({ loginData });
+    // console.debug('loginUser', { loginData, __returnURL, });
     return function (dispatch, getState) {
       var fetchResponse = void 0;
       var cachedResponseData = void 0;

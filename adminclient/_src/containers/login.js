@@ -221,6 +221,8 @@ var Login = function (_Component) {
       var returnUrl = queryStrings.return_url ? queryStrings.return_url : false;
       if (this.props.isLoggedIn() && returnUrl) {
         this.props.reduxRouter.push(returnUrl);
+      } else if (this.props.isLoggedIn() && this.props.getState().settings.auth.logged_in_homepage) {
+        this.props.reduxRouter.push(this.props.getState().settings.auth.logged_in_homepage);
       }
       this.props.fetchLoginComponent().then(function () {
         _this2.setState({ componentIsLoaded: true });
@@ -231,7 +233,13 @@ var Login = function (_Component) {
   }, {
     key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps(nextProps) {
-      this.setState(nextProps);
+      var state = this.props.getState();
+      // console.debug('componentWillReceiveProps', { nextProps, state, });
+      if (state.user.isLoggedIn()) {
+        this.props.reduxRouter.push(state.settings.auth.logged_in_homepage);
+      } else {
+        this.setState(nextProps);
+      }
     }
   }, {
     key: 'render',
