@@ -63,6 +63,40 @@ class RACodeMirror extends Component {
       });
     if (this.props.editorType === 'editor') {
       options.options.mode = 'application/x-ejs';
+      // console.debug({ options, });
+      return (<div {...this.props.wrapperProps}>
+        <CodeMirror {...options}>{this.props.children}</CodeMirror>
+        </div>);
+    } else {
+      return <div {...this.props.wrapperProps}><CodeMirror {...options}>{this.props.children}</CodeMirror></div>;
+    }
+  }
+}
+/*
+class RACodeMirrorStateful extends Component {
+  constructor(props) {
+    super(props);
+    this.state = props;
+  }
+  setValue(value) {
+    this.setState({ codeMirrorProps: Object.assign({}, this.state.codeMirrorProps, { value, }) });
+    // this.state.codeMirrorProps.value = value;
+  }
+  render() {
+    let options = Object.assign({},
+      this.state.codeMirrorProps,
+      {
+        options: Object.assign({}, {
+          lineNumbers: true,
+          // mode:'application/x-ejs',
+          lineWrapping: true,
+          foldGutter: true,
+          gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter', ],
+        },
+          this.state.codeMirrorPropsOptions, this.state.codeMirrorProps.options),
+      });
+    if (this.props.editorType === 'editor') {
+      options.options.mode = 'application/x-ejs';
       console.debug({ options, });
       return (<div {...this.props.wrapperProps}>
         <CodeMirror {...options}>{this.props.children}</CodeMirror>
@@ -72,6 +106,7 @@ class RACodeMirror extends Component {
     }
   }
 }
+*/
 
 RACodeMirror.propTypes = propTypes;
 RACodeMirror.defaultProps = defaultProps;

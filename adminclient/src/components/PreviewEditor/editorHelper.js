@@ -11,7 +11,7 @@ export function button_goitalic() {
 }
 
 export function button_golink() {
-  console.debug('this.props', this.props);
+  // console.debug('this.props', this.props);
   window.document.execCommand('createLink', true, '');
 }
 
@@ -143,17 +143,16 @@ export function button_gofullscreen() {
 }
 
 export function button_togglecodeeditor() {
-  console.debug('this.getInnerHTML()', this.getInnerHTML());
-  let codeState = {
-    showEditor: !this.state.showEditor,
-    value: this.getInnerHTML(),
-    // date: new Date().toString(),
-  };
-  console.debug('clicked toggler', 'codeState',codeState);
-  this.setState(codeState);
-  // classie.toggle(this.options.codemirror.getWrapperElement(), 'ts-hidden');
-  // classie.toggle(this.options.buttons.codeButton, 'ts-button-primary-text-color');
-  // this.options.codemirror.refresh();
+  console.debug('button_togglecodeeditor');
+  // console.debug('this.getInnerHTML()', this.getInnerHTML());
+  // console.debug('this.state.showEditor', this.state.showEditor);
+  // let codeState = {
+  //   showEditor: !this.state.showEditor,
+  //   value: this.getInnerHTML(),
+  //   // date: new Date().toString(),
+  // };
+  // console.debug('clicked toggler', 'codeState',codeState);
+  // this.setState(codeState);
 }
 
 export function button_gotext_left() {

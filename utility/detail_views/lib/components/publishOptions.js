@@ -132,7 +132,7 @@ exports.title = _title;
 
 function _content (type = 'content') {
   return {
-    type: 'textarea',
+    type: 'editor',
     name: type,
     label: capitalize(type),
     labelProps: {

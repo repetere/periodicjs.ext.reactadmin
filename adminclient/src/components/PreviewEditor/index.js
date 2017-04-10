@@ -2,6 +2,7 @@ import React, { Component, PropTypes, } from 'react';
 import ReactDOM from 'react-dom';
 import * as rb from 're-bulma';
 import * as editorHelper from './editorHelper';
+import RACodeMirror from '../RACodeMirror';
 
 //http://stackoverflow.com/questions/22677931/react-js-onchange-event-for-contenteditable
 
@@ -140,7 +141,7 @@ class PreviewEditor extends Component {
         icon:'sep',
       },
       {
-        onClickFunction: editorHelper.button_togglecodeeditor.bind(this),
+        onClickFunction: this.toggleEditor.bind(this),
         icon:'fa fa-code',
       },
     ].concat(props.customButttons || []);
@@ -152,7 +153,7 @@ class PreviewEditor extends Component {
     this.setState(Object.assign({}, nextProps));
   }
   render() {
-    console.debug('this.state', this.state);
+    // console.debug('---RENDER--- this.state.showEditor', this.state.showEditor);
     return (<div className="__ra_pe_w" {...this.props.wrapperProps}>
       <div className="__ra_pe_tb" {...this.props.toolbarProps}>
         {this.buttons.map((button, i) => {
@@ -180,7 +181,21 @@ class PreviewEditor extends Component {
       }}></div>
       {
         (this.state.showEditor)
-          ? <div>editor</div>
+          ? <RACodeMirror
+            ref="RAC"  
+            editorType="editor"
+            wrapperProps={{
+              style:{
+                borderTop: '1px solid #d3d6db',
+              },
+            }}
+            codeMirrorProps={{
+              value: this.state.value,
+              onChange: (value) => {
+                ReactDOM.findDOMNode(this).children[ this.contentIndex ].innerHTML = value;
+              },
+            }}
+          ></RACodeMirror>
           : null
       }
     </div>);
@@ -189,13 +204,6 @@ class PreviewEditor extends Component {
     return ReactDOM.findDOMNode(this).children[ this.contentIndex ].innerHTML;
   }
   shouldComponentUpdate(nextProps) {
-    console.debug('nextProps.value', nextProps.value);
-    console.debug('this.getInnerHTML()', this.getInnerHTML() );
-    console.debug('this.state.showEditor', this.state.showEditor );
-    console.debug('nextProps.showEditor',  nextProps.showEditor);
-    console.debug('nextProps.value !== this.getInnerHTML()', nextProps.value !== this.getInnerHTML() );
-    console.debug('this.state.showEditor!== nextProps.showEditor', this.state.showEditor !== nextProps.showEditor);
-    console.debug('nextProps.value !== this.getInnerHTML() || this.state.showEditor!== nextProps.showEditor', nextProps.value !== this.getInnerHTML() || this.state.showEditor !== nextProps.showEditor);
     return nextProps.value !== this.getInnerHTML() || this.state.showEditor!== nextProps.showEditor;
   }
   componentDidUpdate() {
@@ -203,9 +211,23 @@ class PreviewEditor extends Component {
       ReactDOM.findDOMNode(this).children[this.contentIndex].innerHTML = this.state.value;
     }
   }
+  toggleEditor() {
+    let codeState = {
+      showEditor: (this.state.showEditor) ? false : true,
+      value: this.getInnerHTML(),
+      // date: new Date().toString(),
+    };
+    // console.debug('clicked toggler', 'codeState',codeState);
+    this.setState(codeState);
+    this.forceUpdate();
+
+  }
   emitChange() {
     var html = this.getInnerHTML();
     // console.debug({ html });
+    if (this.refs && this.refs.RAC && typeof this.refs.RAC.setValue === 'function') {
+      this.refs.RAC.setValue(html);
+    }
     if (this.props.onChange && typeof this.props.onChange==='function' && html !== this.lastHtml) {
       this.props.onChange({
         target: {
