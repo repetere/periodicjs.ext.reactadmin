@@ -87,7 +87,7 @@ module.exports = {
                 },
                 {
                   component: 'Title',
-                  children:'TEST FORM!!',
+                  children:'TEST FORM',
                 },
                 
                 { 
