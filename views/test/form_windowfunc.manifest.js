@@ -87,7 +87,7 @@ module.exports = {
                 },
                 {
                   component: 'Title',
-                  children:'TEST FORM',
+                  children:'TEST FORM!!',
                 },
                 
                 { 
@@ -179,6 +179,7 @@ module.exports = {
                           {
                             type: 'select',
                             name: 'testSelect',
+                            customOnChange: 'func:window.selectOnChange',
                             label: 'Select Test',
                             options: [
                               {
