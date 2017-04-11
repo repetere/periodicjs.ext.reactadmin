@@ -43,6 +43,11 @@
         console.debug("this is form on change");
         console.debug("testdata", data);
       }
+
+      var selectOnChange = function(element, event){
+        element.passProps = {};
+        element.passProps.className = 'select_on_change';
+      }
     </script>
   </body>
 </html>

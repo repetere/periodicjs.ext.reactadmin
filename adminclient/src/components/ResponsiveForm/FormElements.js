@@ -389,13 +389,24 @@ export function getFormSelect(options) {
   if (!onChange) {
     onChange = valueChangeHandler.bind(this, formElement);
   }  
+  let customCallbackfunction;
+  if (formElement.customOnChange) {
+    if (formElement.customOnChange.indexOf('func:this.props') !== -1) {
+      customCallbackfunction= this.props[ formElement.customOnChange.replace('func:this.props.', '') ];
+    } else if (formElement.customOnChange.indexOf('func:window') !== -1 && typeof window[ formElement.customOnChange.replace('func:window.', '') ] ==='function') {
+      customCallbackfunction= window[ formElement.customOnChange.replace('func:window.', '') ].bind(this, formElement);
+    } 
+  }
 
   return (<FormItem key={i} {...formElement.layoutProps} hasError={hasError} hasValue={hasValue} >
     {getFormLabel(formElement)}  
     <Select {...formElement.passProps}
       help={getFormElementHelp(hasError, this.state, formElement.name)}
       color={(hasError)?'isDanger':undefined}
-      onChange={(event)=>onChange()(event)}
+      onChange={(event)=>{
+        onChange()(event);
+        if(customCallbackfunction) customCallbackfunction(event);
+      }}
       placeholder={formElement.placeholder||formElement.label}
       value={this.state[ formElement.name ] || initialValue} >
       {selectOptions.map((opt, k) => {
