@@ -179,6 +179,7 @@ module.exports = {
                           {
                             type: 'select',
                             name: 'testSelect',
+                            customOnChange: 'func:window.selectOnChange',
                             label: 'Select Test',
                             options: [
                               {
