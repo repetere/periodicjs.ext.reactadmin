@@ -478,6 +478,14 @@ function getFormSelect(options) {
   if (!_onChange2) {
     _onChange2 = valueChangeHandler.bind(this, formElement);
   }
+  var customCallbackfunction = void 0;
+  if (formElement.customOnChange) {
+    if (formElement.customOnChange.indexOf('func:this.props') !== -1) {
+      customCallbackfunction = this.props[formElement.customOnChange.replace('func:this.props.', '')];
+    } else if (formElement.customOnChange.indexOf('func:window') !== -1 && typeof window[formElement.customOnChange.replace('func:window.', '')] === 'function') {
+      customCallbackfunction = window[formElement.customOnChange.replace('func:window.', '')].bind(this, formElement);
+    }
+  }
 
   return _react2.default.createElement(
     _FormItem2.default,
@@ -489,7 +497,8 @@ function getFormSelect(options) {
         help: getFormElementHelp(hasError, this.state, formElement.name),
         color: hasError ? 'isDanger' : undefined,
         onChange: function onChange(event) {
-          return _onChange2()(event);
+          _onChange2()(event);
+          if (customCallbackfunction) customCallbackfunction(event);
         },
         placeholder: formElement.placeholder || formElement.label,
         value: this.state[formElement.name] || initialValue }),
