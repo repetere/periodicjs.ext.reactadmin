@@ -281,10 +281,10 @@ var ResponsiveForm = function (_Component) {
 
             res.json().then(function (successData) {
               if (successData && typeof successData.successCallback === 'string') {
-                successCallback = getCBFromString(fetchOptions.successCallback);
+                successCallback = getCBFromString(successData.successCallback);
               }
               if (successData && typeof successData.responseCallback === 'string') {
-                responseCallback = getCBFromString(fetchOptions.responseCallback);
+                responseCallback = getCBFromString(successData.responseCallback);
               }
               formSuccessCallbacks({ fetchOptions: fetchOptions, submitFormData: submitFormData, successData: successData, successCallback: successCallback, responseCallback: responseCallback });
               __formStateUpdate();
@@ -293,6 +293,7 @@ var ResponsiveForm = function (_Component) {
             return res.json();
           }
         }).catch(function (e) {
+          __formStateUpdate();
           if ((typeof e === 'undefined' ? 'undefined' : (0, _typeof3.default)(e)) === 'object' && typeof e.callback === 'string' && e.callbackProps) {
             var errorCB = getCBFromString(e.callback);
             errorCB(e.callbackProps);
@@ -305,11 +306,10 @@ var ResponsiveForm = function (_Component) {
             if (_errorCB) {
               var errorProps = _this2.props.useErrorMessageProp ? e.message : e;
               _errorCB(errorProps);
-            } else {
+            } else if (_this2.props.onError && typeof _this2.props.onError === 'function') {
               _this2.props.onError(e);
             }
           }
-          __formStateUpdate();
         });
       } else {
         this.props.onSubmit(submitFormData);
@@ -537,7 +537,7 @@ var ResponsiveForm = function (_Component) {
             null,
             _react2.default.createElement(
               _reBulma.CardHeaderTitle,
-              null,
+              this.props.cardFormTitleProps,
               this.props.cardFormTitle
             )
           ) : null,

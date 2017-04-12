@@ -134,7 +134,7 @@ const tableOptions = function (schemas, label, options) {
         'children':'',
         'passProps':{
           'onClick':'func:this.props.fetchAction', 
-          'onclickBaseUrl':`${options.extsettings.basename}/${usablePrefix}/${pluralize(label)}/:id?format=json`,
+          'onclickBaseUrl':`${options.extsettings.basename}${usablePrefix}/${pluralize(label)}/:id?format=json`,
           'onclickLinkParams':[{ 'key':':id', 'val':'_id',  }, ],
           'fetchProps':{
             'method':'DELETE',

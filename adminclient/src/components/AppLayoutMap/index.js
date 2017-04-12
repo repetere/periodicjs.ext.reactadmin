@@ -75,9 +75,11 @@ export function getRenderedComponent(componentObject, resources, debug) {
         let opscompares = Object.assign({}, comp, propcompares);
         // console.debug({ opscompares, compares, renderedCompProps });
         if (opscompares.operation === 'eq') {
-          return opscompares.left == opscompares.right;
+          // return opscompares.left == opscompares.right;
+          return opscompares.left === opscompares.right;
         } else if (opscompares.operation === 'dneq') {
-          return opscompares.left != opscompares.right;
+          // return opscompares.left != opscompares.right;
+          return opscompares.left !== opscompares.right;
         } else if (opscompares.operation === 'dnseq') {
           return opscompares.left !== opscompares.right;
         } else if (opscompares.operation === 'seq') {

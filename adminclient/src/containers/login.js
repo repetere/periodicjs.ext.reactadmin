@@ -205,8 +205,8 @@ class Login extends Component {
   }
   componentWillReceiveProps(nextProps) {
     let state = this.props.getState();
-    // console.debug('componentWillReceiveProps', { nextProps, state, });
-    if (state.user.isLoggedIn()) {
+    console.debug('componentWillReceiveProps', { nextProps, state, });
+    if (state.user.isLoggedIn && state.user.isLoggedIn()) {
       this.props.reduxRouter.push(state.settings.auth.logged_in_homepage);
     } else {
       this.setState(nextProps);

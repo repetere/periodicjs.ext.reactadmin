@@ -85,7 +85,7 @@ const manifest = {
         })
         .then(response => {
           dispatch(this.unauthenticatedReceivedManifestData(response.data.settings));
-          if (isInitial) this.fetchUnauthenticatedManifest({ skip_cache: true })(dispatch, getState);
+          if (isInitial) this.fetchUnauthenticatedManifest({ skip_cache: true, })(dispatch, getState);
           return response;
         }, e => {
           if (!hasCached) dispatch(this.unauthenticatedFailedManifestRetrival(e));

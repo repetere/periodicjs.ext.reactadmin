@@ -291,7 +291,7 @@ function handleSuccessCallbacks(options) {
       this.props.setDynamicData(this.props.dynamicField, submitFormData);
     }
     if (successCallback) {
-      successCallback(fetchOptions.successProps || successData, submitFormData);
+      successCallback(fetchOptions.successProps || successData.callbackProps || (0, _assign2.default)({}, submitFormData, successData), submitFormData);
     }
   }
   if (responseCallback) {
@@ -301,7 +301,7 @@ function handleSuccessCallbacks(options) {
       if (fetchOptions.setDynamicResponseData) {
         this.props.setDynamicData(this.props.dynamicResponseField, successData);
       }
-      responseCallback(successData, submitFormData);
+      responseCallback(successData.callbackProps || successData, submitFormData);
     }
   }
 }

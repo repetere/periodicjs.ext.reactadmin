@@ -231,10 +231,10 @@ class ResponsiveForm extends Component{
             res.json()
               .then(successData => {
                 if (successData && typeof successData.successCallback === 'string') {
-                  successCallback = getCBFromString(fetchOptions.successCallback);
+                  successCallback = getCBFromString(successData.successCallback);
                 }
                 if (successData && typeof successData.responseCallback === 'string') {
-                  responseCallback = getCBFromString(fetchOptions.responseCallback);
+                  responseCallback = getCBFromString(successData.responseCallback);
                 }
                 formSuccessCallbacks({ fetchOptions, submitFormData, successData, successCallback, responseCallback, });
                 __formStateUpdate();
@@ -244,6 +244,7 @@ class ResponsiveForm extends Component{
           }
         })
         .catch(e => {
+          __formStateUpdate();
           if (typeof e === 'object' && typeof e.callback === 'string' &&  e.callbackProps) {
             let errorCB = getCBFromString(e.callback);
             errorCB(e.callbackProps);
@@ -256,11 +257,10 @@ class ResponsiveForm extends Component{
             if (errorCB) {
               let errorProps = (this.props.useErrorMessageProp) ? e.message : e;
               errorCB(errorProps);
-            } else {
+            } else if(this.props.onError && typeof this.props.onError==='function') {
               this.props.onError(e);
             }
           }
-          __formStateUpdate();
         });
     } else {
       this.props.onSubmit(submitFormData);
@@ -438,7 +438,7 @@ class ResponsiveForm extends Component{
         isFullwidth: true,
       }, this.props.cardFormProps) }>
         {(this.props.cardFormTitle)
-          ? (<CardHeader><CardHeaderTitle>{this.props.cardFormTitle}</CardHeaderTitle></CardHeader>)
+          ? (<CardHeader><CardHeaderTitle {...this.props.cardFormTitleProps}>{this.props.cardFormTitle}</CardHeaderTitle></CardHeader>)
           : null}  
         <CardContent>
           {formGroupData}

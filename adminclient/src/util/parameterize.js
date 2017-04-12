@@ -1,25 +1,8 @@
-import PathRegExp from 'path-to-regexp';
+// import PathRegExp from 'path-to-regexp';
 import querystring from 'querystring';
+import { findMatchingRoutePath, getParameterizedPath, } from '../../../utility/find_matching_route';
 
-const ROUTE_MAP = new Map();
-
-/**
- * Generates a express style regexp for a given route and stores in a Map
- * @param  {string} route The route that should be converted into a regexp
- * @return {Object}       Returns an object with param keys and a path regexp
- */
-export const getParameterized = function (route) {
-	if (ROUTE_MAP.has(route)) return ROUTE_MAP.get(route);
-	else {
-		let keys = []
-		let result = new PathRegExp(route, keys);
-		ROUTE_MAP.set(route, {
-			re: result,
-			keys,
-		});
-		return { keys, re: result };
-	}
-};
+export const getParameterized = getParameterizedPath;
 
 /**
  * Converts a route into a path regexp and returns an array of params indexed by order of appearance
@@ -28,17 +11,17 @@ export const getParameterized = function (route) {
  * @return {string[]} parameterized values from location string
  */
 export const parameterize = function (route, location) {
-	let regexp = getParameterized(route);
-	let params = regexp.re.exec(location);
-	if (params.length > 1 && Array.isArray(regexp.keys)) {
-		params = params.slice(1);
-		return regexp.keys.reduce((result, param, index) => {
-			param = param.name;
-			result[param] = params[index];
-			return result;
-		}, {});
-	}
-	return [];
+  let regexp = getParameterized(route);
+  let params = regexp.re.exec(location);
+  if (params.length > 1 && Array.isArray(regexp.keys)) {
+    params = params.slice(1);
+    return regexp.keys.reduce((result, param, index) => {
+      param = param.name;
+      result[param] = params[index];
+      return result;
+    }, {});
+  }
+  return [];
 };
 
 /**
@@ -52,14 +35,14 @@ export const parameterize = function (route, location) {
  * @return {string} The compiled resource route
  */
 export const setParameters = function (options = {}) {
-	let params = (options.params && Array.isArray(options.params)) ? options.params : parameterize(options.route, options.location);
-	let pkeys = Object.keys(params);
-	for (let i = 0; i < pkeys.length; i++) {
-		options.resource = options.resource.replace(new RegExp(`:${ pkeys[i] }`), params[pkeys[i]]);
-	}
-	if (options.query && typeof options.query === 'object') options.resource += `?${ querystring.stringify(options.query) }`;
-	else if (typeof options.query === 'string') options.resource += `${ /^\?/.test(options.query) ? '' : '?' }${ options.query }`;
-	return options.resource;
+  let params = (options.params && Array.isArray(options.params)) ? options.params : parameterize(options.route, options.location);
+  let pkeys = Object.keys(params);
+  for (let i = 0; i < pkeys.length; i++) {
+    options.resource = options.resource.replace(new RegExp(`:${ pkeys[i] }`), params[pkeys[i]]);
+  }
+  if (options.query && typeof options.query === 'object') options.resource += `?${ querystring.stringify(options.query) }`;
+  else if (typeof options.query === 'string') options.resource += `${ /^\?/.test(options.query) ? '' : '?' }${ options.query }`;
+  return options.resource;
 };
 
 /**
@@ -68,12 +51,4 @@ export const setParameters = function (options = {}) {
  * @param  {string} location The window location that should be resolved
  * @return {string}          A matching dynamic route
  */
-export const findMatchingRoute = function (routes, location) {
-	let matching;
-	location = (/\?[^\s]+$/.test(location)) ? location.replace(/^([^\s\?]+)\?[^\s]+$/, '$1') : location;
-	Object.keys(routes).forEach(key => {
-		let result = getParameterized(key);
-		if (result.re.test(location) && !matching) matching = key;
-	});
-	return matching;
-};
+export const findMatchingRoute = findMatchingRoutePath;

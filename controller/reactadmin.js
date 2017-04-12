@@ -5,6 +5,11 @@ const path = require('path');
 const mongoose = require('mongoose');
 const capitalize = require('capitalize');
 const ERROR404 = require(path.join(__dirname, '../adminclient/src/content/config/manifests/dynamic404'));
+const parameterize = require('../utility/find_matching_route');
+const findMatchingRoute = parameterize.findMatchingRoutePath;
+const getParameterized = parameterize.getParameterizedPath;
+// console.log({ getParameterized });
+
 const DEFAULT_COMPONENTS = {
   login: {
     status: 'uninitialized',
@@ -496,10 +501,16 @@ var pullConfigurationSettings = function (reload) {
 };
 
 var filterInitialManifest = function (containers, location) {
-  return Object.keys(containers).reduce((result, key) => {
+  let initialManifests = Object.keys(containers).reduce((result, key) => {
     if (location === key || key === '/login' || key === '/mfa') result[key] = containers[key];
     return result;
   }, {});
+  let matchedRoute = findMatchingRoute(containers, location);
+  if (matchedRoute) {
+    initialManifests[ matchedRoute ] = containers[ matchedRoute ];
+  }
+  // console.log({ initialManifests, matchedRoute, });
+  return initialManifests;
 };
 
 /**

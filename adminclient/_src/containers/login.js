@@ -234,8 +234,8 @@ var Login = function (_Component) {
     key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps(nextProps) {
       var state = this.props.getState();
-      // console.debug('componentWillReceiveProps', { nextProps, state, });
-      if (state.user.isLoggedIn()) {
+      console.debug('componentWillReceiveProps', { nextProps: nextProps, state: state });
+      if (state.user.isLoggedIn && state.user.isLoggedIn()) {
         this.props.reduxRouter.push(state.settings.auth.logged_in_homepage);
       } else {
         this.setState(nextProps);
