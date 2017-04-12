@@ -40,7 +40,7 @@ div[data-reactroot]{
   display: none;
 }
 .__re-bulma_card-content {
-    padding: 5px;
+    /*padding: 5px;*/
 }
 .CodeMirror.cm-s-default{
   height:100%;
