@@ -28,10 +28,6 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _styles = require('../styles');
-
-var _styles2 = _interopRequireDefault(_styles);
-
 var _AppLayoutMap = require('../components/AppLayoutMap');
 
 var _querystring = require('querystring');
@@ -44,129 +40,79 @@ var _AppSectionLoading2 = _interopRequireDefault(_AppSectionLoading);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function getLoginLayout(options) {
-  var loginfunction = options.loginfunction;
-
-  var loginLayout = {
-    component: 'Hero',
-    props: {
-      size: 'isFullheight'
+function getLoginLayout() /*options*/{
+  // let { loginfunction, } =  options ;
+  var hrline = {
+    'gridProps': {
+      style: {
+        padding: '0 5px'
+      }
     },
-    children: [{
-      component: 'HeroBody',
-      props: {},
-      children: [{
-        component: 'Container',
-        props: {},
-        children: [{
-          component: 'Columns',
-          children: [{
-            component: 'Column',
-            props: {
-              size: 'is3'
+    'formElements': [{
+      type: 'line',
+      passProps: {
+        style: {
+          margin: 0,
+          border: 'none',
+          borderBottom: '1px solid #e4e4e4'
+        }
+      },
+      layoutProps: {
+        style: {
+          padding: 0,
+          margin: 0
+        }
+      }
+    }]
+  };
+  var loginLayout = {
+    'component': 'Hero',
+    'props': {
+      'size': 'isFullheight'
+    },
+    'children': [{
+      'component': 'HeroBody',
+      'props': {},
+      'children': [{
+        'component': 'Container',
+        'props': {},
+        'children': [{
+          'component': 'Columns',
+          'children': [{
+            'component': 'Column',
+            'props': {
+              'size': 'is3'
             }
           }, {
-            component: 'Column',
-            props: {},
-            children: [{
-              component: 'Title',
-              props: {
-                style: {
-                  textAlign: 'center'
+            'component': 'Column',
+            'props': {},
+            'children': [{
+              'component': 'Title',
+              'props': {
+                'style': {
+                  'textAlign': 'center'
                 }
               },
-              children: 'Please Sign in'
+              'children': 'Sign in'
             }, {
-              component: 'ResponsiveForm',
-              props: {
-                cardForm: true,
-                cardFormProps: {
-                  isFullwidth: true
+              'component': 'ResponsiveForm',
+              'props': {
+                'cardForm': true,
+                // cardFormTitle:'Sign In',
+                'cardFormProps': {
+                  'isFullwidth': true
                 },
-                onSubmit: loginfunction, // (data) => { console.log('formsubmit', data); },
-                footergroups: [{
-                  gridProps: {},
-                  formElements: [{
-                    type: 'submit',
-                    value: 'Login',
-                    name: 'login',
-                    passProps: {
-                      style: _styles2.default.isPrimary
-                    },
-                    layoutProps: {
-                      // style:{textAlign:'center'}
-                    }
-                  }, {
-                    type: 'submit',
-                    value: 'Forgot Password',
-                    name: 'forgot',
-                    passProps: {
-                      style: _styles2.default.isLink
-                    },
-                    layoutProps: {
-                      // style:{textAlign:'center'}
-                    }
-                  }, {
-                    type: 'submit',
-                    value: 'New User',
-                    name: 'register',
-                    passProps: {
-                      style: _styles2.default.isLink
-                    },
-                    layoutProps: {
-                      // style:{textAlign:'center'}
-                    }
-                  }]
-                }],
-                formgroups: [{
-                  gridProps: {},
-                  formElements: [{
-                    type: 'text',
-                    label: 'Username',
-                    name: 'username',
-                    layoutProps: {
-                      // horizontalform:true,
-                    }
-                  }]
-                }, {
-                  gridProps: {},
-                  formElements: [{
-                    type: 'text',
-                    label: 'Password',
-                    name: 'password',
-                    submitOnEnter: true,
-                    passProps: {
-                      type: 'password'
-                    },
-                    layoutProps: {
-                      // horizontalform:true,
-                    }
-                  }]
-                }, {
-                  gridProps: {},
-                  formElements: [{
-                    type: 'checkbox',
-                    label: '',
-                    placeholder: 'Remember Me',
-                    name: 'rememberme',
-                    passProps: {
-                      type: 'rememberme'
-                    },
-                    layoutProps: {
-                      // horizontalform:true,
-                    }
-                  }]
-                }],
+                'onSubmit': 'func:this.props.loginUser',
                 'validations': [{
                   'name': 'username',
                   'constraints': {
                     'username': {
                       presence: {
-                        message: 'is required'
+                        message: '^Your username is required.'
                       },
                       'length': {
                         'minimum': 3,
-                        'message': 'Your username is required'
+                        'message': '^Your username is required.'
                       }
                     }
                   }
@@ -175,21 +121,130 @@ function getLoginLayout(options) {
                   'constraints': {
                     'password': {
                       presence: {
-                        message: 'is required'
+                        message: '^Your username is required'
                       },
                       'length': {
                         'minimum': 4,
-                        'message': 'Your password is too short'
+                        'message': '^Your password is too short'
                       }
                     }
                   }
+                }],
+                'formgroups': [{
+                  'gridProps': {},
+                  'formElements': [{
+                    'type': 'text',
+                    'label': 'Username',
+                    'name': 'username',
+                    'layoutProps': {
+                      'horizontalform': true
+                    }
+                  }]
+                }, {
+                  'gridProps': {},
+                  'formElements': [{
+                    'type': 'text',
+                    'label': 'Password',
+                    'name': 'password',
+                    'submitOnEnter': true,
+                    'passProps': {
+                      'type': 'password'
+                    },
+                    'layoutProps': {
+                      'horizontalform': true
+                    }
+                  }]
+                }, {
+                  'gridProps': {
+                    style: {
+                      justifyContent: 'center'
+                    }
+                  },
+                  'formElements': [{
+                    type: 'group',
+                    label: ' ',
+                    'layoutProps': {
+                      'horizontalform': true,
+                      innerFormItem: true
+                    },
+                    groupElements: [{
+                      'type': 'checkbox',
+                      // "label": "a",
+                      'placeholder': 'Remember Me',
+                      'name': 'rememberme',
+                      'passProps': {
+                        'type': 'rememberme'
+                      },
+                      'layoutProps': {
+                        'horizontalform': true
+                      }
+                    }, {
+                      'type': 'layout',
+                      value: {
+                        component: 'ResponsiveLink',
+                        props: {
+                          location: '/auth/forgot'
+                        },
+                        children: 'Forgot Password'
+                      }
+                    }]
+                  }]
+                }, hrline, {
+                  'gridProps': {
+                    style: {
+                      justifyContent: 'center'
+                    }
+                  },
+                  'formElements': [{
+                    'type': 'submit',
+                    'value': 'Login',
+                    // "placeholder": "Remember Me",
+                    'name': 'login',
+                    'passProps': {
+                      'color': 'isPrimary'
+                    },
+                    'layoutProps': {
+                      formItemStyle: {
+                        justifyContent: 'center'
+                      },
+                      'horizontalform': true
+                    }
+                  }, {
+                    'type': 'layout',
+                    value: {
+                      component: 'FormHorizontal',
+                      props: {
+                        style: {
+                          justifyContent: 'center'
+                        }
+                      },
+                      children: [{
+                        component: 'ResponsiveButton',
+                        props: {
+                          onClick: 'func:this.props.reduxRouter.push',
+                          onclickProps: '/auth/user/new',
+                          style: {},
+                          buttonProps: {
+                            // color: 'isPrimary',
+                          }
+                        },
+                        children: 'New User'
+                      }]
+
+                    },
+                    'layoutProps': {
+                      style: {
+                        justifyContent: 'center'
+                      }
+                    }
+                  }]
                 }]
               }
             }]
           }, {
-            component: 'Column',
-            props: {
-              size: 'is3'
+            'component': 'Column',
+            'props': {
+              'size': 'is3'
             }
           }]
         }]
@@ -198,6 +253,7 @@ function getLoginLayout(options) {
   };
   return loginLayout;
 }
+// import styles from '../styles';
 
 var Login = function (_Component) {
   (0, _inherits3.default)(Login, _Component);
@@ -234,7 +290,7 @@ var Login = function (_Component) {
     key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps(nextProps) {
       var state = this.props.getState();
-      console.debug('componentWillReceiveProps', { nextProps: nextProps, state: state });
+      // console.debug('componentWillReceiveProps', { nextProps, state, });
       if (state.user.isLoggedIn && state.user.isLoggedIn()) {
         this.props.reduxRouter.push(state.settings.auth.logged_in_homepage);
       } else {
