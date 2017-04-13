@@ -1,4 +1,4 @@
-import React, { Component, PropTypes, } from 'react';
+import React, { Component, /*PropTypes,*/ } from 'react';
 import { Link, } from 'react-router';
 import * as rb from 're-bulma';
 import moment from 'moment';
@@ -8,174 +8,13 @@ import qs from 'querystring';
 import debounce from 'debounce';
 import flatten from 'flat';
 import { getRenderedComponent, } from '../AppLayoutMap';
-import capitalize from 'capitalize';
-import pluralize from 'pluralize';
+// import capitalize from 'capitalize';
+// import pluralize from 'pluralize';
 import FileReaderInput from 'react-file-reader-input';
 import path from 'path';
 import { csv2json, } from 'json-2-csv';
 import RACodeMirror from '../RACodeMirror';
-// import styles from '../styles';
-
-const propTypes = {
-  hasPagination: PropTypes.bool,
-  hasHeader: PropTypes.bool,
-  hasFooter: PropTypes.bool,
-  limit: PropTypes.number,
-  currentPage: PropTypes.number,
-  numButtons: PropTypes.number,
-  numPages: PropTypes.number,
-  numItems: PropTypes.number,
-  flattenRowData: PropTypes.bool,
-  flattenRowDataOptions: PropTypes.object,
-  selectedRow: PropTypes.object,
-  searchTable:PropTypes.bool,
-  filterSearch:PropTypes.bool,  
-  showFilterSearch:PropTypes.bool,  
-  usingFiltersInSearch:PropTypes.bool,  
-  headers:PropTypes.array,  
-  rows:PropTypes.array,  
-  tableFooter:PropTypes.bool,
-  onChange:PropTypes.func,
-  tableForm: PropTypes.bool,
-  tableFormAddButtonProps: PropTypes.bool,
-  selectEntireRow: PropTypes.bool,
-  sortable: PropTypes.bool,
-  suppressNullValues: PropTypes.bool,
-  useInputRows: PropTypes.bool,
-  replaceButton: PropTypes.bool,
-  replaceButtonProps: PropTypes.any,
-  replaceButtonLabel: PropTypes.string,
-  uploadAddButton: PropTypes.bool,
-  uploadAddButtonProps: PropTypes.any,
-  uploadAddButtonLabel: PropTypes.string,
-};
-
-const defaultProps = {
-  headers: [],
-  rows: [],
-  hasPagination: true,
-  hasHeader: false,
-  hasFooter: false,
-  tableFooter: false,
-  onChange: (event) => {
-    console.debug(event);
-  },
-  limit: 50,
-  currentPage: 1,
-  numPages: 1,
-  numItems: 0,
-  numButtons: 1,
-  flattenRowData: false,
-  flattenRowDataOptions: {},
-  searchTable:false,
-  filterSearch:false,
-  showFilterSearch:false,  
-  usingFiltersInSearch: false,
-  tableForm: false,
-  filterAddonProps:{
-    style:{
-      marginBottom:'20px',
-    },
-  },
-  filterButtonProps:{
-  },
-  searchButtonProps: {
-    color:'isInfo',
-  },
-  filterSearchProps:{
-    type:'text',
-    placeholder:'Search',
-    isExpanded:true, 
-  },
-  tableFormAddButtonProps: {
-    color:'isPrimary',
-  },
-  selectEntireRow: false,
-  useInputRows: false,
-  selectOptionSortId: false,
-  selectOptionSortIdLabel: false,
-  sortable: true,
-  suppressNullValues: false,
-  addNewRows: true,
-  fixCSVRow: true,
-  excludeEmptyHeaders:true,
-  insertSelectedRowHeaderIndex: 0,
-  csvEOL: {
-    // eol: '\r\n',
-    trimHeaderValues: true,
-    trimFieldValues: true,
-  },
-};
-
-function getOptionsHeaders(props, propHeaders) {
-  let headers = (propHeaders || props.headers || []).concat([]);
-  // console.debug('original', { headers });
-  if (props.selectOptionSortId) {
-    headers.unshift({
-      sortid: props.selectOptionSortId,
-      label: props.selectOptionSortIdLabel || capitalize(props.selectOptionSortId),
-      value:'x',
-      selectedOptionRowHeader:true,
-    });
-  }
-  // console.debug('modified', { headers });
-  return headers;
-}
-
-function getHeadersFromRows(options) {
-  let { rows, sortable, excludeEmptyHeaders, } = options;
-  console.debug({ rows, sortable, excludeEmptyHeaders, });
-  let headerRow = Object.assign({}, rows[ 0 ]);
-  console.debug({ headerRow, });
-  let headersFromRow = Object.keys(headerRow);
-  let headers = headersFromRow.map(rowkey => {
-    return {
-      label: capitalize(pluralize(rowkey)),
-      sortid: rowkey,
-      sortable: sortable,
-    };
-  });
-  return headers;
-}
-
-function excludeEmptyHeaders(options) {
-  let { headers, excludeEmptyHeaders, } = options;
-  // console.debug({ headers, excludeEmptyHeaders, });
-  if (excludeEmptyHeaders) {
-    headers.forEach((header, i) => {
-      // console.debug('headers[ i ]', headers[ i ], { header, });
-      if (!headers[ i ].sortid && !headers[ i ].label) {
-        delete headers[ i ];
-      }
-    });
-  }
-  return headers;
-}
-
-function getFilterOptions(options) {
-  const { rows, headers, filters, } = options;
-  let selectOptions = [];
-  let useableheaders = headers.map(header=>header.sortid);
-  if (filters) {
-    filters.forEach(filter => {
-      selectOptions.push({ label: filter.label || filter, value: filter.value || filter, });
-    });
-  } else {
-    if (rows && rows.length) {
-      let rowheaders = Object.keys(rows[ 0 ]);
-      // console.debug({ rowheaders });
-      useableheaders = Object.assign([], rowheaders, useableheaders);
-    }
-    useableheaders.forEach(header => { 
-      // console.debug({ header });
-      if (header && header!=='__v') {
-        selectOptions.push({ label: header, value: header, });
-      }
-    });
-  }
-  // console.debug({ selectOptions,useableheaders, });
-  return selectOptions;
-}
+import { filterQuerySelectOptions, propTypes, defaultProps, getOptionsHeaders, getHeadersFromRows, excludeEmptyHeaders, getFilterOptions, defaultNewRowData, filterQuerySelectOptionsMap, } from './TableHelpers';
 
 class ResponsiveTable extends Component {
   constructor(props) {
@@ -213,7 +52,21 @@ class ResponsiveTable extends Component {
       isLoading: false,
       sortProp: false,
       sortOrder: '',
-      filterRowData: {},
+      filterRowData: [
+        // {
+        //   property: 'email',
+        //   filter_label:'% like %',
+        //   filter_value: 'like',
+        //   value:'test',
+        // },
+        // {
+        //   property: 'createdat',
+        //   filter_label:'after date',
+        //   filter_value: 'gt-date',
+        //   value:'2017-01-01',
+        // },
+      ],
+      filterRowNewData: defaultNewRowData,
       newRowData: {},
       selectedRowData:{},
       selectedRowIndex: {},
@@ -232,6 +85,9 @@ class ResponsiveTable extends Component {
     this.updateNewRowText = this.updateNewRowDataText.bind(this);
     this.updateInlineRowText = this.updateInlineRowDataText.bind(this);
     this.getFooterAddRow = this.updateGetFooterAddRow.bind(this);
+    this.removeFilterRow = this.removeFilterByDeleteRow.bind(this);
+    this.addFilterRow = this.addFilterByAddRow.bind(this);
+    this.updateNewFilterRowText = this.updateNewFilterRowDataText.bind(this);
   }
   componentWillReceiveProps(nextProps) {
     let rows = nextProps.rows || [];
@@ -359,6 +215,34 @@ class ResponsiveTable extends Component {
       }
     };
   }
+  removeFilterByDeleteRow(rowIndex) {
+    let rows = this.state.filterRowData.concat([]);
+    rows.splice(rowIndex, 1);
+    this.setState({ filterRowData: rows, }, () => {
+      this.updateTableData({});
+    });
+  }
+  addFilterByAddRow() {
+    let rows = this.state.filterRowData.concat([]);
+    let newRow = Object.assign({}, this.state.filterRowNewData);
+    rows.splice(rows.length, 0, newRow);
+    console.debug('addFilterByAddRow', { rows });
+    console.debug('this.props.createNotification', this.props.createNotification);
+    this.setState({ filterRowData: rows, filterRowNewData: defaultNewRowData, }, () => {
+      this.updateTableData({});
+    });
+  }
+  updateNewFilterRowDataText(options) {
+    let { name, text, } = options;
+    let updatedStateProp = {
+      filterRowNewData: Object.assign(
+      {},
+      this.state.filterRowNewData,
+      { [ name ]: text, }),
+    };
+    // console.debug({ updatedStateProp, options });
+    this.setState(updatedStateProp);
+  }
   updateTableData(options) {
     let updatedState = {};
     let newSortOptions = {};
@@ -426,11 +310,16 @@ class ResponsiveTable extends Component {
         sort: (newSortOptions.sortProp)
           ? `${newSortOptions.sortOrder}${newSortOptions.sortProp}`
           : undefined,
+        fq: (this.state.filterRowData && this.state.filterRowData.length)
+          ? this.state.filterRowData.map(frd => {
+            return `${frd.property}|||${frd.filter_value}|||${frd.value}`;
+          })
+          : undefined,
         search: options.search,
         allowSpecialCharacters: true,
         pagenum: options.pagenum || 1,
       })}`;
-      // console.log({ options, fetchURL, },options.search.value);
+      // console.debug('this.state.filterRowData', this.state.filterRowData, { options, fetchURL, });
       let headers = Object.assign({
         'x-access-token': stateProps.user.jwt_token,
       }, stateProps.settings.userprofile.options.headers);
@@ -681,9 +570,9 @@ class ResponsiveTable extends Component {
   toggleAdvancedSearchFilters() {
     this.setState({ showFilterSearch: !this.state.showFilterSearch, });
     // showFilterSearch:false,  
-  // usingFiltersInSearch: false,
-  // showFilterSearch: props.showFilterSearch,  
-  //     usingFiltersInSearch: props.usingFiltersInSearch  
+    // usingFiltersInSearch: false,
+    // showFilterSearch: props.showFilterSearch,  
+    //     usingFiltersInSearch: props.usingFiltersInSearch  
   }
   render() {
     // console.debug('render this.state', this.state);
@@ -774,9 +663,12 @@ class ResponsiveTable extends Component {
     
     var fbts= <a/>;
     if(this.props.filterSearch){
-      fbts = <rb.Button {...this.props.filterButtonProps} onClick={() => {
-        this.toggleAdvancedSearchFilters();
-      }}>Advanced</rb.Button>;
+      fbts = <rb.Button {...this.props.filterButtonProps}
+        onClick={() => {
+          this.toggleAdvancedSearchFilters();
+        }}
+        color={(this.state.filterRowData.length > 0) ? 'isDark' : undefined}
+      >Advanced</rb.Button>;
     }
     return (
       <rb.Container {...this.props.containerProps}>
@@ -804,24 +696,69 @@ class ResponsiveTable extends Component {
           : null}
         {(this.state.showFilterSearch)
           ? <div className="__ra_rt_asf" {...this.props.searchFilterContainerProps}>
-            <rb.Message header="Advanced Search Filters" {...this.props.searchFilterMessageProps}>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Pellentesque risus mi, tempus quis placerat ut, porta nec
-                nulla. Vestibulum rhoncus ac ex sit amet fringilla. Nullam
-                gravida purus diam, et dictum felis venenatis efficitur.
-                Aenean ac eleifend lacus, in mollis lectus. Donec sodales,
-                arcu et sollicitudin porttitor, tortor urna tempor ligula,
-                id porttitor mi magna a neque. Donec dui urna, vehicula et
-                sem eget, facilisis sodales sem.
-                </p>
-              <rb.Table style={{ background:'none', }} {...this.props.searchFilterTableProps}>
+            <rb.Message header="Advanced Search Filters" >
+              <rb.Table {...this.props.searchFilterTableProps}>
+                <rb.Thead>  
+                  <rb.Tr>
+                    <rb.Th>Property</rb.Th>
+                    <rb.Th>Filter</rb.Th>
+                    <rb.Th>Value</rb.Th>
+                    <rb.Th></rb.Th>
+                  </rb.Tr>
+                </rb.Thead>
+                <rb.Tbody>
+                  {(this.state.filterRowData && this.state.filterRowData.length)
+                    ? this.state.filterRowData.map((filterRowDatum, l) => {
+                      return <rb.Tr key={l}>
+                        <rb.Td>{filterRowDatum.property}</rb.Td>
+                        <rb.Td>{filterQuerySelectOptionsMap[filterRowDatum.filter_value]}</rb.Td>
+                        <rb.Td>{filterRowDatum.value}</rb.Td>
+                        <rb.Td><rb.Button onClick={() => {
+                          this.removeFilterRow(l);
+                        }}>{'⤫'}</rb.Button></rb.Td>
+                      </rb.Tr>;
+                    })
+                    : null}  
+                </rb.Tbody>
                 <rb.Tfoot>
                   <rb.Tr>
                     <rb.Th>
-                      <rb.Select>{this.filterSelectOptions.map(filter => {
-                        return <option value={filter.value}>{filter.label}</option>;
+                      <rb.Select
+                        value={this.state.filterRowNewData.property || '__property__'}
+                        onChange={(event) => {
+                          let text = event.target.value;
+                          let name = 'property';
+                          this.updateNewFilterRowText({ name, text, });
+                        }}
+                      >{this.filterSelectOptions.map((filter, fp) => {
+                        return <option value={filter.value} key={fp} disabled={filter.disabled}>{filter.label}</option>;
                       })}</rb.Select>  
+                    </rb.Th>
+                    <rb.Th>
+                      <rb.Select 
+                        value={this.state.filterRowNewData.filter_value || '__filter__'}
+                        onChange={(event) => {
+                          let text = event.target.value;
+                          let name = 'filter_value';
+                          this.updateNewFilterRowText({ name, text, });
+                        }}
+                      >{filterQuerySelectOptions.map((filter, ft) => {
+                        return <option value={filter.value} key={ft} disabled={filter.disabled}>{filter.label}</option>;
+                      })}</rb.Select>  
+                    </rb.Th>
+                    <rb.Th>
+                      <rb.Input
+                        value={this.state.filterRowNewData.value || ''}
+                        onChange={(event) => {
+                          let text = event.target.value;
+                          let name = 'value';
+                          this.updateNewFilterRowText({ name, text, });
+                        }} />  
+                    </rb.Th>
+                    <rb.Th>
+                      <rb.Button onClick={() => { 
+                        this.addFilterRow();
+                      }}>Add filter</rb.Button>  
                     </rb.Th>
                   </rb.Tr>
                 </rb.Tfoot>
