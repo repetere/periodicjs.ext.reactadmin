@@ -22,6 +22,7 @@ const getAllHeaders = function (schemas, label, options) {
       'linkProps': {
         'style': {
           'textDecoration': 'none',
+          cursor:'pointer',
         },
       },
     },
@@ -114,7 +115,7 @@ module.exports = function (schemas, label, options) {
               wordWrap: 'break-word',
             },
             limit: 20,
-            'filterSearch': false,
+            'filterSearch': true,
             'tableSearch': true,
             flattenRowData: true,
             baseUrl: `${(usablePrefix.charAt(0)!=='/')?'/'+usablePrefix:usablePrefix}/${pluralize(label)}?format=json`,

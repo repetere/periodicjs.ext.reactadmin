@@ -30,6 +30,8 @@ const propTypes = {
   selectedRow: PropTypes.object,
   searchTable:PropTypes.bool,
   filterSearch:PropTypes.bool,  
+  showFilterSearch:PropTypes.bool,  
+  usingFiltersInSearch:PropTypes.bool,  
   headers:PropTypes.array,  
   rows:PropTypes.array,  
   tableFooter:PropTypes.bool,
@@ -67,7 +69,9 @@ const defaultProps = {
   flattenRowDataOptions: {},
   searchTable:false,
   filterSearch:false,
-  tableForm:false,
+  showFilterSearch:false,  
+  usingFiltersInSearch: false,
+  tableForm: false,
   filterAddonProps:{
     style:{
       marginBottom:'20px',
@@ -122,7 +126,7 @@ function getHeadersFromRows(options) {
   let { rows, sortable, excludeEmptyHeaders, } = options;
   console.debug({ rows, sortable, excludeEmptyHeaders, });
   let headerRow = Object.assign({}, rows[ 0 ]);
-  console.debug({ headerRow });
+  console.debug({ headerRow, });
   let headersFromRow = Object.keys(headerRow);
   let headers = headersFromRow.map(rowkey => {
     return {
@@ -148,6 +152,31 @@ function excludeEmptyHeaders(options) {
   return headers;
 }
 
+function getFilterOptions(options) {
+  const { rows, headers, filters, } = options;
+  let selectOptions = [];
+  let useableheaders = headers.map(header=>header.sortid);
+  if (filters) {
+    filters.forEach(filter => {
+      selectOptions.push({ label: filter.label || filter, value: filter.value || filter, });
+    });
+  } else {
+    if (rows && rows.length) {
+      let rowheaders = Object.keys(rows[ 0 ]);
+      // console.debug({ rowheaders });
+      useableheaders = Object.assign([], rowheaders, useableheaders);
+    }
+    useableheaders.forEach(header => { 
+      // console.debug({ header });
+      if (header && header!=='__v') {
+        selectOptions.push({ label: header, value: header, });
+      }
+    });
+  }
+  // console.debug({ selectOptions,useableheaders, });
+  return selectOptions;
+}
+
 class ResponsiveTable extends Component {
   constructor(props) {
     super(props);
@@ -168,6 +197,7 @@ class ResponsiveTable extends Component {
     if (props.flattenRowData) {
       rows = rows.map(row => Object.assign({}, row, flatten(row, props.flattenRowDataOptions)));
     }
+    this.filterSelectOptions = getFilterOptions({ rows, headers, filters:this.props.filterSelectOptions, });
 
     this.state = {
       headers: headers,
@@ -183,9 +213,12 @@ class ResponsiveTable extends Component {
       isLoading: false,
       sortProp: false,
       sortOrder: '',
+      filterRowData: {},
       newRowData: {},
       selectedRowData:{},
-      selectedRowIndex:{},
+      selectedRowIndex: {},
+      showFilterSearch: props.showFilterSearch,  
+      usingFiltersInSearch: props.usingFiltersInSearch,
     };
     this.searchFunction = debounce(this.updateTableData, 200);
     this.getRenderedComponent = getRenderedComponent.bind(this);
@@ -551,9 +584,9 @@ class ResponsiveTable extends Component {
         return '';
       // } else if (typeof returnValue !== 'object') {
       //   return JSON.stringify(returnValue);
-    } else if (returnValue === null) {
-      return 'null';
-    } else {
+      } else if (returnValue === null) {
+        return 'null';
+      } else {
         return returnValue.toString();
       }
     } catch (e) {
@@ -645,6 +678,13 @@ class ResponsiveTable extends Component {
       // break;  
     }
   }
+  toggleAdvancedSearchFilters() {
+    this.setState({ showFilterSearch: !this.state.showFilterSearch, });
+    // showFilterSearch:false,  
+  // usingFiltersInSearch: false,
+  // showFilterSearch: props.showFilterSearch,  
+  //     usingFiltersInSearch: props.usingFiltersInSearch  
+  }
   render() {
     // console.debug('render this.state', this.state);
     let calcStartIndex = ((this.state.currentPage - 1) * this.state.limit);
@@ -734,7 +774,9 @@ class ResponsiveTable extends Component {
     
     var fbts= <a/>;
     if(this.props.filterSearch){
-      fbts = <rb.Button {...this.props.filterButtonProps}>Filters</rb.Button>;
+      fbts = <rb.Button {...this.props.filterButtonProps} onClick={() => {
+        this.toggleAdvancedSearchFilters();
+      }}>Advanced</rb.Button>;
     }
     return (
       <rb.Container {...this.props.containerProps}>
@@ -743,7 +785,6 @@ class ResponsiveTable extends Component {
           ? (<rb.Addons
               {...this.props.filterAddonProps}
             >
-              {fbts}
               <rb.Input {...this.props.filterSearchProps}
                 onChange={(data) => {
                   this.searchFunction({ search: data.target.value, });
@@ -758,7 +799,35 @@ class ResponsiveTable extends Component {
                 this.searchFunction({ search: this.searchInputTextVal, });
               }}
               >Search</rb.Button>
+              {fbts}
             </rb.Addons>)
+          : null}
+        {(this.state.showFilterSearch)
+          ? <div className="__ra_rt_asf" {...this.props.searchFilterContainerProps}>
+            <rb.Message header="Advanced Search Filters" {...this.props.searchFilterMessageProps}>
+              <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                Pellentesque risus mi, tempus quis placerat ut, porta nec
+                nulla. Vestibulum rhoncus ac ex sit amet fringilla. Nullam
+                gravida purus diam, et dictum felis venenatis efficitur.
+                Aenean ac eleifend lacus, in mollis lectus. Donec sodales,
+                arcu et sollicitudin porttitor, tortor urna tempor ligula,
+                id porttitor mi magna a neque. Donec dui urna, vehicula et
+                sem eget, facilisis sodales sem.
+                </p>
+              <rb.Table style={{ background:'none', }} {...this.props.searchFilterTableProps}>
+                <rb.Tfoot>
+                  <rb.Tr>
+                    <rb.Th>
+                      <rb.Select>{this.filterSelectOptions.map(filter => {
+                        return <option value={filter.value}>{filter.label}</option>;
+                      })}</rb.Select>  
+                    </rb.Th>
+                  </rb.Tr>
+                </rb.Tfoot>
+                </rb.Table>
+              </rb.Message>
+          </div>
           : null}
         <div style={{ overflow:'hidden', height:'100%', }}>
           {(this.state.isLoading)
@@ -779,11 +848,13 @@ class ResponsiveTable extends Component {
             : null
           }   
           <rb.Table {...this.props.tableProps}>
-            <rb.Thead>
+            <rb.Thead className="__ra_rt_thead">
               <rb.Tr>
                 {this.state.headers.map((header, idx) => (
-                  <rb.Th key={idx} {...header.headerColumnProps}>{(header.sortable)
-                    ? (<a {...this.props.headerLinkProps} onClick={() => {
+                  <rb.Th key={idx} style={{ cursor: 'pointer', }}  {...header.headerColumnProps}>{(header.sortable)
+                    ? (<a style={{
+                      cursor: 'pointer',
+                    }} {...this.props.headerLinkProps} onClick={() => {
                       this.updateTableData({ sort: header.sortid, });
                     }}>{header.label}</a>)
                     : header.label
