@@ -38,7 +38,7 @@
                   },
                   {
                     "component":"Title",
-                    "children":"Standard Documentation Page"
+                    "children":"Standard Table Documentation Page"
                   },
                   {
                     "component": "ResponsiveButton",
@@ -57,6 +57,9 @@
                   {
                     "component":"ResponsiveTable",
                     "props":{
+                      "filterSearch":true,
+                      "tableSearch":true,
+                      "searchField":"email",
                       "headers":[
                         { "label": "#", "value":"--idx-ctr--" },
                         { "label": "Email", "sortid":"email", "sortable":true },

@@ -13,7 +13,7 @@ export const filterQuerySelectOptions = [
   { value:'gt', label:' > ', },
   { value:'gte', label:' >= ', },
   { value:'in', label:'contains any element', },
-  { value:'all', label:'contains every element', },
+  { value:'all', label:'contains every element', },//needed in filter
   { value:'not-in', label:'does not contain any element', },
   { value:'exists', label:'exists', },
   { value:'size', label:'size',  },
@@ -81,7 +81,8 @@ export const defaultProps = {
   numButtons: 1,
   flattenRowData: false,
   flattenRowDataOptions: {},
-  searchTable:false,
+  tableSearch:false,
+  // searchTable:false,
   filterSearch:false,
   showFilterSearch:false,  
   usingFiltersInSearch: false,
@@ -97,8 +98,25 @@ export const defaultProps = {
     color:'isInfo',
   },
   searchFilterTableProps: {
+    isBordered:true,
     style: {
       background:'none',
+    },
+  },
+  searchFilterPaginationProps: {
+    style: {
+      background: 'none',
+      marginBottom:0,
+    },
+  },
+  searchFilterTableNoteProps: {
+    style: {
+      marginBottom:0,
+    },
+  },
+  searchFilterContainerProps: {
+    style: {
+      marginBottom:'20px',
     },
   },
   searchFilterMessageProps: {
@@ -127,6 +145,8 @@ export const defaultProps = {
     trimHeaderValues: true,
     trimFieldValues: true,
   },
+  includeAllLimits:true,
+  numOfLimits: [ 1, 5, 10, 20, 50, 100, 500, 1000, ],
 };
 
 export function getOptionsHeaders(props, propHeaders) {
@@ -205,4 +225,14 @@ export function getFilterOptions(options) {
   }
   // console.debug({ selectOptions, useableheaders, });
   return selectOptions;
+}
+
+export function getFilterSortableOption(options) {
+  const {  headers, } = options;
+  return headers.filter(header => header.sortable && header.sortid).map(header => {
+    return {
+      value: header.sortid,
+      label: header.label || header.sortid,
+    };
+  });
 }

@@ -14,7 +14,11 @@ import FileReaderInput from 'react-file-reader-input';
 import path from 'path';
 import { csv2json, } from 'json-2-csv';
 import RACodeMirror from '../RACodeMirror';
-import { filterQuerySelectOptions, propTypes, defaultProps, getOptionsHeaders, getHeadersFromRows, excludeEmptyHeaders, getFilterOptions, defaultNewRowData, filterQuerySelectOptionsMap, } from './TableHelpers';
+import { filterQuerySelectOptions, propTypes, defaultProps, getOptionsHeaders, getHeadersFromRows, excludeEmptyHeaders, getFilterOptions, defaultNewRowData, filterQuerySelectOptionsMap, getFilterSortableOption, } from './TableHelpers';
+
+const filterLabelStyleProps = {
+  alignItems: 'center', display: 'flex', flex: 1, height: '100%',
+};
 
 class ResponsiveTable extends Component {
   constructor(props) {
@@ -36,7 +40,8 @@ class ResponsiveTable extends Component {
     if (props.flattenRowData) {
       rows = rows.map(row => Object.assign({}, row, flatten(row, props.flattenRowDataOptions)));
     }
-    this.filterSelectOptions = getFilterOptions({ rows, headers, filters:this.props.filterSelectOptions, });
+    this.filterSelectOptions = getFilterOptions({ rows, headers, filters: this.props.filterSelectOptions, });
+    this.sortableSelctOptions = getFilterSortableOption({ headers, });
 
     this.state = {
       headers: headers,
@@ -50,28 +55,15 @@ class ResponsiveTable extends Component {
       numPages: Math.ceil(props.numItems / props.limit),
       numButtons: props.numButtons,
       isLoading: false,
-      sortProp: false,
-      sortOrder: '',
-      filterRowData: [
-        // {
-        //   property: 'email',
-        //   filter_label:'% like %',
-        //   filter_value: 'like',
-        //   value:'test',
-        // },
-        // {
-        //   property: 'createdat',
-        //   filter_label:'after date',
-        //   filter_value: 'gt-date',
-        //   value:'2017-01-01',
-        // },
-      ],
+      sortProp: this.props.searchField||'createdat',
+      sortOrder: 'desc',
+      filterRowData: [ ],
       filterRowNewData: defaultNewRowData,
       newRowData: {},
       selectedRowData:{},
       selectedRowIndex: {},
       showFilterSearch: props.showFilterSearch,  
-      usingFiltersInSearch: props.usingFiltersInSearch,
+      // usingFiltersInSearch: props.usingFiltersInSearch,
     };
     this.searchFunction = debounce(this.updateTableData, 200);
     this.getRenderedComponent = getRenderedComponent.bind(this);
@@ -106,7 +98,8 @@ class ResponsiveTable extends Component {
     if (nextProps.flattenRowData) {
       rows = rows.map(row => Object.assign({}, row, flatten(row, nextProps.flattenRowDataOptions)));
     }
-    // console.debug('nextProps.rows', nextProps.rows);
+    // console.debug('nextProps.limit', nextProps.limit);
+    // console.debug('this.state.limit', this.state.limit);
 
     this.setState({
       headers: headers,
@@ -226,11 +219,16 @@ class ResponsiveTable extends Component {
     let rows = this.state.filterRowData.concat([]);
     let newRow = Object.assign({}, this.state.filterRowNewData);
     rows.splice(rows.length, 0, newRow);
-    console.debug('addFilterByAddRow', { rows });
-    console.debug('this.props.createNotification', this.props.createNotification);
-    this.setState({ filterRowData: rows, filterRowNewData: defaultNewRowData, }, () => {
-      this.updateTableData({});
-    });
+    if (newRow.property === '__property__'){
+      this.props.createNotification({ text: 'Please select a property', type: 'error', timed: 5000, });
+    } else if (newRow.filter_value === '__filter__') {
+      this.props.createNotification({ text: 'Please select a filter', type: 'error', timed: 5000, });
+    } else {
+      // console.debug('addFilterByAddRow', { rows });
+      this.setState({ filterRowData: rows, filterRowNewData: defaultNewRowData, }, () => {
+        this.updateTableData({});
+      });
+    }
   }
   updateNewFilterRowDataText(options) {
     let { name, text, } = options;
@@ -244,6 +242,7 @@ class ResponsiveTable extends Component {
     this.setState(updatedStateProp);
   }
   updateTableData(options) {
+    // console.debug({ options, });
     let updatedState = {};
     let newSortOptions = {};
     if (options.clearNewRowData) {
@@ -257,7 +256,7 @@ class ResponsiveTable extends Component {
     }
     if (!this.props.baseUrl) {
       // console.debug({options})
-      updatedState.rows = (typeof options.rows !== 'undefined') ? options.rows : this.state.rows;
+      updatedState.rows = (typeof options.rows !== 'undefined') ? options.rows : this.props.rows;
         // console.debug({ updatedState, });
       
       if (options.sort) {
@@ -270,12 +269,79 @@ class ResponsiveTable extends Component {
         updatedState.rows = updatedState.rows.sort(utilities.sortObject(newSortOptions.sortOrder, options.sort));
         updatedState.sortOrder = newSortOptions.sortOrder;
         updatedState.sortProp = options.sort;
+      } else if (this.state.sortOrder || this.state.sortProp) {
+        newSortOptions.sortProp = this.state.sortProp;
+        newSortOptions.sortOrder = (this.state.sortOrder === 'desc' || this.state.sortOrder === '-') ? 'desc' : 'asc';
+        updatedState.rows = updatedState.rows.sort(utilities.sortObject(newSortOptions.sortOrder, newSortOptions.sortProp));
+
       }
       if (this.props.tableSearch && this.props.searchField && options.search) {
-        updatedState.rows = updatedState.rows.filter(row => row[ this.props.searchField ].indexOf(options.search) !== -1);
+        updatedState.rows = this.props.rows.filter(row => row[ this.props.searchField ].indexOf(options.search) !== -1);
       }
-      updatedState.numPages = Math.ceil(updatedState.rows.length / this.props.limit);
-      updatedState.limit = this.props.limit;
+      if (this.props.tableSearch && this.state.filterRowData && this.state.filterRowData.length) {
+        let filteredRows = [];
+        updatedState.rows.forEach(row => {
+          this.state.filterRowData.forEach(filter => {
+            if (row[ filter.property ]) {
+              switch (filter.filter_value) {
+              case 'like':
+              case 'in':
+                if (row[ filter.property ].indexOf(filter.value)!==-1)filteredRows.push(row);
+                break;  
+              case 'not':
+                if (row[ filter.property ] !== filter.value) filteredRows.push(row);
+                break;  
+              case 'not-like':
+              case 'not-in':
+                if (row[ filter.property ].indexOf(filter.value)===-1)filteredRows.push(row);
+                break;  
+              case 'lt':
+                if (row[ filter.property ] < filter.value) filteredRows.push(row);
+                break;  
+              case 'lte':
+                if (row[ filter.property ] <= filter.value) filteredRows.push(row);
+                break;  
+              case 'gt':
+                if (row[ filter.property ] > filter.value) filteredRows.push(row);
+                break;  
+              case 'gte':
+                if (row[ filter.property ] >= filter.value) filteredRows.push(row);
+                break;  
+              case 'exists':
+                if (typeof row[ filter.property ] !=='undefined') filteredRows.push(row);
+                break;  
+              case 'size':
+                if (row[ filter.property ].length > filter.value) filteredRows.push(row);
+                break;  
+              case 'is-date':
+                if (moment(row[ filter.property ]).isSame(filter.value)) filteredRows.push(row);
+                break;  
+              case 'lte-date':
+                if (moment(row[ filter.property ]).isSameOrBefore(filter.value)) filteredRows.push(row);
+                break;  
+              case 'lt-date':
+                if (moment(row[ filter.property ]).isBefore(filter.value)) filteredRows.push(row);
+                break;  
+              case 'gte-date':
+                if (moment(row[ filter.property ]).isSameOrAfter(filter.value)) filteredRows.push(row);
+                break;  
+              case 'gt-date':
+                if (moment(row[ filter.property ]).isAfter(filter.value)) filteredRows.push(row);
+                break;  
+              case 'is':
+              default:
+                if (row[ filter.property ] === filter.value) filteredRows.push(row);
+                break;  
+              }
+            }
+          });
+          // row[ this.props.searchField ].indexOf(options.search) !== -1
+        });
+        updatedState.rows = filteredRows;
+        // console.debug('updatedState.rows', updatedState.rows, { filteredRows, });
+      }
+      updatedState.numPages = Math.ceil(updatedState.rows.length / this.state.limit);
+      updatedState.limit = this.state.limit;
       updatedState.currentPage = (typeof options.pagenum !== 'undefined')
         ? options.pagenum
         : (this.state.currentPage && this.state.currentPage <= updatedState.numPages)
@@ -299,6 +365,9 @@ class ResponsiveTable extends Component {
         } else {
           newSortOptions.sortOrder = '';
         }
+      } else if (this.state.sortOrder || this.state.sortProp) {
+        newSortOptions.sortProp = this.state.sortProp;
+        newSortOptions.sortOrder =(this.state.sortOrder==='desc'||this.state.sortOrder==='-') ? '-' : '';
       }
       if (options.pagenum < 1) {
         options.pagenum = 1;
@@ -306,7 +375,7 @@ class ResponsiveTable extends Component {
       this.setState({ isLoading: true, });
       let stateProps = this.props.getState();
       let fetchURL = `${stateProps.settings.basename}${this.props.baseUrl}&${qs.stringify({
-        limit: this.props.limit,
+        limit: this.state.limit || this.props.limit,
         sort: (newSortOptions.sortProp)
           ? `${newSortOptions.sortOrder}${newSortOptions.sortProp}`
           : undefined,
@@ -325,6 +394,8 @@ class ResponsiveTable extends Component {
       }, stateProps.settings.userprofile.options.headers);
       utilities.fetchComponent(fetchURL, { headers, })()  
         .then(response => { 
+          // let usingResponsePages = false;
+          // console.debug('this.props.dataMap',this.props.dataMap)
           this.props.dataMap.forEach(data => { 
             if (data.key === 'rows') {
               let rows = response[ data.value ] || [];
@@ -332,11 +403,14 @@ class ResponsiveTable extends Component {
                 updatedState[ data.key ] = rows.map(row => flatten(row, this.props.flattenRowDataOptions));
               }
             } else {
+              // if (data.key === 'numPages') {
+              //   usingResponsePages = true;
+              // }
               updatedState[ data.key ] = response[ data.value ];
             }
           });
-          updatedState.numPages = Math.ceil(updatedState.numItems / this.props.limit);
-          updatedState.limit = this.props.limit;
+          updatedState.numPages = Math.ceil(updatedState.numItems / this.state.limit);
+          updatedState.limit = this.state.limit;
           updatedState.currentPage = (typeof options.pagenum !=='undefined') ? options.pagenum : this.props.currentPage;
           updatedState.isLoading = false;
 
@@ -663,11 +737,16 @@ class ResponsiveTable extends Component {
     
     var fbts= <a/>;
     if(this.props.filterSearch){
-      fbts = <rb.Button {...this.props.filterButtonProps}
+      fbts = <rb.Button
+        style={(this.state.showFilterSearch)
+          ? { background: '#69707a', color: '#f5f7fa', borderColor:'transparent', }
+          : (this.state.filterRowData.length > 0)
+            ? { background: '#222324', color: 'white', borderColor:'transparent', }
+          : undefined}
+        {...this.props.filterButtonProps}
         onClick={() => {
           this.toggleAdvancedSearchFilters();
         }}
-        color={(this.state.filterRowData.length > 0) ? 'isDark' : undefined}
       >Advanced</rb.Button>;
     }
     return (
@@ -696,14 +775,14 @@ class ResponsiveTable extends Component {
           : null}
         {(this.state.showFilterSearch)
           ? <div className="__ra_rt_asf" {...this.props.searchFilterContainerProps}>
-            <rb.Message header="Advanced Search Filters" >
+            <rb.Message header="Advanced Search Filters" > 
               <rb.Table {...this.props.searchFilterTableProps}>
                 <rb.Thead>  
                   <rb.Tr>
-                    <rb.Th>Property</rb.Th>
+                    <rb.Th >Property</rb.Th>
                     <rb.Th>Filter</rb.Th>
                     <rb.Th>Value</rb.Th>
-                    <rb.Th></rb.Th>
+                    <rb.Th>Options</rb.Th>
                   </rb.Tr>
                 </rb.Thead>
                 <rb.Tbody>
@@ -742,9 +821,10 @@ class ResponsiveTable extends Component {
                           let name = 'filter_value';
                           this.updateNewFilterRowText({ name, text, });
                         }}
-                      >{filterQuerySelectOptions.map((filter, ft) => {
-                        return <option value={filter.value} key={ft} disabled={filter.disabled}>{filter.label}</option>;
-                      })}</rb.Select>  
+                        >{filterQuerySelectOptions.map((filter, ft) => {
+                          return <option value={filter.value} key={ft} disabled={filter.disabled}>{filter.label}</option>;
+                        })}
+                      </rb.Select>  
                     </rb.Th>
                     <rb.Th>
                       <rb.Input
@@ -762,8 +842,106 @@ class ResponsiveTable extends Component {
                     </rb.Th>
                   </rb.Tr>
                 </rb.Tfoot>
-                </rb.Table>
-              </rb.Message>
+              </rb.Table>
+              
+              <rb.Content {...this.props.searchFilterTableNoteProps}>
+                <p><strong>Notes:</strong></p>  
+                <ul>
+                  <li><strong>Date Values:</strong> For date filters, Moment is used for date filters with the following moment format: YYYY-MM-DDTHH:MM:SS</li>
+                  <li><strong>Boolean values</strong> "true" is converted to <em>true</em></li>
+                </ul>
+                <hr/>
+              </rb.Content> 
+              <rb.Table {...this.props.searchFilterPaginationProps}>
+                <rb.Tbody>  
+                  <rb.Tr>  
+                    <rb.Td>
+                      <rb.Group>  
+                        <rb.Label style={filterLabelStyleProps}>  
+                          Sort by
+                        </rb.Label>  
+                        <rb.Select
+                          value={this.state.sortProp || 'createdat'}
+                          onChange={(event) => {
+                            let text = event.target.value;
+                            this.setState({ sortProp: text, }, () => {
+                              this.updateTableData({});
+                            });
+                          }}
+                          >{this.sortableSelctOptions.map((filter, fp) => {
+                            return <option value={filter.value} key={fp} disabled={filter.disabled}>{filter.label}</option>;
+                          })}
+                        </rb.Select> 
+                        <rb.Select
+                          value={this.state.sortOrder || 'desc'}
+                          onChange={(event) => {
+                            let text = event.target.value;
+                            this.setState({ sortOrder: text, }, () => {
+                              this.updateTableData({});
+                            });
+                          }}
+                          >
+                          <option value="asc">ASC</option>
+                          <option value="desc">DESC</option>
+                        </rb.Select>   
+                      </rb.Group>  
+                    </rb.Td>
+                    <rb.Td>
+                      <rb.Group>  
+                        <rb.Label style={filterLabelStyleProps}>  
+                          Showing
+                        </rb.Label>
+                        <rb.Select
+                          value={this.state.limit}
+                          onChange={(event) => {
+                            let text = event.target.value;
+                            this.setState({ limit: text, }, () => {
+                              this.updateTableData({});
+                            });
+                          }}
+                        >{(
+                          (this.props.includeAllLimits
+                            )
+                              ? this.props.numOfLimits.concat([ this.state.numItems, ])
+                              : this.props.numOfLimits).map((lim, lp) => {
+                                return <option value={lim} key={lp} disabled={lim.disabled}>{lim}</option>;
+                              })}
+                        </rb.Select>
+                        <rb.Label style={filterLabelStyleProps}>  
+                          of {this.state.numItems} rows
+                        </rb.Label>   
+                      </rb.Group> 
+                    </rb.Td>
+                    <rb.Td>
+                      <rb.Group>  
+                        <rb.Label style={filterLabelStyleProps}>  
+                          Page
+                        </rb.Label>
+                        <rb.Select
+                          value={this.state.currentPage}
+                          onChange={(event) => {
+                            let text = parseInt(event.target.value);
+                            this.searchFunction({ pagenum: text, });
+                          }}
+                        >{([ this.state.numPages, ].reduce((result, key) => {
+                          let usableLimit = (key < 500) ? key : 500;  
+                          for (let i = 1; i <= usableLimit; i++){
+                            result.push(i);
+                          }
+                          return result;  
+                        }, [])).map((lim, lp) => {
+                          return <option value={lim} key={lp} disabled={lim===this.state.currentPage}>{lim}</option>;
+                        })}
+                        </rb.Select>
+                        <rb.Label style={filterLabelStyleProps}>  
+                          of {this.state.numPages} pages
+                        </rb.Label>   
+                      </rb.Group>
+                    </rb.Td>
+                  </rb.Tr>  
+                </rb.Tbody>  
+              </rb.Table>
+            </rb.Message>
           </div>
           : null}
         <div style={{ overflow:'hidden', height:'100%', }}>
