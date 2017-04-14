@@ -318,6 +318,10 @@ export function getFormTextInputArea(options) {
     onChange = (event) => {
       let text = event.target.value;
       let updatedStateProp = {};
+      if (passableProps && passableProps.multiple) {
+        document.querySelector(`.${fileClassname} input`).setAttribute('multiple', true);
+      }
+      
       if (passableProps && passableProps.type === 'file') {
         updatedStateProp.formDataFiles = Object.assign({}, this.state.formDataFiles, {
           [ formElement.name ]: document.querySelector(`.${fileClassname} input`),
@@ -331,6 +335,12 @@ export function getFormTextInputArea(options) {
   passableProps = getPassablePropkeyevents(passableProps, formElement);
 
   // console.debug({ passableProps });
+  if (passableProps && passableProps.multiple) {
+    let t = setImmediate(() => { 
+      document.querySelector(`.${fileClassname} input`).setAttribute('multiple', true);
+      clearImmediate(t);
+    });
+  }
   return (<FormItem key={i} {...formElement.layoutProps} hasError={hasError} hasValue={hasValue} >
     {getFormLabel(formElement)}  
     <Input {...passableProps}

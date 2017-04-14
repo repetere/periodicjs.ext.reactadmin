@@ -71,7 +71,9 @@ const fixFlattenedSubmit = function (req, res, next) {
   next();
 };
 
-const handleFileUpload = function(req, res, next){
+const handleFileUpload = function (req, res, next) {
+  console.log('handleFileUpload req.query', req.query);
+  console.log('handleFileUpload req.body', req.body);
   if (req.query.handleupload || req.controllerData.handleupload || req.body.handleupload) {
     // ];
     return assetController.multiupload(req, res, next);

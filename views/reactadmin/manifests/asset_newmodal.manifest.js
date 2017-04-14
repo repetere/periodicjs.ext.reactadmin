@@ -52,22 +52,35 @@ module.exports = (periodic) => {
                 // },
                 // 'onSubmit': 'func:this.props.loginUser',
                 'onSubmit':{
-                  'url':`${reactadmin.manifestPrefix}contentdata/standard/assets/new?format=json&handleupload=true`,
+                  // "url":"http://localhost:8786/r-admin/contentdata/periodic/assets?handleupload=true",
+
+                  'url':`${reactadmin.settings.basename}${reactadmin.manifest_prefix}contentdata/standard/assets?handleupload=true`,
+                  // 'url':`${reactadmin.settings.basename}${reactadmin.manifestPrefix}contentdata/standard/assets/new?format=json&handleupload=true`,
                   'options':{
                     'method':'post',
                   },
-                  successCallback:'func:this.props.refresh',
+                  success: {
+                    notification: {
+                      text: 'Uploaded files',
+                      timeout: 4000,
+                      type:'success',
+                    },
+                  },
+                  successCallback: 'func:this.props.hideModal',
+                  successProps:'last',
+                  responseCallback:'func:this.props.refresh',
                 },
                 'formgroups': [
                   {
                     'gridProps': {},
                     'formElements': [ {
-                      'type': 'text',
+                      'type': 'file',
                       // 'label': 'Password',
                       'name': 'newasset',
                       // 'submitOnEnter': true,
                       'passProps': {
                         'type': 'file',
+                        'multiple': true,
                       },
                       'layoutProps': {
                         'horizontalform': true,
@@ -84,10 +97,10 @@ module.exports = (periodic) => {
                       {
                         'type': 'checkbox',
                         // "label": "a",
-                        'placeholder': 'Remember Me',
-                        'name': 'rememberme',
+                        'placeholder': 'Maintain original filename',
+                        'name': 'existing-file-name',
                         'passProps': {
-                          'type': 'rememberme',
+                          // 'type': 'rememberme',
                         },
                         'layoutProps': {
                           'horizontalform': true,
@@ -96,19 +109,60 @@ module.exports = (periodic) => {
                       {
                         'type': 'checkbox',
                         // "label": "a",
-                        'placeholder': 'Remember Me',
-                        'name': 'rememberme',
+                        'placeholder': 'Exclude filename timestamp',
+                        'name': 'exclude-timestamp',
                         'passProps': {
-                          'type': 'rememberme',
+                          // 'type': 'rememberme',
                         },
                         'layoutProps': {
                           'horizontalform': true,
                         },
                       },
-                                
                     ],
                   },
-                    hrline,
+                  {
+                    'gridProps': {
+                    },
+                    'formElements': [
+                      {
+                        'type': 'checkbox',
+                        'placeholder': 'Exclude filename user id',
+                        'name': 'exclude-userstamp',
+                        'passProps': {
+                        },
+                        'layoutProps': {
+                          'horizontalform': true,
+                        },
+                      },
+                      // {
+                      //   'type': 'checkbox',
+                      //   'placeholder': 'Use client-side end to end encryption',
+                      //   'name': 'encryptfiles',
+                      //   'passProps': {
+                      //   },
+                      //   'layoutProps': {
+                      //     'horizontalform': true,
+                      //   },
+                      // },
+                    ],
+                  },
+                  {
+                    'gridProps': {
+                    },
+                    'formElements': [
+                      {
+                        'type': 'text',
+                        'label': 'Timestamp format',
+                        'placeholder': 'YYYY-MM-DD_HH-m-ss',
+                        'name': 'ts-format',
+                        value:'YYYY-MM-DD_HH-m-ss',
+                        'layoutProps': {
+                          // 'horizontalform': true,
+                        },
+                      },
+                    ],
+                  },
+                  hrline,
                   {
                     'gridProps': {
                       style: {
@@ -118,9 +172,9 @@ module.exports = (periodic) => {
                     'formElements': [
                       {
                         'type': 'submit',
-                        'value': 'Login',
+                        'value': 'Upload Files',
                         // "placeholder": "Remember Me",
-                        'name': 'login',
+                        'name': 'upload_files_button',
                         'passProps': {
                           'color': 'isPrimary',
                         },
@@ -144,15 +198,15 @@ module.exports = (periodic) => {
                             {
                               component: 'ResponsiveButton',
                               props: {
-                                onClick: 'func:this.props.reduxRouter.push',
-                                onclickProps: '/auth/user/new',
+                                onClick: 'func:this.props.hideModal',
+                                onclickProps: 'last',
                                 style: {
                                 },
                                 buttonProps: {
                                   // color: 'isPrimary',
                                 },
                               },
-                              children: 'New User',
+                              children: 'Cancel',
                             },
                           ],
                                     

@@ -212,7 +212,14 @@ class ResponsiveForm extends Component{
       fetchOptions = updatedFormBody.fetchOptions;
 
       fetch(
-        this.getFormSumitUrl(`${fetchOptions.url}${(isGetRequest && fetchOptions.url.indexOf('?') !== -1) ? '&' : '?'}${(isGetRequest) ? qs.stringify(submitFormData) : ''}`, fetchOptions.params, formdata),
+        this.getFormSumitUrl(`${fetchOptions.url}${
+          (isGetRequest && fetchOptions.url.indexOf('?') !== -1)
+          ? '&'
+            : (fetchOptions.url.indexOf('?') === -1)
+              ? '?'
+              : ''}${(isGetRequest)
+            ? qs.stringify(submitFormData)
+            : ''}`, fetchOptions.params, formdata),
         fetchOptions.options
       )
         .then(utilities.checkStatus)
