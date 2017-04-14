@@ -131,6 +131,7 @@ const constructIndex = function (schema, label, options = {}) {
   let customPageData = helpers.getExtensionOverride('customIndexPageData', schema, label, options);
   let customTabs = helpers.getExtensionOverride('customIndexTabs', schema, label, options);
   let customHeader = helpers.getExtensionOverride('customIndexHeader', schema, label, options);
+  let customIndexButton = helpers.getSettingOverride('customIndexButton', schema, label, options);
   
   // console.log({ label, usablePrefix });
   return {
@@ -184,8 +185,12 @@ const constructIndex = function (schema, label, options = {}) {
                   component: 'ResponsiveButton',
                   children: `Create ${capitalize(label)}`,  
                   props: {
-                    onClick: 'func:this.props.reduxRouter.push',
-                    onclickProps: `${manifestPrefix}/${pluralize(label)}/new`,
+                    onClick: (customIndexButton && customIndexButton.onClick)
+                      ? customIndexButton.onClick
+                      : 'func:this.props.reduxRouter.push',
+                    onclickProps: (customIndexButton && customIndexButton.onclickProps)
+                      ? customIndexButton.onclickProps
+                      : `${manifestPrefix}/${pluralize(label)}/new`,
                     buttonProps: {
                       size: 'isMedium',
                       color:'isPrimary',

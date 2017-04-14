@@ -61,6 +61,13 @@ exports.getExtensionOverride = function (field, schema, label, options, defaultR
   return extOverride;
 };
 
+exports.getSettingOverride = function (field, schema, label, options, defaultReturn = null) {
+  let extOverride = (options && options.extsettings && options.extsettings && options.extsettings[ field ] && options.extsettings[ field ][ label ])
+    ? options.extsettings[ field ][ label ]
+    : defaultReturn;
+  return extOverride;
+};
+
 exports.getCustomCardProps = function (options) {
   let customCardProps = (options && options.extsettings && options.extsettings.extension_overrides && options.extsettings.extension_overrides.customCardProps)
     ? Object.assign({}, options.extsettings.extension_overrides.customCardProps)

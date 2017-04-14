@@ -72,7 +72,7 @@ const fixFlattenedSubmit = function (req, res, next) {
 };
 
 const handleFileUpload = function(req, res, next){
-  if (req.query.handleupload) {
+  if (req.query.handleupload || req.controllerData.handleupload || req.body.handleupload) {
     // ];
     return assetController.multiupload(req, res, next);
   } else {
@@ -81,7 +81,7 @@ const handleFileUpload = function(req, res, next){
 };
 
 const handleFileAssets = function(req, res, next){
-  if (req.query.handleupload) {
+  if (req.query.handleupload || req.controllerData.handleupload || req.body.handleupload) {
     // req.query.format = 'json';
     return assetController.create_assets_from_files(req, res, next);
   } else {
@@ -90,7 +90,7 @@ const handleFileAssets = function(req, res, next){
 };
 
 const handleFileAssetsResponse = function (req, res, next) {
-  if (req.query.handleupload) {
+  if (req.query.handleupload || req.controllerData.handleupload || req.body.handleupload) {
     // req.query.format = 'json';
     return handleControllerDataResponse(req, res);
   } else {

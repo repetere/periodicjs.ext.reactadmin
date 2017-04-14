@@ -836,7 +836,7 @@ class ResponsiveTable extends Component {
                         }} />  
                     </rb.Th>
                     <rb.Th>
-                      <rb.Button onClick={() => { 
+                      <rb.Button style={{ width:'100%', }} onClick={() => { 
                         this.addFilterRow();
                       }}>Add filter</rb.Button>  
                     </rb.Th>
@@ -920,7 +920,7 @@ class ResponsiveTable extends Component {
                         <rb.Select
                           value={this.state.currentPage}
                           onChange={(event) => {
-                            let text = parseInt(event.target.value);
+                            let text = event.target.value;
                             this.searchFunction({ pagenum: text, });
                           }}
                         >{([ this.state.numPages, ].reduce((result, key) => {

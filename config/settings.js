@@ -98,6 +98,15 @@ function getReactAdminConfig (options, overwrites) {
       logged_in_homepage:'/r-admin/dashboard',
       logged_out_path:'/r-admin/login',
     },
+    customIndexButton: {
+      asset: {
+        onClick: 'func:this.props.createModal',
+        onclickProps: {
+          title: 'Upload new assets',
+          pathname: '/r-admin/standard/content/assets/newmodal',
+        },
+      },
+    },
     data_table_props: {
       standard: {
         asset: {
