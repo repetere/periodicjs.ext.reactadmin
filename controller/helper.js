@@ -72,8 +72,13 @@ const fixFlattenedSubmit = function (req, res, next) {
 };
 
 const handleFileUpload = function (req, res, next) {
-  console.log('handleFileUpload req.query', req.query);
-  console.log('handleFileUpload req.body', req.body);
+  if (req.query.forcequerytobody) { //this is because multer rename function is being called before multipart form body is parsed
+    req.query.encryptfiles= (req.query.encryptfiles) ?  true : undefined;
+    req.body = Object.assign({}, req.body, req.query);
+    req.controllerData = Object.assign({}, req.controllerData, req.query);
+  }
+  // console.log('handleFileUpload req.query', req.query);
+  // console.log('handleFileUpload req.body', req.body);
   if (req.query.handleupload || req.controllerData.handleupload || req.body.handleupload) {
     // ];
     return assetController.multiupload(req, res, next);

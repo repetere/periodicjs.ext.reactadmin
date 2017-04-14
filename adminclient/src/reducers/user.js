@@ -16,14 +16,14 @@ const initialState = {
   jwt_token_expires:null,
   jwt_token_timeout:null,
   error: null,
-  isMFAAuthenticated: false
+  isMFAAuthenticated: false,
 };
 
 const userReducer = (state, action) => {
   switch (action.type) {
   case constants.user.LOGOUT_FAILURE:
     var logoutFailurePayload = action.payload;
-    return Object.assign(state, {
+    return Object.assign({}, state, {
       isFetching: false,
       error: logoutFailurePayload.error,
       timestamp: logoutFailurePayload.timestamp,
@@ -31,7 +31,7 @@ const userReducer = (state, action) => {
     });
   case constants.user.LOGOUT_SUCCESS:
     var logoutSuccessPayload = action.payload;
-    return Object.assign(state, {
+    return Object.assign({}, state, {
       isFetching: false,
       isLoggedIn: false,
       error: null,
@@ -48,11 +48,23 @@ const userReducer = (state, action) => {
     });
   case constants.user.LOGIN_DATA_REQUEST:
     // var requestPayload = action.payload;
-    return Object.assign(state, {
+    return Object.assign({}, state, {
       isFetching: true,
       loginURL: action.payload.url,
       updatedAt: new Date(),
     });
+  case constants.user.UPDATE_PROFILE_SUCCESS:
+    var profilePayload = action.payload;
+    return Object.assign({}, state, {
+      isFetching: false,
+      // userdata: profilePayload.profile.userdata,
+      // username: profilePayload.profile.username,
+      // email: profilePayload.profile.email,
+      // firstname: profilePayload.profile.firstname,
+      // lastname: profilePayload.profile.lastname,
+      // profile_image_preview: profilePayload.profile.profile_image_preview,
+      updatedAt: new Date(),
+    }, profilePayload.profile);
   case constants.user.LOGIN_DATA_SUCCESS:
     var loginSuccessPayload = action.payload;
     return {
@@ -90,7 +102,7 @@ const userReducer = (state, action) => {
     };
   case constants.user.USER_DATA_FAILURE:
     var failurePayload = action.payload;
-    return Object.assign(state, {
+    return Object.assign({}, state, {
       isFetching: false,
       loginURL: failurePayload.url,
       error: failurePayload.error,

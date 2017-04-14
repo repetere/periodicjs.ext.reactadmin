@@ -45,16 +45,12 @@ module.exports = (periodic) => {
             {
               'component': 'ResponsiveForm',
               'props': {
-                // 'cardForm': true,
-                // // cardFormTitle:'Sign In',
-                // 'cardFormProps': {
-                //   'isFullwidth': true,
-                // },
-                // 'onSubmit': 'func:this.props.loginUser',
+                stringifyBody:true,
+                // blockPageUI:true,
                 'onSubmit':{
                   // "url":"http://localhost:8786/r-admin/contentdata/periodic/assets?handleupload=true",
 
-                  'url':`${reactadmin.settings.basename}${reactadmin.manifest_prefix}contentdata/standard/assets?handleupload=true`,
+                  'url':`${reactadmin.settings.basename}${reactadmin.manifest_prefix}contentdata/standard/assets?handleupload=true&format=json&forcequerytobody=true`,
                   // 'url':`${reactadmin.settings.basename}${reactadmin.manifestPrefix}contentdata/standard/assets/new?format=json&handleupload=true`,
                   'options':{
                     'method':'post',
@@ -134,16 +130,16 @@ module.exports = (periodic) => {
                           'horizontalform': true,
                         },
                       },
-                      // {
-                      //   'type': 'checkbox',
-                      //   'placeholder': 'Use client-side end to end encryption',
-                      //   'name': 'encryptfiles',
-                      //   'passProps': {
-                      //   },
-                      //   'layoutProps': {
-                      //     'horizontalform': true,
-                      //   },
-                      // },
+                      {
+                        'type': 'checkbox',
+                        'placeholder': 'Use client-side end to end encryption',
+                        'name': 'encryptfiles',
+                        'passProps': {
+                        },
+                        'layoutProps': {
+                          'horizontalform': true,
+                        },
+                      },
                     ],
                   },
                   {

@@ -74,6 +74,16 @@ const user = {
       },
     };
   },
+  updateUserProfile(profile) {
+    return {
+      type: constants.user.UPDATE_PROFILE_SUCCESS,
+      payload: {
+        profile,
+        updatedAt: new Date(),
+        timestamp: Date.now(),
+      },
+    };
+  },
   /**
   * @param {string} location name of extension to load
   */

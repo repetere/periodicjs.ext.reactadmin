@@ -59,7 +59,7 @@ const reduxActions = {
     return utilities.fetchAction.call(this, pathname, fetchOptions, success);
   }, //.dispatch(actions.user.getUserStatus()),
   redirect: (locationURL) => {
-    console.debug({ locationURL });
+    console.debug({ locationURL, });
     if (typeof location === 'string') {
       window.location = locationURL;
     } else {
@@ -67,6 +67,7 @@ const reduxActions = {
     }
   },
   getUserProfile: (jwt_token) => store.dispatch(actions.user.getUserProfile(jwt_token)),
+  updateUserProfile: (profile) => store.dispatch(actions.user.updateUserProfile(profile)),
   setNavLabel: (label) => store.dispatch(actions.ui.setNavLabel(label)),
   saveUserProfile: (url, response, json) => store.dispatch(actions.user.saveUserProfile(url, response, json)),
   initializeAuthenticatedUser: (jwt_token, enforceMFA = true) => store.dispatch(actions.user.initializeAuthenticatedUser(jwt_token, enforceMFA)),

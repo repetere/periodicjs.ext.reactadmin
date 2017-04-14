@@ -5,7 +5,7 @@ module.exports = {
     'manifests':[
       'node_modules/periodicjs.ext.reactadmin/adminclient/src/content/config/manifest.json',
       'node_modules/periodicjs.ext.reactadmin/views/home/',
-      'node_modules/periodicjs.ext.reactadmin/views/account/',
+      // 'node_modules/periodicjs.ext.reactadmin/views/account/',
       'node_modules/periodicjs.ext.reactadmin/views/test/',
     ],
     'unauthenticated_manifests':[
