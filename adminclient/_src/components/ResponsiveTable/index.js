@@ -24,6 +24,10 @@ var _defineProperty2 = require('babel-runtime/helpers/defineProperty');
 
 var _defineProperty3 = _interopRequireDefault(_defineProperty2);
 
+var _assign = require('babel-runtime/core-js/object/assign');
+
+var _assign2 = _interopRequireDefault(_assign);
+
 var _getPrototypeOf = require('babel-runtime/core-js/object/get-prototype-of');
 
 var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
@@ -43,14 +47,6 @@ var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorRet
 var _inherits2 = require('babel-runtime/helpers/inherits');
 
 var _inherits3 = _interopRequireDefault(_inherits2);
-
-var _keys = require('babel-runtime/core-js/object/keys');
-
-var _keys2 = _interopRequireDefault(_keys);
-
-var _assign = require('babel-runtime/core-js/object/assign');
-
-var _assign2 = _interopRequireDefault(_assign);
 
 var _react = require('react');
 
@@ -88,14 +84,6 @@ var _flat2 = _interopRequireDefault(_flat);
 
 var _AppLayoutMap = require('../AppLayoutMap');
 
-var _capitalize = require('capitalize');
-
-var _capitalize2 = _interopRequireDefault(_capitalize);
-
-var _pluralize = require('pluralize');
-
-var _pluralize2 = _interopRequireDefault(_pluralize);
-
 var _reactFileReaderInput = require('react-file-reader-input');
 
 var _reactFileReaderInput2 = _interopRequireDefault(_reactFileReaderInput);
@@ -110,147 +98,17 @@ var _RACodeMirror = require('../RACodeMirror');
 
 var _RACodeMirror2 = _interopRequireDefault(_RACodeMirror);
 
+var _TableHelpers = require('./TableHelpers');
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// import styles from '../styles';
-
-var propTypes = {
-  hasPagination: _react.PropTypes.bool,
-  hasHeader: _react.PropTypes.bool,
-  hasFooter: _react.PropTypes.bool,
-  limit: _react.PropTypes.number,
-  currentPage: _react.PropTypes.number,
-  numButtons: _react.PropTypes.number,
-  numPages: _react.PropTypes.number,
-  numItems: _react.PropTypes.number,
-  flattenRowData: _react.PropTypes.bool,
-  flattenRowDataOptions: _react.PropTypes.object,
-  selectedRow: _react.PropTypes.object,
-  searchTable: _react.PropTypes.bool,
-  filterSearch: _react.PropTypes.bool,
-  headers: _react.PropTypes.array,
-  rows: _react.PropTypes.array,
-  tableFooter: _react.PropTypes.bool,
-  onChange: _react.PropTypes.func,
-  tableForm: _react.PropTypes.bool,
-  tableFormAddButtonProps: _react.PropTypes.bool,
-  selectEntireRow: _react.PropTypes.bool,
-  sortable: _react.PropTypes.bool,
-  suppressNullValues: _react.PropTypes.bool,
-  useInputRows: _react.PropTypes.bool,
-  replaceButton: _react.PropTypes.bool,
-  replaceButtonProps: _react.PropTypes.any,
-  replaceButtonLabel: _react.PropTypes.string,
-  uploadAddButton: _react.PropTypes.bool,
-  uploadAddButtonProps: _react.PropTypes.any,
-  uploadAddButtonLabel: _react.PropTypes.string
+var filterLabelStyleProps = {
+  alignItems: 'center', display: 'flex', flex: 1, height: '100%'
 };
-
-var defaultProps = {
-  headers: [],
-  rows: [],
-  hasPagination: true,
-  hasHeader: false,
-  hasFooter: false,
-  tableFooter: false,
-  onChange: function onChange(event) {
-    console.debug(event);
-  },
-  limit: 50,
-  currentPage: 1,
-  numPages: 1,
-  numItems: 0,
-  numButtons: 1,
-  flattenRowData: false,
-  flattenRowDataOptions: {},
-  searchTable: false,
-  filterSearch: false,
-  tableForm: false,
-  filterAddonProps: {
-    style: {
-      marginBottom: '20px'
-    }
-  },
-  filterButtonProps: {},
-  searchButtonProps: {
-    color: 'isInfo'
-  },
-  filterSearchProps: {
-    type: 'text',
-    placeholder: 'Search',
-    isExpanded: true
-  },
-  tableFormAddButtonProps: {
-    color: 'isPrimary'
-  },
-  selectEntireRow: false,
-  useInputRows: false,
-  selectOptionSortId: false,
-  selectOptionSortIdLabel: false,
-  sortable: true,
-  suppressNullValues: false,
-  addNewRows: true,
-  fixCSVRow: true,
-  excludeEmptyHeaders: true,
-  insertSelectedRowHeaderIndex: 0,
-  csvEOL: {
-    // eol: '\r\n',
-    trimHeaderValues: true,
-    trimFieldValues: true
-  }
-};
-
-function getOptionsHeaders(props, propHeaders) {
-  var headers = (propHeaders || props.headers || []).concat([]);
-  // console.debug('original', { headers });
-  if (props.selectOptionSortId) {
-    headers.unshift({
-      sortid: props.selectOptionSortId,
-      label: props.selectOptionSortIdLabel || (0, _capitalize2.default)(props.selectOptionSortId),
-      value: 'x',
-      selectedOptionRowHeader: true
-    });
-  }
-  // console.debug('modified', { headers });
-  return headers;
-}
-
-function getHeadersFromRows(options) {
-  var rows = options.rows,
-      sortable = options.sortable,
-      excludeEmptyHeaders = options.excludeEmptyHeaders;
-
-  console.debug({ rows: rows, sortable: sortable, excludeEmptyHeaders: excludeEmptyHeaders });
-  var headerRow = (0, _assign2.default)({}, rows[0]);
-  console.debug({ headerRow: headerRow });
-  var headersFromRow = (0, _keys2.default)(headerRow);
-  var headers = headersFromRow.map(function (rowkey) {
-    return {
-      label: (0, _capitalize2.default)((0, _pluralize2.default)(rowkey)),
-      sortid: rowkey,
-      sortable: sortable
-    };
-  });
-  return headers;
-}
-
-function excludeEmptyHeaders(options) {
-  var headers = options.headers,
-      excludeEmptyHeaders = options.excludeEmptyHeaders;
-  // console.debug({ headers, excludeEmptyHeaders, });
-
-  if (excludeEmptyHeaders) {
-    headers.forEach(function (header, i) {
-      // console.debug('headers[ i ]', headers[ i ], { header, });
-      if (!headers[i].sortid && !headers[i].label) {
-        delete headers[i];
-      }
-    });
-  }
-  return headers;
-}
+// import capitalize from 'capitalize';
+// import pluralize from 'pluralize';
 
 var ResponsiveTable = function (_Component) {
   (0, _inherits3.default)(ResponsiveTable, _Component);
@@ -262,13 +120,13 @@ var ResponsiveTable = function (_Component) {
     var _this = (0, _possibleConstructorReturn3.default)(this, (ResponsiveTable.__proto__ || (0, _getPrototypeOf2.default)(ResponsiveTable)).call(this, props));
 
     var rows = props.rows || [];
-    var headers = (!props.headers || !props.headers.length) && rows[0] ? getHeadersFromRows({
+    var headers = (!props.headers || !props.headers.length) && rows[0] ? (0, _TableHelpers.getHeadersFromRows)({
       rows: props.rows,
       sortable: props.sortable,
       excludeEmptyHeaders: props.excludeEmptyHeaders
     }) : props.headers;
-    headers = getOptionsHeaders(props, headers);
-    headers = excludeEmptyHeaders({
+    headers = (0, _TableHelpers.getOptionsHeaders)(props, headers);
+    headers = (0, _TableHelpers.excludeEmptyHeaders)({
       headers: headers,
       excludeEmptyHeaders: props.excludeEmptyHeaders
     });
@@ -277,6 +135,8 @@ var ResponsiveTable = function (_Component) {
         return (0, _assign2.default)({}, row, (0, _flat2.default)(row, props.flattenRowDataOptions));
       });
     }
+    _this.filterSelectOptions = (0, _TableHelpers.getFilterOptions)({ rows: rows, headers: headers, filters: _this.props.filterSelectOptions });
+    _this.sortableSelctOptions = (0, _TableHelpers.getFilterSortableOption)({ headers: headers });
 
     _this.state = {
       headers: headers,
@@ -290,11 +150,14 @@ var ResponsiveTable = function (_Component) {
       numPages: Math.ceil(props.numItems / props.limit),
       numButtons: props.numButtons,
       isLoading: false,
-      sortProp: false,
-      sortOrder: '',
+      sortProp: _this.props.searchField || 'createdat',
+      sortOrder: 'desc',
+      filterRowData: [],
+      filterRowNewData: _TableHelpers.defaultNewRowData,
       newRowData: {},
       selectedRowData: {},
-      selectedRowIndex: {}
+      selectedRowIndex: {},
+      showFilterSearch: props.showFilterSearch
     };
     _this.searchFunction = (0, _debounce2.default)(_this.updateTableData, 200);
     _this.getRenderedComponent = _AppLayoutMap.getRenderedComponent.bind(_this);
@@ -308,6 +171,9 @@ var ResponsiveTable = function (_Component) {
     _this.updateNewRowText = _this.updateNewRowDataText.bind(_this);
     _this.updateInlineRowText = _this.updateInlineRowDataText.bind(_this);
     _this.getFooterAddRow = _this.updateGetFooterAddRow.bind(_this);
+    _this.removeFilterRow = _this.removeFilterByDeleteRow.bind(_this);
+    _this.addFilterRow = _this.addFilterByAddRow.bind(_this);
+    _this.updateNewFilterRowText = _this.updateNewFilterRowDataText.bind(_this);
     return _this;
   }
 
@@ -315,13 +181,13 @@ var ResponsiveTable = function (_Component) {
     key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps(nextProps) {
       var rows = nextProps.rows || [];
-      var headers = (!nextProps.headers || !nextProps.headers.length) && rows[0] ? getHeadersFromRows({
+      var headers = (!nextProps.headers || !nextProps.headers.length) && rows[0] ? (0, _TableHelpers.getHeadersFromRows)({
         rows: rows,
         sortable: nextProps.sortable,
         excludeEmptyHeaders: nextProps.excludeEmptyHeaders
       }) : nextProps.headers;
-      headers = getOptionsHeaders(nextProps);
-      headers = excludeEmptyHeaders({
+      headers = (0, _TableHelpers.getOptionsHeaders)(nextProps);
+      headers = (0, _TableHelpers.excludeEmptyHeaders)({
         headers: headers,
         excludeEmptyHeaders: nextProps.excludeEmptyHeaders
       });
@@ -330,7 +196,8 @@ var ResponsiveTable = function (_Component) {
           return (0, _assign2.default)({}, row, (0, _flat2.default)(row, nextProps.flattenRowDataOptions));
         });
       }
-      // console.debug('nextProps.rows', nextProps.rows);
+      // console.debug('nextProps.limit', nextProps.limit);
+      // console.debug('this.state.limit', this.state.limit);
 
       this.setState({
         headers: headers,
@@ -464,10 +331,53 @@ var ResponsiveTable = function (_Component) {
       };
     }
   }, {
-    key: 'updateTableData',
-    value: function updateTableData(options) {
+    key: 'removeFilterByDeleteRow',
+    value: function removeFilterByDeleteRow(rowIndex) {
       var _this3 = this;
 
+      var rows = this.state.filterRowData.concat([]);
+      rows.splice(rowIndex, 1);
+      this.setState({ filterRowData: rows }, function () {
+        _this3.updateTableData({});
+      });
+    }
+  }, {
+    key: 'addFilterByAddRow',
+    value: function addFilterByAddRow() {
+      var _this4 = this;
+
+      var rows = this.state.filterRowData.concat([]);
+      var newRow = (0, _assign2.default)({}, this.state.filterRowNewData);
+      rows.splice(rows.length, 0, newRow);
+      if (newRow.property === '__property__') {
+        this.props.createNotification({ text: 'Please select a property', type: 'error', timed: 5000 });
+      } else if (newRow.filter_value === '__filter__') {
+        this.props.createNotification({ text: 'Please select a filter', type: 'error', timed: 5000 });
+      } else {
+        // console.debug('addFilterByAddRow', { rows });
+        this.setState({ filterRowData: rows, filterRowNewData: _TableHelpers.defaultNewRowData }, function () {
+          _this4.updateTableData({});
+        });
+      }
+    }
+  }, {
+    key: 'updateNewFilterRowDataText',
+    value: function updateNewFilterRowDataText(options) {
+      var name = options.name,
+          text = options.text;
+
+      var updatedStateProp = {
+        filterRowNewData: (0, _assign2.default)({}, this.state.filterRowNewData, (0, _defineProperty3.default)({}, name, text))
+      };
+      // console.debug({ updatedStateProp, options });
+      this.setState(updatedStateProp);
+    }
+  }, {
+    key: 'updateTableData',
+    value: function updateTableData(options) {
+      var _this5 = this;
+
+      // console.debug({ options, });
       var updatedState = {};
       var newSortOptions = {};
       if (options.clearNewRowData) {
@@ -481,7 +391,7 @@ var ResponsiveTable = function (_Component) {
       }
       if (!this.props.baseUrl) {
         // console.debug({options})
-        updatedState.rows = typeof options.rows !== 'undefined' ? options.rows : this.state.rows;
+        updatedState.rows = typeof options.rows !== 'undefined' ? options.rows : this.props.rows;
         // console.debug({ updatedState, });
 
         if (options.sort) {
@@ -494,14 +404,80 @@ var ResponsiveTable = function (_Component) {
           updatedState.rows = updatedState.rows.sort(_util2.default.sortObject(newSortOptions.sortOrder, options.sort));
           updatedState.sortOrder = newSortOptions.sortOrder;
           updatedState.sortProp = options.sort;
+        } else if (this.state.sortOrder || this.state.sortProp) {
+          newSortOptions.sortProp = this.state.sortProp;
+          newSortOptions.sortOrder = this.state.sortOrder === 'desc' || this.state.sortOrder === '-' ? 'desc' : 'asc';
+          updatedState.rows = updatedState.rows.sort(_util2.default.sortObject(newSortOptions.sortOrder, newSortOptions.sortProp));
         }
         if (this.props.tableSearch && this.props.searchField && options.search) {
-          updatedState.rows = updatedState.rows.filter(function (row) {
-            return row[_this3.props.searchField].indexOf(options.search) !== -1;
+          updatedState.rows = this.props.rows.filter(function (row) {
+            return row[_this5.props.searchField].indexOf(options.search) !== -1;
           });
         }
-        updatedState.numPages = Math.ceil(updatedState.rows.length / this.props.limit);
-        updatedState.limit = this.props.limit;
+        if (this.props.tableSearch && this.state.filterRowData && this.state.filterRowData.length) {
+          var filteredRows = [];
+          updatedState.rows.forEach(function (row) {
+            _this5.state.filterRowData.forEach(function (filter) {
+              if (row[filter.property]) {
+                switch (filter.filter_value) {
+                  case 'like':
+                  case 'in':
+                    if (row[filter.property].indexOf(filter.value) !== -1) filteredRows.push(row);
+                    break;
+                  case 'not':
+                    if (row[filter.property] !== filter.value) filteredRows.push(row);
+                    break;
+                  case 'not-like':
+                  case 'not-in':
+                    if (row[filter.property].indexOf(filter.value) === -1) filteredRows.push(row);
+                    break;
+                  case 'lt':
+                    if (row[filter.property] < filter.value) filteredRows.push(row);
+                    break;
+                  case 'lte':
+                    if (row[filter.property] <= filter.value) filteredRows.push(row);
+                    break;
+                  case 'gt':
+                    if (row[filter.property] > filter.value) filteredRows.push(row);
+                    break;
+                  case 'gte':
+                    if (row[filter.property] >= filter.value) filteredRows.push(row);
+                    break;
+                  case 'exists':
+                    if (typeof row[filter.property] !== 'undefined') filteredRows.push(row);
+                    break;
+                  case 'size':
+                    if (row[filter.property].length > filter.value) filteredRows.push(row);
+                    break;
+                  case 'is-date':
+                    if ((0, _moment2.default)(row[filter.property]).isSame(filter.value)) filteredRows.push(row);
+                    break;
+                  case 'lte-date':
+                    if ((0, _moment2.default)(row[filter.property]).isSameOrBefore(filter.value)) filteredRows.push(row);
+                    break;
+                  case 'lt-date':
+                    if ((0, _moment2.default)(row[filter.property]).isBefore(filter.value)) filteredRows.push(row);
+                    break;
+                  case 'gte-date':
+                    if ((0, _moment2.default)(row[filter.property]).isSameOrAfter(filter.value)) filteredRows.push(row);
+                    break;
+                  case 'gt-date':
+                    if ((0, _moment2.default)(row[filter.property]).isAfter(filter.value)) filteredRows.push(row);
+                    break;
+                  case 'is':
+                  default:
+                    if (row[filter.property] === filter.value) filteredRows.push(row);
+                    break;
+                }
+              }
+            });
+            // row[ this.props.searchField ].indexOf(options.search) !== -1
+          });
+          updatedState.rows = filteredRows;
+          // console.debug('updatedState.rows', updatedState.rows, { filteredRows, });
+        }
+        updatedState.numPages = Math.ceil(updatedState.rows.length / this.state.limit);
+        updatedState.limit = this.state.limit;
         updatedState.currentPage = typeof options.pagenum !== 'undefined' ? options.pagenum : this.state.currentPage && this.state.currentPage <= updatedState.numPages ? this.state.currentPage : 1;
         updatedState.isLoading = false;
 
@@ -520,6 +496,9 @@ var ResponsiveTable = function (_Component) {
           } else {
             newSortOptions.sortOrder = '';
           }
+        } else if (this.state.sortOrder || this.state.sortProp) {
+          newSortOptions.sortProp = this.state.sortProp;
+          newSortOptions.sortOrder = this.state.sortOrder === 'desc' || this.state.sortOrder === '-' ? '-' : '';
         }
         if (options.pagenum < 1) {
           options.pagenum = 1;
@@ -527,32 +506,40 @@ var ResponsiveTable = function (_Component) {
         this.setState({ isLoading: true });
         var stateProps = this.props.getState();
         var fetchURL = '' + stateProps.settings.basename + this.props.baseUrl + '&' + _querystring2.default.stringify({
-          limit: this.props.limit,
+          limit: this.state.limit || this.props.limit,
           sort: newSortOptions.sortProp ? '' + newSortOptions.sortOrder + newSortOptions.sortProp : undefined,
+          fq: this.state.filterRowData && this.state.filterRowData.length ? this.state.filterRowData.map(function (frd) {
+            return frd.property + '|||' + frd.filter_value + '|||' + frd.value;
+          }) : undefined,
           search: options.search,
           allowSpecialCharacters: true,
           pagenum: options.pagenum || 1
         });
-        // console.log({ options, fetchURL, },options.search.value);
+        // console.debug('this.state.filterRowData', this.state.filterRowData, { options, fetchURL, });
         var headers = (0, _assign2.default)({
           'x-access-token': stateProps.user.jwt_token
         }, stateProps.settings.userprofile.options.headers);
         _util2.default.fetchComponent(fetchURL, { headers: headers })().then(function (response) {
-          _this3.props.dataMap.forEach(function (data) {
+          // let usingResponsePages = false;
+          // console.debug('this.props.dataMap',this.props.dataMap)
+          _this5.props.dataMap.forEach(function (data) {
             if (data.key === 'rows') {
               var rows = response[data.value] || [];
-              if (_this3.props.flattenRowData) {
+              if (_this5.props.flattenRowData) {
                 updatedState[data.key] = rows.map(function (row) {
-                  return (0, _flat2.default)(row, _this3.props.flattenRowDataOptions);
+                  return (0, _flat2.default)(row, _this5.props.flattenRowDataOptions);
                 });
               }
             } else {
+              // if (data.key === 'numPages') {
+              //   usingResponsePages = true;
+              // }
               updatedState[data.key] = response[data.value];
             }
           });
-          updatedState.numPages = Math.ceil(updatedState.numItems / _this3.props.limit);
-          updatedState.limit = _this3.props.limit;
-          updatedState.currentPage = typeof options.pagenum !== 'undefined' ? options.pagenum : _this3.props.currentPage;
+          updatedState.numPages = Math.ceil(updatedState.numItems / _this5.state.limit);
+          updatedState.limit = _this5.state.limit;
+          updatedState.currentPage = typeof options.pagenum !== 'undefined' ? options.pagenum : _this5.props.currentPage;
           updatedState.isLoading = false;
 
           if (options.sort) {
@@ -560,19 +547,19 @@ var ResponsiveTable = function (_Component) {
             updatedState.sortProp = options.sort;
           }
 
-          if (_this3.props.tableForm) {
-            _this3.props.onChange(updatedState);
+          if (_this5.props.tableForm) {
+            _this5.props.onChange(updatedState);
           }
-          _this3.setState(updatedState);
+          _this5.setState(updatedState);
         }, function (e) {
-          _this3.props.errorNotification(e);
+          _this5.props.errorNotification(e);
         });
       }
     }
   }, {
     key: 'formatValue',
     value: function formatValue(value, row, options, header) {
-      var _this4 = this;
+      var _this6 = this;
 
       try {
         // console.debug({ value, row, options, header, });
@@ -628,7 +615,7 @@ var ResponsiveTable = function (_Component) {
                 var text = event.target.value;
                 var name = header.sortid;
                 var rowIndex = options.rowIndex;
-                _this4.updateInlineRowText({ name: name, text: text, rowIndex: rowIndex });
+                _this6.updateInlineRowText({ name: name, text: text, rowIndex: rowIndex });
               }
             }),
             value
@@ -643,7 +630,7 @@ var ResponsiveTable = function (_Component) {
                 var text = event.target.value;
                 var name = header.sortid;
                 var rowIndex = options.rowIndex;
-                _this4.updateInlineRowText({ name: name, text: text, rowIndex: rowIndex });
+                _this6.updateInlineRowText({ name: name, text: text, rowIndex: rowIndex });
               }
             }),
             value
@@ -659,7 +646,7 @@ var ResponsiveTable = function (_Component) {
                 var text = event.target.value;
                 var name = header.sortid;
                 var rowIndex = options.rowIndex;
-                _this4.updateInlineRowText({ name: name, text: text, rowIndex: rowIndex });
+                _this6.updateInlineRowText({ name: name, text: text, rowIndex: rowIndex });
               } }),
             selectOptions.map(function (opt, k) {
               return _react2.default.createElement(
@@ -733,7 +720,7 @@ var ResponsiveTable = function (_Component) {
   }, {
     key: 'updateGetFooterAddRow',
     value: function updateGetFooterAddRow(header) {
-      var _this5 = this;
+      var _this7 = this;
 
       if (header.selectedOptionRowHeader) return null;
       switch (header.formtype) {
@@ -745,7 +732,7 @@ var ResponsiveTable = function (_Component) {
               onChange: function onChange(event) {
                 var text = event.target.value;
                 var name = header.sortid;
-                _this5.updateNewRowText({ name: name, text: text });
+                _this7.updateNewRowText({ name: name, text: text });
               } }),
             header.formoptions.map(function (opt, k) {
               return _react2.default.createElement(
@@ -762,7 +749,7 @@ var ResponsiveTable = function (_Component) {
             onChange: function onChange(event) {
               var text = event.target.value;
               var name = header.sortid;
-              _this5.updateNewRowText({ name: name, text: text });
+              _this7.updateNewRowText({ name: name, text: text });
             } }));
         // break;  
         case 'code':
@@ -802,15 +789,24 @@ var ResponsiveTable = function (_Component) {
             onChange: function onChange(event) {
               var text = event.target.value;
               var name = header.sortid;
-              _this5.updateNewRowText({ name: name, text: text });
+              _this7.updateNewRowText({ name: name, text: text });
             } }));
         // break;  
       }
     }
   }, {
+    key: 'toggleAdvancedSearchFilters',
+    value: function toggleAdvancedSearchFilters() {
+      this.setState({ showFilterSearch: !this.state.showFilterSearch });
+      // showFilterSearch:false,  
+      // usingFiltersInSearch: false,
+      // showFilterSearch: props.showFilterSearch,  
+      //     usingFiltersInSearch: props.usingFiltersInSearch  
+    }
+  }, {
     key: 'render',
     value: function render() {
-      var _this6 = this;
+      var _this8 = this;
 
       // console.debug('render this.state', this.state);
       var calcStartIndex = (this.state.currentPage - 1) * this.state.limit;
@@ -848,7 +844,7 @@ var ResponsiveTable = function (_Component) {
             rb.PageButton,
             { isActive: currentPage === 1,
               onClick: function onClick() {
-                return _this6.updateTableData({ pagenum: 1 });
+                return _this8.updateTableData({ pagenum: 1 });
               }
             },
             '1'
@@ -871,7 +867,7 @@ var ResponsiveTable = function (_Component) {
               rb.PageButton,
               {
                 onClick: function onClick() {
-                  return _this6.updateTableData({ pagenum: index + 1 });
+                  return _this8.updateTableData({ pagenum: index + 1 });
                 }
               },
               index + 1
@@ -885,7 +881,7 @@ var ResponsiveTable = function (_Component) {
               rb.PageButton,
               { color: 'isPrimary', isActive: true,
                 onClick: function onClick() {
-                  return _this6.updateTableData({ pagenum: index + 1 });
+                  return _this8.updateTableData({ pagenum: index + 1 });
                 } },
               index + 1
             )
@@ -909,7 +905,7 @@ var ResponsiveTable = function (_Component) {
           _react2.default.createElement(
             rb.PageButton,
             { onClick: function onClick() {
-                return _this6.updateTableData({ pagenum: lastIndex + 1 });
+                return _this8.updateTableData({ pagenum: lastIndex + 1 });
               } },
             lastIndex + 1
           )
@@ -925,7 +921,7 @@ var ResponsiveTable = function (_Component) {
         ) : _react2.default.createElement(
           rb.PageButton,
           { onClick: function onClick() {
-              return _this6.updateTableData({ pagenum: _this6.state.currentPage - 1 });
+              return _this8.updateTableData({ pagenum: _this8.state.currentPage - 1 });
             } },
           'Previous'
         ),
@@ -941,7 +937,7 @@ var ResponsiveTable = function (_Component) {
         ) : _react2.default.createElement(
           rb.PageButton,
           { onClick: function onClick() {
-              return _this6.updateTableData({ pagenum: _this6.state.currentPage + 1 });
+              return _this8.updateTableData({ pagenum: _this8.state.currentPage + 1 });
             } },
           'Next'
         )
@@ -951,8 +947,14 @@ var ResponsiveTable = function (_Component) {
       if (this.props.filterSearch) {
         fbts = _react2.default.createElement(
           rb.Button,
-          this.props.filterButtonProps,
-          'Filters'
+          (0, _extends3.default)({
+            style: this.state.showFilterSearch ? { background: '#69707a', color: '#f5f7fa', borderColor: 'transparent' } : this.state.filterRowData.length > 0 ? { background: '#222324', color: 'white', borderColor: 'transparent' } : undefined
+          }, this.props.filterButtonProps, {
+            onClick: function onClick() {
+              _this8.toggleAdvancedSearchFilters();
+            }
+          }),
+          'Advanced'
         );
       }
       return _react2.default.createElement(
@@ -961,24 +963,365 @@ var ResponsiveTable = function (_Component) {
         this.props.tableSearch ? _react2.default.createElement(
           rb.Addons,
           this.props.filterAddonProps,
-          fbts,
           _react2.default.createElement(rb.Input, (0, _extends3.default)({}, this.props.filterSearchProps, {
             onChange: function onChange(data) {
-              _this6.searchFunction({ search: data.target.value });
-              _this6.searchInputTextVal = data.target.value; //TODO: this is janky fix it
+              _this8.searchFunction({ search: data.target.value });
+              _this8.searchInputTextVal = data.target.value; //TODO: this is janky fix it
             },
             ref: function ref(input) {
-              _this6.searchTextInput = input;
+              _this8.searchTextInput = input;
             }
           })),
           _react2.default.createElement(
             rb.Button,
             (0, _extends3.default)({}, this.props.searchButtonProps, {
               onClick: function onClick() {
-                _this6.searchFunction({ search: _this6.searchInputTextVal });
+                _this8.searchFunction({ search: _this8.searchInputTextVal });
               }
             }),
             'Search'
+          ),
+          fbts
+        ) : null,
+        this.state.showFilterSearch ? _react2.default.createElement(
+          'div',
+          (0, _extends3.default)({ className: '__ra_rt_asf' }, this.props.searchFilterContainerProps),
+          _react2.default.createElement(
+            rb.Message,
+            { header: 'Advanced Search Filters' },
+            _react2.default.createElement(
+              rb.Table,
+              this.props.searchFilterTableProps,
+              _react2.default.createElement(
+                rb.Thead,
+                null,
+                _react2.default.createElement(
+                  rb.Tr,
+                  null,
+                  _react2.default.createElement(
+                    rb.Th,
+                    null,
+                    'Property'
+                  ),
+                  _react2.default.createElement(
+                    rb.Th,
+                    null,
+                    'Filter'
+                  ),
+                  _react2.default.createElement(
+                    rb.Th,
+                    null,
+                    'Value'
+                  ),
+                  _react2.default.createElement(
+                    rb.Th,
+                    null,
+                    'Options'
+                  )
+                )
+              ),
+              _react2.default.createElement(
+                rb.Tbody,
+                null,
+                this.state.filterRowData && this.state.filterRowData.length ? this.state.filterRowData.map(function (filterRowDatum, l) {
+                  return _react2.default.createElement(
+                    rb.Tr,
+                    { key: l },
+                    _react2.default.createElement(
+                      rb.Td,
+                      null,
+                      filterRowDatum.property
+                    ),
+                    _react2.default.createElement(
+                      rb.Td,
+                      null,
+                      _TableHelpers.filterQuerySelectOptionsMap[filterRowDatum.filter_value]
+                    ),
+                    _react2.default.createElement(
+                      rb.Td,
+                      null,
+                      filterRowDatum.value
+                    ),
+                    _react2.default.createElement(
+                      rb.Td,
+                      null,
+                      _react2.default.createElement(
+                        rb.Button,
+                        { onClick: function onClick() {
+                            _this8.removeFilterRow(l);
+                          } },
+                        '⤫'
+                      )
+                    )
+                  );
+                }) : null
+              ),
+              _react2.default.createElement(
+                rb.Tfoot,
+                null,
+                _react2.default.createElement(
+                  rb.Tr,
+                  null,
+                  _react2.default.createElement(
+                    rb.Th,
+                    null,
+                    _react2.default.createElement(
+                      rb.Select,
+                      {
+                        value: this.state.filterRowNewData.property || '__property__',
+                        onChange: function onChange(event) {
+                          var text = event.target.value;
+                          var name = 'property';
+                          _this8.updateNewFilterRowText({ name: name, text: text });
+                        }
+                      },
+                      this.filterSelectOptions.map(function (filter, fp) {
+                        return _react2.default.createElement(
+                          'option',
+                          { value: filter.value, key: fp, disabled: filter.disabled },
+                          filter.label
+                        );
+                      })
+                    )
+                  ),
+                  _react2.default.createElement(
+                    rb.Th,
+                    null,
+                    _react2.default.createElement(
+                      rb.Select,
+                      {
+                        value: this.state.filterRowNewData.filter_value || '__filter__',
+                        onChange: function onChange(event) {
+                          var text = event.target.value;
+                          var name = 'filter_value';
+                          _this8.updateNewFilterRowText({ name: name, text: text });
+                        }
+                      },
+                      _TableHelpers.filterQuerySelectOptions.map(function (filter, ft) {
+                        return _react2.default.createElement(
+                          'option',
+                          { value: filter.value, key: ft, disabled: filter.disabled },
+                          filter.label
+                        );
+                      })
+                    )
+                  ),
+                  _react2.default.createElement(
+                    rb.Th,
+                    null,
+                    _react2.default.createElement(rb.Input, {
+                      value: this.state.filterRowNewData.value || '',
+                      onChange: function onChange(event) {
+                        var text = event.target.value;
+                        var name = 'value';
+                        _this8.updateNewFilterRowText({ name: name, text: text });
+                      } })
+                  ),
+                  _react2.default.createElement(
+                    rb.Th,
+                    null,
+                    _react2.default.createElement(
+                      rb.Button,
+                      { style: { width: '100%' }, onClick: function onClick() {
+                          _this8.addFilterRow();
+                        } },
+                      'Add filter'
+                    )
+                  )
+                )
+              )
+            ),
+            _react2.default.createElement(
+              rb.Content,
+              this.props.searchFilterTableNoteProps,
+              _react2.default.createElement(
+                'p',
+                null,
+                _react2.default.createElement(
+                  'strong',
+                  null,
+                  'Notes:'
+                )
+              ),
+              _react2.default.createElement(
+                'ul',
+                null,
+                _react2.default.createElement(
+                  'li',
+                  null,
+                  _react2.default.createElement(
+                    'strong',
+                    null,
+                    'Date Values:'
+                  ),
+                  ' For date filters, Moment is used for date filters with the following moment format: YYYY-MM-DDTHH:MM:SS'
+                ),
+                _react2.default.createElement(
+                  'li',
+                  null,
+                  _react2.default.createElement(
+                    'strong',
+                    null,
+                    'Boolean values'
+                  ),
+                  ' "true" is converted to ',
+                  _react2.default.createElement(
+                    'em',
+                    null,
+                    'true'
+                  )
+                )
+              ),
+              _react2.default.createElement('hr', null)
+            ),
+            _react2.default.createElement(
+              rb.Table,
+              this.props.searchFilterPaginationProps,
+              _react2.default.createElement(
+                rb.Tbody,
+                null,
+                _react2.default.createElement(
+                  rb.Tr,
+                  null,
+                  _react2.default.createElement(
+                    rb.Td,
+                    null,
+                    _react2.default.createElement(
+                      rb.Group,
+                      null,
+                      _react2.default.createElement(
+                        rb.Label,
+                        { style: filterLabelStyleProps },
+                        'Sort by'
+                      ),
+                      _react2.default.createElement(
+                        rb.Select,
+                        {
+                          value: this.state.sortProp || 'createdat',
+                          onChange: function onChange(event) {
+                            var text = event.target.value;
+                            _this8.setState({ sortProp: text }, function () {
+                              _this8.updateTableData({});
+                            });
+                          }
+                        },
+                        this.sortableSelctOptions.map(function (filter, fp) {
+                          return _react2.default.createElement(
+                            'option',
+                            { value: filter.value, key: fp, disabled: filter.disabled },
+                            filter.label
+                          );
+                        })
+                      ),
+                      _react2.default.createElement(
+                        rb.Select,
+                        {
+                          value: this.state.sortOrder || 'desc',
+                          onChange: function onChange(event) {
+                            var text = event.target.value;
+                            _this8.setState({ sortOrder: text }, function () {
+                              _this8.updateTableData({});
+                            });
+                          }
+                        },
+                        _react2.default.createElement(
+                          'option',
+                          { value: 'asc' },
+                          'ASC'
+                        ),
+                        _react2.default.createElement(
+                          'option',
+                          { value: 'desc' },
+                          'DESC'
+                        )
+                      )
+                    )
+                  ),
+                  _react2.default.createElement(
+                    rb.Td,
+                    null,
+                    _react2.default.createElement(
+                      rb.Group,
+                      null,
+                      _react2.default.createElement(
+                        rb.Label,
+                        { style: filterLabelStyleProps },
+                        'Showing'
+                      ),
+                      _react2.default.createElement(
+                        rb.Select,
+                        {
+                          value: this.state.limit,
+                          onChange: function onChange(event) {
+                            var text = event.target.value;
+                            _this8.setState({ limit: text }, function () {
+                              _this8.updateTableData({});
+                            });
+                          }
+                        },
+                        (this.props.includeAllLimits ? this.props.numOfLimits.concat([this.state.numItems]) : this.props.numOfLimits).map(function (lim, lp) {
+                          return _react2.default.createElement(
+                            'option',
+                            { value: lim, key: lp, disabled: lim.disabled },
+                            lim
+                          );
+                        })
+                      ),
+                      _react2.default.createElement(
+                        rb.Label,
+                        { style: filterLabelStyleProps },
+                        'of ',
+                        this.state.numItems,
+                        ' rows'
+                      )
+                    )
+                  ),
+                  _react2.default.createElement(
+                    rb.Td,
+                    null,
+                    _react2.default.createElement(
+                      rb.Group,
+                      null,
+                      _react2.default.createElement(
+                        rb.Label,
+                        { style: filterLabelStyleProps },
+                        'Page'
+                      ),
+                      _react2.default.createElement(
+                        rb.Select,
+                        {
+                          value: this.state.currentPage,
+                          onChange: function onChange(event) {
+                            var text = event.target.value;
+                            _this8.searchFunction({ pagenum: text });
+                          }
+                        },
+                        [this.state.numPages].reduce(function (result, key) {
+                          var usableLimit = key < 500 ? key : 500;
+                          for (var i = 1; i <= usableLimit; i++) {
+                            result.push(i);
+                          }
+                          return result;
+                        }, []).map(function (lim, lp) {
+                          return _react2.default.createElement(
+                            'option',
+                            { value: lim, key: lp, disabled: lim === _this8.state.currentPage },
+                            lim
+                          );
+                        })
+                      ),
+                      _react2.default.createElement(
+                        rb.Label,
+                        { style: filterLabelStyleProps },
+                        'of ',
+                        this.state.numPages,
+                        ' pages'
+                      )
+                    )
+                  )
+                )
+              )
+            )
           )
         ) : null,
         _react2.default.createElement(
@@ -1009,18 +1352,20 @@ var ResponsiveTable = function (_Component) {
             this.props.tableProps,
             _react2.default.createElement(
               rb.Thead,
-              null,
+              { className: '__ra_rt_thead' },
               _react2.default.createElement(
                 rb.Tr,
                 null,
                 this.state.headers.map(function (header, idx) {
                   return _react2.default.createElement(
                     rb.Th,
-                    (0, _extends3.default)({ key: idx }, header.headerColumnProps),
+                    (0, _extends3.default)({ key: idx, style: { cursor: 'pointer' } }, header.headerColumnProps),
                     header.sortable ? _react2.default.createElement(
                       'a',
-                      (0, _extends3.default)({}, _this6.props.headerLinkProps, { onClick: function onClick() {
-                          _this6.updateTableData({ sort: header.sortid });
+                      (0, _extends3.default)({ style: {
+                          cursor: 'pointer'
+                        } }, _this8.props.headerLinkProps, { onClick: function onClick() {
+                          _this8.updateTableData({ sort: header.sortid });
                         } }),
                       header.label
                     ) : header.label
@@ -1038,37 +1383,37 @@ var ResponsiveTable = function (_Component) {
                   return _react2.default.createElement(
                     rb.Th,
                     (0, _extends3.default)({ key: idx }, header.headerColumnProps),
-                    idx === _this6.state.headers.length - 1 ? _react2.default.createElement(
+                    idx === _this8.state.headers.length - 1 ? _react2.default.createElement(
                       'span',
-                      (0, _extends3.default)({ className: '__ra_rt_tf', style: { display: 'flex' } }, _this6.props.tableFormButtonWrapperProps),
-                      _this6.props.replaceButton ? _react2.default.createElement(
+                      (0, _extends3.default)({ className: '__ra_rt_tf', style: { display: 'flex' } }, _this8.props.tableFormButtonWrapperProps),
+                      _this8.props.replaceButton ? _react2.default.createElement(
                         _reactFileReaderInput2.default,
-                        { as: 'text', onChange: _this6.handleFileUpload.call(_this6, 'replace') },
+                        { as: 'text', onChange: _this8.handleFileUpload.call(_this8, 'replace') },
                         _react2.default.createElement(
                           rb.Button,
-                          _this6.props.replaceButtonProps,
-                          _this6.props.replaceButtonLabel || 'Replace'
+                          _this8.props.replaceButtonProps,
+                          _this8.props.replaceButtonLabel || 'Replace'
                         )
                       ) : null,
-                      _this6.props.uploadAddButton ? _react2.default.createElement(
+                      _this8.props.uploadAddButton ? _react2.default.createElement(
                         _reactFileReaderInput2.default,
-                        { as: 'text', onChange: _this6.handleFileUpload.call(_this6, 'add') },
+                        { as: 'text', onChange: _this8.handleFileUpload.call(_this8, 'add') },
                         _react2.default.createElement(
                           rb.Button,
-                          _this6.props.uploadAddButtonProps,
-                          _this6.props.uploadAddButtonLabel || 'Upload'
+                          _this8.props.uploadAddButtonProps,
+                          _this8.props.uploadAddButtonLabel || 'Upload'
                         )
                       ) : null,
                       _react2.default.createElement(
                         rb.Button,
-                        (0, _extends3.default)({}, _this6.props.tableFormAddButtonProps, {
+                        (0, _extends3.default)({}, _this8.props.tableFormAddButtonProps, {
                           style: { width: '100%' },
                           onClick: function onClick() {
-                            _this6.updateByAddRow();
+                            _this8.updateByAddRow();
                           } }),
-                        _this6.props.formRowAddButtonLabel ? _this6.props.formRowAddButtonLabel : 'Add'
+                        _this8.props.formRowAddButtonLabel ? _this8.props.formRowAddButtonLabel : 'Add'
                       )
-                    ) : _this6.updateGetFooterAddRow(header)
+                    ) : _this8.updateGetFooterAddRow(header)
                   );
                 })
               )
@@ -1079,8 +1424,8 @@ var ResponsiveTable = function (_Component) {
               displayRows.map(function (row, rowIndex) {
                 return _react2.default.createElement(
                   rb.Tr,
-                  { key: 'row' + rowIndex, className: _this6.props.selectEntireRow && rowIndex === _this6.state.selectedRowIndex ? '__selected' : undefined },
-                  _this6.state.headers.map(function (header, colIndex) {
+                  { key: 'row' + rowIndex, className: _this8.props.selectEntireRow && rowIndex === _this8.state.selectedRowIndex ? '__selected' : undefined },
+                  _this8.state.headers.map(function (header, colIndex) {
                     // console.debug({header});
                     if (header.link) {
                       return _react2.default.createElement(
@@ -1088,8 +1433,8 @@ var ResponsiveTable = function (_Component) {
                         (0, _extends3.default)({ key: 'row' + rowIndex + 'col' + colIndex }, header.columnProps),
                         _react2.default.createElement(
                           _reactRouter.Link,
-                          (0, _extends3.default)({}, header.linkProps, { to: _this6.getHeaderLinkURL(header.link, row) }),
-                          _this6.formatValue(typeof row[header.sortid] !== 'undefined' ? row[header.sortid] : header.value, row, {
+                          (0, _extends3.default)({}, header.linkProps, { to: _this8.getHeaderLinkURL(header.link, row) }),
+                          _this8.formatValue(typeof row[header.sortid] !== 'undefined' ? row[header.sortid] : header.value, row, {
                             idx: rowIndex + calcStartIndex,
                             momentFormat: header.momentFormat,
                             image: header.image,
@@ -1107,24 +1452,24 @@ var ResponsiveTable = function (_Component) {
                         (0, _extends3.default)({ key: 'row' + rowIndex + 'col' + colIndex, style: { textAlign: 'right' } }, header.columnProps),
                         rowIndex !== 0 ? _react2.default.createElement(
                           rb.Button,
-                          (0, _extends3.default)({}, _this6.props.formRowUpButton, { onClick: function onClick() {
-                              _this6.moveRowUp(rowIndex);
+                          (0, _extends3.default)({}, _this8.props.formRowUpButton, { onClick: function onClick() {
+                              _this8.moveRowUp(rowIndex);
                             } }),
-                          _this6.props.formRowUputtonLabel ? _this6.props.formRowUputtonLabel : '⇧'
+                          _this8.props.formRowUputtonLabel ? _this8.props.formRowUputtonLabel : '⇧'
                         ) : null,
-                        rowIndex < _this6.state.rows.length - 1 ? _react2.default.createElement(
+                        rowIndex < _this8.state.rows.length - 1 ? _react2.default.createElement(
                           rb.Button,
-                          (0, _extends3.default)({}, _this6.props.formRowDownButton, { onClick: function onClick() {
-                              _this6.moveRowDown(rowIndex);
+                          (0, _extends3.default)({}, _this8.props.formRowDownButton, { onClick: function onClick() {
+                              _this8.moveRowDown(rowIndex);
                             } }),
-                          _this6.props.formRowDownButtonLabel ? _this6.props.formRowDownButtonLabel : '⇩'
+                          _this8.props.formRowDownButtonLabel ? _this8.props.formRowDownButtonLabel : '⇩'
                         ) : null,
                         _react2.default.createElement(
                           rb.Button,
-                          (0, _extends3.default)({}, _this6.props.formRowDeleteButton, { onClick: function onClick() {
-                              _this6.deleteRow(rowIndex);
+                          (0, _extends3.default)({}, _this8.props.formRowDeleteButton, { onClick: function onClick() {
+                              _this8.deleteRow(rowIndex);
                             } }),
-                          _this6.props.formRowDeleteButtonLabel ? _this6.props.formRowDeleteButtonLabel : '⤫'
+                          _this8.props.formRowDeleteButtonLabel ? _this8.props.formRowDeleteButtonLabel : '⤫'
                         )
                       );
                     } else if (header.buttons && header.buttons.length) {
@@ -1133,13 +1478,13 @@ var ResponsiveTable = function (_Component) {
                         rb.Td,
                         (0, _extends3.default)({ key: 'row' + rowIndex + 'col' + colIndex }, header.columnProps),
                         header.buttons.map(function (button) {
-                          return _this6.getRenderedComponent((0, _assign2.default)({
+                          return _this8.getRenderedComponent((0, _assign2.default)({
                             component: 'ResponsiveButton',
                             props: (0, _assign2.default)({
                               onclickPropObject: row,
                               buttonProps: {}
                             }, button.passProps),
-                            children: _this6.formatValue(typeof row[header.sortid] !== 'undefined' ? row[header.sortid] : header.value, row, {
+                            children: _this8.formatValue(typeof row[header.sortid] !== 'undefined' ? row[header.sortid] : header.value, row, {
                               idx: rowIndex + calcStartIndex,
                               momentFormat: header.momentFormat,
                               image: header.image,
@@ -1156,15 +1501,15 @@ var ResponsiveTable = function (_Component) {
                       return _react2.default.createElement(
                         rb.Td,
                         (0, _extends3.default)({ key: 'row' + rowIndex + 'col' + colIndex }, header.columnProps, { onClick: function onClick() {
-                            if (_this6.props.selectEntireRow) {
-                              _this6.selectRow({
+                            if (_this8.props.selectEntireRow) {
+                              _this8.selectRow({
                                 selectedRowData: row,
                                 selectedRowIndex: rowIndex
                               });
                             }
                             // console.debug({ event, rowIndex });
                           } }),
-                        _this6.formatValue.call(_this6, typeof row[header.sortid] !== 'undefined' ? row[header.sortid] : header.value, row, {
+                        _this8.formatValue.call(_this8, typeof row[header.sortid] !== 'undefined' ? row[header.sortid] : header.value, row, {
                           rowIndex: rowIndex,
                           idx: rowIndex + calcStartIndex,
                           momentFormat: header.momentFormat,
@@ -1194,7 +1539,7 @@ var ResponsiveTable = function (_Component) {
 }(_react.Component);
 //tble
 
-ResponsiveTable.propType = propTypes;
-ResponsiveTable.defaultProps = defaultProps;
+ResponsiveTable.propType = _TableHelpers.propTypes;
+ResponsiveTable.defaultProps = _TableHelpers.defaultProps;
 
 exports.default = ResponsiveTable;

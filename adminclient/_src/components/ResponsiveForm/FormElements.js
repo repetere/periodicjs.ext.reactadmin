@@ -4,6 +4,14 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _clearImmediate2 = require('babel-runtime/core-js/clear-immediate');
+
+var _clearImmediate3 = _interopRequireDefault(_clearImmediate2);
+
+var _setImmediate2 = require('babel-runtime/core-js/set-immediate');
+
+var _setImmediate3 = _interopRequireDefault(_setImmediate2);
+
 var _stringify = require('babel-runtime/core-js/json/stringify');
 
 var _stringify2 = _interopRequireDefault(_stringify);
@@ -400,6 +408,10 @@ function getFormTextInputArea(options) {
     onChange = function onChange(event) {
       var text = event.target.value;
       var updatedStateProp = {};
+      if (passableProps && passableProps.multiple) {
+        document.querySelector('.' + fileClassname + ' input').setAttribute('multiple', true);
+      }
+
       if (passableProps && passableProps.type === 'file') {
         updatedStateProp.formDataFiles = (0, _assign2.default)({}, _this5.state.formDataFiles, (0, _defineProperty3.default)({}, formElement.name, document.querySelector('.' + fileClassname + ' input')));
       } else {
@@ -411,6 +423,12 @@ function getFormTextInputArea(options) {
   passableProps = getPassablePropkeyevents(passableProps, formElement);
 
   // console.debug({ passableProps });
+  if (passableProps && passableProps.multiple) {
+    var t = (0, _setImmediate3.default)(function () {
+      document.querySelector('.' + fileClassname + ' input').setAttribute('multiple', true);
+      (0, _clearImmediate3.default)(t);
+    });
+  }
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps, { hasError: hasError, hasValue: hasValue }),

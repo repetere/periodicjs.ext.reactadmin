@@ -271,7 +271,7 @@ var ResponsiveForm = function (_Component) {
         fetchPostBody = updatedFormBody.fetchPostBody;
         fetchOptions = updatedFormBody.fetchOptions;
 
-        fetch(this.getFormSumitUrl('' + fetchOptions.url + (isGetRequest && fetchOptions.url.indexOf('?') !== -1 ? '&' : '?') + (isGetRequest ? _querystring2.default.stringify(submitFormData) : ''), fetchOptions.params, formdata), fetchOptions.options).then(_util2.default.checkStatus).then(function (res) {
+        fetch(this.getFormSumitUrl('' + fetchOptions.url + (isGetRequest && fetchOptions.url.indexOf('?') !== -1 ? '&' : fetchOptions.url.indexOf('?') === -1 ? '?' : '') + (isGetRequest ? _querystring2.default.stringify(submitFormData) : ''), fetchOptions.params, formdata), fetchOptions.options).then(_util2.default.checkStatus).then(function (res) {
           if (fetchOptions.success) {
             formSubmitNotification({ fetchOptions: fetchOptions, __formStateUpdate: __formStateUpdate });
           }
