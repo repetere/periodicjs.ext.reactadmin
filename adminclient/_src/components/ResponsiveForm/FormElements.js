@@ -549,7 +549,7 @@ function getFormCheckbox(options) {
         // event.target.value = 'on';
         updatedStateProp[formElement.name] = formElement.value || 'on';
       } else {
-        updatedStateProp[formElement.name] = _this6.state[formElement.name] ? 0 : 1;
+        updatedStateProp[formElement.name] = _this6.state[formElement.name] ? 0 : 'on';
       }
       // console.debug('after', { updatedStateProp, formElement, }, event.target);
       _this6.setState(updatedStateProp, function () {

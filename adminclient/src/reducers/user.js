@@ -55,6 +55,9 @@ const userReducer = (state, action) => {
     });
   case constants.user.UPDATE_PROFILE_SUCCESS:
     var profilePayload = action.payload;
+    if (profilePayload.profile.userdata && profilePayload.profile.userdata.password) {
+      delete profilePayload.profile.userdata.password;
+    }
     return Object.assign({}, state, {
       isFetching: false,
       // userdata: profilePayload.profile.userdata,
@@ -67,6 +70,9 @@ const userReducer = (state, action) => {
     }, profilePayload.profile);
   case constants.user.LOGIN_DATA_SUCCESS:
     var loginSuccessPayload = action.payload;
+    if (loginSuccessPayload.json && loginSuccessPayload.json.user && loginSuccessPayload.json.user.password) {
+      delete loginSuccessPayload.json.user.password;
+    }
     return {
       isFetching: false,
       loginURL: loginSuccessPayload.url,
@@ -84,6 +90,9 @@ const userReducer = (state, action) => {
     };
   case constants.user.SAVE_DATA_SUCCESS:
     var successPayload = action.payload;
+    if (successPayload.json && successPayload.json.user && successPayload.json.user.password) {
+      delete successPayload.json.user.password;
+    }
     return {
       isFetching: false,
       loginURL: successPayload.url,
@@ -98,7 +107,8 @@ const userReducer = (state, action) => {
       jwt_token_timeout: successPayload.json.timeout,
       userdata: successPayload.json.user,
       updatedAt: successPayload.updatedAt,
-      isMFAAuthenticated: (typeof successPayload.json.isMFAAuthenticated === 'boolean') ? successPayload.json.isMFAAuthenticated : state.isMFAAuthenticated
+      isMFAAuthenticated: (typeof successPayload.json.isMFAAuthenticated === 'boolean')  ? successPayload.json.isMFAAuthenticated
+        : state.isMFAAuthenticated,
     };
   case constants.user.USER_DATA_FAILURE:
     var failurePayload = action.payload;

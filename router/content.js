@@ -7,6 +7,7 @@ module.exports = function(resources) {
   const helperController = resources.app.controller.extension.reactadmin.controller.helper;
   const transformController = resources.app.controller.extension.reactadmin.controller.transform;
   const contentdataController = resources.app.controller.extension.reactadmin.controller.contentdata;
+  let reactadmin = resources.app.locals.extension.reactadmin;
 
   // ContentRouter.use(helperController.approveOptionsRequest, ensureApiAuthenticated, helperController.fixCodeMirrorSubmit, helperController.fixFlattenedSubmit);
   ContentRouter.get('/:dbname/secure-asset/:id/:filename', assetController.loadAsset, assetController.decryptAsset);
@@ -41,16 +42,71 @@ module.exports = function(resources) {
     transformController.posttransform,
     helperController.handleControllerDataResponse); 
   ContentRouter.put('/:dbname/:entity_type/:id', //update single
+    // (req, res, next) => {
+    //   console.log('USING PUT ROUTES')
+    //   console.log('USING PUT ROUTES')
+    //   console.log('USING PUT ROUTES')
+    //   console.log('USING PUT ROUTES')
+    //   console.log('USING PUT ROUTES')
+    //   console.log('USING PUT ROUTES')
+    //   console.log('USING PUT ROUTES')
+    //   console.log('USING PUT ROUTES')
+    //   console.log('USING PUT ROUTES')
+    //   console.log('USING PUT ROUTES')
+    //   console.log('USING PUT ROUTES')
+    //   console.log('USING PUT ROUTES')
+    //   console.log('USING PUT ROUTES')
+    //   console.log('USING PUT ROUTES')
+    //   console.log('USING PUT ROUTES')
+    //   next();
+    // },  
 		helperController.handleFileUpload,
     helperController.handleFileAssets,
     helperController.fixCodeMirrorSubmit,
     helperController.fixFlattenedSubmit,
     transformController.pretransform,
+    // (req, res, next) => {
+    //   console.log('PRETRANSFORM PUT ROUTES')
+    //   console.log('PRETRANSFORM PUT ROUTES')
+    //   console.log('PRETRANSFORM PUT ROUTES')
+    //   console.log('PRETRANSFORM PUT ROUTES')
+    //   console.log('PRETRANSFORM PUT ROUTES')
+    //   console.log('PRETRANSFORM PUT ROUTES')
+    //   console.log('PRETRANSFORM PUT ROUTES')
+    //   console.log('PRETRANSFORM PUT ROUTES')
+    //   console.log('PRETRANSFORM PUT ROUTES')
+    //   console.log('reactadmin.manifest_prefix',reactadmin.manifest_prefix);
+    //   console.log('PRETRANSFORM PUT ROUTES')
+    //   console.log('PRETRANSFORM PUT ROUTES')
+    //   console.log('PRETRANSFORM PUT ROUTES')
+    //   console.log('PRETRANSFORM PUT ROUTES')
+    //   console.log('PRETRANSFORM PUT ROUTES')
+    //   console.log('PRETRANSFORM PUT ROUTES')
+    //   next();
+    // },  
     contentdataController.get_entity,
     contentdataController.merge_controller_data_req_body,
     contentdataController.entity_content_posttransform,
     resources.core.controller.save_revision,
     contentdataController.update_entity,
+    // (req, res, next) => {
+    //   console.log('POST**--!!--** PUT ROUTES')
+    //   console.log('POST**--!!--** PUT ROUTES')
+    //   console.log('POST**--!!--** PUT ROUTES')
+    //   console.log('POST**--!!--** PUT ROUTES')
+    //   console.log('POST**--!!--** PUT ROUTES')
+    //   console.log('POST**--!!--** PUT ROUTES')
+    //   console.log('POST**--!!--** PUT ROUTES')
+    //   console.log('POST**--!!--** PUT ROUTES')
+    //   console.log('POST**--!!--** PUT ROUTES')
+    //   console.log('POST**--!!--** PUT ROUTES')
+    //   console.log('POST**--!!--** PUT ROUTES')
+    //   console.log('POST**--!!--** PUT ROUTES')
+    //   console.log('POST**--!!--** PUT ROUTES')
+    //   console.log('POST**--!!--** PUT ROUTES')
+    //   console.log('POST**--!!--** PUT ROUTES')
+    //   next();
+    // },  
     transformController.posttransform,
     helperController.handleControllerDataResponse); 
   ContentRouter.delete('/:dbname/:entity_type/:id', //delete single

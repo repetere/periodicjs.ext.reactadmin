@@ -4,6 +4,7 @@ import { Link, } from 'react-router';
 // import ResponsiveLink from '../ResponsiveLink';;;
 import 'font-awesome/css/font-awesome.css';
 import styles from '../../styles';
+import { all_prefixes, } from '../../../../utility/route_prefixes';
 import capitalize from 'capitalize';
 import { getRenderedComponent, } from '../AppLayoutMap';
 
@@ -14,6 +15,7 @@ class AppHeader extends Component {
       ui: props.ui,
       user: props.user,
     };
+    this.all_prefixes = all_prefixes(props.settings.adminPath);
     this.getRenderedComponent = getRenderedComponent.bind(this);
   }
   componentWillReceiveProps(nextProps) {
@@ -23,6 +25,7 @@ class AppHeader extends Component {
     });
   }
   render() {
+    // console.debug('this.all_prefixes.manifest_prefix', this.all_prefixes.manifest_prefix);
     let buttonColor = this.props.settings.ui.header.buttonColor;
     let globalSearch = (this.props.settings.ui.header.useGlobalSearch) ? (
       <NavGroup align="center" style={{ flex:3, }}>
@@ -55,7 +58,7 @@ class AppHeader extends Component {
               {globalSearch}
               <NavGroup align="right" isMenu>
                 <NavItem>
-                  <Link to="/account/profile" style={Object.assign({ fontSize:'20px', }, styles.noUnderline, this.props.settings.ui.header.userNameStyle)}>
+                  <Link to={`${this.all_prefixes.manifest_prefix}account/profile`} style={Object.assign({ fontSize:'20px', }, styles.noUnderline, this.props.settings.ui.header.userNameStyle)}>
                     {`${capitalize(this.state.user.firstname || '')} ${capitalize(this.state.user.lastname || '')}`}
                   </Link>
                 </NavItem> 
@@ -64,18 +67,18 @@ class AppHeader extends Component {
                     this.getRenderedComponent({
                       component: 'ResponsiveLink',
                       props: {
-                      location: '/account/profile',
-                      style: {
-                        width: '48px',
-                        height: '48px',
-                        display:'block',
-                        backgroundColor: 'white',
-                        borderRadius: '24px',
-                        backgroundSize: 'cover',
-                        backgroundRepeat:'no-repeat',
-                        backgroundImage:'url('+(this.props.user.profile_image_preview || '/favicon.png' )+')',
+                        location: '/account/profile',
+                        style: {
+                          width: '48px',
+                          height: '48px',
+                          display:'block',
+                          backgroundColor: 'white',
+                          borderRadius: '24px',
+                          backgroundSize: 'cover',
+                          backgroundRepeat:'no-repeat',
+                          backgroundImage:'url('+(this.props.user.profile_image_preview || '/favicon.png' )+')',
+                        },
                       },
-                    },
                     })} 
                 </NavItem>
                 {(this.state.user.isLoggedIn && this.props.settings.ui.header.useHeaderLogout) ? 

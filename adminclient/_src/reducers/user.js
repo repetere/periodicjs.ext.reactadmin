@@ -38,7 +38,7 @@ var userReducer = function userReducer(state, action) {
   switch (action.type) {
     case _constants2.default.user.LOGOUT_FAILURE:
       var logoutFailurePayload = action.payload;
-      return (0, _assign2.default)(state, {
+      return (0, _assign2.default)({}, state, {
         isFetching: false,
         error: logoutFailurePayload.error,
         timestamp: logoutFailurePayload.timestamp,
@@ -46,7 +46,7 @@ var userReducer = function userReducer(state, action) {
       });
     case _constants2.default.user.LOGOUT_SUCCESS:
       var logoutSuccessPayload = action.payload;
-      return (0, _assign2.default)(state, {
+      return (0, _assign2.default)({}, state, {
         isFetching: false,
         isLoggedIn: false,
         error: null,
@@ -63,11 +63,23 @@ var userReducer = function userReducer(state, action) {
       });
     case _constants2.default.user.LOGIN_DATA_REQUEST:
       // var requestPayload = action.payload;
-      return (0, _assign2.default)(state, {
+      return (0, _assign2.default)({}, state, {
         isFetching: true,
         loginURL: action.payload.url,
         updatedAt: new Date()
       });
+    case _constants2.default.user.UPDATE_PROFILE_SUCCESS:
+      var profilePayload = action.payload;
+      return (0, _assign2.default)({}, state, {
+        isFetching: false,
+        // userdata: profilePayload.profile.userdata,
+        // username: profilePayload.profile.username,
+        // email: profilePayload.profile.email,
+        // firstname: profilePayload.profile.firstname,
+        // lastname: profilePayload.profile.lastname,
+        // profile_image_preview: profilePayload.profile.profile_image_preview,
+        updatedAt: new Date()
+      }, profilePayload.profile);
     case _constants2.default.user.LOGIN_DATA_SUCCESS:
       var loginSuccessPayload = action.payload;
       return {
@@ -105,7 +117,7 @@ var userReducer = function userReducer(state, action) {
       };
     case _constants2.default.user.USER_DATA_FAILURE:
       var failurePayload = action.payload;
-      return (0, _assign2.default)(state, {
+      return (0, _assign2.default)({}, state, {
         isFetching: false,
         loginURL: failurePayload.url,
         error: failurePayload.error,

@@ -106,6 +106,7 @@ exports.default = {
     USER_DATA_FAILURE: 'user fetching data failed',
     LOGIN_DATA_SUCCESS: 'user login fetching data succeeded',
     SAVE_DATA_SUCCESS: 'user profile saving data succeeded',
+    UPDATE_PROFILE_SUCCESS: 'user profile data updated',
     LOGOUT_REQUEST: 'user logout request',
     LOGOUT_SUCCESS: 'user logout succeeded',
     LOGOUT_FAILURE: 'user logout failed',

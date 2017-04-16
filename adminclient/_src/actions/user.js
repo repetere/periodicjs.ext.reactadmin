@@ -132,6 +132,16 @@ var user = {
       }
     };
   },
+  updateUserProfile: function updateUserProfile(profile) {
+    return {
+      type: _constants2.default.user.UPDATE_PROFILE_SUCCESS,
+      payload: {
+        profile: profile,
+        updatedAt: new Date(),
+        timestamp: Date.now()
+      }
+    };
+  },
 
   /**
   * @param {string} location name of extension to load

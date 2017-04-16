@@ -46,6 +46,10 @@ var _styles = require('../../styles');
 
 var _styles2 = _interopRequireDefault(_styles);
 
+var _route_prefixes = require('../../../../utility/route_prefixes');
+
+var _route_prefixes2 = _interopRequireDefault(_route_prefixes);
+
 var _capitalize = require('capitalize');
 
 var _capitalize2 = _interopRequireDefault(_capitalize);
@@ -54,7 +58,10 @@ var _AppLayoutMap = require('../AppLayoutMap');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// FormHorizontal, NavToggle, ControlLabel, Group,
+console.debug({ route_prefixes: _route_prefixes2.default });
 // import ResponsiveLink from '../ResponsiveLink';;;
+
 var AppHeader = function (_Component) {
   (0, _inherits3.default)(AppHeader, _Component);
 
@@ -172,7 +179,6 @@ var AppHeader = function (_Component) {
     }
   }]);
   return AppHeader;
-}(_react.Component); // FormHorizontal, NavToggle, ControlLabel, Group,
-
+}(_react.Component);
 
 exports.default = AppHeader;

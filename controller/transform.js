@@ -10,6 +10,7 @@ const transformRequest = (type) => (req, res, next) => {
   let transformsFilters = (transformType[ req.method ])
     ? utilities.findMatchingRoute(transformType[ req.method ], req._parsedOriginalUrl.pathname)
     : false; 
+  // console.log({ transformsFilters, type, }, 'req.method', req.method);
   if (transformsFilters && transformsFilters.length > 0) {
     Promisie.pipe(transformType[req.method][transformsFilters])(req)
       .then(newreq=>{

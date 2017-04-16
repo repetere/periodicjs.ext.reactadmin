@@ -1,5 +1,6 @@
 'use strict';
-const helper = require('./helper');
+// const helper = require('./helper');
+const account = require('./account');
 const asset = require('./asset');
 
 module.exports = (periodic) => {
@@ -12,6 +13,14 @@ module.exports = (periodic) => {
       ],
       [ `${reactadmin.manifest_prefix}contentdata/standard/assets` ]: [
         asset.formatAssetIndex(periodic),
+      ],
+    },
+    PUT: {
+      [ `${reactadmin.manifest_prefix}contentdata/standard/accounts/:id` ]: [
+        account.updatedAccountProfile(periodic),
+      ],
+      [ `${reactadmin.manifest_prefix}contentdata/standard/account/:id` ]: [
+        account.updatedAccountProfile(periodic),
       ],
     },
   };

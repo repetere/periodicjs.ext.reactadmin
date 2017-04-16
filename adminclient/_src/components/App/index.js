@@ -224,6 +224,9 @@ var reduxActions = {
   getUserProfile: function getUserProfile(jwt_token) {
     return _stores2.default.dispatch(_actions2.default.user.getUserProfile(jwt_token));
   },
+  updateUserProfile: function updateUserProfile(profile) {
+    return _stores2.default.dispatch(_actions2.default.user.updateUserProfile(profile));
+  },
   setNavLabel: function setNavLabel(label) {
     return _stores2.default.dispatch(_actions2.default.ui.setNavLabel(label));
   },
