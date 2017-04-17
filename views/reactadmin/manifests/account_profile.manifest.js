@@ -28,7 +28,7 @@ module.exports = (periodic) => {
                 },  
                 'props':{
                   'onSubmit':{
-                    'url':`${reactadmin.settings.basename}${reactadmin.manifest_prefix}contentdata/standard/:entitytype/:id?format=json&updateprofile=true`,
+                    'url':`${reactadmin.settings.basename}${reactadmin.manifest_prefix}contentdata/standard/:entitytype/:id?format=json&updateprofile=true&updatecallback=true`,
                     'options':{
                       'method':'PUT',
                     },
@@ -233,7 +233,7 @@ module.exports = (periodic) => {
                                 },
                                 {
                                   type: 'file',
-                                  value:'',
+                                  // value:'',
                                   // label:'Profile Image',
                                   name: 'profileimage',
                                   layoutProps: {

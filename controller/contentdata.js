@@ -7,6 +7,7 @@ pluralize.addIrregularRule('data', 'datas');
 const helper = require('../transforms/helper');
 
 var resources;
+var CoreController;
 
 const get_entity_options = (entity) => {
   let usableEntity = pluralize.singular(entity);
@@ -46,7 +47,22 @@ const get_entity = (req, res, next) =>{
 const update_entity = (req, res, next) =>{
   const entity = get_entity_options(req.params.entity_type);
   // console.log('entity.name', entity.name, resources.app.controller.native[ entity.name ]);
-  return resources.app.controller.native[entity.name].update(req, res, next);
+  // console.log('req.body', req.body);
+  // console.log('req.controllerData', req.controllerData);
+  // req.controllerData.updateCallback
+    
+  if (req.query.updatecallback) {
+    // let update_entity_controller_updates = resources.app.controller.native[ entity.name ].controllerOptions;
+    // CoreController.updateModel
+    req.controllerData.updateCallback = (err, updateddoc) => {
+      req.controllerData.updateddoc = updateddoc;
+      // console.log({ err, updateddoc, });
+      next();
+    };
+    return resources.app.controller.native[ entity.name ].update(req, res, next);
+  } else {
+    return resources.app.controller.native[entity.name].update(req, res, next);
+  }
 };
 
 const delete_entity = (req, res, next) =>{
@@ -127,6 +143,7 @@ const entity_content_posttransform = (req, res, next)=>{
 
 const controller = function (periodic) {
   resources = periodic;
+  CoreController = periodic.core.controller;
 
   return {
     entity_index_with_count,

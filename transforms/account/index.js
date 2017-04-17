@@ -7,25 +7,12 @@
 // const path = require('path');
 // const dms2dec = require('dms2dec');
 // const ExifImage = require('exif').ExifImage;
+const str2json = require('string-to-json');
 
 exports.updatedAccountProfile = (periodic) => (req) => {
   return new Promise((resolve, reject) => {
     try {
-      console.log('UPDATEDACCOUNTPROFILE PUT ROUTES')
-      console.log('UPDATEDACCOUNTPROFILE PUT ROUTES')
-      console.log('UPDATEDACCOUNTPROFILE PUT ROUTES')
-      console.log('UPDATEDACCOUNTPROFILE PUT ROUTES')
-      console.log('UPDATEDACCOUNTPROFILE PUT ROUTES')
-      console.log('UPDATEDACCOUNTPROFILE PUT ROUTES')
-      console.log('UPDATEDACCOUNTPROFILE PUT ROUTES')
-      console.log('UPDATEDACCOUNTPROFILE PUT ROUTES')
-      console.log('UPDATEDACCOUNTPROFILE PUT ROUTES')
-      console.log('UPDATEDACCOUNTPROFILE PUT ROUTES')
-      console.log('UPDATEDACCOUNTPROFILE PUT ROUTES')
-      console.log('UPDATEDACCOUNTPROFILE PUT ROUTES')
-      console.log('UPDATEDACCOUNTPROFILE PUT ROUTES')
-      console.log('UPDATEDACCOUNTPROFILE PUT ROUTES')
-      console.log('UPDATEDACCOUNTPROFILE PUT ROUTES')
+
       // console.log(__dirname, periodic.settings.name);
       // req.controllerData.model_fields = {
       //   identification: 1,
@@ -35,7 +22,13 @@ exports.updatedAccountProfile = (periodic) => (req) => {
       //   user_account: 1,
       // };
       // req.controllerData.skip_population = true;
-      console.log('req.body', req.body);
+      console.log('updatedAccountProfile req.body', req.body);
+      console.log('updatedAccountProfile req.controllerData', req.controllerData);
+
+      let updatedProfile = Object.assign({}, req.body);
+      delete updatedProfile.password;
+
+      req.controllerData = updatedProfile;
       resolve(req);
     } catch (e) {
       reject(e);
