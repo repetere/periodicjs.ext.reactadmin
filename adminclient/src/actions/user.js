@@ -74,7 +74,7 @@ const user = {
       },
     };
   },
-  updateUserProfile(profile) {
+  updateUserProfileSuccess(profile) {
     return {
       type: constants.user.UPDATE_PROFILE_SUCCESS,
       payload: {
@@ -82,6 +82,20 @@ const user = {
         updatedAt: new Date(),
         timestamp: Date.now(),
       },
+    };
+  },
+  updateUserProfile(profile) {
+    console.debug('updatedUserProfile', { profile, });
+    return (dispatch/*, getState*/) => {
+      AsyncStorage.setItem(constants.jwt_token.PROFILE_JSON, JSON.stringify(profile.userdata))
+        .then((status) => {
+          console.debug({ status, });
+          dispatch(this.updateUserProfileSuccess(profile));
+        })
+        .catch(e => { 
+          console.error(e);
+          dispatch(notification.errorNotification(e));
+        });
     };
   },
   /**

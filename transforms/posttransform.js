@@ -4,7 +4,7 @@ const account = require('./account');
 const asset = require('./asset');
 
 module.exports = (periodic) => {
-  let reactadmin = periodic.app.locals.extension.reactadmin;
+  const reactadmin = periodic.app.locals.extension.reactadmin;
   return {
     GET: {
       [ `${reactadmin.manifest_prefix}contentdata/standard/assets/:id` ]: [

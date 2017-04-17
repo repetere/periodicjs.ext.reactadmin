@@ -67,7 +67,7 @@ class AppHeader extends Component {
                     this.getRenderedComponent({
                       component: 'ResponsiveLink',
                       props: {
-                        location: '/account/profile',
+                        location: `${this.all_prefixes.manifest_prefix}account/profile`,
                         style: {
                           width: '48px',
                           height: '48px',

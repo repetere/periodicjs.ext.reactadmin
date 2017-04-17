@@ -28,7 +28,7 @@ module.exports = (periodic) => {
                 },  
                 'props':{
                   'onSubmit':{
-                    'url':`${reactadmin.settings.basename}${reactadmin.manifest_prefix}contentdata/standard/:entitytype/:id?format=json&updateprofile=true&updatecallback=true`,
+                    'url':`${reactadmin.settings.basename}${reactadmin.manifest_prefix}contentdata/standard/:entitytype/:id?format=json&updateprofile=true&updatecallback=true&handleupload=true`,
                     'options':{
                       'method':'PUT',
                     },
@@ -43,7 +43,7 @@ module.exports = (periodic) => {
                       },
                     ],
                     'success':true,
-                    'successCallback':'func:this.props.debug',
+                    'responseCallback':'func:this.props.updateUserProfile',
                   },
                   'hiddenFields':[{
                     'form_name':'docid',
