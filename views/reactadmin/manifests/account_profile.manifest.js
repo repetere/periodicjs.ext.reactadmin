@@ -26,7 +26,8 @@ module.exports = (periodic) => {
                 'thisprops': {
                   'formdata': ['user', 'userdata', ],
                 },  
-                'props':{
+                'props': {
+                  blockPageUI:true,
                   'onSubmit':{
                     'url':`${reactadmin.settings.basename}${reactadmin.manifest_prefix}contentdata/standard/:entitytype/:id?format=json&updateprofile=true&updatecallback=true&handleupload=true`,
                     'options':{
@@ -282,7 +283,8 @@ module.exports = (periodic) => {
                               passProps: {
                                 type:'password',
                               },
-                              name:'confirmpassword',
+                              name:'passwordconfirm',
+                              // name:'confirmpassword',
                             },
                             {
                               type: 'text',

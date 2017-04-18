@@ -7,18 +7,38 @@
 // const path = require('path');
 // const dms2dec = require('dms2dec');
 // const ExifImage = require('exif').ExifImage;
-const str2json = require('string-to-json');
+// const str2json = require('string-to-json');
 
 exports.checkUpdatedAsset = (periodic) => (req) => {
   return new Promise((resolve, reject) => {
     try {
-      console.log('checkUpdatedAsset req.files', req.files);
-      console.log('checkUpdatedAsset req.body', req.body);
-      console.log('checkUpdatedAsset req.controllerData', req.controllerData);
-      if (req.controllerData && req.controllerData.assets && req.controllerData.assets.length) {
-        // req.body.primaryasset = req.controllerData.assets[ 0 ]._id;
-        req.body.primaryasset = req.controllerData.assets[ 0 ];
+      // console.log('checkUpdatedAsset req.files', req.files);
+      // console.log('checkUpdatedAsset req.body', req.body);
+      // console.log('checkUpdatedAsset req.controllerData', req.controllerData);
+      // console.log('BEFORE checkUpdatedAsset req.body', req.body);
+      let reqBody = Object.assign({}, req.body);
+      // let CoreUtilities = periodic.core.utilities;
+      Object.keys(req.body).forEach(key => {
+        if (!reqBody[ key ] || reqBody[ key ] === 'undefined') {
+          delete reqBody[ key ];
+        }
+      });
+      // console.log({ reqBody });
+      req.body = reqBody;
+      let loginSettings = periodic.app.controller.extension.login.loginExtSettings;
+      // req.body = CoreUtilities.removeEmptyObjectValues(req.body);
+      req.controllerData = Object.assign({}, req.controllerData);
+      if (req.body.password) {
+        req.controllerData.checkuservalidation = loginSettings.new_user_validation;
+        req.controllerData.checkuservalidation.useComplexity = loginSettings.complexitySettings.useComplexity;
+        req.controllerData.checkuservalidation.complexity = loginSettings.complexitySettings.settings.weak;
       }
+      if (req.controllerData && req.controllerData.assets && req.controllerData.assets.length) {
+        req.body.primaryasset = req.controllerData.assets[ 0 ]._id;
+        // req.body.primaryasset = req.controllerData.assets[ 0 ];
+      }
+      req.skipemptyvaluecheck = true;
+      // console.log('AFTER checkUpdatedAsset req.body', req.body);
       resolve(req);
     } catch (e) {
       reject(e);
@@ -40,7 +60,7 @@ exports.updatedAccountProfile = (periodic) => (req) => {
       // };
       // req.controllerData.skip_population = true;
      
-      console.log('updatedAccountProfile Initial req.controllerData', req.controllerData);
+      // console.log('updatedAccountProfile Initial req.controllerData', req.controllerData);
 
       let updatedProfile = Object.assign({}, req.body);
       delete updatedProfile.password;
@@ -51,10 +71,10 @@ exports.updatedAccountProfile = (periodic) => (req) => {
         email: updatedProfile.email,
         firstname: updatedProfile.firstname,
         lastname: updatedProfile.lastname,
-        // profile_image_preview: updatedProfile.profile_image_preview,
+        profile_image_preview: (req.controllerData.assets && req.controllerData.assets.length) ? req.controllerData.assets[0].fileurl :undefined, //updatedProfile.profile_image_preview,
       };
-      console.log('updatedAccountProfile req.body', req.body);
-      console.log('updatedAccountProfile FINAL req.controllerData', req.controllerData);
+      // console.log('updatedAccountProfile req.body', req.body);
+      // console.log('updatedAccountProfile FINAL req.controllerData', req.controllerData);
       resolve(req);
     } catch (e) {
       reject(e);
