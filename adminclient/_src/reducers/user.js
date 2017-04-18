@@ -70,6 +70,9 @@ var userReducer = function userReducer(state, action) {
       });
     case _constants2.default.user.UPDATE_PROFILE_SUCCESS:
       var profilePayload = action.payload;
+      if (profilePayload.profile.userdata && profilePayload.profile.userdata.password) {
+        delete profilePayload.profile.userdata.password;
+      }
       return (0, _assign2.default)({}, state, {
         isFetching: false,
         // userdata: profilePayload.profile.userdata,
@@ -82,6 +85,9 @@ var userReducer = function userReducer(state, action) {
       }, profilePayload.profile);
     case _constants2.default.user.LOGIN_DATA_SUCCESS:
       var loginSuccessPayload = action.payload;
+      if (loginSuccessPayload.json && loginSuccessPayload.json.user && loginSuccessPayload.json.user.password) {
+        delete loginSuccessPayload.json.user.password;
+      }
       return {
         isFetching: false,
         loginURL: loginSuccessPayload.url,
@@ -90,7 +96,7 @@ var userReducer = function userReducer(state, action) {
         email: loginSuccessPayload.json.user.email,
         firstname: loginSuccessPayload.json.user.firstname,
         lastname: loginSuccessPayload.json.user.lastname,
-        profile_image_preview: loginSuccessPayload.json.user.primaryasset ? loginSuccessPayload.json.user.primaryasset.attributes.location : null,
+        profile_image_preview: loginSuccessPayload.json.user.primaryasset && loginSuccessPayload.json.user.primaryasset.attributes ? loginSuccessPayload.json.user.primaryasset.attributes.location : null,
         jwt_token: loginSuccessPayload.json.token,
         jwt_token_expires: loginSuccessPayload.json.expires,
         jwt_token_timeout: loginSuccessPayload.json.timeout,
@@ -99,6 +105,9 @@ var userReducer = function userReducer(state, action) {
       };
     case _constants2.default.user.SAVE_DATA_SUCCESS:
       var successPayload = action.payload;
+      if (successPayload.json && successPayload.json.user && successPayload.json.user.password) {
+        delete successPayload.json.user.password;
+      }
       return {
         isFetching: false,
         loginURL: successPayload.url,
@@ -107,7 +116,7 @@ var userReducer = function userReducer(state, action) {
         email: successPayload.json.user.email,
         firstname: successPayload.json.user.firstname,
         lastname: successPayload.json.user.lastname,
-        profile_image_preview: successPayload.json.user.primaryasset ? successPayload.json.user.primaryasset.attributes.location : null,
+        profile_image_preview: successPayload.json.user.primaryasset && successPayload.json.user.primaryasset.attributes ? successPayload.json.user.primaryasset.attributes.location : null,
         jwt_token: successPayload.json.token,
         jwt_token_expires: successPayload.json.expires,
         jwt_token_timeout: successPayload.json.timeout,

@@ -8,10 +8,6 @@ var _keys = require('babel-runtime/core-js/object/keys');
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _stringify = require('babel-runtime/core-js/json/stringify');
-
-var _stringify2 = _interopRequireDefault(_stringify);
-
 var _assign = require('babel-runtime/core-js/object/assign');
 
 var _assign2 = _interopRequireDefault(_assign);
@@ -27,6 +23,10 @@ var _setImmediate3 = _interopRequireDefault(_setImmediate2);
 var _promise = require('babel-runtime/core-js/promise');
 
 var _promise2 = _interopRequireDefault(_promise);
+
+var _stringify = require('babel-runtime/core-js/json/stringify');
+
+var _stringify2 = _interopRequireDefault(_stringify);
 
 var _constants = require('../constants');
 
@@ -132,7 +132,7 @@ var user = {
       }
     };
   },
-  updateUserProfile: function updateUserProfile(profile) {
+  updateUserProfileSuccess: function updateUserProfileSuccess(profile) {
     return {
       type: _constants2.default.user.UPDATE_PROFILE_SUCCESS,
       payload: {
@@ -140,6 +140,20 @@ var user = {
         updatedAt: new Date(),
         timestamp: Date.now()
       }
+    };
+  },
+  updateUserProfile: function updateUserProfile(profile) {
+    var _this = this;
+
+    console.debug('updatedUserProfile', { profile: profile });
+    return function (dispatch /*, getState*/) {
+      _serverSideReactNative.AsyncStorage.setItem(_constants2.default.jwt_token.PROFILE_JSON, (0, _stringify2.default)(profile.userdata)).then(function (status) {
+        console.debug({ status: status });
+        dispatch(_this.updateUserProfileSuccess(profile));
+      }).catch(function (e) {
+        console.error(e);
+        dispatch(_notification2.default.errorNotification(e));
+      });
     };
   },
 
@@ -241,17 +255,17 @@ var user = {
     };
   },
   logoutUser: function logoutUser() {
-    var _this = this;
+    var _this2 = this;
 
     return function (dispatch, getState) {
       var state = getState();
       // console.debug({ state });
       dispatch(_pages2.default.resetAppLoadedState());
       _promise2.default.all([_serverSideReactNative.AsyncStorage.removeItem(_constants2.default.jwt_token.TOKEN_NAME), _serverSideReactNative.AsyncStorage.removeItem(_constants2.default.jwt_token.TOKEN_DATA), _serverSideReactNative.AsyncStorage.removeItem(_constants2.default.jwt_token.PROFILE_JSON), _serverSideReactNative.AsyncStorage.removeItem(_constants2.default.user.MFA_AUTHENTICATED), _util2.default.flushCacheConfiguration(['manifest.authenticated', 'user.navigation', 'user.preferences'])]).then(function () /*results*/{
-        dispatch(_this.logoutUserSuccess());
+        dispatch(_this2.logoutUserSuccess());
         dispatch(_pages2.default.initialAppLoaded());
         dispatch(_ui2.default.closeUISidebar());
-        dispatch(_this.authenticatedMFA(false));
+        dispatch(_this2.authenticatedMFA(false));
         dispatch((0, _reactRouterRedux.push)(state.settings.auth.logged_out_path || '/'));
         var t = (0, _setImmediate3.default)(function () {
           (0, _clearImmediate3.default)(t);
@@ -259,7 +273,7 @@ var user = {
         });
       }).catch(function (error) {
         dispatch(_notification2.default.errorNotification(error));
-        dispatch(_this.failedLogoutRequest(error));
+        dispatch(_this2.failedLogoutRequest(error));
         dispatch(_pages2.default.initialAppLoaded());
         dispatch(_ui2.default.closeUISidebar());
         dispatch((0, _reactRouterRedux.push)(state.settings.auth.logged_out_path || '/'));
@@ -271,12 +285,12 @@ var user = {
     };
   },
   fetchPreferences: function fetchPreferences() {
-    var _this2 = this;
+    var _this3 = this;
 
     var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
     var preferencesAction = function preferencesAction(dispatch, getState) {
-      dispatch(_this2.preferenceRequest());
+      dispatch(_this3.preferenceRequest());
       var state = getState();
       var hasCached = void 0;
       var basename = typeof state.settings.adminPath === 'string' && state.settings.adminPath !== '/' ? state.settings.basename + state.settings.adminPath : state.settings.basename;
@@ -286,7 +300,7 @@ var user = {
       return _util2.default.loadCacheConfigurations().then(function (result) {
         hasCached = result.user && result.user.preferences;
         if (hasCached) {
-          dispatch(_this2.preferenceSuccessResponse({
+          dispatch(_this3.preferenceSuccessResponse({
             data: {
               settings: result.user.preferences
             }
@@ -294,21 +308,21 @@ var user = {
         }
         return _util2.default.fetchComponent(basename + '/load/preferences', options)();
       }).then(function (response) {
-        dispatch(_this2.preferenceSuccessResponse(response));
+        dispatch(_this3.preferenceSuccessResponse(response));
         return response;
       }, function (e) {
-        if (!hasCached) dispatch(_this2.preferenceErrorResponse(e));
+        if (!hasCached) dispatch(_this3.preferenceErrorResponse(e));
       });
     };
     return _util2.default.setCacheConfiguration(preferencesAction, 'user.preferences');
   },
   fetchNavigation: function fetchNavigation() {
-    var _this3 = this;
+    var _this4 = this;
 
     var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
     var navigationAction = function navigationAction(dispatch, getState) {
-      dispatch(_this3.navigationRequest());
+      dispatch(_this4.navigationRequest());
       var state = getState();
       var hasCached = void 0;
       var basename = typeof state.settings.adminPath === 'string' && state.settings.adminPath !== '/' ? state.settings.basename + state.settings.adminPath : state.settings.basename;
@@ -319,7 +333,7 @@ var user = {
       return _util2.default.loadCacheConfigurations().then(function (result) {
         hasCached = result.user && result.user.navigation;
         if (hasCached) {
-          dispatch(_this3.navigationSuccessResponse({
+          dispatch(_this4.navigationSuccessResponse({
             data: {
               settings: result.user.navigation
             }
@@ -327,21 +341,21 @@ var user = {
         }
         return _util2.default.fetchComponent(basename + '/load/navigation' + (state.settings.ui.initialization.refresh_navigation ? '?refresh=true' : ''), options)();
       }).then(function (response) {
-        dispatch(_this3.navigationSuccessResponse(response));
+        dispatch(_this4.navigationSuccessResponse(response));
         return response;
       }, function (e) {
-        if (!hasCached) dispatch(_this3.navigationErrorResponse(e));
+        if (!hasCached) dispatch(_this4.navigationErrorResponse(e));
       });
     };
     return _util2.default.setCacheConfiguration(navigationAction, 'user.navigation');
   },
   getUserProfile: function getUserProfile(jwt_token, responseFormatter) {
-    var _this4 = this;
+    var _this5 = this;
 
     return function (dispatch, getState) {
       var fetchResponse = void 0;
       var url = getState().settings.userprofile.url;
-      dispatch(_this4.loginRequest(url));
+      dispatch(_this5.loginRequest(url));
       fetch(url, {
         method: getState().settings.userprofile.method || 'POST',
         headers: (0, _assign2.default)({
@@ -363,15 +377,15 @@ var user = {
           return response.json();
         }
       }).then(function (responseData) {
-        dispatch(_this4.saveUserProfile(url, fetchResponse, responseData));
+        dispatch(_this5.saveUserProfile(url, fetchResponse, responseData));
       }).catch(function (error) {
         dispatch(_notification2.default.errorNotification(error));
-        dispatch(_this4.failedUserRequest(url, error));
+        dispatch(_this5.failedUserRequest(url, error));
       });
     };
   },
   enforceMFA: function enforceMFA(noRedirect, __returnURL) {
-    var _this5 = this;
+    var _this6 = this;
 
     // console.debug('enforceMFA', { noRedirect, __returnURL, __global__returnURL, });
     return function (dispatch, getState) {
@@ -397,7 +411,7 @@ var user = {
         } else {
           if (!state.manifest.containers || state.manifest.containers && !state.manifest.containers['/mfa'] && !state.manifest.containers[state.settings.adminPath + '/mfa']) {
             dispatch(_notification2.default.errorNotification(new Error('Multi-Factor Authentication not Properly Configured')));
-            _this5.logoutUser()(dispatch, getState);
+            _this6.logoutUser()(dispatch, getState);
           } else {
             // console.log('utilities.getMFAPath(state)')
             var mfapath = _util2.default.getMFAPath(state);
@@ -426,7 +440,7 @@ var user = {
     };
   },
   validateMFA: function validateMFA() {
-    var _this6 = this;
+    var _this7 = this;
 
     var formdata = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
@@ -448,7 +462,7 @@ var user = {
       options.headers = (0, _assign2.default)({}, options.headers, { 'x-access-token': state.user.jwt_token });
       return _util2.default.fetchComponent(basename + '/load/mfa', options)().then(function (response) {
         if (response && response.data && response.data.authenticated) {
-          dispatch(_this6.authenticatedMFA());
+          dispatch(_this7.authenticatedMFA());
           return _serverSideReactNative.AsyncStorage.setItem(_constants2.default.user.MFA_AUTHENTICATED, true).then(function () {
             return response;
           }, function (e) {
@@ -458,14 +472,14 @@ var user = {
         return response;
       }).then(function (response) {
         if (response.result === 'error') dispatch(_notification2.default.errorNotification(new Error(response.data.error)));
-        return _this6.enforceMFA()(dispatch, getState);
+        return _this7.enforceMFA()(dispatch, getState);
       }).catch(function (e) {
         dispatch(_notification2.default.errorNotification(e));
       });
     };
   },
   fetchConfigurations: function fetchConfigurations() {
-    var _this7 = this;
+    var _this8 = this;
 
     var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
@@ -476,16 +490,16 @@ var user = {
         var operations = [];
         if (!state.manifest || state.manifest && !state.manifest.hasLoaded) operations.push(_manifest2.default.fetchManifest(options)(dispatch, getState));
         if (!state.settings || state.settings && !state.settings.user) {
-          operations.push(_this7.fetchNavigation(options)(dispatch, getState));
-          operations.push(_this7.fetchPreferences(options)(dispatch, getState));
+          operations.push(_this8.fetchNavigation(options)(dispatch, getState));
+          operations.push(_this8.fetchPreferences(options)(dispatch, getState));
         } else {
-          if (!state.settings.user.navigation || state.settings.user.navigation && !state.settings.user.navigation.hasLoaded) operations.push(_this7.fetchNavigation(options)(dispatch, getState));
-          if (!state.settings.user.preferences || state.settings.user.preferences && !state.settings.user.preferences.hasLoaded) operations.push(_this7.fetchPreferences(options)(dispatch, getState));
+          if (!state.settings.user.navigation || state.settings.user.navigation && !state.settings.user.navigation.hasLoaded) operations.push(_this8.fetchNavigation(options)(dispatch, getState));
+          if (!state.settings.user.preferences || state.settings.user.preferences && !state.settings.user.preferences.hasLoaded) operations.push(_this8.fetchPreferences(options)(dispatch, getState));
         }
         return _promise2.default.all(operations);
       } else {
-        dispatch(_this7.navigationRequest());
-        dispatch(_this7.preferenceRequest());
+        dispatch(_this8.navigationRequest());
+        dispatch(_this8.preferenceRequest());
         dispatch(_manifest2.default.manifestRequest());
         var basename = typeof state.settings.adminPath === 'string' && state.settings.adminPath !== '/' ? state.settings.basename + state.settings.adminPath : state.settings.basename;
         var headers = state.settings.userprofile.options.headers;
@@ -494,14 +508,14 @@ var user = {
         return _util2.default.loadCacheConfigurations().then(function (result) {
           if (result.user) {
             if (result.user.navigation) {
-              dispatch(_this7.navigationSuccessResponse({
+              dispatch(_this8.navigationSuccessResponse({
                 data: {
                   settings: result.user.navigation
                 }
               }));
             }
             if (result.user.preferences) {
-              dispatch(_this7.preferenceSuccessResponse({
+              dispatch(_this8.preferenceSuccessResponse({
                 data: {
                   settings: result.user.preferences
                 }
@@ -515,7 +529,7 @@ var user = {
           return _util2.default.setCacheConfiguration(function () {
             var isInitial = state.manifest.isInitial;
             var refreshComponents = state.settings.ui.initialization.refresh_components;
-            var pathname = typeof window !== 'undefined' && window.location.pathname ? window.location.pathname : _this7.props.location.pathname;
+            var pathname = typeof window !== 'undefined' && window.location.pathname ? window.location.pathname : _this8.props.location.pathname;
             var params = isInitial || refreshComponents ? '?' + (isInitial ? 'initial=true&location=' + pathname : '') + (refreshComponents ? isInitial ? '&refresh=true' : 'refresh=true' : '') : '';
             var configurationRoute = basename + '/load/configurations' + params;
             return _util2.default.fetchComponent(configurationRoute, options)().then(function (response) {
@@ -526,8 +540,8 @@ var user = {
                 result[key] = { data: data };
                 return result;
               }, {});
-              dispatch(_this7.navigationSuccessResponse(responses.navigation));
-              dispatch(_this7.preferenceSuccessResponse(responses.preferences));
+              dispatch(_this8.navigationSuccessResponse(responses.navigation));
+              dispatch(_this8.preferenceSuccessResponse(responses.preferences));
               dispatch(_manifest2.default.receivedManifestData(responses.manifest.data.settings));
               if (isInitial) _manifest2.default.fetchManifest((0, _assign2.default)(options, { skip_cache: true }))(dispatch, getState);
               return {
@@ -538,8 +552,8 @@ var user = {
               };
             }).catch(function (e) {
               console.log('FAILED TO LOAD', e);
-              dispatch(_this7.navigationErrorResponse(e));
-              dispatch(_this7.preferenceErrorResponse(e));
+              dispatch(_this8.navigationErrorResponse(e));
+              dispatch(_this8.preferenceErrorResponse(e));
               dispatch(_manifest2.default.failedManifestRetrival(e));
             });
           }, {
@@ -550,15 +564,15 @@ var user = {
           }, { multi: true })();
         }).catch(function (e) {
           console.log('OUTER FAILED', e);
-          dispatch(_this7.navigationErrorResponse(e));
-          dispatch(_this7.preferenceErrorResponse(e));
+          dispatch(_this8.navigationErrorResponse(e));
+          dispatch(_this8.preferenceErrorResponse(e));
           dispatch(_manifest2.default.failedManifestRetrival(e));
         });
       }
     };
   },
   initializeAuthenticatedUser: function initializeAuthenticatedUser(token, ensureMFA, __returnURL) {
-    var _this8 = this;
+    var _this9 = this;
 
     // console.debug('initializeAuthenticatedUser', { token, ensureMFA, __returnURL, __global__returnURL, });
     // console.debug({ __returnURL });
@@ -578,15 +592,15 @@ var user = {
           initializationThrottle.destroyInactiveThrottle();
         }
         // console.debug('enforceMFA clearTimeout __returnURL', __returnURL);
-        return ensureMFA !== false ? _this8.enforceMFA(undefined, __returnURL)(dispatch, getState) : undefined;
+        return ensureMFA !== false ? _this9.enforceMFA(undefined, __returnURL)(dispatch, getState) : undefined;
       } else {
         var assignThrottle = function assignThrottle(resolve, reject) {
           var throttle = function throttle() {
             initializationTimeout = setTimeout(function () {
               clearTimeout(initializationTimeout);
               // console.debug('throttled enforceMFA clearTimeout __returnURL', __returnURL);
-              _this8.fetchConfigurations(requestOptions)(dispatch, getState).then(function () {
-                return ensureMFA !== false ? _this8.enforceMFA(undefined, __returnURL)(dispatch, getState) : undefined;
+              _this9.fetchConfigurations(requestOptions)(dispatch, getState).then(function () {
+                return ensureMFA !== false ? _this9.enforceMFA(undefined, __returnURL)(dispatch, getState) : undefined;
               }).then(resolve).catch(reject);
             }, 10);
           };
@@ -614,7 +628,7 @@ var user = {
   * @param {function} responseFormatter custom reponse formatter, must be a function that returns a promise that resolves to json/javascript object
   */
   loginUser: function loginUser(loginData, __returnURL) {
-    var _this9 = this;
+    var _this10 = this;
 
     // console.debug('loginUser', { loginData, __returnURL, });
     return function (dispatch, getState) {
@@ -624,7 +638,7 @@ var user = {
       var notificationsSettings = getState().settings.ui.notifications;
       var url = loginSettings.url;
 
-      dispatch(_this9.loginRequest(url));
+      dispatch(_this10.loginRequest(url));
       fetch(url, {
         method: loginSettings.method || 'POST',
         headers: (0, _assign2.default)({
@@ -647,16 +661,16 @@ var user = {
           expires: responseData.expires,
           timeout: responseData.timeout,
           token: responseData.token
-        })), _serverSideReactNative.AsyncStorage.setItem(_constants2.default.jwt_token.PROFILE_JSON, (0, _stringify2.default)(responseData.user)), _this9.initializeAuthenticatedUser(responseData.token, false, __global__returnURL)(dispatch, getState)]);
+        })), _serverSideReactNative.AsyncStorage.setItem(_constants2.default.jwt_token.PROFILE_JSON, (0, _stringify2.default)(responseData.user)), _this10.initializeAuthenticatedUser(responseData.token, false, __global__returnURL)(dispatch, getState)]);
       }).then(function () {
-        dispatch(_this9.recievedLoginUser(url, fetchResponse, cachedResponseData));
+        dispatch(_this10.recievedLoginUser(url, fetchResponse, cachedResponseData));
         if (!notificationsSettings.hide_login_notification) {
           dispatch(_notification2.default.createNotification({ text: 'Welcome back', timeout: 4000, type: 'success' }));
         }
-        return _this9.enforceMFA()(dispatch, getState);
+        return _this10.enforceMFA()(dispatch, getState);
       }).catch(function (error) {
         dispatch(_notification2.default.errorNotification(error));
-        dispatch(_this9.failedUserRequest(url, error));
+        dispatch(_this10.failedUserRequest(url, error));
       });
     };
   }

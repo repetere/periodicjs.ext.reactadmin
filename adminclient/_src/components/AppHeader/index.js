@@ -48,8 +48,6 @@ var _styles2 = _interopRequireDefault(_styles);
 
 var _route_prefixes = require('../../../../utility/route_prefixes');
 
-var _route_prefixes2 = _interopRequireDefault(_route_prefixes);
-
 var _capitalize = require('capitalize');
 
 var _capitalize2 = _interopRequireDefault(_capitalize);
@@ -59,9 +57,6 @@ var _AppLayoutMap = require('../AppLayoutMap');
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // FormHorizontal, NavToggle, ControlLabel, Group,
-console.debug({ route_prefixes: _route_prefixes2.default });
-// import ResponsiveLink from '../ResponsiveLink';;;
-
 var AppHeader = function (_Component) {
   (0, _inherits3.default)(AppHeader, _Component);
 
@@ -74,6 +69,7 @@ var AppHeader = function (_Component) {
       ui: props.ui,
       user: props.user
     };
+    _this.all_prefixes = (0, _route_prefixes.all_prefixes)(props.settings.adminPath);
     _this.getRenderedComponent = _AppLayoutMap.getRenderedComponent.bind(_this);
     return _this;
   }
@@ -89,6 +85,7 @@ var AppHeader = function (_Component) {
   }, {
     key: 'render',
     value: function render() {
+      // console.debug('this.all_prefixes.manifest_prefix', this.all_prefixes.manifest_prefix);
       var buttonColor = this.props.settings.ui.header.buttonColor;
       var globalSearch = this.props.settings.ui.header.useGlobalSearch ? _react2.default.createElement(
         _reBulma.NavGroup,
@@ -142,7 +139,7 @@ var AppHeader = function (_Component) {
                   null,
                   _react2.default.createElement(
                     _reactRouter.Link,
-                    { to: '/account/profile', style: (0, _assign2.default)({ fontSize: '20px' }, _styles2.default.noUnderline, this.props.settings.ui.header.userNameStyle) },
+                    { to: this.all_prefixes.manifest_prefix + 'account/profile', style: (0, _assign2.default)({ fontSize: '20px' }, _styles2.default.noUnderline, this.props.settings.ui.header.userNameStyle) },
                     (0, _capitalize2.default)(this.state.user.firstname || '') + ' ' + (0, _capitalize2.default)(this.state.user.lastname || '')
                   )
                 ),
@@ -152,7 +149,7 @@ var AppHeader = function (_Component) {
                   this.getRenderedComponent({
                     component: 'ResponsiveLink',
                     props: {
-                      location: '/account/profile',
+                      location: this.all_prefixes.manifest_prefix + 'account/profile',
                       style: {
                         width: '48px',
                         height: '48px',
@@ -180,5 +177,7 @@ var AppHeader = function (_Component) {
   }]);
   return AppHeader;
 }(_react.Component);
+// import ResponsiveLink from '../ResponsiveLink';;;
+
 
 exports.default = AppHeader;
