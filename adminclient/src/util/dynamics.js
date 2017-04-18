@@ -35,7 +35,7 @@ export const _handleDynamicParams = function (pathname, resources, current) {
 };
 
 const FUNCTION_NAME_REGEXP = /func:(?:this\.props|window)(?:\.reduxRouter)?\.(\D.+)*/;
-var getDynamicFunctionName = function (function_name) {
+export const getDynamicFunctionName = function _getDynamicFunctionName (function_name) {
   return function_name.replace(FUNCTION_NAME_REGEXP, '$1');
 };
 
@@ -48,7 +48,7 @@ export const _invokeWebhooks = function (function_names) {
   if (typeof function_names !== 'string' && (!Array.isArray(function_names) || (Array.isArray(function_names) && !function_names.length))) {
     return false;
   }
-  function_names = (Array.isArray(function_names)) ? function_names : [function_names];
+  function_names = (Array.isArray(function_names)) ? function_names : [ function_names, ];
   let fns = function_names.reduce((result, name) => {
     if (typeof name === 'string') {
       let clean_name = getDynamicFunctionName(name);

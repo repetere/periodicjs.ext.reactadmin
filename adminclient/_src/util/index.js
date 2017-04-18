@@ -41,5 +41,6 @@ exports.default = {
   _handleDynamicParams: _dynamics._handleDynamicParams,
   sortObject: _traverse.sortObject,
   getMFAPath: _routing.getMFAPath,
-  getMFASetupPath: _routing.getMFASetupPath
+  getMFASetupPath: _routing.getMFASetupPath,
+  getDynamicFunctionName: _dynamics.getDynamicFunctionName
 };

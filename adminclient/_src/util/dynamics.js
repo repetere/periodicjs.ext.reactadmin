@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.fetchAction = exports.fetchDynamicContent = exports.fetchSuccessContent = exports.fetchErrorContent = exports._handleFetchPaths = exports._invokeWebhooks = exports._handleDynamicParams = undefined;
+exports.fetchAction = exports.fetchDynamicContent = exports.fetchSuccessContent = exports.fetchErrorContent = exports._handleFetchPaths = exports._invokeWebhooks = exports.getDynamicFunctionName = exports._handleDynamicParams = undefined;
 
 var _typeof2 = require('babel-runtime/helpers/typeof');
 
@@ -62,7 +62,7 @@ var _handleDynamicParams = exports._handleDynamicParams = function _handleDynami
 };
 
 var FUNCTION_NAME_REGEXP = /func:(?:this\.props|window)(?:\.reduxRouter)?\.(\D.+)*/;
-var getDynamicFunctionName = function getDynamicFunctionName(function_name) {
+var getDynamicFunctionName = exports.getDynamicFunctionName = function _getDynamicFunctionName(function_name) {
   return function_name.replace(FUNCTION_NAME_REGEXP, '$1');
 };
 

@@ -2,7 +2,7 @@ import { fetchComponent, checkStatus, fetchPaths, } from './fetchComponent';
 import { traverse, sortObject, } from './traverse';
 import { requireAuth, isLoggedIn, getMFAPath, getMFASetupPath, } from './routing';
 import { getParameterized, parameterize, setParameters, findMatchingRoute, } from './parameterize';
-import { fetchErrorContent, fetchSuccessContent, fetchDynamicContent, fetchAction, _handleDynamicParams, } from './dynamics';
+import { fetchErrorContent, fetchSuccessContent, fetchDynamicContent, fetchAction, _handleDynamicParams, getDynamicFunctionName, } from './dynamics';
 import { setCacheConfiguration, getCacheConfiguration, flushCacheConfiguration, loadCacheConfigurations, } from './cache_configuration';
 import { get404Error, } from './errors';
 
@@ -30,4 +30,5 @@ export default {
   sortObject,
   getMFAPath,
   getMFASetupPath,
+  getDynamicFunctionName,
 };

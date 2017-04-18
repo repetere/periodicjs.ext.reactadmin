@@ -36,6 +36,10 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _util = require('../../util');
+
+var _util2 = _interopRequireDefault(_util);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var propTypes = {
@@ -65,8 +69,18 @@ var ResponsiveLink = function (_Component) {
         'a',
         (0, _extends3.default)({}, this.props.passProps, { href: this.props.location, onClick: function onClick(e) {
             e.preventDefault();
-            // console.log('this.props.location', this.props.location);
             _this2.props.reduxRouter.push(_this2.props.location);
+            if (_this2.props.callback) {
+              var callbackName = _this2.props.callback;
+              var clean_name = _util2.default.getDynamicFunctionName(callbackName);
+              if (callbackName.indexOf('func:this.props.reduxRouter') !== -1) {
+                _this2.props.reduxRouter[clean_name](_this2.props.callbackProp);
+              } else if (callbackName.indexOf('func:this.props') !== -1 && typeof _this2.props[clean_name] === 'function') {
+                _this2.props[clean_name](_this2.props.callbackProp);
+              } else if (callbackName.indexOf('func:window') !== -1 && typeof window[clean_name] === 'function') {
+                window[clean_name].call(_this2, _this2.props.callbackProp);
+              }
+            }
             return false;
           }, style: (0, _assign2.default)({ cursor: 'pointer' }, this.props.style) }),
         this.props.children
