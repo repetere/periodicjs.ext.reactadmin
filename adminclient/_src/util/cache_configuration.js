@@ -110,7 +110,7 @@ var setCacheConfiguration = exports.setCacheConfiguration = function setCacheCon
       }).then(function (result) {
         return handleConfigurationVersioning(result, type, options);
       }).then(function (result) {
-        console.log({ type: type, result: result });
+        // console.log({ type, result, });
         return _serverSideReactNative.AsyncStorage.setItem(_constants2.default.cache.CONFIGURATION_CACHE, (0, _stringify2.default)(result)).then(function () {
           return result;
         }, function (e) {

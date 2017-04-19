@@ -31,6 +31,7 @@ var getParameterized = exports.getParameterized = _find_matching_route.getParame
  * @return {string[]} parameterized values from location string
  */
 var parameterize = exports.parameterize = function parameterize(route, location) {
+  // console.debug({ route, location });
   var regexp = getParameterized(route);
   var params = regexp.re.exec(location);
   if (params.length > 1 && Array.isArray(regexp.keys)) {

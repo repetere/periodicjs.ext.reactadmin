@@ -431,12 +431,12 @@ var ResponsiveForm = function (_Component) {
               _react2.default.createElement(
                 _reBulma.Column,
                 { size: 'isHalf' },
-                formgroup.formElements[0].formGroupElementsLeft.map(getFormElements)
+                formgroup.formElements[0] && formgroup.formElements[0].formGroupElementsLeft && formgroup.formElements[0].formGroupElementsLeft.length ? formgroup.formElements[0].formGroupElementsLeft.map(getFormElements) : null
               ),
               _react2.default.createElement(
                 _reBulma.Column,
                 { size: 'isHalf' },
-                formgroup.formElements[0].formGroupElementsRight.map(getFormElements)
+                formgroup.formElements[0] && formgroup.formElements[0] && formgroup.formElements[0].formGroupElementsRight ? formgroup.formElements[0].formGroupElementsRight.map(getFormElements) : null
               )
             )
           );
@@ -463,7 +463,7 @@ var ResponsiveForm = function (_Component) {
               _react2.default.createElement(
                 _ResponsiveCard2.default,
                 (0, _extends3.default)({}, formgroup.card.leftCardProps, { key: keyValue++ }),
-                formgroup.formElements[0].formGroupCardLeft.map(getFormElements)
+                formgroup.formElements[0] && formgroup.formElements[0].formGroupCardLeft && formgroup.formElements[0].formGroupCardLeft.length ? formgroup.formElements[0].formGroupCardLeft.map(getFormElements) : null
               )
             ),
             _react2.default.createElement(
@@ -472,7 +472,7 @@ var ResponsiveForm = function (_Component) {
               _react2.default.createElement(
                 _ResponsiveCard2.default,
                 (0, _extends3.default)({}, formgroup.card.rightCardProps, { key: keyValue++ }),
-                formgroup.formElements[0].formGroupCardRight.map(getFormElements)
+                formgroup.formElements[0] && formgroup.formElements[0].formGroupCardRight && formgroup.formElements[0].formGroupCardRight.length ? formgroup.formElements[0].formGroupCardRight.map(getFormElements) : null
               )
             )
           );
@@ -492,7 +492,7 @@ var ResponsiveForm = function (_Component) {
               _react2.default.createElement(
                 _ResponsiveCard2.default,
                 (0, _extends3.default)({}, formgroup.card.props, { key: keyValue++ }),
-                formgroup.formElements.map(getFormElements)
+                formgroup.formElements && formgroup.formElements.length ? formgroup.formElements.map(getFormElements) : null
               )
             )
           );
@@ -500,7 +500,7 @@ var ResponsiveForm = function (_Component) {
         return _react2.default.createElement(
           _reBulma.Columns,
           gridProps,
-          formgroup.formElements.map(getFormElements)
+          formgroup.formElements && formgroup.formElements.length ? formgroup.formElements.map(getFormElements) : null
         );
       });
       var footerGroupData = this.props.footergroups ? this.props.footergroups.map(function (formgroup, i) {
