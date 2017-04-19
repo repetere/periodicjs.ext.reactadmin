@@ -16,6 +16,10 @@ var _dynamic = require('./dynamic');
 
 var _dynamic2 = _interopRequireDefault(_dynamic);
 
+var _output = require('./output');
+
+var _output2 = _interopRequireDefault(_output);
+
 var _manifest = require('./manifest');
 
 var _manifest2 = _interopRequireDefault(_manifest);
@@ -31,6 +35,7 @@ var actionCreators = {
   manifest: _manifest2.default,
   ui: _ui2.default,
   dynamic: _dynamic2.default,
+  output: _output2.default,
   user: _user2.default
 };
 

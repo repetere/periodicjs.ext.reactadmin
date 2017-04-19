@@ -20,7 +20,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var defaultManifest = {
   containers: {
-    '/healthcheck/:id/:name': {
+    '/healthcheck': {
       layout: {
         component: 'Hero',
         props: {
@@ -44,89 +44,11 @@ var defaultManifest = {
           }]
         }]
       },
-      resources: {
-        healthcheckStatus: '/r-admin/load/healthcheck/:id/:name'
-      },
+      resources: {},
       onFinish: 'render',
       pageData: {
         title: 'Healthcheck',
         navLabel: 'Healthcheck'
-      }
-    },
-    '/r-admin/documentation': {
-      layout: {
-        component: 'Hero',
-        props: {
-          size: 'isFullheight'
-        },
-        children: [{
-          component: 'HeroBody',
-          props: {},
-          asyncprops: {
-            healthcheck: ['healthcheckStatus']
-          },
-          children: [{
-            component: 'Container',
-            props: {},
-            children: [{
-              component: 'div',
-              props: {
-                dangerouslySetInnerHTML: {
-                  __html: '<h1>FooBar: the most used line in code</h1>'
-                }
-              }
-            }, {
-              component: 'Title',
-              children: 'Admin Documentation Page'
-            }]
-          }]
-        }]
-      },
-      resources: {
-        healthcheckStatus: '/r-admin/load/healthcheck'
-      },
-      onFinish: 'render',
-      pageData: {
-        title: 'Admin Documentation',
-        navLabel: 'Admin Documentation'
-      }
-    },
-    '/home': {
-      layout: {
-        component: 'Hero',
-        props: {
-          size: 'isFullheight'
-        },
-        children: [{
-          component: 'HeroBody',
-          props: {},
-          asyncprops: {
-            healthcheck: ['healthcheckStatus']
-          },
-          children: [{
-            component: 'Container',
-            props: {},
-            children: [{
-              component: 'div',
-              props: {
-                dangerouslySetInnerHTML: {
-                  __html: '<h1>FooBar: the most used line in code</h1>'
-                }
-              }
-            }, {
-              component: 'Title',
-              children: 'Standard Documentation Page'
-            }]
-          }]
-        }]
-      },
-      resources: {
-        healthcheckStatus: '/r-admin/load/healthcheck'
-      },
-      onFinish: 'render',
-      pageData: {
-        title: 'Documentation',
-        navLabel: 'Documentation'
       }
     }
   }

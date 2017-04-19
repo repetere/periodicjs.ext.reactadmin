@@ -214,7 +214,7 @@ var reduxActions = {
     return _util2.default.fetchAction.call(this, pathname, fetchOptions, success);
   }, //.dispatch(actions.user.getUserStatus()),
   redirect: function redirect(locationURL) {
-    console.debug({ locationURL: locationURL });
+    // console.debug({ locationURL, });
     if (typeof location === 'string') {
       window.location = locationURL;
     } else {
@@ -241,6 +241,9 @@ var reduxActions = {
     return _stores2.default.dispatch(_actions2.default.user.loginUser(formdata));
   },
   // ajaxModal: (options) => store.dispatch(actions.notification.ajaxModal(options)),
+  fileSaver: function fileSaver(options) {
+    return _stores2.default.dispatch(_actions2.default.output.fileSaver(options));
+  },
   createModal: function createModal(options) {
     return _stores2.default.dispatch(_actions2.default.notification.createModal(options));
   },

@@ -22,6 +22,10 @@ var _user = require('./user');
 
 var _user2 = _interopRequireDefault(_user);
 
+var _output = require('./output');
+
+var _output2 = _interopRequireDefault(_output);
+
 var _ui = require('./ui');
 
 var _ui2 = _interopRequireDefault(_ui);
@@ -40,6 +44,7 @@ var ReactAdminReducer = (0, _redux.combineReducers)({
   settings: _settings2.default,
   ui: _ui2.default,
   user: _user2.default,
+  output: _output2.default,
   manifest: _manifest2.default,
   notification: _notification2.default
 });
