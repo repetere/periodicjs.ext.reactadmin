@@ -59,7 +59,7 @@ const reduxActions = {
     return utilities.fetchAction.call(this, pathname, fetchOptions, success);
   }, //.dispatch(actions.user.getUserStatus()),
   redirect: (locationURL) => {
-    console.debug({ locationURL, });
+    // console.debug({ locationURL, });
     if (typeof location === 'string') {
       window.location = locationURL;
     } else {
@@ -73,6 +73,7 @@ const reduxActions = {
   initializeAuthenticatedUser: (jwt_token, enforceMFA = true) => store.dispatch(actions.user.initializeAuthenticatedUser(jwt_token, enforceMFA)),
   loginUser: (formdata) => store.dispatch(actions.user.loginUser(formdata)),
   // ajaxModal: (options) => store.dispatch(actions.notification.ajaxModal(options)),
+  fileSaver: (options) => store.dispatch(actions.output.fileSaver(options)),
   createModal: (options) => store.dispatch(actions.notification.createModal(options)),
   hideModal: (options) => store.dispatch(actions.notification.hideModal(options)),
   createNotification: (options) => store.dispatch(actions.notification.createNotification(options)),

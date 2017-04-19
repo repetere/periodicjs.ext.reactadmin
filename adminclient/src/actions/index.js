@@ -1,6 +1,7 @@
 import ui from './ui';
 import user from './user';
 import dynamic from './dynamic';
+import output from './output';
 import manifest from './manifest';
 import notification from './notification';
 
@@ -9,6 +10,7 @@ const actionCreators = {
   manifest,
   ui,
   dynamic,
+  output,
   user,
 };
 

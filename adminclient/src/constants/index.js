@@ -42,6 +42,11 @@ export default {
     SET_DYNAMIC_DATA:'set dynamic data',
     // SHOW_ERROR:'show error notification',
   },
+  output:{
+    OUTPUT_FILE_DATA_SUCCESS:'output data to file',
+    OUTPUT_FILE_DATA_ERROR:'error outputing data to file',
+    // SHOW_ERROR:'show error notification',
+  },
   jwt_token: {
     TOKEN_NAME: `${AppConfigSettings.name}_jwt_token`,
     TOKEN_DATA: `${AppConfigSettings.name}_jwt_token_data`,

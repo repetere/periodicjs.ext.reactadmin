@@ -70,7 +70,7 @@ module.exports = {
                   props: {
                     blockPageUI:true,
                     cardForm: {},
-                    onSubmit: 'func:this.props.setDynamicData',
+                    onSubmit: 'func:this.props.fileSaver',
                     onChange: 'func:this.props.setDynamicData',
                     dynamicField: 'chartdata',
                     formdata: {

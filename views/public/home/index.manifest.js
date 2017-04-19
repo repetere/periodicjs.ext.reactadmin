@@ -48,6 +48,9 @@ const IndexManifest = {
                         src: '/favicon.png',
                         size: 'is128X128',
                       },
+                      windowprops: {
+                        alt: ['document','title'],
+                      },
                     },
                   ],
                 },
@@ -79,6 +82,15 @@ module.exports = () => {
         },
       },
       '/': {
+        'layout': IndexManifest,
+        'resources': {},
+        'onFinish': 'render',
+        'pageData': {
+          'title': 'Home',
+          'navLabel': 'Home',
+        },
+      },
+      '/home': {
         'layout': IndexManifest,
         'resources': {},
         'onFinish': 'render',
