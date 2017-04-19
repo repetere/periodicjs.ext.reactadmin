@@ -11,6 +11,7 @@ export const getParameterized = getParameterizedPath;
  * @return {string[]} parameterized values from location string
  */
 export const parameterize = function (route, location) {
+  // console.debug({ route, location });
   let regexp = getParameterized(route);
   let params = regexp.re.exec(location);
   if (params.length > 1 && Array.isArray(regexp.keys)) {

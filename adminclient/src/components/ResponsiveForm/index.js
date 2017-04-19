@@ -368,10 +368,10 @@ class ResponsiveForm extends Component{
           <ResponsiveCard {...formgroup.card.props} key={keyValue++}>
           <Columns {...gridProps}>
             <Column size="isHalf">
-            {formgroup.formElements[0].formGroupElementsLeft.map(getFormElements)}
+            {(formgroup.formElements[0 ]&& formgroup.formElements[0].formGroupElementsLeft && formgroup.formElements[0].formGroupElementsLeft.length)? formgroup.formElements[0].formGroupElementsLeft.map(getFormElements): null}
             </Column>
             <Column size="isHalf">
-              {formgroup.formElements[0].formGroupElementsRight.map(getFormElements)}
+              {(formgroup.formElements[0] && formgroup.formElements[0] && formgroup.formElements[0].formGroupElementsRight)? formgroup.formElements[0].formGroupElementsRight.map(getFormElements):null}
             </Column>  
           </Columns>
         </ResponsiveCard>);
@@ -393,12 +393,12 @@ class ResponsiveForm extends Component{
           <Columns {...gridProps}>
             <Column {...leftDoubleCardColumnProps}>
               <ResponsiveCard {...formgroup.card.leftCardProps} key={keyValue++}>
-                {formgroup.formElements[0].formGroupCardLeft.map(getFormElements)}
+                {(formgroup.formElements[0] && formgroup.formElements[0].formGroupCardLeft && formgroup.formElements[0].formGroupCardLeft.length)? formgroup.formElements[0].formGroupCardLeft.map(getFormElements) : null}
               </ResponsiveCard>
             </Column>
             <Column {...rightDoubleCardColumnProps}>
               <ResponsiveCard {...formgroup.card.rightCardProps} key={keyValue++}>
-                {formgroup.formElements[0].formGroupCardRight.map(getFormElements)}
+                {(formgroup.formElements[0] && formgroup.formElements[0].formGroupCardRight && formgroup.formElements[0].formGroupCardRight.length)? formgroup.formElements[0].formGroupCardRight.map(getFormElements):null}
               </ResponsiveCard>
             </Column>
           </Columns>);
@@ -412,13 +412,13 @@ class ResponsiveForm extends Component{
         return (<Columns {...gridProps}>
           <Column {...columnProps}>  
             <ResponsiveCard {...formgroup.card.props} key={keyValue++}>
-              {formgroup.formElements.map(getFormElements)}
+              {(formgroup.formElements && formgroup.formElements.length)? formgroup.formElements.map(getFormElements):null}
             </ResponsiveCard>
           </Column>  
         </Columns>);
       }
       return (<Columns {...gridProps}>
-        {formgroup.formElements.map(getFormElements)}
+        {(formgroup.formElements && formgroup.formElements.length)? formgroup.formElements.map(getFormElements):null}
       </Columns>);
     });
     let footerGroupData = (this.props.footergroups)

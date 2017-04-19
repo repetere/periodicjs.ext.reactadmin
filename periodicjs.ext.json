@@ -15,6 +15,11 @@
     }],
     "periodicjs.ext.reactadmin":{
         "navigation":"node_modules/periodicjs.ext.reactadmin/views/reactadmin/components/navigation.manifest.js",
-        "manifests":"node_modules/periodicjs.ext.reactadmin/views/reactadmin/manifests"
+        "manifests":[
+            "node_modules/periodicjs.ext.reactadmin/views/reactadmin/manifests"
+        ],
+        "unauthenticated_manifests":[
+            "node_modules/periodicjs.ext.reactadmin/views/public/home/"
+        ]
     }
 }

@@ -25,7 +25,7 @@ function getReactAdminConfig (options, overwrites) {
     include_index_route:true,
     'includeCoreData': {
       'manifest': true,
-      'navigation': false,
+      'navigation': true,
     },
     'navigationLayout':{
       'wrapper':{

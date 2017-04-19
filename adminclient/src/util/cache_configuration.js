@@ -65,7 +65,7 @@ export const setCacheConfiguration = function (fn, type, options = {}) {
         })
         .then(result => handleConfigurationVersioning(result, type, options))
         .then(result => {
-          console.log({ type, result, });
+          // console.log({ type, result, });
           return AsyncStorage.setItem(constants.cache.CONFIGURATION_CACHE, JSON.stringify(result))
             .then(() => result, e => Promise.reject(e));
         })
