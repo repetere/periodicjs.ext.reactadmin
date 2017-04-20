@@ -54,16 +54,16 @@ class RACodeMirror extends Component {
       {
         options: Object.assign({}, {
           lineNumbers: true,
-          // mode:'application/x-ejs',
+          mode:'javascript',
           lineWrapping: true,
           foldGutter: true,
           gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter', ],
         },
           this.props.codeMirrorPropsOptions, this.props.codeMirrorProps.options),
       });
+      console.debug('RACodeMirror',{ options, });
     if (this.props.editorType === 'editor') {
       options.options.mode = 'application/x-ejs';
-      // console.debug({ options, });
       return (<div {...this.props.wrapperProps}>
         <CodeMirror {...options}>{this.props.children}</CodeMirror>
         </div>);

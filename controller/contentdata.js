@@ -73,13 +73,24 @@ const delete_entity = (req, res, next) =>{
 
 const merge_controller_data_req_body = (req, res, next) => {
   const entity = get_entity_options(req.params.entity_type);
+  // console.log('merge_controller_data_req_body ORIGINAL req.body', req.body);
+  if (!req.body.password) {
+    req.skippassword = true;
+  }
   req.body = Object.assign({},
     (req.controllerData[ entity.name ].toJSON())
       ? req.controllerData[ entity.name ].toJSON()
       : req.controllerData[ entity.name ],
     req.body);
   delete req.body.transform;
-  // console.log('req.body', req.body);
+  if (req.body.assets && !req.body.assets.length) {
+    delete req.body.assets;
+  }
+  if (req.body._id && !req.body.docid) {
+    req.body.docid = req.body._id;
+  }
+
+  // console.log('merge_controller_data_req_body MERGED req.body', req.body);
   next();
 };
 

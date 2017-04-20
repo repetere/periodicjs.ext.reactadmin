@@ -37,7 +37,10 @@ const defaultProps = {
   displayField:'title',
   dbname:'periodic',
   limit:10,
-  onChange:(data)=>{console.debug('ResponsiveDatalist onChange',{data})}
+  onChange:(data)=>{
+    console.debug('ResponsiveDatalist onChange', { data, })
+;
+  },
 };
 
 class ResponsiveDatalist extends Component {
@@ -50,7 +53,7 @@ class ResponsiveDatalist extends Component {
       selectedData: props.selectedData,
       isSearching:false,
     };
-    this.inputProps = Object.assign({},this.props.passableProps);
+    this.inputProps = Object.assign({}, this.props.passableProps);
     this.searchFunction = debounce(this.updateDataList, 200);
 
   }
@@ -87,14 +90,15 @@ class ResponsiveDatalist extends Component {
           this.props.errorNotification(e);
         });
     } else{
-      console.debug({options});
+      console.debug({ options,  });
     }
   }
   onChangeHandler(event){
     this.searchFunction({ search: event.target.value, });
   }
   getDatalistDisplay(options){
-    let { displayField, selector, datum } = options;
+    let { displayField, selector, datum, } = options;
+    // console.debug('getDatalistDisplay', { options });
     let displayText = datum[ displayField ] || datum.title || datum.name || datum.username || datum.email || datum[ selector ] || datum;
     return (<span style={{
       wordBreak: 'break-all',
@@ -105,7 +109,7 @@ class ResponsiveDatalist extends Component {
     }}>
       {
         (datum && datum.fileurl && datum.transform && datum.transform.preview)
-          ?<rb.Image src={datum.transform.preview} size='is24X24' style={{float:'left', marginRight:'5px'}}/>
+          ?<rb.Image src={datum.transform.preview} size="is24X24" style={{ float:'left', marginRight:'5px',  }}/>
           :null
       }
       {
@@ -133,8 +137,7 @@ class ResponsiveDatalist extends Component {
         selectedData: false,
       });
       this.props.onChange(newValue);
-    }
-    else {
+    }    else {
       let datum = undefined;
       this.setState({
         value:datum,
@@ -153,15 +156,15 @@ class ResponsiveDatalist extends Component {
     let notificationCloseStyle={
       margin: '0px 0px 0px 20px',
       borderRadius: '19px',
-    }
+    };
     let selectData = (this.props.multi) 
       ? (this.state.value && this.state.value.length ) 
-        ? (this.state.value.map((selected,k)=>{
+        ? (this.state.value.map((selected, k)=>{
           return (<rb.Notification
           key={k}
             enableCloseButton
             closeButtonProps={{ 
-              onClick: this.removeDatalistItem.bind(this,k),
+              onClick: this.removeDatalistItem.bind(this, k),
               style: notificationCloseStyle,
             }}
             style={notificationStyle}
@@ -171,7 +174,7 @@ class ResponsiveDatalist extends Component {
               displayField: this.props.displayField,
               selector: this.props.selector,
             })}
-          </rb.Notification>)
+          </rb.Notification>);
         }))
         : null
       : (this.state.value)
@@ -192,7 +195,7 @@ class ResponsiveDatalist extends Component {
           </rb.Notification>)
         : null;
     let displayOptions = (this.state.selectedData && this.state.selectedData.length)
-      ? this.state.selectedData.map((datum,k)=>{
+      ? this.state.selectedData.map((datum, k)=>{
         return (
           <rb.Notification
             key={k}
@@ -200,8 +203,8 @@ class ResponsiveDatalist extends Component {
             style={notificationStyle}
           >
             <rb.Button 
-              icon='fa fa-plus' 
-              size='isSmall' 
+              icon="fa fa-plus" 
+              size="isSmall" 
               style={{
                 alignSelf:'flex-end',
                 borderRadius:'20px',
@@ -212,15 +215,14 @@ class ResponsiveDatalist extends Component {
                 // console.debug('clicked onclick',this.props);
                 if(this.props.multi){
                   let newValue = (this.state.value && Array.isArray(this.state.value) && this.state.value.length)
-                    ? this.state.value.concat([datum])
-                    : [datum];
+                    ? this.state.value.concat([datum, ])
+                    : [datum, ];
                   this.setState({
                     value:newValue,
                     selectedData: false,
                   });
                   this.props.onChange(newValue);
-                }
-                else{
+                }                else{
                   this.setState({
                     value:datum,
                     selectedData: false,
@@ -233,20 +235,22 @@ class ResponsiveDatalist extends Component {
               displayField: this.props.displayField,
               selector: this.props.selector,
             })}
-          </rb.Notification>)
-        })
+          </rb.Notification>);
+      })
       : null;
     return(<div {...this.props.wrapperProps}>
-      <div style={{width:'100%'}}>
+      <div style={{ width:'100%', }}>
         <rb.Input {...this.inputProps}
           state={this.state.isSearching||undefined}
           onChange={this.onChangeHandler.bind(this)}
-          ref={(input)=>{ this.textInput = input; }}
+          ref={(input)=>{
+            this.textInput = input; 
+          }}
         />
       </div>
       <div> { displayOptions }</div>
       <div>{ selectData }</div>
-    </div>)
+    </div>);
   }
 }
 ResponsiveDatalist.propType = propTypes;

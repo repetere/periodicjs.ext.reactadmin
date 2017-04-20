@@ -29,7 +29,7 @@ module.exports = (periodic) => {
                 'props': {
                   blockPageUI:true,
                   'onSubmit':{
-                    'url':`${reactadmin.settings.basename}${reactadmin.manifest_prefix}contentdata/standard/:entitytype/:id?format=json&updateprofile=true&updatecallback=true&handleupload=true`,
+                    'url':`${reactadmin.settings.basename}${reactadmin.manifest_prefix}contentdata/standard/:entitytype/:id?format=json&unflatten=true&updateprofile=true&updatecallback=true&handleupload=true`,
                     'options':{
                       'method':'PUT',
                     },

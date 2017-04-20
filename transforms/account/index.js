@@ -23,7 +23,14 @@ exports.checkUpdatedAsset = (periodic) => (req) => {
           delete reqBody[ key ];
         }
       });
-      // console.log({ reqBody });
+      // console.log('reqBody.location', reqBody.location);
+      if (reqBody.location && reqBody.location.loc && (!reqBody.location.loc.latitude || reqBody.location.loc.latitude==='undefined' || !reqBody.location.loc.longitude || reqBody.location.loc.longitude ==='undefined')) {
+        delete reqBody.location.loc;
+      }
+      if (reqBody.location && (!reqBody.location.zip || reqBody.location.zip==='undefined')) {
+        delete reqBody.location.zip;
+      }
+      // console.log('checkUpdatedAsset', { reqBody, });
       req.body = reqBody;
       let loginSettings = periodic.app.controller.extension.login.loginExtSettings;
       // req.body = CoreUtilities.removeEmptyObjectValues(req.body);

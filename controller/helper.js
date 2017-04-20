@@ -78,9 +78,11 @@ const handleFileUpload = function (req, res, next) {
     req.controllerData = Object.assign({}, req.controllerData, req.query);
   }
   // console.log('handleFileUpload req.query', req.query);
+  // console.log('handleFileUpload req.headers', req.headers);
   // console.log('handleFileUpload req.body', req.body);
-  if (req.query.handleupload || req.controllerData.handleupload || req.body.handleupload) {
-    // ];
+  // console.log("req.headers['content-type'].indexOf('multipart/form-data')", req.headers[ 'content-type' ].indexOf('multipart/form-data'));
+  // if ((req.query.handleupload || req.controllerData.handleupload || req.body.handleupload ) && (req.headers && req.headers['content-type']&& req.headers['content-type'].indexOf('multipart/form-data')!==-1)) {
+  if (req.headers && req.headers['content-type']&& req.headers['content-type'].indexOf('multipart/form-data')!==-1) {
     return assetController.multiupload(req, res, next);
   } else {
     next();

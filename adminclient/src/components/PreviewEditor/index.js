@@ -222,7 +222,9 @@ class PreviewEditor extends Component {
           );
         })}  
       </div>  
-      <div  className="__ra_pe_ce" {...this.props.passProps}
+      <div className="__ra_pe_ce" style={{
+        padding: '5px',
+      }} {...this.props.passProps}
       onInput={this.emitChange.bind(this)} 
       onBlur={this.emitChange.bind(this)}
       contentEditable

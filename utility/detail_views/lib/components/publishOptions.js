@@ -411,6 +411,9 @@ function getContentOptions(schema, label, options) {
   if (schema.content && customIgnoreFields.indexOf('content') === -1) {
     contentItems.push(_content());
   }
+  if (schema.description && customIgnoreFields.indexOf('description') === -1) {
+    contentItems.push(_content('description'));
+  }
   if (schema.tags && customIgnoreFields.indexOf('tags') === -1) {
     contentItems.push(_dataList(schema, 'tags', options, 'array', true));
   }
