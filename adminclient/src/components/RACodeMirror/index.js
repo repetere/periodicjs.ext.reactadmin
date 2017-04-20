@@ -61,7 +61,7 @@ class RACodeMirror extends Component {
         },
           this.props.codeMirrorPropsOptions, this.props.codeMirrorProps.options),
       });
-      console.debug('RACodeMirror',{ options, });
+      // console.debug('RACodeMirror',{ options, });
     if (this.props.editorType === 'editor') {
       options.options.mode = 'application/x-ejs';
       return (<div {...this.props.wrapperProps}>

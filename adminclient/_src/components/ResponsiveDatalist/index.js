@@ -171,6 +171,7 @@ var ResponsiveDatalist = function (_Component) {
       var displayField = options.displayField,
           selector = options.selector,
           datum = options.datum;
+      // console.debug('getDatalistDisplay', { options });
 
       var displayText = datum[displayField] || datum.title || datum.name || datum.username || datum.email || datum[selector] || datum;
       return _react2.default.createElement(

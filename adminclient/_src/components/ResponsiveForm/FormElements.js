@@ -809,6 +809,7 @@ function getFormCode(options) {
       lineWrapping: true,
       onChange: !onValueChange ? function (newvalue) {
         // console.log({ newvalue });
+        newvalue = formElement.stringify ? JSON.parse(newvalue) : newvalue;
         var updatedStateProp = {};
         updatedStateProp[formElement.name] = newvalue;
         this.setState(updatedStateProp);

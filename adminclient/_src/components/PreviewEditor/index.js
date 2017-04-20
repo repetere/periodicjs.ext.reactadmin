@@ -286,7 +286,9 @@ var PreviewEditor = function (_Component) {
             }, _this2.props.buttonProps));
           })
         ),
-        _react2.default.createElement('div', (0, _extends3.default)({ className: '__ra_pe_ce' }, this.props.passProps, {
+        _react2.default.createElement('div', (0, _extends3.default)({ className: '__ra_pe_ce', style: {
+            padding: '5px'
+          } }, this.props.passProps, {
           onInput: this.emitChange.bind(this),
           onBlur: this.emitChange.bind(this),
           contentEditable: true,
