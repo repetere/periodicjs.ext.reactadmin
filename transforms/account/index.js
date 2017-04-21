@@ -16,8 +16,8 @@ exports.checkUpdatedAsset = (periodic) => (req) => {
       // console.log('checkUpdatedAsset req.body', req.body);
       // console.log('checkUpdatedAsset req.controllerData', req.controllerData);
       // console.log('BEFORE checkUpdatedAsset req.body', req.body);
-      let reqBody = Object.assign({}, req.body);
-      // let CoreUtilities = periodic.core.utilities;
+      let CoreUtilities = periodic.core.utilities;
+      let reqBody = Object.assign({}, CoreUtilities.removeEmptyObjectValues(req.body));
       Object.keys(req.body).forEach(key => {
         if (!reqBody[ key ] || reqBody[ key ] === 'undefined') {
           delete reqBody[ key ];
@@ -71,6 +71,9 @@ exports.updatedAccountProfile = (periodic) => (req) => {
 
       let updatedProfile = Object.assign({}, req.body);
       delete updatedProfile.password;
+      if (req.controllerData.assets && req.controllerData.assets.length) {
+        updatedProfile.primaryasset = req.controllerData.assets[ 0 ];
+      }
 
       req.controllerData = {
         userdata: updatedProfile,
