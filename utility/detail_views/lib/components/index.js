@@ -75,6 +75,7 @@ const constructDetail = function (schema, label, options = {}, newEntity) {
         style:{
           marginTop:80,
           marginBottom:80,
+          paddingBottom:80,
         },
       },
       children: [
@@ -151,6 +152,7 @@ const constructIndex = function (schema, label, options = {}) {
         style:{
           marginTop:80,
           marginBottom:80,
+          paddingBottom:80,
         },
       },
       children: [
