@@ -46,12 +46,12 @@ const manifestReducer = (state, action) => {
   case constants.manifest.MANIFEST_DATA_SUCCESS:
     var manifestSuccessPayload = action.payload;
     return Object.assign({}, state, {
+      containers: Object.assign({}, state.containers, manifestSuccessPayload.containers),
       authenticated: {
         isFetching: false,
         hasLoaded: (state.authenticated.isInitial) ? false : true,
         isInitial: false,
         error: null,
-        containers: Object.assign({}, state.containers, manifestSuccessPayload.containers),
         updatedAt: new Date(),
       },
     });

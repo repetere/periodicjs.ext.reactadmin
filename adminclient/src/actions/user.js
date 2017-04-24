@@ -469,7 +469,7 @@ const user = {
           .then(() => {
             //add ?refresh=true to fetch route below to reload configurations
             return utilities.setCacheConfiguration(() => {
-              let isInitial = state.manifest.authenticated.authenticated.isInitial;
+              let isInitial = state.manifest.authenticated.isInitial;
               let refreshComponents = state.settings.ui.initialization.refresh_components;
               let pathname = (typeof window !== 'undefined' && window.location.pathname) ? window.location.pathname : this.props.location.pathname;
               let params = (isInitial || refreshComponents) ? `?${ (isInitial) ? 'initial=true&location=' + pathname : '' }${ (refreshComponents) ? ((isInitial) ? '&refresh=true' : 'refresh=true') : '' }` : '';
