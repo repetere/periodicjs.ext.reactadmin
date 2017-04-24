@@ -297,7 +297,8 @@ var reduxActions = {
     })));
   },
   fetchUnauthenticatedManifest: function fetchUnauthenticatedManifest() {
-    return _stores2.default.dispatch(_actions2.default.manifest.fetchUnauthenticatedManifest());
+    var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+    return _stores2.default.dispatch(_actions2.default.manifest.fetchUnauthenticatedManifest(options));
   },
   setActiveNavLink: function setActiveNavLink(id) {
     return _stores2.default.dispatch(_actions2.default.ui.setActiveNavItem(id));

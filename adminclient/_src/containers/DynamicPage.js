@@ -113,7 +113,7 @@ var _handleComponentLifecycle = function _handleComponentLifecycle() {
       }
     }
     return this.fetchDynamicErrorContent();
-  } else if (parentState.manifest && parentState.manifest.hasLoaded) {
+  } else if (parentState.manifest && parentState.manifest.authenticated && parentState.manifest.authenticated.hasLoaded) {
     // console.debug('OUTSIDE CONDITION', {
     //   pathname, mfasetup,
     // });

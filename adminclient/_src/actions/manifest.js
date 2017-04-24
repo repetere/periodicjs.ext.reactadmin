@@ -67,7 +67,7 @@ var manifest = {
       var hasCached = void 0;
       var basename = typeof state.settings.adminPath === 'string' && state.settings.adminPath !== '/' ? state.settings.basename + state.settings.adminPath : state.settings.basename;
       var headers = state.settings.userprofile.options.headers;
-      var isInitial = state.manifest.isInitial;
+      var isInitial = state.manifest.authenticated.isInitial;
       delete headers.clientid_default;
       options.headers = (0, _assign2.default)({}, options.headers, headers);
       //add ?refresh=true to below route to reload manifest configuration
@@ -97,7 +97,7 @@ var manifest = {
       dispatch(_this2.unauthenticatedManifestRequest());
       var state = getState();
       var hasCached = void 0;
-      var isInitial = state.manifest.unauthenticated_success.isInitial;
+      var isInitial = state.manifest.unauthenticated.isInitial;
       var basename = typeof state.settings.adminPath === 'string' && state.settings.adminPath !== '/' ? state.settings.basename + state.settings.adminPath : state.settings.basename;
       //add ?refresh=true to below route to reload manifest configuration
       return _util2.default.loadCacheConfigurations().then(function (result) {

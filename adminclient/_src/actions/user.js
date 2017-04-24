@@ -486,9 +486,9 @@ var user = {
     return function (dispatch, getState) {
       var state = getState();
       // console.log({ state, });
-      if (state.manifest && state.manifest.hasLoaded || state.settings.user && state.settings.user.navigation && state.settings.user.navigation.hasLoaded || state.settings.user && state.settings.user.preferences && state.settings.user.preferences.hasLoaded) {
+      if (state.manifest && state.manifest.authenticated && state.manifest.authenticated.hasLoaded || state.settings.user && state.settings.user.navigation && state.settings.user.navigation.hasLoaded || state.settings.user && state.settings.user.preferences && state.settings.user.preferences.hasLoaded) {
         var operations = [];
-        if (!state.manifest || state.manifest && !state.manifest.hasLoaded) operations.push(_manifest2.default.fetchManifest(options)(dispatch, getState));
+        if (!state.manifest || state.manifest && state.manifest.authenticated && !state.manifest.authenticated.hasLoaded) operations.push(_manifest2.default.fetchManifest(options)(dispatch, getState));
         if (!state.settings || state.settings && !state.settings.user) {
           operations.push(_this8.fetchNavigation(options)(dispatch, getState));
           operations.push(_this8.fetchPreferences(options)(dispatch, getState));
@@ -527,7 +527,7 @@ var user = {
         }).then(function () {
           //add ?refresh=true to fetch route below to reload configurations
           return _util2.default.setCacheConfiguration(function () {
-            var isInitial = state.manifest.isInitial;
+            var isInitial = state.manifest.authenticated.isInitial;
             var refreshComponents = state.settings.ui.initialization.refresh_components;
             var pathname = typeof window !== 'undefined' && window.location.pathname ? window.location.pathname : _this8.props.location.pathname;
             var params = isInitial || refreshComponents ? '?' + (isInitial ? 'initial=true&location=' + pathname : '') + (refreshComponents ? isInitial ? '&refresh=true' : 'refresh=true' : '') : '';
@@ -586,7 +586,7 @@ var user = {
         }
       };
       var state = getState();
-      if (state.manifest && state.manifest.hasLoaded && state.settings && state.settings.user && state.settings.user.navigation && state.settings.user.navigation.hasLoaded && state.settings.user.preferences && state.settings.user.preferences.hasLoaded) {
+      if (state.manifest && state.manifest.authenticated && state.manifest.authenticated.hasLoaded && state.settings && state.settings.user && state.settings.user.navigation && state.settings.user.navigation.hasLoaded && state.settings.user.preferences && state.settings.user.preferences.hasLoaded) {
         if (initializationTimeout) {
           clearTimeout(initializationTimeout);
           initializationThrottle.destroyInactiveThrottle();
