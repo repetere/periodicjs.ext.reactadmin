@@ -426,9 +426,9 @@ const user = {
     return (dispatch, getState) => {
       let state = getState();
       // console.log({ state, });
-      if ((state.manifest && state.manifest.hasLoaded) || (state.settings.user && state.settings.user.navigation && state.settings.user.navigation.hasLoaded) || (state.settings.user && state.settings.user.preferences && state.settings.user.preferences.hasLoaded)) {
+      if ((state.manifest  && state.manifest.authenticated && state.manifest.authenticated.hasLoaded) || (state.settings.user && state.settings.user.navigation && state.settings.user.navigation.hasLoaded) || (state.settings.user && state.settings.user.preferences && state.settings.user.preferences.hasLoaded)) {
         let operations = [];
-        if (!state.manifest || (state.manifest && !state.manifest.hasLoaded)) operations.push(manifest.fetchManifest(options)(dispatch, getState));
+        if (!state.manifest  || (state.manifest  && state.manifest.authenticated && !state.manifest.authenticated.hasLoaded)) operations.push(manifest.fetchManifest(options)(dispatch, getState));
         if (!state.settings || (state.settings && !state.settings.user)) {
           operations.push(this.fetchNavigation(options)(dispatch, getState));
           operations.push(this.fetchPreferences(options)(dispatch, getState));
@@ -469,7 +469,7 @@ const user = {
           .then(() => {
             //add ?refresh=true to fetch route below to reload configurations
             return utilities.setCacheConfiguration(() => {
-              let isInitial = state.manifest.isInitial;
+              let isInitial = state.manifest.authenticated.authenticated.isInitial;
               let refreshComponents = state.settings.ui.initialization.refresh_components;
               let pathname = (typeof window !== 'undefined' && window.location.pathname) ? window.location.pathname : this.props.location.pathname;
               let params = (isInitial || refreshComponents) ? `?${ (isInitial) ? 'initial=true&location=' + pathname : '' }${ (refreshComponents) ? ((isInitial) ? '&refresh=true' : 'refresh=true') : '' }` : '';
@@ -529,7 +529,7 @@ const user = {
         },
       };
       let state = getState();
-      if (state.manifest && state.manifest.hasLoaded && state.settings && state.settings.user && state.settings.user.navigation && state.settings.user.navigation.hasLoaded && state.settings.user.preferences && state.settings.user.preferences.hasLoaded) {
+      if (state.manifest && state.manifest.authenticated && state.manifest.authenticated.hasLoaded && state.settings && state.settings.user && state.settings.user.navigation && state.settings.user.navigation.hasLoaded && state.settings.user.preferences && state.settings.user.preferences.hasLoaded) {
         if (initializationTimeout) {
           clearTimeout(initializationTimeout);
           initializationThrottle.destroyInactiveThrottle();

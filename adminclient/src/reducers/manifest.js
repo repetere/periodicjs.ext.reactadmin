@@ -3,21 +3,16 @@ import defaultManifest from '../content/config/manifest.json';
 // console.log({defaultManifest})
 // import Immutable from 'immutable';
 const initialState = {
-  isFetching: false,
-  hasLoaded: false,
-  error: null,
-  updatedAt: new Date(),
-  isInitial: true,
   containers: defaultManifest.containers,
   unauthenticated_routes: null,
-  unauthenticated: {
+  authenticated: {
     isFetching: false,
     hasLoaded: false,
     error: null,
-    isInitial: true,
     updatedAt: new Date(),
+    isInitial: true,
   },
-  unauthenticated_success: {
+  unauthenticated: {
     isFetching: false,
     hasLoaded: false,
     error: null,
@@ -31,28 +26,34 @@ const manifestReducer = (state, action) => {
   switch (action.type) {
   case constants.manifest.MANIFEST_DATA_REQUEST:
     return Object.assign({}, state, {
-      isFetching: true,
-      hasLoaded: false,
-      error: null,
-      updatedAt: new Date(),
+      authenticated: {
+        isFetching: true,
+        hasLoaded: false,
+        error: null,
+        updatedAt: new Date(),
+      },
     });
   case constants.manifest.MANIFEST_DATA_FAILURE:
     var failurePayload = action.payload;
     return Object.assign({}, state, {
-      isFetching: false,
-      hasLoaded: false,
-      error: failurePayload.error,
-      updatedAt: new Date(),
+      authenticated: {
+        isFetching: false,
+        hasLoaded: false,
+        error: failurePayload.error,
+        updatedAt: new Date(),
+      },
     });
   case constants.manifest.MANIFEST_DATA_SUCCESS:
     var manifestSuccessPayload = action.payload;
     return Object.assign({}, state, {
-      isFetching: false,
-      hasLoaded: true,
-      isInitial: false,
-      error: null,
-      containers: Object.assign({}, state.containers, manifestSuccessPayload.containers),
-      updatedAt: new Date(),
+      authenticated: {
+        isFetching: false,
+        hasLoaded: (state.authenticated.isInitial) ? false : true,
+        isInitial: false,
+        error: null,
+        containers: Object.assign({}, state.containers, manifestSuccessPayload.containers),
+        updatedAt: new Date(),
+      },
     });
   case constants.manifest.UNAUTHENTICATED_MANIFEST_DATA_REQUEST:
     var unauthenticated_req = Object.assign({}, state.unauthenticated, {
@@ -62,7 +63,7 @@ const manifestReducer = (state, action) => {
       updatedAt: new Date(),
     });
     return Object.assign({}, state, {
-      unauthenticated_req,
+      unauthenticated: unauthenticated_req,
     });
   case constants.manifest.UNAUTHENTICATED_MANIFEST_DATA_FAILURE:
     failurePayload = action.payload;
@@ -73,19 +74,19 @@ const manifestReducer = (state, action) => {
       updatedAt: new Date(),
     });
     return Object.assign({}, state, {
-      unauthenticated_fail,
+      unauthenticated: unauthenticated_fail,
     });
   case constants.manifest.UNAUTHENTICATED_MANIFEST_DATA_SUCCESS:
     var unauthenticatedSuccessPayload = action.payload;
     var unauthenticated_success = Object.assign({}, state.unauthenticated, {
       isFetching: false,
-      hasLoaded: true,
+      hasLoaded: (state.unauthenticated.isInitial) ? false : true,
       isInitial: false,
       error: null,
       updatedAt: new Date(),
     });
     return Object.assign({}, state, {
-      unauthenticated_success,
+      unauthenticated: unauthenticated_success,
       containers: Object.assign({}, state.containers, unauthenticatedSuccessPayload.containers),
       unauthenticated_routes: Object.keys(unauthenticatedSuccessPayload.containers || {}),
     });
