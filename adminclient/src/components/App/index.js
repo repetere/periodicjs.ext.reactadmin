@@ -94,7 +94,7 @@ const reduxActions = {
     setMainComponent: reduxActions.setMainComponent,
     setErrorComponents: reduxActions.setErrorComponents,
   }))),
-  fetchUnauthenticatedManifest: () => store.dispatch(actions.manifest.fetchUnauthenticatedManifest()),
+  fetchUnauthenticatedManifest: (options = {}) => store.dispatch(actions.manifest.fetchUnauthenticatedManifest(options)),
   setActiveNavLink: (id) => store.dispatch(actions.ui.setActiveNavItem(id)),
   enforceMFA: (noRedirect) => store.dispatch(actions.user.enforceMFA(noRedirect)),
   validateMFA: (jwt_token) => store.dispatch(actions.user.validateMFA(jwt_token)),
