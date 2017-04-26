@@ -72,8 +72,13 @@ function valueChangeHandler(formElement) {
 function getFormLabel(formElement) {
   return (formElement.label)
     ? (formElement.layoutProps && formElement.layoutProps.horizontalform)
-      ? (<ControlLabel {...formElement.labelProps}>{formElement.label}</ControlLabel>)
-      : (<Label {...formElement.labelProps}>{formElement.label}</Label>)
+      ? (<ControlLabel {...formElement.labelProps}>{
+        (this && this.state && this.state[formElement.formdata_label])
+        ? this.state[formElement.formdata_label]
+        : formElement.label}</ControlLabel>)
+      : (<Label {...formElement.labelProps}>{(this && this.state && this.state[formElement.formdata_label])
+        ? this.state[formElement.formdata_label]
+        : formElement.label}</Label>)
     : null;
 }
 
@@ -430,6 +435,7 @@ export function getFormCheckbox(options) {
   let { formElement, i, onValueChange, } = options;
   let hasError = getErrorStatus(this.state, formElement.name);
   let hasValue = (formElement.name && this.state[formElement.name])? true : false;
+  let getFormDataLabel = getFormLabel.bind(this);
   if (!onValueChange) {
     onValueChange = (/*event*/) => {
       // let text = event.target.value;
@@ -437,30 +443,31 @@ export function getFormCheckbox(options) {
       // console.debug('before', { updatedStateProp, formElement, }, event.target);
       if (formElement.type === 'radio') {
         // event.target.value = 'on';
-        updatedStateProp[ formElement.name ] = formElement.value || 'on';
+        updatedStateProp[ this.state[ formElement.formdata_name] || formElement.name ] = this.state[ formElement.formdata_value] || formElement.value || 'on';
       } else {
-        updatedStateProp[ formElement.name ] = (this.state[ formElement.name ] ) ? 0 : 'on';
+        updatedStateProp[ this.state[ formElement.formdata_name] || formElement.name ] = (this.state[ this.state[ formElement.formdata_name] || formElement.name ] ) ? 0 : 'on';
       }
       // console.debug('after', { updatedStateProp, formElement, }, event.target);
       this.setState(updatedStateProp, () => {
         if(formElement.validateOnChange){
           this.validateFormElement({ formElement, });
-      }});
+        }
+      });
     };
   }
 
   return (<FormItem key={i} {...formElement.layoutProps} hasError={hasError} hasValue={hasValue} >
-    {getFormLabel(formElement)}  
+    {getFormDataLabel(formElement)}  
     <input {...formElement.passProps}
       type={formElement.type || 'checkbox'}
-      name={formElement.name}
+      name={this.state[ formElement.formdata_name] || formElement.name}
       checked={(formElement.type === 'radio')
         ? this.state[ formElement.name ] === formElement.value
         : this.state[ formElement.name ]}
       onChange={onValueChange}
     >
     </input>
-    <span {...formElement.placeholderProps}>{formElement.placeholder}</span>
+    <span {...formElement.placeholderProps}>{this.state[ formElement.formdata_placeholder] || formElement.placeholder}</span>
     {getCustomErrorLabel(hasError, this.state, formElement)}
   </FormItem>);
 }
