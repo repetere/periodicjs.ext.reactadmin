@@ -172,11 +172,11 @@ function getFormLabel(formElement) {
   return formElement.label ? formElement.layoutProps && formElement.layoutProps.horizontalform ? _react2.default.createElement(
     _reBulma.ControlLabel,
     formElement.labelProps,
-    formElement.label
+    this && this.state && this.state[formElement.formdata_label] ? this.state[formElement.formdata_label] : formElement.label
   ) : _react2.default.createElement(
     _reBulma.Label,
     formElement.labelProps,
-    formElement.label
+    this && this.state && this.state[formElement.formdata_label] ? this.state[formElement.formdata_label] : formElement.label
   ) : null;
 }
 
@@ -540,6 +540,7 @@ function getFormCheckbox(options) {
 
   var hasError = getErrorStatus(this.state, formElement.name);
   var hasValue = formElement.name && this.state[formElement.name] ? true : false;
+  var getFormDataLabel = getFormLabel.bind(this);
   if (!onValueChange) {
     onValueChange = function onValueChange() /*event*/{
       // let text = event.target.value;
@@ -547,9 +548,9 @@ function getFormCheckbox(options) {
       // console.debug('before', { updatedStateProp, formElement, }, event.target);
       if (formElement.type === 'radio') {
         // event.target.value = 'on';
-        updatedStateProp[formElement.name] = formElement.value || 'on';
+        updatedStateProp[_this6.state[formElement.formdata_name] || formElement.name] = _this6.state[formElement.formdata_value] || formElement.value || 'on';
       } else {
-        updatedStateProp[formElement.name] = _this6.state[formElement.name] ? 0 : 'on';
+        updatedStateProp[_this6.state[formElement.formdata_name] || formElement.name] = _this6.state[_this6.state[formElement.formdata_name] || formElement.name] ? 0 : 'on';
       }
       // console.debug('after', { updatedStateProp, formElement, }, event.target);
       _this6.setState(updatedStateProp, function () {
@@ -563,17 +564,17 @@ function getFormCheckbox(options) {
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps, { hasError: hasError, hasValue: hasValue }),
-    getFormLabel(formElement),
+    getFormDataLabel(formElement),
     _react2.default.createElement('input', (0, _extends3.default)({}, formElement.passProps, {
       type: formElement.type || 'checkbox',
-      name: formElement.name,
+      name: this.state[formElement.formdata_name] || formElement.name,
       checked: formElement.type === 'radio' ? this.state[formElement.name] === formElement.value : this.state[formElement.name],
       onChange: onValueChange
     })),
     _react2.default.createElement(
       'span',
       formElement.placeholderProps,
-      formElement.placeholder
+      this.state[formElement.formdata_placeholder] || formElement.placeholder
     ),
     getCustomErrorLabel(hasError, this.state, formElement)
   );
