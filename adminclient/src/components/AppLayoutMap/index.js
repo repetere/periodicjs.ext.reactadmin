@@ -30,13 +30,19 @@ let renderIndex = 0;
 
 export let AppLayoutMap = Object.assign({}, {
   recharts, ResponsiveForm, DynamicLayout, DynamicForm, RawOutput, RawStateOutput, FormItem, MenuAppLink, SubMenuLinks, ResponsiveTable, ResponsiveCard, DynamicChart, ResponsiveBar, ResponsiveTabs, ResponsiveDatalist, CodeMirror, Range, Slider, GoogleMap, Carousel, PreviewEditor, /* Editor,*/
+  ResponsiveLink,
+  ResponsiveButton,
 }, React.DOM, rebulma, { Link, });
 
 // console.log({ AppLayoutMap });
 
 export function getRenderedComponent(componentObject, resources, debug) {
-  AppLayoutMap.ResponsiveLink = ResponsiveLink.bind(this);
-  AppLayoutMap.ResponsiveButton = ResponsiveButton.bind(this);
+  try {
+    // AppLayoutMap.ResponsiveLink = ResponsiveLink.bind(this);
+    // AppLayoutMap.ResponsiveButton = ResponsiveButton.bind(this);
+  } catch (e) {
+    console.warn('deeply nested props are unsupported on this device', e);
+  }
   // console.log('this.props', this);
   renderIndex++;
   // if(resources) console.info({ resources });
