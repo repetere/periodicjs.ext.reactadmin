@@ -38,8 +38,10 @@ export let AppLayoutMap = Object.assign({}, {
 
 export function getRenderedComponent(componentObject, resources, debug) {
   try {
-    // AppLayoutMap.ResponsiveLink = ResponsiveLink.bind(this);
-    // AppLayoutMap.ResponsiveButton = ResponsiveButton.bind(this);
+    if (navigator.userAgent.indexOf('Trident') === -1) {
+      AppLayoutMap.ResponsiveLink = ResponsiveLink.bind(this);
+      AppLayoutMap.ResponsiveButton = ResponsiveButton.bind(this);
+    }
   } catch (e) {
     console.warn('deeply nested props are unsupported on this device', e);
   }
