@@ -126,15 +126,24 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var renderIndex = 0;
 // import Editor from '../RAEditor';
 var AppLayoutMap = exports.AppLayoutMap = (0, _assign2.default)({}, {
-  recharts: recharts, ResponsiveForm: _ResponsiveForm2.default, DynamicLayout: _DynamicLayout2.default, DynamicForm: _DynamicForm2.default, RawOutput: _RawOutput2.default, RawStateOutput: _RawStateOutput2.default, FormItem: _FormItem2.default, MenuAppLink: _MenuAppLink2.default, SubMenuLinks: _SubMenuLinks2.default, ResponsiveTable: _ResponsiveTable2.default, ResponsiveCard: _ResponsiveCard2.default, DynamicChart: _DynamicChart2.default, ResponsiveBar: _ResponsiveBar2.default, ResponsiveTabs: _ResponsiveTabs2.default, ResponsiveDatalist: _ResponsiveDatalist2.default, CodeMirror: _RACodeMirror2.default, Range: _rcSlider.Range, Slider: _rcSlider2.default, GoogleMap: _googleMapReact2.default, Carousel: _reactResponsiveCarousel.Carousel, PreviewEditor: _PreviewEditor2.default }, _react2.default.DOM, rebulma, { Link: _reactRouter.Link });
+  recharts: recharts, ResponsiveForm: _ResponsiveForm2.default, DynamicLayout: _DynamicLayout2.default, DynamicForm: _DynamicForm2.default, RawOutput: _RawOutput2.default, RawStateOutput: _RawStateOutput2.default, FormItem: _FormItem2.default, MenuAppLink: _MenuAppLink2.default, SubMenuLinks: _SubMenuLinks2.default, ResponsiveTable: _ResponsiveTable2.default, ResponsiveCard: _ResponsiveCard2.default, DynamicChart: _DynamicChart2.default, ResponsiveBar: _ResponsiveBar2.default, ResponsiveTabs: _ResponsiveTabs2.default, ResponsiveDatalist: _ResponsiveDatalist2.default, CodeMirror: _RACodeMirror2.default, Range: _rcSlider.Range, Slider: _rcSlider2.default, GoogleMap: _googleMapReact2.default, Carousel: _reactResponsiveCarousel.Carousel, PreviewEditor: _PreviewEditor2.default, /* Editor,*/
+  ResponsiveLink: _ResponsiveLink2.default,
+  ResponsiveButton: _ResponsiveButton2.default
+}, _react2.default.DOM, rebulma, { Link: _reactRouter.Link });
 
 // console.log({ AppLayoutMap });
 
 function getRenderedComponent(componentObject, resources, debug) {
   var _this = this;
 
-  AppLayoutMap.ResponsiveLink = _ResponsiveLink2.default.bind(this);
-  AppLayoutMap.ResponsiveButton = _ResponsiveButton2.default.bind(this);
+  try {
+    if (navigator.userAgent.indexOf('Trident') === -1) {
+      AppLayoutMap.ResponsiveLink = _ResponsiveLink2.default.bind(this);
+      AppLayoutMap.ResponsiveButton = _ResponsiveButton2.default.bind(this);
+    }
+  } catch (e) {
+    console.warn('deeply nested props are unsupported on this device', e);
+  }
   // console.log('this.props', this);
   renderIndex++;
   // if(resources) console.info({ resources });
