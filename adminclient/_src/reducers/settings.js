@@ -157,7 +157,9 @@ var packageJSON = {
     recharts: '0.20.5',
     redux: '^3.6.0',
     'redux-logger': '^2.7.4',
-    'redux-thunk': '^2.1.0'
+    'redux-thunk': '^2.1.0',
+    'ua-parser-js': '^0.7.12',
+    useragent: '^2.1.13'
   },
   dependencies: {
     'babel-polyfill': '^6.23.0',

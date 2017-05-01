@@ -100,6 +100,9 @@ class MainApp extends Component{
     } else if (document && document.body && document.body.className) {
       document.body.className = document.body.className += ' __ra_mc_loaded';
     }
+    if(window.navigator && window.navigator.userAgent && window.navigator.userAgent.indexOf('Trident') !== -1) {
+      document.body.style.zoom = 1;
+    }
   }
   render() {
     // console.log('this.state', this.state);

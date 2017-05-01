@@ -5,6 +5,7 @@ import { Link, } from 'react-router';
 import Slider, { Range, } from 'rc-slider';
 import { Carousel, } from 'react-responsive-carousel';
 import GoogleMap from 'google-map-react';
+import { getAdvancedBinding, } from './advancedBinding';
 import ResponsiveForm from '../ResponsiveForm';
 import DynamicForm from '../DynamicForm';
 import DynamicLayout from '../DynamicLayout';
@@ -25,7 +26,7 @@ import ResponsiveLink from '../ResponsiveLink';
 import ResponsiveButton from '../ResponsiveButton';
 import FormItem from '../FormItem';
 import utilities from '../../util';
-
+let advancedBinding = getAdvancedBinding();
 let renderIndex = 0;
 
 export let AppLayoutMap = Object.assign({}, {
@@ -34,11 +35,9 @@ export let AppLayoutMap = Object.assign({}, {
   ResponsiveButton,
 }, React.DOM, rebulma, { Link, });
 
-// console.log({ AppLayoutMap });
-
 export function getRenderedComponent(componentObject, resources, debug) {
   try {
-    if (navigator.userAgent.indexOf('Trident') === -1) {
+    if (advancedBinding) {
       AppLayoutMap.ResponsiveLink = ResponsiveLink.bind(this);
       AppLayoutMap.ResponsiveButton = ResponsiveButton.bind(this);
     }
