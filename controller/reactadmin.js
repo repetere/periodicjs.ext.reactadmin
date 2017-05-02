@@ -4,6 +4,7 @@ const fs = Promisie.promisifyAll(require('fs-extra'));
 const path = require('path');
 const mongoose = require('mongoose');
 const capitalize = require('capitalize');
+const UAParser = require('ua-parser-js');
 const ERROR404 = require(path.join(__dirname, '../adminclient/src/content/config/manifests/dynamic404'));
 const parameterize = require('../utility/find_matching_route');
 const findMatchingRoute = parameterize.findMatchingRoutePath;
@@ -257,10 +258,27 @@ var recursivePrivilegesFilter = function (privileges, config = {}, isRoot = fals
  */
 var admin_index = function (req, res, next) {
   if (req.query.format !== 'json' && req.query.format !== 'json&') {
+    let viewname = 'admin/index';
+    if (req.headers && req.headers[ 'user-agent' ]) {
+      const UserAgentParser = new UAParser();
+      UserAgentParser.setUA(req.headers[ 'user-agent' ]);
+      const parseUserAgent = UserAgentParser.getResult();
+
+      if (parseUserAgent.browser.name === 'Chrome' && parseInt(parseUserAgent.browser.version, 10) < 40) {
+        viewname = 'admin/support';
+      } else if (parseUserAgent.browser.name === 'IE' && parseInt(parseUserAgent.browser.version, 10) < 11) {
+        viewname = 'admin/support';
+      } else if (parseUserAgent.browser.name === 'Firefox' && parseInt(parseUserAgent.browser.version, 10) < 41) {
+        viewname = 'admin/support';
+      } else if (parseUserAgent.browser.name === 'Android Browser' && parseInt(parseUserAgent.browser.version, 10) < 5) {
+        viewname = 'admin/support';
+      }
+    }
+    // UserAgentParser.setUA(uastring);
     // logger.silly('render reactadmin, ssr', extsettings.server_side_react);
     // logger.silly('render reactadmin, req.query.format',req.query.format);
     let viewtemplate = {
-      viewname: 'admin/index',
+      viewname,
       themefileext: appSettings.templatefileextension,
       extname: 'periodicjs.ext.reactadmin',
     };

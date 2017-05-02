@@ -6,12 +6,12 @@ export function getAdvancedBinding() {
       if(window.navigator.userAgent.indexOf('Trident') !== -1) {
         return false;
       }
-      const uastring = window.navigator.userAgent;
-      const parser = new UAParser();
+      var uastring = window.navigator.userAgent;
+      var parser = new UAParser();
       parser.setUA(uastring);
-      const parseUserAgent = parser.getResult();
+      var parseUserAgent = parser.getResult();
       // console.debug({ parseUserAgent, });
-      if (parseUserAgent.browser.name === 'Chrome' && parseUserAgent.os.name === 'Android' && parseInt(parseUserAgent.browser.version, 10) < 57) {
+      if (parseUserAgent.browser.name === 'Chrome' && parseUserAgent.os.name === 'Android' && parseInt(parseUserAgent.browser.version, 10) < 40) {
         return false;
       }
       if (parseUserAgent.browser.name === 'Android Browser') {

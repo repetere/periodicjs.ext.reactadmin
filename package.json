@@ -45,7 +45,7 @@
     "prettysize": "0.0.3",
     "promisie": "~1.6.1",
     "rc-slider": "^6.2.0",
-    "re-bulma": "^0.2.3",
+    "re-bulma": "^0.4.3",
     "react": "15.3.2",
     "react-dom": "15.3.2",
     "react-file-reader-input": "^1.1.0",

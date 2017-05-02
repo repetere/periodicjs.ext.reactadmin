@@ -36,214 +36,221 @@ function getLoginLayout(/*options*/) {
     'props': {
       'size': 'isFullheight',
     },
-    'children': [ {
-      'component': 'HeroBody',
-      'props': {},
-      'children': [ {
-        'component': 'Container',
+    'children': [
+      {
+        'component': 'HeroBody',
         'props': {},
-        'children': [ {
-          'component': 'Columns',
-          'children': [ {
-            'component': 'Column',
-            'props': {
-              'size': 'is3',
-            },
-          },
+        'children': [
           {
-            'component': 'Column',
+            'component': 'Container',
             'props': {},
             'children': [
               {
-                'component': 'Title',
-                'props': {
-                  'style': {
-                    'textAlign': 'center',
+                'component': 'Columns',
+                'children': [
+                  {
+                    'component': 'Column',
+                    'props': {
+                      'size': 'is3',
+                    },
                   },
-                },
-                'children': 'Sign in',
-              },
-              {
-                'component': 'ResponsiveForm',
-                'props': {
-                  'cardForm': true,
+                  {
+                    'component': 'Column',
+                    'props': {},
+                    'children': [
+                      {
+                        'component': 'Title',
+                        'props': {
+                          'style': {
+                            'textAlign': 'center',
+                          },
+                        },
+                        'children': 'Sign in',
+                      },
+                      {
+                        'component': 'ResponsiveForm',
+                        'props': {
+                          'cardForm': true,
                   // cardFormTitle:'Sign In',
-                  'cardFormProps': {
-                    'isFullwidth': true,
-                  },
-                  'onSubmit': 'func:this.props.loginUser',
-                  'validations': [
-                    {
-                      'name': 'username',
-                      'constraints': {
-                        'username': {
-                          presence: {
-                            message: '^Your username is required.',
+                          'cardFormProps': {
+                            'isFullwidth': true,
                           },
-                          'length': {
-                            'minimum': 3,
-                            'message': '^Your username is required.',
-                          },
-                        },
-                      },
-                    },
-                    {
-                      'name': 'password',
-                      'constraints': {
-                        'password': {
-                          presence: {
-                            message: '^Your username is required',
-                          },
-                          'length': {
-                            'minimum': 4,
-                            'message': '^Your password is too short',
-                          },
-                        },
-                      },
-                    },
-                  ],
-                  'formgroups': [ {
-                    'gridProps': {},
-                    'formElements': [ {
-                      'type': 'text',
-                      'label': 'Username',
-                      'name': 'username',
-                      'layoutProps': {
-                        'horizontalform': true,
-                      },
-                    }, ],
-                  },
-                  {
-                    'gridProps': {},
-                    'formElements': [ {
-                      'type': 'text',
-                      'label': 'Password',
-                      'name': 'password',
-                      'submitOnEnter': true,
-                      'passProps': {
-                        'type': 'password',
-                      },
-                      'layoutProps': {
-                        'horizontalform': true,
-                      },
-                    }, ],
-                  },
-                  {
-                    'gridProps': {
-                      style: {
-                        justifyContent: 'center',
-                      },
-                    },
-                    'formElements': [
-                      {
-                        type: 'group',
-                        label: ' ',
-                        'layoutProps': {
-                          'horizontalform': true,
-                          innerFormItem: true,
-                        },
-                        groupElements: [
-                          {
-                            'type': 'checkbox',
-                            // "label": "a",
-                            'placeholder': 'Remember Me',
-                            'name': 'rememberme',
-                            'passProps': {
-                              'type': 'rememberme',
-                            },
-                            'layoutProps': {
-                              'horizontalform': true,
-                            },
-                          },
-                          {
-                            'type': 'layout',
-                            value: {
-                              component: 'ResponsiveLink',
-                              props: {
-                                location: '/auth/forgot',
-                              },
-                              children: 'Forgot Password',
-                            },
-                          },
-                                    
-                        ],
-                      },
-                                
-                    ],
-                  },
-                    hrline,
-                  {
-                    'gridProps': {
-                      style: {
-                        justifyContent: 'center',
-                      },
-                    },
-                    'formElements': [
-                      {
-                        'type': 'submit',
-                        'value': 'Login',
-                        // "placeholder": "Remember Me",
-                        'name': 'login',
-                        'passProps': {
-                          'color': 'isPrimary',
-                        },
-                        'layoutProps': {
-                          formItemStyle: {
-                            justifyContent: 'center',
-                          },
-                          'horizontalform': true,
-                        },
-                      },
-                      {
-                        'type': 'layout',
-                        value: {
-                          component: 'FormHorizontal',
-                          props: {
-                            style: {
-                              justifyContent: 'center',
-                            },
-                          },
-                          children: [
+                          'onSubmit': 'func:this.props.loginUser',
+                          'validations': [
                             {
-                              component: 'ResponsiveButton',
-                              props: {
-                                onClick: 'func:this.props.reduxRouter.push',
-                                onclickProps: '/auth/user/new',
-                                style: {
-                                },
-                                buttonProps: {
-                                  // color: 'isPrimary',
+                              'name': 'username',
+                              'constraints': {
+                                'username': {
+                                  presence: {
+                                    message: '^Your username is required.',
+                                  },
+                                  'length': {
+                                    'minimum': 3,
+                                    'message': '^Your username is required.',
+                                  },
                                 },
                               },
-                              children: 'New User',
+                            },
+                            {
+                              'name': 'password',
+                              'constraints': {
+                                'password': {
+                                  presence: {
+                                    message: '^Your username is required',
+                                  },
+                                  'length': {
+                                    'minimum': 4,
+                                    'message': '^Your password is too short',
+                                  },
+                                },
+                              },
                             },
                           ],
-                                    
-                        },
-                        'layoutProps': {
-                          style: {
-                            justifyContent: 'center',
+                          'formgroups': [ {
+                            'gridProps': {},
+                            'formElements': [ {
+                              'type': 'text',
+                              'label': 'Username',
+                              'name': 'username',
+                              'layoutProps': {
+                                'horizontalform': true,
+                              },
+                            }, ],
                           },
+                          {
+                            'gridProps': {},
+                            'formElements': [ {
+                              'type': 'text',
+                              'label': 'Password',
+                              'name': 'password',
+                              'submitOnEnter': true,
+                              'passProps': {
+                                'type': 'password',
+                              },
+                              'layoutProps': {
+                                'horizontalform': true,
+                              },
+                            }, ],
+                          },
+                          {
+                            'gridProps': {
+                              style: {
+                                justifyContent: 'center',
+                              },
+                            },
+                            'formElements': [
+                              {
+                                type: 'group',
+                                label: ' ',
+                                'layoutProps': {
+                                  'horizontalform': true,
+                                  innerFormItem: true,
+                                },
+                                groupElements: [
+                                  {
+                                    'type': 'checkbox',
+                            // "label": "a",
+                                    'placeholder': 'Remember Me',
+                                    'name': 'rememberme',
+                                    'passProps': {
+                                      'type': 'rememberme',
+                                    },
+                                    'layoutProps': {
+                                      'horizontalform': true,
+                                    },
+                                  },
+                                  {
+                                    'type': 'layout',
+                                    value: {
+                                      component: 'ResponsiveLink',
+                                      props: {
+                                        location: '/auth/forgot',
+                                      },
+                                      children: 'Forgot Password',
+                                    },
+                                  },
+                                    
+                                ],
+                              },
+                                
+                            ],
+                          },
+                            hrline,
+                          {
+                            'gridProps': {
+                              style: {
+                                justifyContent: 'center',
+                              },
+                            },
+                            'formElements': [
+                              {
+                                'type': 'submit',
+                                'value': 'Login',
+                        // "placeholder": "Remember Me",
+                                'name': 'login',
+                                'passProps': {
+                                  'color': 'isPrimary',
+                                },
+                                'layoutProps': {
+                                  formItemStyle: {
+                                    justifyContent: 'center',
+                                  },
+                                  'horizontalform': true,
+                                },
+                              },
+                              {
+                                'type': 'layout',
+                                value: {
+                                  component: 'FormHorizontal',
+                                  props: {
+                                    style: {
+                                      justifyContent: 'center',
+                                    },
+                                  },
+                                  children: [
+                                    {
+                                      component: 'ResponsiveButton',
+                                      props: {
+                                        onClick: 'func:this.props.reduxRouter.push',
+                                        onclickProps: '/auth/user/new',
+                                        style: {
+                                        },
+                                        buttonProps: {
+                                  // color: 'isPrimary',
+                                        },
+                                      },
+                                      children: 'New User',
+                                    },
+                                  ],
+                                    
+                                },
+                                'layoutProps': {
+                                  style: {
+                                    justifyContent: 'center',
+                                  },
                           // "horizontalform": true
+                                },
+                              },
+                            ],
+                          },
+                          ],
                         },
                       },
                     ],
                   },
-                  ],
-                },
+                  {
+                    'component': 'Column',
+                    'props': {
+                      'size': 'is3',
+                    },
+                  },
+                ],
               },
             ],
           },
-          {
-            'component': 'Column',
-            'props': {
-              'size': 'is3',
-            },
-          },
-          ],
-        }, ],
-      }, ],
-    }, ],
+        ],
+      },
+    ],
   };
   return loginLayout;  
 }
