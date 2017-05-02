@@ -186,6 +186,7 @@ var packageJSON = {
     test: 'react-scripts test --env=jsdom',
     eject: 'react-scripts eject'
   },
+  proxy: 'http://localhost:8786',
   homepage: '/extensions/periodicjs.ext.reactadmin'
 };
 

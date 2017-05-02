@@ -22,7 +22,7 @@ function getAdvancedBinding() {
       parser.setUA(uastring);
       var parseUserAgent = parser.getResult();
       // console.debug({ parseUserAgent, });
-      if (parseUserAgent.browser.name === 'Chrome' && parseUserAgent.os.name === 'Android' && parseInt(parseUserAgent.browser.version, 10) < 57) {
+      if (parseUserAgent.browser.name === 'Chrome' && parseUserAgent.os.name === 'Android' && parseInt(parseUserAgent.browser.version, 10) < 40) {
         return false;
       }
       if (parseUserAgent.browser.name === 'Android Browser') {
