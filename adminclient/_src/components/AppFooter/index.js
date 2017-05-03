@@ -65,8 +65,8 @@ var AppFooter = function (_Component) {
     value: function render() {
       return _react2.default.createElement(
         _reBulma.Nav,
-        { style: (0, _assign2.default)(_styles2.default.fixedBottom, _styles2.default.footerContainer, this.props.settings.ui.footer.navStyle), className: this.props.settings.ui.initialization.show_footer || this.props.user.isLoggedIn ? 'animated fadeInUp Header-Speed reactadmin__app_footer' : 'animated slideOutUp Header-Speed reactadmin__app_footer' },
-        this.props.ui.components.footer && (0, _typeof3.default)(this.props.ui.components.footer) === 'object' && this.props.ui.components.footer.layout ? this.getRenderedComponent(this.props.ui.components.footer.layout) : _react2.default.createElement(
+        { style: (0, _assign2.default)({}, _styles2.default.fixedBottom, _styles2.default.footerContainer, this.props.settings.ui.footer.navStyle), className: this.props.settings.ui.initialization.show_footer || this.props.user.isLoggedIn ? 'animated fadeInUp Header-Speed reactadmin__app_footer' : 'animated slideOutUp Header-Speed reactadmin__app_footer' },
+        this.props.ui.components && this.props.ui.components.footer && (0, _typeof3.default)(this.props.ui.components.footer) === 'object' && this.props.ui.components.footer.layout ? this.getRenderedComponent(this.props.ui.components.footer.layout) : _react2.default.createElement(
           _reBulma.Container,
           null,
           _react2.default.createElement(

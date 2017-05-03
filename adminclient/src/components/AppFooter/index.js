@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, } from 'react';
 import { Nav, NavGroup, NavItem, Container, /*, Button,*/ } from 're-bulma'; 
 import { getRenderedComponent, } from '../AppLayoutMap';
 import 'font-awesome/css/font-awesome.css';
@@ -12,8 +12,8 @@ class AppFooter extends Component {
   }
   render() {
     return (
-      <Nav style={Object.assign(styles.fixedBottom, styles.footerContainer,this.props.settings.ui.footer.navStyle)} className={(this.props.settings.ui.initialization.show_footer || this.props.user.isLoggedIn) ? 'animated fadeInUp Header-Speed reactadmin__app_footer' : 'animated slideOutUp Header-Speed reactadmin__app_footer'}>
-        {(this.props.ui.components.footer && typeof this.props.ui.components.footer==='object' && this.props.ui.components.footer.layout) 
+      <Nav style={Object.assign({}, styles.fixedBottom, styles.footerContainer, this.props.settings.ui.footer.navStyle)} className={(this.props.settings.ui.initialization.show_footer || this.props.user.isLoggedIn) ? 'animated fadeInUp Header-Speed reactadmin__app_footer' : 'animated slideOutUp Header-Speed reactadmin__app_footer'}>
+        {(this.props.ui.components && this.props.ui.components.footer && typeof this.props.ui.components.footer==='object' && this.props.ui.components.footer.layout) 
         ? this.getRenderedComponent(this.props.ui.components.footer.layout)
         : (<Container>
           <NavGroup align="left">
