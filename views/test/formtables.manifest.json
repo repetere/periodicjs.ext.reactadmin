@@ -23,11 +23,12 @@
                 "children":[
                   {
                     "component":"Title",
-                    "children":"Standard Documentation Page"
+                    "children":"Standard Documentatio hann hahaha  Page"
                   },
                   {
                     "component":"ResponsiveForm",
                     "props":{
+                      "blockPageUI":true,
                       "useFormOptions":true,
                       "flattenFormData":true,
                       "formdata":{

@@ -11,9 +11,9 @@ const initialState = {
   header_ui_is_loaded: false,
   footer_ui_is_loaded: false,
   error_ui_is_loaded: false,
-  nav_label: "",
+  nav_label: '',
   app_data: {},
-  selected_nav: undefined
+  selected_nav: undefined,
 };
 
 var containers;
@@ -23,9 +23,15 @@ const uiReducer = (state, action) => {
   switch (action.type) {
   case constants.ui.SET_UI_LOADED:
     var uiStatePayload = action.payload;
-    return Object.assign({}, state, {
-      ui_is_loaded: uiStatePayload,
-    });  
+    return Object.assign({}, state, (uiStatePayload.customLayout)
+      ? {
+        ui_is_loaded: uiStatePayload.loaded,
+        custom_ui_layout: uiStatePayload.customLayout,
+      }
+      : {
+        ui_is_loaded: uiStatePayload,
+        custom_ui_layout: undefined,
+      });  
   case constants.ui.SET_NAV_LABEL:
     var navLabelPaylod = action.payload;
     return Object.assign({}, state, {

@@ -24,10 +24,14 @@ const ui = {
       payload: { },
     };
   },
-  setUILoadedState(loaded) {
+  setUILoadedState(loaded, customLayout) {
     return {
       type: constants.ui.SET_UI_LOADED,
-      payload: loaded,
+      payload: (customLayout)
+        ? {
+          customLayout, loaded,
+        }
+        : loaded,
     };
   },
   handleFetchedComponent: function (type, response) {
