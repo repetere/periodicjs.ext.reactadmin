@@ -127,9 +127,7 @@ class MainApp extends Component{
       ? (<div style={styles.sidebarOverlay} className="__ra_show_sidebar_overlay"
         onClick={this.props.toggleUISidebar} ></div>)
       : null;
-    ///*
-    // console.debug('this.state.ui.ui_is_loaded', this.state.ui.ui_is_loaded);
-    // console.debug('this.state.ui.app_container_ui_is_loaded', this.state.ui.app_container_ui_is_loaded);
+    
     return (<div className="reactadmin__app_div_content">
       <AppSectionLoadingOverlay display={!this.state.ui.ui_is_loaded} wrapperstyle={
         Object.assign({}, {
@@ -157,27 +155,7 @@ class MainApp extends Component{
       </main>
       {footerNav}
     </div>);
-    //*/
-    /*
-    return (
-      (this.state.ui.ui_is_loaded === false)
-        ? (<AppSectionLoading><AppOverlay   className="reactadmin__app_overlay"  {...this.state}/></AppSectionLoading>)
-        : (<div className="reactadmin__app_div_content">
-          <AppOverlay className="reactadmin__app_overlay" {...this.state}/>
-          {headerNav}
-          <main style={styles.fullHeight} className="reactadmin__main">
-            <Columns className="reactadmin__main_container" style={Object.assign({}, styles.fullMinHeight, styles.fullHeight)}>
-              {sidebarColumn}
-              {overlay}
-              <Column  className="reactadmin__main_content" style={styles.fullMinHeight}>
-                {this.props.children}
-              </Column>
-            </Columns>
-          </main>
-          {footerNav}
-        </div>)
-    );
-    */
+
   }
 }
 MainApp.contextTypes = {
