@@ -111,7 +111,7 @@ var AppHeader = function (_Component) {
         _reBulma.Hero,
         { color: this.props.settings.ui.header.color, isBold: this.props.settings.ui.header.isBold, style: (0, _assign2.default)(_styles2.default.fixedTop, _styles2.default.navContainer, this.props.settings.ui.header.containerStyle),
           className: this.props.settings.ui.initialization.show_header || this.props.user.isLoggedIn ? 'animated fadeInDown Header-Speed' : 'animated slideOutDown Header-Speed' },
-        this.props.ui.components.header && (0, _typeof3.default)(this.props.ui.components.header) === 'object' && this.props.ui.components.header.layout ? this.getRenderedComponent(this.props.ui.components.header.layout) : _react2.default.createElement(
+        this.props.ui && this.props.ui.components && this.props.ui.components.header && (0, _typeof3.default)(this.props.ui.components.header) === 'object' && this.props.ui.components.header.layout ? this.getRenderedComponent(this.props.ui.components.header.layout) : _react2.default.createElement(
           _reBulma.HeroHead,
           null,
           _react2.default.createElement(
@@ -163,7 +163,7 @@ var AppHeader = function (_Component) {
                     }
                   })
                 ),
-                this.state.user.isLoggedIn && this.props.settings.ui.header.useHeaderLogout ? _react2.default.createElement(
+                this.state.user.isLoggedIn && this.props.settings.ui && this.props.settings.ui.header && this.props.settings.ui.header.useHeaderLogout ? _react2.default.createElement(
                   _reBulma.NavItem,
                   null,
                   _react2.default.createElement(_reBulma.Button, { buttonStyle: 'isOutlined', onClick: this.props.logoutUser, color: buttonColor, icon: 'fa fa-sign-out', style: (0, _assign2.default)({ paddingRight: 0 }, _styles2.default.noMarginLeftRight) })

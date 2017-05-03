@@ -42,7 +42,7 @@ class AppHeader extends Component {
     return (
       <Hero color={this.props.settings.ui.header.color} isBold={this.props.settings.ui.header.isBold} style={Object.assign(styles.fixedTop, styles.navContainer, this.props.settings.ui.header.containerStyle)}
       className={(this.props.settings.ui.initialization.show_header || this.props.user.isLoggedIn) ? 'animated fadeInDown Header-Speed' : 'animated slideOutDown Header-Speed'}>
-        {(this.props.ui.components.header && typeof this.props.ui.components.header==='object' && this.props.ui.components.header.layout) 
+        {(this.props.ui && this.props.ui.components && this.props.ui.components.header && typeof this.props.ui.components.header==='object' && this.props.ui.components.header.layout) 
         ? this.getRenderedComponent(this.props.ui.components.header.layout)
         : (<HeroHead>
           <Container>
@@ -81,7 +81,7 @@ class AppHeader extends Component {
                       },
                     })} 
                 </NavItem>
-                {(this.state.user.isLoggedIn && this.props.settings.ui.header.useHeaderLogout) ? 
+                {(this.state.user.isLoggedIn && this.props.settings.ui && this.props.settings.ui.header && this.props.settings.ui.header.useHeaderLogout) ? 
                   (<NavItem>
                     <Button buttonStyle="isOutlined" onClick={this.props.logoutUser} color={buttonColor} icon="fa fa-sign-out"  style={Object.assign({ paddingRight:0, }, styles.noMarginLeftRight)} />
                   </NavItem>)
