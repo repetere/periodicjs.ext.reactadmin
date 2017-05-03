@@ -6,6 +6,7 @@ const initialState = {
   sidebar_is_open: false,
   ui_is_loaded: false,
   nav_ui_is_loaded: false,
+  custom_ui_layout: undefined,
   app_container_ui_is_loaded: false,
   login_ui_is_loaded: false,
   header_ui_is_loaded: false,
@@ -23,7 +24,12 @@ const uiReducer = (state, action) => {
   switch (action.type) {
   case constants.ui.SET_UI_LOADED:
     var uiStatePayload = action.payload;
-    return Object.assign({}, state, (uiStatePayload.customLayout)
+    var appContainerUIState = (uiStatePayload.loaded || uiStatePayload)
+      ? {
+        app_container_ui_is_loaded:true,
+      }
+      : {};  
+    return Object.assign({}, state, appContainerUIState, (uiStatePayload.customLayout)
       ? {
         ui_is_loaded: uiStatePayload.loaded,
         custom_ui_layout: uiStatePayload.customLayout,
