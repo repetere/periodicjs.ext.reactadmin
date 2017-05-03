@@ -262,8 +262,14 @@ var reduxActions = {
   toggleUISidebar: function toggleUISidebar() {
     return _stores2.default.dispatch(_actions2.default.ui.toggleUISidebar());
   },
-  setUILoadedState: function setUILoadedState(loaded) {
-    return _stores2.default.dispatch(_actions2.default.ui.setUILoadedState(loaded));
+  setUILoadedState: function setUILoadedState(loaded, customLayout) {
+    return _stores2.default.dispatch(_actions2.default.ui.setUILoadedState(loaded, customLayout));
+  },
+  setDebugUILoadedState: function setDebugUILoadedState(loaded, customLayout) {
+    var t = setTimeout(function () {
+      _stores2.default.dispatch(_actions2.default.ui.setUILoadedState(loaded, customLayout));
+      clearTimeout(t);
+    }, 2000);
   },
   logoutUser: function logoutUser() {
     return _stores2.default.dispatch(_actions2.default.user.logoutUser());

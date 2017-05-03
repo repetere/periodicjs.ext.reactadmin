@@ -38,19 +38,34 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reBulma = require('re-bulma');
 
+var _AppLayoutMap = require('../AppLayoutMap');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Loading = function (_Component) {
   (0, _inherits3.default)(Loading, _Component);
 
-  function Loading() {
+  function Loading(props) {
     (0, _classCallCheck3.default)(this, Loading);
-    return (0, _possibleConstructorReturn3.default)(this, (Loading.__proto__ || (0, _getPrototypeOf2.default)(Loading)).apply(this, arguments));
+
+    var _this = (0, _possibleConstructorReturn3.default)(this, (Loading.__proto__ || (0, _getPrototypeOf2.default)(Loading)).call(this, props));
+    // console.debug({ props });
+
+
+    _this.getRenderedComponent = _AppLayoutMap.getRenderedComponent.bind(_this);
+    return _this;
   }
 
   (0, _createClass3.default)(Loading, [{
+    key: 'componentWillReceiveProps',
+    value: function componentWillReceiveProps(nextProps) {
+      // console.log('componentWillReceiveProps nextProps', nextProps);
+      this.setState(nextProps);
+    }
+  }, {
     key: 'render',
     value: function render() {
+      // this.getRenderedComponent(formElement.value, undefined, true)
       return this.props.display ? _react2.default.createElement(
         _reBulma.Hero,
         (0, _extends3.default)({ size: 'isFullheight' }, this.props.heroProps, { style: (0, _assign2.default)({ textAlign: 'center' }, this.props.wrapperstyle) }),
@@ -60,7 +75,7 @@ var Loading = function (_Component) {
           _react2.default.createElement(
             'div',
             { className: 'has-text-centered', style: (0, _assign2.default)({ textAlign: 'center', margin: 'auto' }, this.props.style) },
-            _react2.default.createElement(
+            this.props.ui && this.props.ui.custom_ui_layout ? this.getRenderedComponent(this.props.ui.custom_ui_layout) : _react2.default.createElement(
               _reBulma.Button,
               { color: 'isWhite', buttonStyle: 'isOutlined', state: 'isLoading', style: { border: 'none' } },
               'Loading'

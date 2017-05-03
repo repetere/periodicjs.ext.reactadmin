@@ -72,9 +72,9 @@ var _FloatingNav = require('../AppSidebar/FloatingNav');
 
 var _FloatingNav2 = _interopRequireDefault(_FloatingNav);
 
-var _AppSectionLoading = require('../AppSectionLoading');
+var _overlay = require('../AppSectionLoading/overlay');
 
-var _AppSectionLoading2 = _interopRequireDefault(_AppSectionLoading);
+var _overlay2 = _interopRequireDefault(_overlay);
 
 var _AppOverlay = require('../AppOverlay');
 
@@ -84,6 +84,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 // import utilities from '../../util';
 
+// import AppSectionLoading from '../AppSectionLoading';
 var MainApp = function (_Component) {
   (0, _inherits3.default)(MainApp, _Component);
 
@@ -191,13 +192,21 @@ var MainApp = function (_Component) {
       var overlay = this.props.ui.sidebar_is_open && this.state.settings.ui.initialization.show_sidebar_overlay ? _react2.default.createElement('div', { style: _styles2.default.sidebarOverlay, className: '__ra_show_sidebar_overlay',
         onClick: this.props.toggleUISidebar }) : null;
 
-      return this.state.ui.ui_is_loaded === false ? _react2.default.createElement(
-        _AppSectionLoading2.default,
-        null,
-        _react2.default.createElement(_AppOverlay2.default, (0, _extends3.default)({ className: 'reactadmin__app_overlay' }, this.state))
-      ) : _react2.default.createElement(
+      return _react2.default.createElement(
         'div',
         { className: 'reactadmin__app_div_content' },
+        _react2.default.createElement(_overlay2.default, { display: !this.state.ui.ui_is_loaded, wrapperstyle: (0, _assign2.default)({}, {
+            position: 'fixed',
+            height: '100%',
+            width: '100%',
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            // opacity:0.8,
+            backgroundColor: 'rgba(255,255,255,0.8)',
+            zIndex: 100
+          }, this.overlayUIWrapperStyle), ui: this.state.ui }),
         _react2.default.createElement(_AppOverlay2.default, (0, _extends3.default)({ className: 'reactadmin__app_overlay' }, this.state)),
         headerNav,
         _react2.default.createElement(
@@ -211,7 +220,7 @@ var MainApp = function (_Component) {
             _react2.default.createElement(
               _reBulma.Column,
               { className: 'reactadmin__main_content', style: _styles2.default.fullMinHeight },
-              this.props.children
+              this.state.ui.app_container_ui_is_loaded === false ? null : this.props.children
             )
           )
         ),

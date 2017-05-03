@@ -23,7 +23,7 @@
                 "children":[
                   {
                     "component":"Title",
-                    "children":"Standard Form Table Documentation Page custom loader"
+                    "children":"Standard Form Table Documentation Page"
                   },
                   {
                     "component":"ResponsiveForm",

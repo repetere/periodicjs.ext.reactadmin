@@ -190,8 +190,9 @@ var ResponsiveForm = function (_Component) {
     value: function submitForm() {
       var _this2 = this;
 
+      console.log('this.props.blockPageUI', this.props.blockPageUI);
       if (this.props.blockPageUI) {
-        this.props.setUILoadedState(false);
+        this.props.setUILoadedState(false, this.props.blockPageUILayout);
       }
       var state = this.props.getState();
       var headers = state.settings.userprofile ? state.settings.userprofile.options.headers : {};
@@ -213,7 +214,7 @@ var ResponsiveForm = function (_Component) {
         });
 
         if (_this2.props.blockPageUI) {
-          _this2.props.setUILoadedState(true);
+          _this2.props.setDebugUILoadedState(true);
         }
       };
 
@@ -247,7 +248,7 @@ var ResponsiveForm = function (_Component) {
         this.setState({ formDataErrors: validationErrors });
         console.debug('has errors', validationErrors, { submitFormData: submitFormData });
         if (this.props.blockPageUI) {
-          this.props.setUILoadedState(true);
+          this.props.setDebugUILoadedState(true);
         }
       } else if (!this.props.onSubmit) {
         this.props.debug(submitFormData);

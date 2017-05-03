@@ -4,12 +4,12 @@ import { getRenderedComponent, } from '../AppLayoutMap';
 
 class Loading extends Component {
   constructor(props) {
-    console.debug({ props });
+    // console.debug({ props });
     super(props);
     this.getRenderedComponent = getRenderedComponent.bind(this);
   }
   componentWillReceiveProps(nextProps) {
-    console.log('componentWillReceiveProps nextProps', nextProps);
+    // console.log('componentWillReceiveProps nextProps', nextProps);
     this.setState(nextProps);
   }
   render() {

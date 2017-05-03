@@ -41,10 +41,12 @@ var ui = {
       payload: {}
     };
   },
-  setUILoadedState: function setUILoadedState(loaded) {
+  setUILoadedState: function setUILoadedState(loaded, customLayout) {
     return {
       type: _constants2.default.ui.SET_UI_LOADED,
-      payload: loaded
+      payload: customLayout ? {
+        customLayout: customLayout, loaded: loaded
+      } : loaded
     };
   },
 
