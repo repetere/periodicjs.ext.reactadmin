@@ -80,7 +80,13 @@ const reduxActions = {
   errorNotification: (options, timeout) => store.dispatch(actions.notification.errorNotification(options, timeout)),
   hideNotification: (id) => store.dispatch(actions.notification.hideNotification(id)),
   toggleUISidebar: () => store.dispatch(actions.ui.toggleUISidebar()),
-  setUILoadedState: (loaded) => store.dispatch(actions.ui.setUILoadedState(loaded)),
+  setUILoadedState: (loaded, customLayout) => store.dispatch(actions.ui.setUILoadedState(loaded, customLayout)),
+  setDebugUILoadedState: (loaded, customLayout) => {
+    let t = setTimeout(() => { 
+      store.dispatch(actions.ui.setUILoadedState(loaded, customLayout));
+      clearTimeout(t);
+    }, 2000);
+  },
   logoutUser: () => store.dispatch(actions.user.logoutUser()),
   setDynamicData: (prop, val) => store.dispatch(actions.dynamic.setDynamicData(prop, val)),
   fetchLoginComponent: () => store.dispatch(utilities.setCacheConfiguration(actions.ui.fetchComponent(CONSTANTS.ui.LOGIN_COMPONENT), 'components.login')),

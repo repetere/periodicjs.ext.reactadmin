@@ -23,11 +23,16 @@
                 "children":[
                   {
                     "component":"Title",
-                    "children":"Standard Documentation Page"
+                    "children":"Standard Form Table Documentation Page custom loader"
                   },
                   {
                     "component":"ResponsiveForm",
                     "props":{
+                      "blockPageUI":true,
+                      "blockPageUILayout":{
+                        "component":"div",
+                        "children":"Random Loading Text"
+                      },
                       "useFormOptions":true,
                       "flattenFormData":true,
                       "formdata":{
