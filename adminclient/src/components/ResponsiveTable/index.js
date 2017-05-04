@@ -12,7 +12,7 @@ import { getRenderedComponent, } from '../AppLayoutMap';
 // import pluralize from 'pluralize';
 import FileReaderInput from 'react-file-reader-input';
 import path from 'path';
-import { csv2json, } from 'json-2-csv';
+import { csv2json, json2csv, } from 'json-2-csv';
 import RACodeMirror from '../RACodeMirror';
 import { filterQuerySelectOptions, propTypes, defaultProps, getOptionsHeaders, getHeadersFromRows, excludeEmptyHeaders, getFilterOptions, defaultNewRowData, filterQuerySelectOptionsMap, getFilterSortableOption, } from './TableHelpers';
 
@@ -934,8 +934,27 @@ class ResponsiveTable extends Component {
                         })}
                         </rb.Select>
                         <rb.Label style={filterLabelStyleProps}>  
-                          of {this.state.numPages} pages
-                        </rb.Label>   
+                          of {this.state.numPages} 
+                        </rb.Label>  
+                        <rb.Button icon="fa fa-download" onClick={() => {
+                          this.props.fileSaver({
+                            data: this.state.rows,
+                            filename: window.location.pathname.replace(/\//gi,'_'),
+                          });
+                         }}>JSON</rb.Button>
+                        <rb.Button icon="fa fa-download" onClick={() => {
+                          console.debug('this.state.rows', this.state.rows);
+                          json2csv(this.state.rows, (err, csv) => { 
+                            console.debug({ csv });
+                            this.props.fileSaver({
+                              data: csv,
+                              type:'text/csv;charset=utf-8',
+                              filename: window.location.pathname.replace(/\//gi,'_'),
+                            });
+                          }, {
+                            checkSchemaDifferences: false,  
+                          });
+                        }}>CSV</rb.Button>
                       </rb.Group>
                     </rb.Td>
                   </rb.Tr>  

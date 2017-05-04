@@ -29,8 +29,13 @@ const entity_index_with_default_limit = (req, res, next) =>{
   return resources.app.controller.native[entity.name][`load${ entity.pluralCapitalized }WithDefaultLimit`](req, res, next);
 };
 
-const entity_index_load = (req, res, next) =>{
+const entity_index_load = (req, res, next) => {
   const entity = get_entity_options(req.params.entity_type);
+  req.controllerData = Object.assign({}, req.controllerData, {
+    model_fields: {
+      changes: 0,
+    },
+  });
   return resources.app.controller.native[entity.name][`load${ entity.pluralCapitalized }`](req, res, next);
 };
 
