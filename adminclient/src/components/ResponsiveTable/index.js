@@ -6,7 +6,7 @@ import numeral from 'numeral';
 import utilities from '../../util';
 import qs from 'querystring';
 import debounce from 'debounce';
-import flatten from 'flat';
+import { flatten, } from 'flat';
 import { getRenderedComponent, } from '../AppLayoutMap';
 // import capitalize from 'capitalize';
 // import pluralize from 'pluralize';
@@ -850,6 +850,29 @@ class ResponsiveTable extends Component {
                   <li><strong>Date Values:</strong> For date filters, Moment is used for date filters with the following moment format: YYYY-MM-DDTHH:MM:SS</li>
                   <li><strong>Boolean values</strong> "true" is converted to <em>true</em></li>
                 </ul>
+                <p><strong>Export:</strong></p> 
+                <rb.Button icon="fa fa-download" onClick={() => {
+                    this.props.fileSaver({
+                      data: this.state.rows,
+                      filename: window.location.pathname.replace(/\//gi,'_'),
+                    });
+                  }}>JSON</rb.Button>
+                  <rb.Button icon="fa fa-download" onClick={() => {
+                    // console.debug('this.state.rows', this.state.rows);
+                    json2csv(this.state.rows, (err, csv) => { 
+                      // console.debug('before csv',csv );
+                      this.props.fileSaver({
+                        data: csv,
+                        type:'text/csv;charset=utf-8',
+                        filename: window.location.pathname.replace(/\//gi,'_'),
+                      });
+                    }, {
+                      checkSchemaDifferences: false, 
+                      // options: {
+                      //   eol:'\r\n',
+                      // },
+                    });
+                  }}>CSV</rb.Button>
                 <hr/>
               </rb.Content> 
               <rb.Table {...this.props.searchFilterPaginationProps}>
@@ -936,25 +959,6 @@ class ResponsiveTable extends Component {
                         <rb.Label style={filterLabelStyleProps}>  
                           of {this.state.numPages} 
                         </rb.Label>  
-                        <rb.Button icon="fa fa-download" onClick={() => {
-                          this.props.fileSaver({
-                            data: this.state.rows,
-                            filename: window.location.pathname.replace(/\//gi,'_'),
-                          });
-                         }}>JSON</rb.Button>
-                        <rb.Button icon="fa fa-download" onClick={() => {
-                          console.debug('this.state.rows', this.state.rows);
-                          json2csv(this.state.rows, (err, csv) => { 
-                            console.debug({ csv });
-                            this.props.fileSaver({
-                              data: csv,
-                              type:'text/csv;charset=utf-8',
-                              filename: window.location.pathname.replace(/\//gi,'_'),
-                            });
-                          }, {
-                            checkSchemaDifferences: false,  
-                          });
-                        }}>CSV</rb.Button>
                       </rb.Group>
                     </rb.Td>
                   </rb.Tr>  

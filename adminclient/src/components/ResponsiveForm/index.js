@@ -130,7 +130,7 @@ class ResponsiveForm extends Component{
     return returnLink;
   }
   submitForm() {
-    console.log('this.props.blockPageUI', this.props.blockPageUI);
+    // console.log('this.props.blockPageUI', this.props.blockPageUI);
     if (this.props.blockPageUI) {
       this.props.setUILoadedState(false, this.props.blockPageUILayout);
     }

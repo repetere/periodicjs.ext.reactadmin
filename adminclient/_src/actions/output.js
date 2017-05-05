@@ -23,7 +23,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // import Immutable from 'immutable';
 
 var getBlobData = function getBlobData(options) {
-  console.debug('getBlobData', { options: options });
+  // console.debug('getBlobData', { options });
   var data = options.data,
       filename = options.filename,
       type = options.type;
@@ -34,13 +34,15 @@ var getBlobData = function getBlobData(options) {
   if (!type || type === 'json') {
     type = 'application/json;charset=utf-8';
   }
-  if (type === 'json' || 'application/json;charset=utf-8') {
+  if (type === 'json' || type === 'application/json;charset=utf-8') {
     data = (0, _stringify2.default)(data, null, 2);
   }
   if (!filename) {
     filename = 'output.json';
   }
+  // console.debug('before blob data',data );
   var blob = new Blob([data], { type: type });
+  // let blob = new Blob([ data, ], { type, });
   _fileSaver2.default.saveAs(blob, filename);
 
   return { filename: filename, type: type };

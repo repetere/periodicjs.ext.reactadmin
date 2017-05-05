@@ -190,7 +190,7 @@ var ResponsiveForm = function (_Component) {
     value: function submitForm() {
       var _this2 = this;
 
-      console.log('this.props.blockPageUI', this.props.blockPageUI);
+      // console.log('this.props.blockPageUI', this.props.blockPageUI);
       if (this.props.blockPageUI) {
         this.props.setUILoadedState(false, this.props.blockPageUILayout);
       }

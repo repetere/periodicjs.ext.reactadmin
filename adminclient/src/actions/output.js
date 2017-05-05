@@ -5,7 +5,7 @@ import FileSaver from 'file-saver';
 // import Immutable from 'immutable';
 
 const getBlobData = (options) => {
-  console.debug('getBlobData', { options });
+  // console.debug('getBlobData', { options });
   let { data, filename, type, } = options;
   if (!data) {
     data = options;
@@ -13,13 +13,15 @@ const getBlobData = (options) => {
   if (!type || type === 'json') {
     type = 'application/json;charset=utf-8';
   }
-  if (type === 'json' || 'application/json;charset=utf-8') {
+  if (type === 'json' || type === 'application/json;charset=utf-8') {
     data = JSON.stringify(data, null, 2);
   }
   if (!filename) {
     filename = 'output.json';
   }
+  // console.debug('before blob data',data );
   let blob = new Blob([ data, ], { type, });
+  // let blob = new Blob([ data, ], { type, });
   FileSaver.saveAs(blob, filename);
 
   return { filename, type, };

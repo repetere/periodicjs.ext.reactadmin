@@ -8,6 +8,11 @@ import 'animate.css/animate.css';
 import 'react-responsive-carousel/lib/styles/carousel.css';
 import 'rc-slider/assets/index.css';
 import './index.css';
+import insertCss from 'insert-css';
+import css from 're-bulma/build/css';
+try {
+  if (typeof document !== 'undefined' || document !== null) insertCss(css, { prepend: true });
+} catch (e) { }
 
 ReactDOM.render(
   <App />,

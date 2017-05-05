@@ -97,6 +97,7 @@ function getLoginLayout() /*options*/{
             }, {
               'component': 'ResponsiveForm',
               'props': {
+                blockPageUI: true,
                 'cardForm': true,
                 // cardFormTitle:'Sign In',
                 'cardFormProps': {

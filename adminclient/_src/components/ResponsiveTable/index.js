@@ -80,8 +80,6 @@ var _debounce2 = _interopRequireDefault(_debounce);
 
 var _flat = require('flat');
 
-var _flat2 = _interopRequireDefault(_flat);
-
 var _AppLayoutMap = require('../AppLayoutMap');
 
 var _reactFileReaderInput = require('react-file-reader-input');
@@ -132,7 +130,7 @@ var ResponsiveTable = function (_Component) {
     });
     if (props.flattenRowData) {
       rows = rows.map(function (row) {
-        return (0, _assign2.default)({}, row, (0, _flat2.default)(row, props.flattenRowDataOptions));
+        return (0, _assign2.default)({}, row, (0, _flat.flatten)(row, props.flattenRowDataOptions));
       });
     }
     _this.filterSelectOptions = (0, _TableHelpers.getFilterOptions)({ rows: rows, headers: headers, filters: _this.props.filterSelectOptions });
@@ -193,7 +191,7 @@ var ResponsiveTable = function (_Component) {
       });
       if (nextProps.flattenRowData) {
         rows = rows.map(function (row) {
-          return (0, _assign2.default)({}, row, (0, _flat2.default)(row, nextProps.flattenRowDataOptions));
+          return (0, _assign2.default)({}, row, (0, _flat.flatten)(row, nextProps.flattenRowDataOptions));
         });
       }
       // console.debug('nextProps.limit', nextProps.limit);
@@ -527,7 +525,7 @@ var ResponsiveTable = function (_Component) {
               var rows = response[data.value] || [];
               if (_this5.props.flattenRowData) {
                 updatedState[data.key] = rows.map(function (row) {
-                  return (0, _flat2.default)(row, _this5.props.flattenRowDataOptions);
+                  return (0, _flat.flatten)(row, _this5.props.flattenRowDataOptions);
                 });
               }
             } else {
@@ -1172,6 +1170,42 @@ var ResponsiveTable = function (_Component) {
                   )
                 )
               ),
+              _react2.default.createElement(
+                'p',
+                null,
+                _react2.default.createElement(
+                  'strong',
+                  null,
+                  'Export:'
+                )
+              ),
+              _react2.default.createElement(
+                rb.Button,
+                { icon: 'fa fa-download', onClick: function onClick() {
+                    _this8.props.fileSaver({
+                      data: _this8.state.rows,
+                      filename: window.location.pathname.replace(/\//gi, '_')
+                    });
+                  } },
+                'JSON'
+              ),
+              _react2.default.createElement(
+                rb.Button,
+                { icon: 'fa fa-download', onClick: function onClick() {
+                    // console.debug('this.state.rows', this.state.rows);
+                    (0, _json2Csv.json2csv)(_this8.state.rows, function (err, csv) {
+                      // console.debug('before csv',csv );
+                      _this8.props.fileSaver({
+                        data: csv,
+                        type: 'text/csv;charset=utf-8',
+                        filename: window.location.pathname.replace(/\//gi, '_')
+                      });
+                    }, {
+                      checkSchemaDifferences: false
+                    });
+                  } },
+                'CSV'
+              ),
               _react2.default.createElement('hr', null)
             ),
             _react2.default.createElement(
@@ -1314,8 +1348,7 @@ var ResponsiveTable = function (_Component) {
                         rb.Label,
                         { style: filterLabelStyleProps },
                         'of ',
-                        this.state.numPages,
-                        ' pages'
+                        this.state.numPages
                       )
                     )
                   )
