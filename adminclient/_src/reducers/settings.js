@@ -169,7 +169,6 @@ var packageJSON = {
     'file-saver': '^1.3.3',
     flat: '^2.0.1',
     'json-2-csv': '^2.1.0',
-    json2csv: '^3.7.4',
     'rc-slider': '^6.2.0',
     're-bulma': '^0.4.3',
     react: '15.3.2',
