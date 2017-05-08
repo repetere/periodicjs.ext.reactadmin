@@ -304,6 +304,9 @@ function handleSuccessCallbacks(options) {
       responseCallback(successData.callbackProps || successData, submitFormData);
     }
   }
+  if (this.props.updateFormOnResponse) {
+    this.setState(successData);
+  }
 }
 
 function submitThisDotPropsFunc(options) {
