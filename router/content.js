@@ -12,6 +12,7 @@ module.exports = function(resources) {
   // ContentRouter.use(helperController.approveOptionsRequest, ensureApiAuthenticated, helperController.fixCodeMirrorSubmit, helperController.fixFlattenedSubmit);
 
   ContentRouter.post('/charts', (req, res, next) => {
+    console.log('req.body', req.body);
     res.send({ test: 'changed' });
   })
   ContentRouter.get('/:dbname/secure-asset/:id/:filename', assetController.loadAsset, assetController.decryptAsset);

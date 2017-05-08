@@ -50,6 +50,7 @@ module.exports = {
                 },
                 props: {
                   updateFormOnResponse: true,
+                  sendSubmitButtonVal: true,
                   onSubmit: {
                     url: '/r-admin/contentdata/charts',
                     options: {
@@ -72,7 +73,11 @@ module.exports = {
                         },
                         {
                           type: 'submit',
-                          value: 'update',
+                          value: 'clicked1',
+                        },
+                        {
+                          type: 'submit',
+                          value: 'clicked2',
                         },
                       ],
                     },

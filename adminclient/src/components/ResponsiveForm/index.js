@@ -180,6 +180,10 @@ class ResponsiveForm extends Component{
         submitFormData[ formElmField ] = formdata[ formElmField ];
       });
     }
+
+    if (this.props.sendSubmitButtonVal) {
+      submitFormData[ 'submitButtonVal' ] = formdata.submitButtonVal;
+    }
     // console.debug({ submitFormData, formdata, validationErrors });
     if (validationErrors && Object.keys(validationErrors).length < 1) {
       this.setState({ formDataErrors: {}, });
