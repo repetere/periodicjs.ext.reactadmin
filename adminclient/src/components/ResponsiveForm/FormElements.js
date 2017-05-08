@@ -737,7 +737,7 @@ export function getFormSubmit(options) {
           formDataErrors: validated_formdata.validationErrors
         };
         if (this.props.sendSubmitButtonVal) {
-          updateStateData['submitButtonVal'] = formElement.value
+          updateStateData[ 'submitButtonVal' ] = formElement.value;
         }
         this.setState(updateStateData, () => {
           (formElement.confirmModal && Object.keys(this.state.formDataErrors).length<1)
