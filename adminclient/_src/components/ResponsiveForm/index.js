@@ -214,7 +214,7 @@ var ResponsiveForm = function (_Component) {
         });
 
         if (_this2.props.blockPageUI) {
-          _this2.props.setDebugUILoadedState(true);
+          _this2.props.setUILoadedState(true);
         }
       };
 
@@ -271,7 +271,7 @@ var ResponsiveForm = function (_Component) {
         submitFormData = updatedFormBody.submitFormData;
         fetchPostBody = updatedFormBody.fetchPostBody;
         fetchOptions = updatedFormBody.fetchOptions;
-
+        // console.log({ headers }, 'fetchOptions.options', fetchOptions.options);
         fetch(this.getFormSumitUrl('' + fetchOptions.url + ((isGetRequest || this.props.stringifyBody) && fetchOptions.url.indexOf('?') !== -1 ? '&' : fetchOptions.url.indexOf('?') === -1 ? '?' : '') + (isGetRequest || this.props.stringifyBody ? _querystring2.default.stringify(submitFormData) : ''), fetchOptions.params, formdata), fetchOptions.options).then(_util2.default.checkStatus).then(function (res) {
           if (fetchOptions.success) {
             formSubmitNotification({ fetchOptions: fetchOptions, __formStateUpdate: __formStateUpdate });

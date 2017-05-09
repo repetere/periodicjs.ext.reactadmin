@@ -254,9 +254,12 @@ function assignFormBody(options) {
   var bodyForFetch = isGetRequest ? {} : {
     body: fetchPostBody
   };
-  fetchOptions.options = (0, _assign2.default)({
+  if (fetchOptions.options.headers) {
+    headers = (0, _assign2.default)({}, headers, fetchOptions.options.headers);
+  }
+  fetchOptions.options = (0, _assign2.default)({}, fetchOptions.options, {
     headers: headers
-  }, fetchOptions.options, bodyForFetch);
+  }, bodyForFetch);
 
   return { formdata: formdata, headers: headers, formBody: formBody, submitFormData: submitFormData, fetchPostBody: fetchPostBody, fetchOptions: fetchOptions, isGetRequest: isGetRequest };
 }
