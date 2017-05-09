@@ -59,7 +59,7 @@ export function getRenderedComponent(componentObject, resources, debug) {
         _resources: resources,
       },
     }, this.props, componentObject.props, this.props.getState())) : {};
-    let thisDotProps = (!React.DOM[ componentObject.component ] && !rebulma[ componentObject.component ]) ? this.props : null;
+    let thisDotProps = (!React.DOM[ componentObject.component ] && !rebulma[ componentObject.component ] && !componentObject.ignoreReduxProps) ? this.props : null;
     let renderedCompProps = Object.assign({
       key: renderIndex,
     }, thisDotProps,
@@ -69,6 +69,8 @@ export function getRenderedComponent(componentObject, resources, debug) {
     // if (thisprops) {
     //   console.debug({ thisprops, renderedCompProps });
     // }
+    // console.debug('componentObject.component', componentObject.component, { thisDotProps, });
+
     if (componentObject.comparisonprops) {
       comparisons = componentObject.comparisonprops.map(comp => {
         let compares = {};
