@@ -154,7 +154,7 @@ class ResponsiveForm extends Component{
       });
 
       if (this.props.blockPageUI) {
-        this.props.setDebugUILoadedState(true);
+        this.props.setUILoadedState(true);
       }
     };
     
@@ -211,7 +211,7 @@ class ResponsiveForm extends Component{
       submitFormData = updatedFormBody.submitFormData;
       fetchPostBody = updatedFormBody.fetchPostBody;
       fetchOptions = updatedFormBody.fetchOptions;
-
+      // console.log({ headers }, 'fetchOptions.options', fetchOptions.options);
       fetch(
         this.getFormSumitUrl(`${fetchOptions.url}${
           ((isGetRequest || this.props.stringifyBody) && fetchOptions.url.indexOf('?') !== -1)

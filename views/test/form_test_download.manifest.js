@@ -113,7 +113,7 @@ module.exports = {
                           },
                           {
                             type: 'submit',
-                            value: 'update',
+                            value: 'Download',
                             confirmModal:true,
                           },
                         ],
