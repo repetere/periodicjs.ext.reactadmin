@@ -260,7 +260,7 @@ var ResponsiveForm = function (_Component) {
         _FormHelpers.submitWindowFunc.call(this, { formdata: formdata, submitFormData: submitFormData });
         __formStateUpdate();
       } else if (typeof this.props.onSubmit !== 'function') {
-        var fetchOptions = this.props.onSubmit;
+        var fetchOptions = (0, _assign2.default)({}, this.props.onSubmit);
         var formBody = new FormData();
         var fetchPostBody = void 0;
         var updatedFormBody = getFormBody({ formdata: formdata, headers: headers, formBody: formBody, submitFormData: submitFormData, fetchPostBody: fetchPostBody, fetchOptions: fetchOptions });
