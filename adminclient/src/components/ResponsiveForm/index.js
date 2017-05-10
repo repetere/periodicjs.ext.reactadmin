@@ -200,7 +200,7 @@ class ResponsiveForm extends Component{
       submitWindowFunc.call(this, { formdata, submitFormData, });
       __formStateUpdate();
     } else if (typeof this.props.onSubmit !== 'function') {
-      let fetchOptions = this.props.onSubmit;
+      let fetchOptions = Object.assign({}, this.props.onSubmit);
       let formBody = new FormData();
       let fetchPostBody;
       let updatedFormBody = getFormBody({ formdata, headers, formBody, submitFormData, fetchPostBody, fetchOptions, });
