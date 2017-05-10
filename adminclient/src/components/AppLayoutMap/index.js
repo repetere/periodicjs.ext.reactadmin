@@ -48,7 +48,7 @@ export function getRenderedComponent(componentObject, resources, debug) {
   renderIndex++;
   // if(resources) console.info({ resources });
   if (!componentObject) {
-    return null;
+    return createElement('span', {}, 'Error: Missing Component Object');
   }
   try {
     let asyncprops = (componentObject.asyncprops && typeof componentObject.asyncprops === 'object') ? utilities.traverse(componentObject.asyncprops, resources) : {};
