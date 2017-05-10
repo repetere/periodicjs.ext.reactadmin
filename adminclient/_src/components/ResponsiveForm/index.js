@@ -335,7 +335,7 @@ var ResponsiveForm = function (_Component) {
           } else {
             this.props[this.props.onChange.replace('func:this.props.', '')](submitFormData);
           }
-        } else if (typeof this.props.onChange === 'string' && this.props.onChange.indexOf('func:window') !== -1) {
+        } else if (typeof this.props.onChange === 'string' && this.props.onChange.indexOf('func:window') !== -1 && typeof window[this.props.onChange.replace('func:window.', '')] === 'function') {
           window[this.props.onChange.replace('func:window.', '')].call(this, submitFormData);
         } else if (typeof this.props.onChange === 'function') {
           this.props.onChange(nextState);

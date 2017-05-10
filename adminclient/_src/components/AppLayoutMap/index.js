@@ -151,7 +151,7 @@ function getRenderedComponent(componentObject, resources, debug) {
   renderIndex++;
   // if(resources) console.info({ resources });
   if (!componentObject) {
-    return null;
+    return (0, _react.createElement)('span', {}, 'Error: Missing Component Object');
   }
   try {
     var asyncprops = componentObject.asyncprops && (0, _typeof3.default)(componentObject.asyncprops) === 'object' ? _util2.default.traverse(componentObject.asyncprops, resources) : {};

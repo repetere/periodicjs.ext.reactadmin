@@ -126,7 +126,7 @@ var AppHeader = function (_Component) {
                 _react2.default.createElement(
                   _reBulma.NavItem,
                   null,
-                  this.props.settings.ui.header.customButton && (0, _typeof3.default)(this.props.settings.ui.header.customButton) === 'object' ? this.getRenderedComponent(this.props.settings.ui.header.customButton) : _react2.default.createElement(_reBulma.Button, { onClick: this.props.toggleUISidebar, buttonStyle: 'isOutlined', color: buttonColor, icon: 'fa fa-bars', style: _styles2.default.iconButton })
+                  this.props.settings.ui.header.customButton && (0, _typeof3.default)(this.props.settings.ui.header.customButton) === 'object' && this.props.settings.ui.header.customButton.layout ? this.getRenderedComponent(this.props.settings.ui.header.customButton) : _react2.default.createElement(_reBulma.Button, { onClick: this.props.toggleUISidebar, buttonStyle: 'isOutlined', color: buttonColor, icon: 'fa fa-bars', style: _styles2.default.iconButton })
                 ),
                 navLabelTitle
               ),
