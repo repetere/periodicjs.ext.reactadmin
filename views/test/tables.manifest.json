@@ -315,22 +315,20 @@
                       "headers":[
                         { "label": "#", "value":"--idx-ctr--" },
                         { "label": "Email", "sortid":"email", "sortable":true },
-                        {"label":"Likes","sortid":"likes", "numeralFormat": "0,0"}
+                        {"label":"Likes","sortid":"likes", "numeralFormat": "$0,0"}
                       ],
                       "limit":10,
                       "numItems":20,
                       "rows":[
                         {
-                          "email":"med@gmail.com",
-                          "likes": null
+                          "email":"med@gmail.com"
                         },
                         {
                           "email":"yaw.etse@gmail.com",
                           "likes":3000000
                         },
                         {
-                          "email":"odlyaw@gmail.com",
-                          "likes": null
+                          "email":"odlyaw@gmail.com"
                         }
                       ]
                     }

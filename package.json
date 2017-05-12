@@ -27,6 +27,10 @@
       "email": "janbialostok@gmail.com",
       "name": "Jan Bialostok",
       "url": "https://github.com/janbialostok"
+    },
+    {
+      "email": "yoojungdan@gmail.com",
+      "name": "Iris Dan"
     }
   ],
   "dependencies": {
@@ -149,5 +153,5 @@
     "ssr": "babel utility/ssr_manifest_es6.js > utility/ssr_manifest.js && babel adminclient/src -d adminclient/_src --ignore adminclient/src/components/RACodeMirror/,adminclient/src/index.js",
     "package": "cd adminclient && npm run build && cd .. && rm -rf public/static/* && npm run ssr && grunt copy"
   },
-  "version": "1.4.1"
+  "version": "1.4.2"
 }
