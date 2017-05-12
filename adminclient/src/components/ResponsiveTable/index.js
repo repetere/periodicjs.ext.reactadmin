@@ -1051,6 +1051,7 @@ class ResponsiveTable extends Component {
                               {
                                 idx: rowIndex+calcStartIndex,
                                 momentFormat: header.momentFormat,
+                                numeralFormat: header.numeralFormat,
                                 image: header.image,
                                 imageProps: header.imageProps,
                                 icon: header.icon,
@@ -1135,6 +1136,7 @@ class ResponsiveTable extends Component {
                                 rowIndex: rowIndex,
                                 idx: rowIndex+calcStartIndex,
                                 momentFormat: header.momentFormat,
+                                numeralFormat: header.numeralFormat,
                                 image: header.image,
                                 imageProps: header.imageProps,
                                 icon: header.icon,
