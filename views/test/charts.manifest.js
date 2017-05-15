@@ -13,24 +13,22 @@ function getTestChart(defaultDisplay) {
 
   return {
     component: (defaultDisplay) ? 'recharts.LineChart' : 'DynamicChart',
-    props: (defaultDisplay) ?
-      {
+    props: (defaultDisplay) ? {
+      width: 600,
+      height: 300,
+      data,
+    } : {
+      passProps: {
+        width: 600,
+        height: 300,
+      },
+      chartComponent: 'LineChart',
+      chartProps: {
         width: 600,
         height: 300,
         data,
-      } :
-      {
-        passProps: {
-          width: 600,
-          height: 300,
-        },
-        chartComponent: 'LineChart',
-        chartProps: {
-          width: 600,
-          height: 300,
-          data,
-        },
       },
+    },
     children: [{
       component: 'recharts.XAxis',
       props: {
@@ -65,6 +63,14 @@ function getTestChart(defaultDisplay) {
     }, ],
   };
 }
+
+const toPercent = (decimal, fixed = 0) => {
+  console.log('triggered');
+  console.log('triggered');
+  console.log('triggered');
+  console.log('triggered');
+  return `${(decimal * 100).toFixed(fixed)}%`;
+};
 
 module.exports = {
   'containers': {
@@ -145,6 +151,10 @@ module.exports = {
                         },
                       }, {
                         component: 'recharts.YAxis',
+                        ignoreReduxProps: true,
+                        props: {
+                          tickFormatter: toPercent,
+                        },
                       }, {
                         component: 'recharts.CartesianGrid',
                         props: {
@@ -186,8 +196,8 @@ module.exports = {
                   },
                 },
                 children: [
-                  getTestChart(),
-                  getTestChart(2),
+                  // getTestChart(),
+                  // getTestChart(2),
                 ],
               },
               {
@@ -222,8 +232,7 @@ module.exports = {
                               },
                               {
                                 component: 'Title',
-                                props: {
-                                },
+                                props: {},
                                 thisprops: {
                                   children: ['dynamic', 'chartdata', 'testData', ],
                                 },
