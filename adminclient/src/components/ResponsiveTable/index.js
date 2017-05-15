@@ -860,11 +860,6 @@ class ResponsiveTable extends Component {
                   }}>JSON</rb.Button>
                   <rb.Button icon="fa fa-download" onClick={() => {
                     // console.debug('this.state.rows', this.state.rows);
-                  console.log('-----rows-----');
-                  console.log('-----rows-----');
-                  console.log('-----rows-----');
-                  
-                  console.log(this.state.rows);
                     json2csv(this.state.rows, (err, csv) => { 
                       // console.debug('before csv',csv );
                       this.props.fileSaver({
@@ -873,10 +868,10 @@ class ResponsiveTable extends Component {
                         filename: window.location.pathname.replace(/\//gi,'_'),
                       });
                     }, {
-                      checkSchemaDifferences: false, 
-                      // options: {
-                      //   eol:'\r\n',
-                      // },
+                      checkSchemaDifferences: false,
+                      delimiter: {
+                        wrap:'"',
+                      },
                     });
                 }}>CSV</rb.Button>
                 <rb.Button icon="fa fa-download" onClick={() => {
@@ -884,11 +879,6 @@ class ResponsiveTable extends Component {
                   let headers = []; this.state.headers.forEach(header => {
                     if (header.sortid) headers.push(header.sortid);
                   });
-                  console.log('-----rows-----');
-                  console.log('-----rows-----');
-                  console.log('-----rows-----');
-                  
-                  console.log(this.state.rows);
                   let filtered_rows = this.state.rows.map(row => {
                     let copy = Object.assign({}, row);
                     Object.keys(copy).forEach(key => {
@@ -898,20 +888,19 @@ class ResponsiveTable extends Component {
                     });
                     return copy;
                   });
-                  console.log({ filtered_rows });
+                  // console.log({ filtered_rows });
                     json2csv(filtered_rows, (err, csv) => { 
                       // console.debug('before csv',csv );
-                      console.log({ csv });
                       this.props.fileSaver({
                         data: csv,
                         type:'text/csv;charset=utf-8',
                         filename: window.location.pathname.replace(/\//gi,'_'),
                       });
                     }, {
-                      checkSchemaDifferences: false, 
-                      // options: {
-                      //   eol:'\r\n',
-                      // },
+                      checkSchemaDifferences: false,
+                      delimiter: {
+                        wrap:'"',
+                      },
                     });
                   }}>Simple CSV</rb.Button>
                 <hr/>
