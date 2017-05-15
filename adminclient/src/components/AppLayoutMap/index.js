@@ -67,10 +67,9 @@ export function getRenderedComponent(componentObject, resources, debug) {
       componentObject.props, asyncprops, windowprops);
       //Allowing for window functions
     if(componentObject.hasWindowFunc){
-
       Object.keys(renderedCompProps).forEach(key => {
         if (typeof renderedCompProps[key] ==='string' && renderedCompProps[key].indexOf('func:window') !== -1 && typeof window[ renderedCompProps[key].replace('func:window.', '') ] ==='function'){
-          renderedCompProps[key ]= window[ renderedCompProps[key].replace('func:window.', '') ].bind(this);
+          renderedCompProps[key]= window[ renderedCompProps[key].replace('func:window.', '') ].bind(this);
         } 
       });
     }

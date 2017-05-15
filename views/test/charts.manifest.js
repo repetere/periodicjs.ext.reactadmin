@@ -64,14 +64,6 @@ function getTestChart(defaultDisplay) {
   };
 }
 
-const toPercent = (decimal, fixed = 0) => {
-  console.log('triggered');
-  console.log('triggered');
-  console.log('triggered');
-  console.log('triggered');
-  return `${(decimal * 100).toFixed(fixed)}%`;
-};
-
 module.exports = {
   'containers': {
     '/r-admin/content/testcharts': {
@@ -151,9 +143,10 @@ module.exports = {
                         },
                       }, {
                         component: 'recharts.YAxis',
-                        ignoreReduxProps: true,
+                        // ignoreReduxProps: true,
+                        hasWindowFunc: true,
                         props: {
-                          tickFormatter: toPercent,
+                          tickFormatter: 'func:window.tickerFormatter',
                         },
                       }, {
                         component: 'recharts.CartesianGrid',
