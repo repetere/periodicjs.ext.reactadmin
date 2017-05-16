@@ -732,8 +732,14 @@ export function getFormSubmit(options) {
     {getFormLabel(formElement)}  
     <Button {...passableProps}
       onClick={() => { 
-        let validated_formdata = validateForm.call(this, {formdata: this.state, validationErrors: {}});
-        this.setState({formDataErrors: validated_formdata.validationErrors}, () => {
+        let validated_formdata = validateForm.call(this, { formdata: this.state, validationErrors: {} });
+        let updateStateData = {
+          formDataErrors: validated_formdata.validationErrors
+        };
+        if (this.props.sendSubmitButtonVal) {
+          updateStateData[ 'submitButtonVal' ] = formElement.value;
+        }
+        this.setState(updateStateData, () => {
           (formElement.confirmModal && Object.keys(this.state.formDataErrors).length<1)
             ? this.props.createModal(Object.assign({
               title: 'Please Confirm',
