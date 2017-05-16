@@ -240,6 +240,10 @@ var ResponsiveForm = function (_Component) {
           submitFormData[formElmField] = formdata[formElmField];
         });
       }
+
+      if (this.props.sendSubmitButtonVal) {
+        submitFormData['submitButtonVal'] = formdata.submitButtonVal;
+      }
       // console.debug({ submitFormData, formdata, validationErrors });
       if (validationErrors && (0, _keys2.default)(validationErrors).length < 1) {
         this.setState({ formDataErrors: {} });

@@ -903,7 +903,13 @@ function getFormSubmit(options) {
       (0, _extends3.default)({}, passableProps, {
         onClick: function onClick() {
           var validated_formdata = _FormHelpers.validateForm.call(_this10, { formdata: _this10.state, validationErrors: {} });
-          _this10.setState({ formDataErrors: validated_formdata.validationErrors }, function () {
+          var updateStateData = {
+            formDataErrors: validated_formdata.validationErrors
+          };
+          if (_this10.props.sendSubmitButtonVal) {
+            updateStateData['submitButtonVal'] = formElement.value;
+          }
+          _this10.setState(updateStateData, function () {
             formElement.confirmModal && (0, _keys2.default)(_this10.state.formDataErrors).length < 1 ? _this10.props.createModal((0, _assign2.default)({
               title: 'Please Confirm',
               text: {
