@@ -80,7 +80,7 @@ var _handleFetchPaths = exports._handleFetchPaths = function _handleFetchPaths(l
     headers['x-access-token'] = state.user.jwt_token;
   }
 
-  return _index2.default.fetchPaths(state.settings.basename, resources, headers).then(typeof options.onSuccess === 'function' ? options.onSuccess : function (_resources) {
+  return _index2.default.fetchPaths.call(this, state.settings.basename, resources, headers).then(typeof options.onSuccess === 'function' ? options.onSuccess : function (_resources) {
     _this.uiLayout = _this.getRenderedComponent(layout, _resources);
     _this.setState({ ui_is_loaded: true, async_data_is_loaded: true });
     if (options.callbacks) _webhooks._invokeWebhooks.call(_this, options.callbacks);

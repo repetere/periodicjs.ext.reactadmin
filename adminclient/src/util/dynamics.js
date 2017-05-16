@@ -53,7 +53,7 @@ export const _handleFetchPaths = function (layout, resources = {}, options = {})
     headers[ 'x-access-token' ] = state.user.jwt_token;
   }
 
-  return utilities.fetchPaths(state.settings.basename, resources, headers)
+  return utilities.fetchPaths.call(this, state.settings.basename, resources, headers)
     .then((typeof options.onSuccess === 'function') ? options.onSuccess : _resources => {
       this.uiLayout = this.getRenderedComponent(layout, _resources);
       this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
