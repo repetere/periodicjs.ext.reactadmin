@@ -21,10 +21,10 @@ var _promise = require('babel-runtime/core-js/promise');
 
 var _promise2 = _interopRequireDefault(_promise);
 
+var _webhooks = require('./webhooks');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// import qs from 'querystring';
-// window.qs = qs;
 var checkStatus = exports.checkStatus = function checkStatus(response) {
   return new _promise2.default(function (resolve, reject) {
     if (response.status >= 200 && response.status < 300) {
@@ -66,10 +66,11 @@ var fetchComponent = exports.fetchComponent = function fetchComponent(url) {
 };
 
 var fetchPaths = exports.fetchPaths = function fetchPaths(basename) {
+  var _this = this;
+
   var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   var headers = arguments[2];
 
-  // console.log('fetchPaths', { basename, data, headers });
   var result = {};
   var finished = (0, _keys2.default)(data).map(function (key) {
     var val = void 0;
@@ -77,13 +78,16 @@ var fetchPaths = exports.fetchPaths = function fetchPaths(basename) {
     var additionalParams = '';
     additionalParams = typeof window !== 'undefined' && (0, _keys2.default)(window).length ? window.location.search.charAt(0) === '?' ? window.location.search.substr(1) : window.location.search : '';
     var route = val[0] || '';
-    // console.log({ data, key, val, },this);
-    // console.log(qs.parse(additionalParams),val[0])
     var fetchOptions = (0, _assign2.default)({}, val[1], { headers: headers });
+    var onSuccess = fetchOptions.onSuccess,
+        onError = fetchOptions.onError;
 
+    delete fetchOptions.onSuccess;
+    delete fetchOptions.onError;
     return fetchComponent('' + basename + route + (route && route.indexOf('?') === -1 ? '?' : '') + (route && route.indexOf('?') !== -1 ? '&' : '') + additionalParams, fetchOptions)().then(function (response) {
       result[key] = response;
-    }, function (e) {
+      if (typeof onSuccess === 'string' || Array.isArray(onSuccess) && onSuccess.length) _webhooks._invokeWebhooks.call(_this, onSuccess, response);
+    }, typeof onError === 'string' || Array.isArray(onError) && onError.length ? _webhooks._invokeWebhooks.bind(_this, onError) : function (e) {
       return _promise2.default.reject(e);
     });
   });

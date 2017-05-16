@@ -118,12 +118,21 @@ function assignHiddenFields(options) {
 
 function getCallbackFromString(successCBProp) {
   var successCallback = void 0;
-  if (typeof successCBProp === 'string' && successCBProp.indexOf('func:this.props.reduxRouter') !== -1) {
-    successCallback = this.props.reduxRouter[successCBProp.replace('func:this.props.reduxRouter.', '')];
-  } else if (typeof successCBProp === 'string' && successCBProp.indexOf('func:window') !== -1 && typeof window[successCBProp.replace('func:window.', '')] === 'function') {
-    successCallback = window[successCBProp.replace('func:window.', '')].bind(this);
-  } else if (typeof successCBProp === 'string') {
-    successCallback = this.props[successCBProp.replace('func:this.props.', '')];
+  if (Array.isArray(successCBProp) && successCBProp.length) {
+    var fns = successCBProp.map(getCallbackFromString);
+    successCallback = function successCallback() {
+      for (var i = 0; i < fns.length; i++) {
+        fns[i].apply(fns, arguments);
+      }
+    };
+  } else {
+    if (typeof successCBProp === 'string' && successCBProp.indexOf('func:this.props.reduxRouter') !== -1) {
+      successCallback = this.props.reduxRouter[successCBProp.replace('func:this.props.reduxRouter.', '')];
+    } else if (typeof successCBProp === 'string' && successCBProp.indexOf('func:window') !== -1 && typeof window[successCBProp.replace('func:window.', '')] === 'function') {
+      successCallback = window[successCBProp.replace('func:window.', '')].bind(this);
+    } else if (typeof successCBProp === 'string') {
+      successCallback = this.props[successCBProp.replace('func:this.props.', '')];
+    }
   }
   return successCallback;
 }
