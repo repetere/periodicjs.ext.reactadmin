@@ -308,7 +308,7 @@ function handleSuccessCallbacks(options) {
     }
   }
   if (this.props.updateFormOnResponse) {
-    this.setState(successData);
+    this.setState(this.props.flattenFormData ? (0, _assign2.default)({}, successData, (0, _flat2.default)(successData, this.props.flattenDataOptions)) : successData);
   }
 }
 
