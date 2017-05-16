@@ -48,7 +48,7 @@ export function getRenderedComponent(componentObject, resources, debug) {
   renderIndex++;
   // if(resources) console.info({ resources });
   if (!componentObject) {
-    return null;
+    return createElement('span', {}, debug ? 'Error: Missing Component Object' : '');
   }
   try {
     let asyncprops = (componentObject.asyncprops && typeof componentObject.asyncprops === 'object') ? utilities.traverse(componentObject.asyncprops, resources) : {};
@@ -59,16 +59,26 @@ export function getRenderedComponent(componentObject, resources, debug) {
         _resources: resources,
       },
     }, this.props, componentObject.props, this.props.getState())) : {};
-    let thisDotProps = (!React.DOM[ componentObject.component ] && !rebulma[ componentObject.component ]) ? this.props : null;
+    let thisDotProps = (!React.DOM[ componentObject.component ] && !rebulma[ componentObject.component ] && !componentObject.ignoreReduxProps) ? this.props : null;
     let renderedCompProps = Object.assign({
       key: renderIndex,
     }, thisDotProps,
       thisprops,
       componentObject.props, asyncprops, windowprops);
+      //Allowing for window functions
+    if(componentObject.hasWindowFunc){
+      Object.keys(renderedCompProps).forEach(key => {
+        if (typeof renderedCompProps[key] ==='string' && renderedCompProps[key].indexOf('func:window') !== -1 && typeof window[ renderedCompProps[key].replace('func:window.', '') ] ==='function'){
+          renderedCompProps[key]= window[ renderedCompProps[key].replace('func:window.', '') ].bind(this);
+        } 
+      });
+    }
     let comparisons = {};
     // if (thisprops) {
     //   console.debug({ thisprops, renderedCompProps });
     // }
+    // console.debug('componentObject.component', componentObject.component, { thisDotProps, });
+
     if (componentObject.comparisonprops) {
       comparisons = componentObject.comparisonprops.map(comp => {
         let compares = {};

@@ -18,54 +18,62 @@ module.exports = {
             component: 'Container',
             props: {},
             children: [{
-                component: 'Title',
-                children: 'Dynamic Response Form Test',
-                thisprops: {
-                  reqUser: ['user', ],
-                },
-                windowprops: {
-                  screensize: ['innerWidth', ],
-                },
-                comparisonprops: [{
-                    left: ['reqUser', 'email', ],
-                    operation: 'exists',
-                    right: true,
-                  },
-                  {
-                    left: ['reqUser', 'email', ],
-                    operation: 'eq',
-                    right: ['reqUser', 'email', ],
-                  },
-                  {
-                    left: ['screensize', ],
-                    operation: 'lte',
-                    right: 1080,
-                  },
-                ],
+              component: 'Title',
+              children: 'Dynamic Response Form Test',
+              thisprops: {
+                reqUser: ['user', ],
+              },
+              windowprops: {
+                screensize: ['innerWidth', ],
+              },
+              comparisonprops: [{
+                left: ['reqUser', 'email', ],
+                operation: 'exists',
+                right: true,
               },
               {
-                component: 'ResponsiveForm',
-                thisprops: {
-                  dynamics: ['dynamic', ],
+                left: ['reqUser', 'email', ],
+                operation: 'eq',
+                right: ['reqUser', 'email', ],
+              },
+              {
+                left: ['screensize', ],
+                operation: 'lte',
+                right: 1080,
+              },
+              ],
+            },
+            {
+              component: 'ResponsiveForm',
+              thisprops: {
+                dynamics: ['dynamic', ],
+              },
+              props: {
+                updateFormOnResponse: true,
+                onSubmit: {
+                  url: '/r-admin/contentdata/charts',
+                  options: {
+                    method: 'POST',
+                  },
+                  success: true,
+                  responseCallback: 'func:this.props.setDynamicData',
                 },
-                props: {
-                  updateFormOnResponse: true,
-                  sendSubmitButtonVal: true,
-                  onSubmit: {
-                    url: '/r-admin/contentdata/charts',
-                    options: {
-                      method: 'POST',
-                    },
-                    success: true,
-                    responseCallback: 'func:this.props.setDynamicData',
+                dynamicResponseField: 'responseData',
+                onChange: 'func:this.props.setDynamicData',
+                flattenFormData: true,
+                style: {
+                  marginBottom: '20px',
+                },
+                formgroups: [{
+                  gridProps: {},
+                  formElements: [{
+                    type: 'text',
+                    name: 'test',
                   },
-                  dynamicResponseField: 'responseData',
-                  onChange: 'func:this.props.setDynamicData',
-                  flattenFormData: true,
-                  style: {
-                    marginBottom: '20px',
-                  },
-                  formgroups: [{
+                  {
+                    type: 'submit',
+                    value: 'update',
+                  },{
                       gridProps: {},
                       formElements: [{
                         type: 'text',
@@ -83,18 +91,20 @@ module.exports = {
                     },
                   ],
                 },
-                thisprops: {
-                  formdata: ['dynamic', 'responseData'],
-                }
+                ],
               },
+              thisprops: {
+                formdata: ['dynamic', 'responseData', ],
+              },
+            },
             ],
           }, ],
         }, ],
       },
       dynamic: {
         responseData: {
-          test: 'working'
-        }
+          test: 'working',
+        },
       },
       'resources': {
         // 'chartdata': '/r-admin/contentdata/charts',

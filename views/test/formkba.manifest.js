@@ -341,7 +341,16 @@ module.exports = {
                   props: {
                     blockPageUI:true,
                     cardForm: {},
-                    onSubmit: 'func:this.props.fileSaver',
+                    onSubmit:{
+                      url: 'http://localhost:8786/testroute',
+                      options:{
+                        method: 'PUT',
+                        headers: {
+                          'Content-Type':'application/json',
+                        },
+                      },
+                      responseCallback:'func:this.props.debug',
+                    },
                     onChange: 'func:this.props.setDynamicData',
                     dynamicField: 'chartdata',
                     formdata: kbaresponse,
@@ -349,20 +358,20 @@ module.exports = {
                     style: {
                       marginBottom:'20px',
                     },
-                    'validations': [
-                      {
-                        'name': 'testData',
-                        'constraints': {
-                          'testData': {
-                            'presence': 'true',
-                            'length': {
-                              'minimum': 3,
-                              'message': 'has to be atleast 3 chars',
-                            },
-                          },
-                        },
-                      },  
-                    ],
+                    // 'validations': [
+                    //   {
+                    //     'name': 'testData',
+                    //     'constraints': {
+                    //       'testData': {
+                    //         'presence': 'true',
+                    //         'length': {
+                    //           'minimum': 3,
+                    //           'message': 'has to be atleast 3 chars',
+                    //         },
+                    //       },
+                    //     },
+                    //   },  
+                    // ],
                     
                     'hiddenFields':[
                       {
@@ -383,6 +392,14 @@ module.exports = {
                       },
                     ],
                     formgroups: [
+                      {
+                        formElements: [
+                          {
+                            type: 'submit',
+                            value:'Submit Form',
+                          },
+                        ],
+                      },
                       {
                         formElements:[
                           {

@@ -1470,6 +1470,7 @@ var ResponsiveTable = function (_Component) {
                           _this8.formatValue(typeof row[header.sortid] !== 'undefined' ? row[header.sortid] : header.value, row, {
                             idx: rowIndex + calcStartIndex,
                             momentFormat: header.momentFormat,
+                            numeralFormat: header.numeralFormat,
                             image: header.image,
                             imageProps: header.imageProps,
                             icon: header.icon,
@@ -1546,6 +1547,7 @@ var ResponsiveTable = function (_Component) {
                           rowIndex: rowIndex,
                           idx: rowIndex + calcStartIndex,
                           momentFormat: header.momentFormat,
+                          numeralFormat: header.numeralFormat,
                           image: header.image,
                           imageProps: header.imageProps,
                           icon: header.icon,

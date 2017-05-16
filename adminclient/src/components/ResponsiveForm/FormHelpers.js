@@ -191,16 +191,21 @@ export function assignFormBody(options) {
     fetchPostBody = JSON.stringify(submitFormData);
   }
   let isGetRequest = fetchOptions.options && fetchOptions.options.method && fetchOptions.options.method.toUpperCase() === 'GET';
-  let bodyForFetch = (isGetRequest) ?
-    {} :
-    {
+  let bodyForFetch = (isGetRequest)
+    ? {}
+    : {
       body: fetchPostBody,
     };
-  fetchOptions.options = Object.assign({
-      headers,
-    },
+  if (fetchOptions.options.headers) {
+    headers = Object.assign({}, headers, fetchOptions.options.headers);
+  }
+  fetchOptions.options = Object.assign(
+    {},
     fetchOptions.options,
-    bodyForFetch);
+    {
+      headers,
+    },  
+  bodyForFetch);
 
   return { formdata, headers, formBody, submitFormData, fetchPostBody, fetchOptions, isGetRequest, };
 }

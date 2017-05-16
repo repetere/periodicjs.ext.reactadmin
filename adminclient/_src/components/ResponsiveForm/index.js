@@ -214,7 +214,7 @@ var ResponsiveForm = function (_Component) {
         });
 
         if (_this2.props.blockPageUI) {
-          _this2.props.setDebugUILoadedState(true);
+          _this2.props.setUILoadedState(true);
         }
       };
 
@@ -260,7 +260,7 @@ var ResponsiveForm = function (_Component) {
         _FormHelpers.submitWindowFunc.call(this, { formdata: formdata, submitFormData: submitFormData });
         __formStateUpdate();
       } else if (typeof this.props.onSubmit !== 'function') {
-        var fetchOptions = this.props.onSubmit;
+        var fetchOptions = (0, _assign2.default)({}, this.props.onSubmit);
         var formBody = new FormData();
         var fetchPostBody = void 0;
         var updatedFormBody = getFormBody({ formdata: formdata, headers: headers, formBody: formBody, submitFormData: submitFormData, fetchPostBody: fetchPostBody, fetchOptions: fetchOptions });
@@ -271,7 +271,7 @@ var ResponsiveForm = function (_Component) {
         submitFormData = updatedFormBody.submitFormData;
         fetchPostBody = updatedFormBody.fetchPostBody;
         fetchOptions = updatedFormBody.fetchOptions;
-
+        // console.log({ headers }, 'fetchOptions.options', fetchOptions.options);
         fetch(this.getFormSumitUrl('' + fetchOptions.url + ((isGetRequest || this.props.stringifyBody) && fetchOptions.url.indexOf('?') !== -1 ? '&' : fetchOptions.url.indexOf('?') === -1 ? '?' : '') + (isGetRequest || this.props.stringifyBody ? _querystring2.default.stringify(submitFormData) : ''), fetchOptions.params, formdata), fetchOptions.options).then(_util2.default.checkStatus).then(function (res) {
           if (fetchOptions.success) {
             formSubmitNotification({ fetchOptions: fetchOptions, __formStateUpdate: __formStateUpdate });
@@ -335,7 +335,7 @@ var ResponsiveForm = function (_Component) {
           } else {
             this.props[this.props.onChange.replace('func:this.props.', '')](submitFormData);
           }
-        } else if (typeof this.props.onChange === 'string' && this.props.onChange.indexOf('func:window') !== -1) {
+        } else if (typeof this.props.onChange === 'string' && this.props.onChange.indexOf('func:window') !== -1 && typeof window[this.props.onChange.replace('func:window.', '')] === 'function') {
           window[this.props.onChange.replace('func:window.', '')].call(this, submitFormData);
         } else if (typeof this.props.onChange === 'function') {
           this.props.onChange(nextState);

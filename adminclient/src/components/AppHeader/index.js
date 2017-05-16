@@ -49,7 +49,8 @@ class AppHeader extends Component {
             <Nav style={{ boxShadow:'none', }}>
               <NavGroup align="left">
                 <NavItem>
-                  {(this.props.settings.ui.header.customButton && typeof this.props.settings.ui.header.customButton==='object') 
+                    {(this.props.settings.ui.header.customButton && typeof this.props.settings.ui.header.customButton === 'object' &&
+                      this.props.settings.ui.header.customButton.layout) 
                     ? this.getRenderedComponent(this.props.settings.ui.header.customButton) 
                     : (<Button onClick={this.props.toggleUISidebar} buttonStyle="isOutlined" color={buttonColor} icon="fa fa-bars" style={styles.iconButton} /> )}
                 </NavItem>

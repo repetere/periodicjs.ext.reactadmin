@@ -154,7 +154,7 @@ class ResponsiveForm extends Component{
       });
 
       if (this.props.blockPageUI) {
-        this.props.setDebugUILoadedState(true);
+        this.props.setUILoadedState(true);
       }
     };
     
@@ -204,7 +204,7 @@ class ResponsiveForm extends Component{
       submitWindowFunc.call(this, { formdata, submitFormData, });
       __formStateUpdate();
     } else if (typeof this.props.onSubmit !== 'function') {
-      let fetchOptions = this.props.onSubmit;
+      let fetchOptions = Object.assign({}, this.props.onSubmit);
       let formBody = new FormData();
       let fetchPostBody;
       let updatedFormBody = getFormBody({ formdata, headers, formBody, submitFormData, fetchPostBody, fetchOptions, });
@@ -215,7 +215,7 @@ class ResponsiveForm extends Component{
       submitFormData = updatedFormBody.submitFormData;
       fetchPostBody = updatedFormBody.fetchPostBody;
       fetchOptions = updatedFormBody.fetchOptions;
-
+      // console.log({ headers }, 'fetchOptions.options', fetchOptions.options);
       fetch(
         this.getFormSumitUrl(`${fetchOptions.url}${
           ((isGetRequest || this.props.stringifyBody) && fetchOptions.url.indexOf('?') !== -1)
@@ -297,7 +297,7 @@ class ResponsiveForm extends Component{
         } else {
           this.props[this.props.onChange.replace('func:this.props.', '')](submitFormData);
         }
-      } else if (typeof this.props.onChange === 'string' && this.props.onChange.indexOf('func:window') !== -1) {
+      } else if (typeof this.props.onChange === 'string' && this.props.onChange.indexOf('func:window') !== -1 && typeof window[this.props.onChange.replace('func:window.', '')] ==='function') {
         window[this.props.onChange.replace('func:window.', '')].call(this, submitFormData);
       } else if(typeof this.props.onChange ==='function') {
         this.props.onChange(nextState);
