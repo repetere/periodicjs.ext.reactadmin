@@ -68,7 +68,7 @@ module.exports = {
                   gridProps: {},
                   formElements: [{
                     type: 'text',
-                    name: 'test',
+                    name: 'pageData.test',
                   },
                   {
                     type: 'submit',
@@ -94,7 +94,7 @@ module.exports = {
                 ],
               },
               thisprops: {
-                formdata: ['dynamic', 'responseData', ],
+                formdata: ['dynamic', 'responseData',],
               },
             },
             ],
@@ -103,7 +103,9 @@ module.exports = {
       },
       dynamic: {
         responseData: {
-          test: 'working',
+          pageData: {
+            test: 'working',
+          }
         },
       },
       'resources': {
