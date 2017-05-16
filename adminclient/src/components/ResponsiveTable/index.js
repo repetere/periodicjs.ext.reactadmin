@@ -17,7 +17,10 @@ import RACodeMirror from '../RACodeMirror';
 import { filterQuerySelectOptions, propTypes, defaultProps, getOptionsHeaders, getHeadersFromRows, excludeEmptyHeaders, getFilterOptions, defaultNewRowData, filterQuerySelectOptionsMap, getFilterSortableOption, } from './TableHelpers';
 
 const filterLabelStyleProps = {
-  alignItems: 'center', display: 'flex', flex: 1, height: '100%',
+  alignItems: 'center',
+  display: 'flex',
+  flex: 1,
+  height: '100%',
 };
 
 class ResponsiveTable extends Component {
@@ -25,13 +28,13 @@ class ResponsiveTable extends Component {
     super(props);
     // console.debug('this.props.getState()',this.props.getState());
     let rows = props.rows || [];
-    let headers = ((!props.headers || !props.headers.length) && rows[ 0 ])
-      ? getHeadersFromRows({
+    let headers = ((!props.headers || !props.headers.length) && rows[0]) ?
+      getHeadersFromRows({
         rows: props.rows,
         sortable: props.sortable,
         excludeEmptyHeaders: props.excludeEmptyHeaders,
-      })
-      : props.headers;
+      }) :
+      props.headers;
     headers = getOptionsHeaders(props, headers);
     headers = excludeEmptyHeaders({
       headers,
@@ -45,7 +48,7 @@ class ResponsiveTable extends Component {
 
     this.state = {
       headers: headers,
-      rows:rows,
+      rows: rows,
       hasPagination: props.hasPagination,
       hasHeader: props.hasHeader,
       hasFooter: props.hasFooter,
@@ -55,14 +58,14 @@ class ResponsiveTable extends Component {
       numPages: Math.ceil(props.numItems / props.limit),
       numButtons: props.numButtons,
       isLoading: false,
-      sortProp: this.props.searchField||'createdat',
+      sortProp: this.props.searchField || 'createdat',
       sortOrder: 'desc',
-      filterRowData: [ ],
+      filterRowData: [],
       filterRowNewData: defaultNewRowData,
       newRowData: {},
-      selectedRowData:{},
+      selectedRowData: {},
       selectedRowIndex: {},
-      showFilterSearch: props.showFilterSearch,  
+      showFilterSearch: props.showFilterSearch,
       // usingFiltersInSearch: props.usingFiltersInSearch,
     };
     this.searchFunction = debounce(this.updateTableData, 200);
@@ -83,13 +86,13 @@ class ResponsiveTable extends Component {
   }
   componentWillReceiveProps(nextProps) {
     let rows = nextProps.rows || [];
-    let headers = ((!nextProps.headers || !nextProps.headers.length) && rows[ 0 ])
-      ? getHeadersFromRows({
+    let headers = ((!nextProps.headers || !nextProps.headers.length) && rows[0]) ?
+      getHeadersFromRows({
         rows,
         sortable: nextProps.sortable,
         excludeEmptyHeaders: nextProps.excludeEmptyHeaders,
-      })
-      : nextProps.headers;
+      }) :
+      nextProps.headers;
     headers = getOptionsHeaders(nextProps);
     headers = excludeEmptyHeaders({
       headers,
@@ -119,11 +122,11 @@ class ResponsiveTable extends Component {
     this.updateTableData(options);
   }
   updateByReplacingRows(newrows) {
-    this.updateTableData({ rows:newrows.concat([]), clearNewRowData:true, });
+    this.updateTableData({ rows: newrows.concat([]), clearNewRowData: true, });
   }
   updateByAddingRows(newrows) {
-    let rows = this.state.rows.concat(newrows||[]);
-    this.updateTableData({ rows, clearNewRowData:true, });
+    let rows = this.state.rows.concat(newrows || []);
+    this.updateTableData({ rows, clearNewRowData: true, });
   }
   updateByAddRow() {
     let rows = this.state.rows.concat([]);
@@ -131,7 +134,7 @@ class ResponsiveTable extends Component {
     rows.splice(rows.length, 0, newRow);
     // console.debug({ rowIndex, rows, deletedRow }, this.state.rows);
     // this.props.onChange({ rows, });
-    this.updateTableData({ rows, clearNewRowData:true, });
+    this.updateTableData({ rows, clearNewRowData: true, });
   }
   updateByDeleteRow(rowIndex) {
     let rows = this.state.rows.concat([]);
@@ -159,14 +162,13 @@ class ResponsiveTable extends Component {
   updateNewRowDataText(options) {
     let { name, text, } = options;
     let updatedStateProp = {
-      newRowData: Object.assign(
-      {},
-      this.state.newRowData,
-      { [ name ]: text, }),
+      newRowData: Object.assign({},
+        this.state.newRowData, {
+          [name]: text, }),
     };
     this.props.headers.forEach(header => {
-      if (header.sortid!==name && header.formtype && header.defaultValue && !updatedStateProp.newRowData[ header.sortid ]) {
-        updatedStateProp.newRowData[ header.sortid ] = header.defaultValue;
+      if (header.sortid !== name && header.formtype && header.defaultValue && !updatedStateProp.newRowData[header.sortid]) {
+        updatedStateProp.newRowData[header.sortid] = header.defaultValue;
       }
     });
     // console.debug({ updatedStateProp, options });
@@ -175,20 +177,20 @@ class ResponsiveTable extends Component {
   updateInlineRowDataText(options) {
     let { name, text, rowIndex, } = options;
     let rows = this.state.rows.concat([]);
-    rows[ rowIndex ][ name ] = text;
+    rows[rowIndex][name] = text;
     // console.debug({ rowIndex, rows, deletedRow }, this.state.rows);
     // this.props.onChange({ rows, });
     this.updateTableData({ rows, });
   }
   handleFileUpload(type) {
     return (e, results) => {
-      let updatefunction = (type === 'replace')
-        ? this.replaceRows
-        : this.addingRows;
+      let updatefunction = (type === 'replace') ?
+        this.replaceRows :
+        this.addingRows;
       try {
         console.debug({ e, results, });
-        results.forEach(result => { 
-          const [ e, file, ] = result;
+        results.forEach(result => {
+          const [e, file, ] = result;
           if (path.extname(file.name) === '.csv') {
             csv2json(e.target.result, (err, newRows) => {
               if (err) throw err;
@@ -219,7 +221,7 @@ class ResponsiveTable extends Component {
     let rows = this.state.filterRowData.concat([]);
     let newRow = Object.assign({}, this.state.filterRowNewData);
     rows.splice(rows.length, 0, newRow);
-    if (newRow.property === '__property__'){
+    if (newRow.property === '__property__') {
       this.props.createNotification({ text: 'Please select a property', type: 'error', timed: 5000, });
     } else if (newRow.filter_value === '__filter__') {
       this.props.createNotification({ text: 'Please select a filter', type: 'error', timed: 5000, });
@@ -233,148 +235,147 @@ class ResponsiveTable extends Component {
   updateNewFilterRowDataText(options) {
     let { name, text, } = options;
     let updatedStateProp = {
-      filterRowNewData: Object.assign(
-      {},
-      this.state.filterRowNewData,
-      { [ name ]: text, }),
+      filterRowNewData: Object.assign({},
+        this.state.filterRowNewData, {
+          [name]: text, }),
     };
     // console.debug({ updatedStateProp, options });
     this.setState(updatedStateProp);
   }
   updateTableData(options) {
-    // console.debug({ options, });
-    let updatedState = {};
-    let newSortOptions = {};
-    if (options.clearNewRowData) {
-      updatedState.newRowData = {};
-    }
-    if (typeof options.selectedRowIndex !== undefined) {
-      updatedState.selectedRowIndex = options.selectedRowIndex;
-    }
-    if (typeof options.selectedRowData !== undefined) {
-      updatedState.selectedRowData = options.selectedRowData;
-    }
-    if (!this.props.baseUrl) {
-      // console.debug({options})
-      updatedState.rows = (typeof options.rows !== 'undefined') ? options.rows : this.props.rows;
+      // console.debug({ options, });
+      let updatedState = {};
+      let newSortOptions = {};
+      if (options.clearNewRowData) {
+        updatedState.newRowData = {};
+      }
+      if (typeof options.selectedRowIndex !== undefined) {
+        updatedState.selectedRowIndex = options.selectedRowIndex;
+      }
+      if (typeof options.selectedRowData !== undefined) {
+        updatedState.selectedRowData = options.selectedRowData;
+      }
+      if (!this.props.baseUrl) {
+        // console.debug({options})
+        updatedState.rows = (typeof options.rows !== 'undefined') ? options.rows : this.props.rows;
         // console.debug({ updatedState, });
-      
-      if (options.sort) {
-        newSortOptions.sortProp = options.sort;
-        if (this.state.sortProp === options.sort) {
-          newSortOptions.sortOrder = (this.state.sortOrder !== 'desc') ? 'desc' : 'asc';
-        } else {
-          newSortOptions.sortOrder = 'desc';
-        }
-        updatedState.rows = updatedState.rows.sort(utilities.sortObject(newSortOptions.sortOrder, options.sort));
-        updatedState.sortOrder = newSortOptions.sortOrder;
-        updatedState.sortProp = options.sort;
-      } else if (this.state.sortOrder || this.state.sortProp) {
-        newSortOptions.sortProp = this.state.sortProp;
-        newSortOptions.sortOrder = (this.state.sortOrder === 'desc' || this.state.sortOrder === '-') ? 'desc' : 'asc';
-        updatedState.rows = updatedState.rows.sort(utilities.sortObject(newSortOptions.sortOrder, newSortOptions.sortProp));
 
-      }
-      if (this.props.tableSearch && this.props.searchField && options.search) {
-        updatedState.rows = this.props.rows.filter(row => row[ this.props.searchField ].indexOf(options.search) !== -1);
-      }
-      if (this.props.tableSearch && this.state.filterRowData && this.state.filterRowData.length) {
-        let filteredRows = [];
-        updatedState.rows.forEach(row => {
-          this.state.filterRowData.forEach(filter => {
-            if (row[ filter.property ]) {
-              switch (filter.filter_value) {
-              case 'like':
-              case 'in':
-                if (row[ filter.property ].indexOf(filter.value)!==-1)filteredRows.push(row);
-                break;  
-              case 'not':
-                if (row[ filter.property ] !== filter.value) filteredRows.push(row);
-                break;  
-              case 'not-like':
-              case 'not-in':
-                if (row[ filter.property ].indexOf(filter.value)===-1)filteredRows.push(row);
-                break;  
-              case 'lt':
-                if (row[ filter.property ] < filter.value) filteredRows.push(row);
-                break;  
-              case 'lte':
-                if (row[ filter.property ] <= filter.value) filteredRows.push(row);
-                break;  
-              case 'gt':
-                if (row[ filter.property ] > filter.value) filteredRows.push(row);
-                break;  
-              case 'gte':
-                if (row[ filter.property ] >= filter.value) filteredRows.push(row);
-                break;  
-              case 'exists':
-                if (typeof row[ filter.property ] !=='undefined') filteredRows.push(row);
-                break;  
-              case 'size':
-                if (row[ filter.property ].length > filter.value) filteredRows.push(row);
-                break;  
-              case 'is-date':
-                if (moment(row[ filter.property ]).isSame(filter.value)) filteredRows.push(row);
-                break;  
-              case 'lte-date':
-                if (moment(row[ filter.property ]).isSameOrBefore(filter.value)) filteredRows.push(row);
-                break;  
-              case 'lt-date':
-                if (moment(row[ filter.property ]).isBefore(filter.value)) filteredRows.push(row);
-                break;  
-              case 'gte-date':
-                if (moment(row[ filter.property ]).isSameOrAfter(filter.value)) filteredRows.push(row);
-                break;  
-              case 'gt-date':
-                if (moment(row[ filter.property ]).isAfter(filter.value)) filteredRows.push(row);
-                break;  
-              case 'is':
-              default:
-                if (row[ filter.property ] === filter.value) filteredRows.push(row);
-                break;  
-              }
-            }
-          });
-          // row[ this.props.searchField ].indexOf(options.search) !== -1
-        });
-        updatedState.rows = filteredRows;
-        // console.debug('updatedState.rows', updatedState.rows, { filteredRows, });
-      }
-      updatedState.numPages = Math.ceil(updatedState.rows.length / this.state.limit);
-      updatedState.limit = this.state.limit;
-      updatedState.currentPage = (typeof options.pagenum !== 'undefined')
-        ? options.pagenum
-        : (this.state.currentPage && this.state.currentPage <= updatedState.numPages)
-          ? this.state.currentPage
-          : 1;
-      updatedState.isLoading = false;
-      
-      if (this.props.tableForm) {
-        // console.debug('befroe', {updatedState})
-        this.props.onChange(updatedState);
-      }
-      // else {
-      this.setState(updatedState);
-      // }
-        
-    } else {
-      if (options.sort) {
-        newSortOptions.sortProp = options.sort;
-        if (this.state.sortProp === options.sort) {
-          newSortOptions.sortOrder = (this.state.sortOrder === '') ? '-' : '';
-        } else {
-          newSortOptions.sortOrder = '';
+        if (options.sort) {
+          newSortOptions.sortProp = options.sort;
+          if (this.state.sortProp === options.sort) {
+            newSortOptions.sortOrder = (this.state.sortOrder !== 'desc') ? 'desc' : 'asc';
+          } else {
+            newSortOptions.sortOrder = 'desc';
+          }
+          updatedState.rows = updatedState.rows.sort(utilities.sortObject(newSortOptions.sortOrder, options.sort));
+          updatedState.sortOrder = newSortOptions.sortOrder;
+          updatedState.sortProp = options.sort;
+        } else if (this.state.sortOrder || this.state.sortProp) {
+          newSortOptions.sortProp = this.state.sortProp;
+          newSortOptions.sortOrder = (this.state.sortOrder === 'desc' || this.state.sortOrder === '-') ? 'desc' : 'asc';
+          updatedState.rows = updatedState.rows.sort(utilities.sortObject(newSortOptions.sortOrder, newSortOptions.sortProp));
+
         }
-      } else if (this.state.sortOrder || this.state.sortProp) {
-        newSortOptions.sortProp = this.state.sortProp;
-        newSortOptions.sortOrder =(this.state.sortOrder==='desc'||this.state.sortOrder==='-') ? '-' : '';
-      }
-      if (options.pagenum < 1) {
-        options.pagenum = 1;
-      }
-      this.setState({ isLoading: true, });
-      let stateProps = this.props.getState();
-      let fetchURL = `${stateProps.settings.basename}${this.props.baseUrl}&${qs.stringify({
+        if (this.props.tableSearch && this.props.searchField && options.search) {
+          updatedState.rows = this.props.rows.filter(row => row[this.props.searchField].indexOf(options.search) !== -1);
+        }
+        if (this.props.tableSearch && this.state.filterRowData && this.state.filterRowData.length) {
+          let filteredRows = [];
+          updatedState.rows.forEach(row => {
+            this.state.filterRowData.forEach(filter => {
+              if (row[filter.property]) {
+                switch (filter.filter_value) {
+                  case 'like':
+                  case 'in':
+                    if (row[filter.property].indexOf(filter.value) !== -1) filteredRows.push(row);
+                    break;
+                  case 'not':
+                    if (row[filter.property] !== filter.value) filteredRows.push(row);
+                    break;
+                  case 'not-like':
+                  case 'not-in':
+                    if (row[filter.property].indexOf(filter.value) === -1) filteredRows.push(row);
+                    break;
+                  case 'lt':
+                    if (row[filter.property] < filter.value) filteredRows.push(row);
+                    break;
+                  case 'lte':
+                    if (row[filter.property] <= filter.value) filteredRows.push(row);
+                    break;
+                  case 'gt':
+                    if (row[filter.property] > filter.value) filteredRows.push(row);
+                    break;
+                  case 'gte':
+                    if (row[filter.property] >= filter.value) filteredRows.push(row);
+                    break;
+                  case 'exists':
+                    if (typeof row[filter.property] !== 'undefined') filteredRows.push(row);
+                    break;
+                  case 'size':
+                    if (row[filter.property].length > filter.value) filteredRows.push(row);
+                    break;
+                  case 'is-date':
+                    if (moment(row[filter.property]).isSame(filter.value)) filteredRows.push(row);
+                    break;
+                  case 'lte-date':
+                    if (moment(row[filter.property]).isSameOrBefore(filter.value)) filteredRows.push(row);
+                    break;
+                  case 'lt-date':
+                    if (moment(row[filter.property]).isBefore(filter.value)) filteredRows.push(row);
+                    break;
+                  case 'gte-date':
+                    if (moment(row[filter.property]).isSameOrAfter(filter.value)) filteredRows.push(row);
+                    break;
+                  case 'gt-date':
+                    if (moment(row[filter.property]).isAfter(filter.value)) filteredRows.push(row);
+                    break;
+                  case 'is':
+                  default:
+                    if (row[filter.property] === filter.value) filteredRows.push(row);
+                    break;
+                }
+              }
+            });
+            // row[ this.props.searchField ].indexOf(options.search) !== -1
+          });
+          updatedState.rows = filteredRows;
+          // console.debug('updatedState.rows', updatedState.rows, { filteredRows, });
+        }
+        updatedState.numPages = Math.ceil(updatedState.rows.length / this.state.limit);
+        updatedState.limit = this.state.limit;
+        updatedState.currentPage = (typeof options.pagenum !== 'undefined') ?
+          options.pagenum :
+          (this.state.currentPage && this.state.currentPage <= updatedState.numPages) ?
+          this.state.currentPage :
+          1;
+        updatedState.isLoading = false;
+
+        if (this.props.tableForm) {
+          // console.debug('befroe', {updatedState})
+          this.props.onChange(updatedState);
+        }
+        // else {
+        this.setState(updatedState);
+        // }
+
+      } else {
+        if (options.sort) {
+          newSortOptions.sortProp = options.sort;
+          if (this.state.sortProp === options.sort) {
+            newSortOptions.sortOrder = (this.state.sortOrder === '') ? '-' : '';
+          } else {
+            newSortOptions.sortOrder = '';
+          }
+        } else if (this.state.sortOrder || this.state.sortProp) {
+          newSortOptions.sortProp = this.state.sortProp;
+          newSortOptions.sortOrder = (this.state.sortOrder === 'desc' || this.state.sortOrder === '-') ? '-' : '';
+        }
+        if (options.pagenum < 1) {
+          options.pagenum = 1;
+        }
+        this.setState({ isLoading: true, });
+        let stateProps = this.props.getState();
+        let fetchURL = `${stateProps.settings.basename}${this.props.baseUrl}&${qs.stringify({
         limit: this.state.limit || this.props.limit,
         sort: (newSortOptions.sortProp)
           ? `${newSortOptions.sortOrder}${newSortOptions.sortProp}`
@@ -867,12 +868,41 @@ class ResponsiveTable extends Component {
                         filename: window.location.pathname.replace(/\//gi,'_'),
                       });
                     }, {
-                      checkSchemaDifferences: false, 
-                      // options: {
-                      //   eol:'\r\n',
-                      // },
+                      checkSchemaDifferences: false,
+                      delimiter: {
+                        wrap:'"',
+                      },
                     });
-                  }}>CSV</rb.Button>
+                }}>CSV</rb.Button>
+                <rb.Button icon="fa fa-download" onClick={() => {
+                    // console.debug('this.state.rows', this.state.rows);
+                  let headers = []; this.state.headers.forEach(header => {
+                    if (header.sortid) headers.push(header.sortid);
+                  });
+                  let filtered_rows = this.state.rows.map(row => {
+                    let copy = Object.assign({}, row);
+                    Object.keys(copy).forEach(key => {
+                      if (headers.indexOf(key) === -1) {
+                        delete copy[ key ];
+                      }
+                    });
+                    return copy;
+                  });
+                  // console.log({ filtered_rows });
+                    json2csv(filtered_rows, (err, csv) => { 
+                      // console.debug('before csv',csv );
+                      this.props.fileSaver({
+                        data: csv,
+                        type:'text/csv;charset=utf-8',
+                        filename: window.location.pathname.replace(/\//gi,'_'),
+                      });
+                    }, {
+                      checkSchemaDifferences: false,
+                      delimiter: {
+                        wrap:'"',
+                      },
+                    });
+                  }}>Simple CSV</rb.Button>
                 <hr/>
               </rb.Content> 
               <rb.Table {...this.props.searchFilterPaginationProps}>

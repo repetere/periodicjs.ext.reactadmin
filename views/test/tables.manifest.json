@@ -312,6 +312,7 @@
                   {
                     "component":"ResponsiveTable",
                     "props":{
+                      "showFilterSearch": true,
                       "headers":[
                         { "label": "#", "value":"--idx-ctr--" },
                         { "label": "Email", "sortid":"email", "sortable":true },
@@ -328,7 +329,10 @@
                           "likes":3000000
                         },
                         {
-                          "email":"odlyaw@gmail.com"
+                          "email":"odlyaw@gmail.com",
+                          "likes": 400000,
+                          "followers": 20,
+                          "commaVal": "hi, well testing"
                         }
                       ]
                     }
