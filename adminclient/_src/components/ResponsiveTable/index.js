@@ -4,6 +4,10 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _keys = require('babel-runtime/core-js/object/keys');
+
+var _keys2 = _interopRequireDefault(_keys);
+
 var _extends2 = require('babel-runtime/helpers/extends');
 
 var _extends3 = _interopRequireDefault(_extends2);
@@ -103,7 +107,10 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var filterLabelStyleProps = {
-  alignItems: 'center', display: 'flex', flex: 1, height: '100%'
+  alignItems: 'center',
+  display: 'flex',
+  flex: 1,
+  height: '100%'
 };
 // import capitalize from 'capitalize';
 // import pluralize from 'pluralize';
@@ -1201,10 +1208,46 @@ var ResponsiveTable = function (_Component) {
                         filename: window.location.pathname.replace(/\//gi, '_')
                       });
                     }, {
-                      checkSchemaDifferences: false
+                      checkSchemaDifferences: false,
+                      delimiter: {
+                        wrap: '"'
+                      }
                     });
                   } },
                 'CSV'
+              ),
+              _react2.default.createElement(
+                rb.Button,
+                { icon: 'fa fa-download', onClick: function onClick() {
+                    // console.debug('this.state.rows', this.state.rows);
+                    var headers = [];_this8.state.headers.forEach(function (header) {
+                      if (header.sortid) headers.push(header.sortid);
+                    });
+                    var filtered_rows = _this8.state.rows.map(function (row) {
+                      var copy = (0, _assign2.default)({}, row);
+                      (0, _keys2.default)(copy).forEach(function (key) {
+                        if (headers.indexOf(key) === -1) {
+                          delete copy[key];
+                        }
+                      });
+                      return copy;
+                    });
+                    // console.log({ filtered_rows });
+                    (0, _json2Csv.json2csv)(filtered_rows, function (err, csv) {
+                      // console.debug('before csv',csv );
+                      _this8.props.fileSaver({
+                        data: csv,
+                        type: 'text/csv;charset=utf-8',
+                        filename: window.location.pathname.replace(/\//gi, '_')
+                      });
+                    }, {
+                      checkSchemaDifferences: false,
+                      delimiter: {
+                        wrap: '"'
+                      }
+                    });
+                  } },
+                'Simple CSV'
               ),
               _react2.default.createElement('hr', null)
             ),

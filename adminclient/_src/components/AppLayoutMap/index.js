@@ -166,6 +166,14 @@ function getRenderedComponent(componentObject, resources, debug) {
     var renderedCompProps = (0, _assign2.default)({
       key: renderIndex
     }, thisDotProps, thisprops, componentObject.props, asyncprops, windowprops);
+    //Allowing for window functions
+    if (componentObject.hasWindowFunc) {
+      (0, _keys2.default)(renderedCompProps).forEach(function (key) {
+        if (typeof renderedCompProps[key] === 'string' && renderedCompProps[key].indexOf('func:window') !== -1 && typeof window[renderedCompProps[key].replace('func:window.', '')] === 'function') {
+          renderedCompProps[key] = window[renderedCompProps[key].replace('func:window.', '')].bind(_this);
+        }
+      });
+    }
     var comparisons = {};
     // if (thisprops) {
     //   console.debug({ thisprops, renderedCompProps });
