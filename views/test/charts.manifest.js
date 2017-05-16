@@ -13,24 +13,22 @@ function getTestChart(defaultDisplay) {
 
   return {
     component: (defaultDisplay) ? 'recharts.LineChart' : 'DynamicChart',
-    props: (defaultDisplay) ?
-      {
+    props: (defaultDisplay) ? {
+      width: 600,
+      height: 300,
+      data,
+    } : {
+      passProps: {
+        width: 600,
+        height: 300,
+      },
+      chartComponent: 'LineChart',
+      chartProps: {
         width: 600,
         height: 300,
         data,
-      } :
-      {
-        passProps: {
-          width: 600,
-          height: 300,
-        },
-        chartComponent: 'LineChart',
-        chartProps: {
-          width: 600,
-          height: 300,
-          data,
-        },
       },
+    },
     children: [{
       component: 'recharts.XAxis',
       props: {
@@ -145,6 +143,11 @@ module.exports = {
                         },
                       }, {
                         component: 'recharts.YAxis',
+                        // ignoreReduxProps: true,
+                        hasWindowFunc: true,
+                        props: {
+                          tickFormatter: 'func:window.tickerFormatter',
+                        },
                       }, {
                         component: 'recharts.CartesianGrid',
                         props: {
@@ -186,8 +189,8 @@ module.exports = {
                   },
                 },
                 children: [
-                  getTestChart(),
-                  getTestChart(2),
+                  // getTestChart(),
+                  // getTestChart(2),
                 ],
               },
               {
@@ -222,8 +225,7 @@ module.exports = {
                               },
                               {
                                 component: 'Title',
-                                props: {
-                                },
+                                props: {},
                                 thisprops: {
                                   children: ['dynamic', 'chartdata', 'testData', ],
                                 },

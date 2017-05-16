@@ -44,6 +44,10 @@
         console.debug("testdata", data);
       }
 
+      var tickerFormatter = function(data) {
+        return data+"%";
+      }
+
       var selectOnChange = function(element, event){
         element.passProps = {};
         element.passProps.className = 'select_on_change';
