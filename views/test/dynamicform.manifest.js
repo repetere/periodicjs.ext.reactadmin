@@ -73,7 +73,22 @@ module.exports = {
                   {
                     type: 'submit',
                     value: 'update',
-                  },
+                  },{
+                      gridProps: {},
+                      formElements: [{
+                        type: 'text',
+                        name: 'test',
+                        },
+                        {
+                          type: 'submit',
+                          value: 'clicked1',
+                        },
+                        {
+                          type: 'submit',
+                          value: 'clicked2',
+                        },
+                      ],
+                    },
                   ],
                 },
                 ],
