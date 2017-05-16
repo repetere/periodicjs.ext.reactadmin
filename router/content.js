@@ -10,10 +10,6 @@ module.exports = function(resources) {
   let reactadmin = resources.app.locals.extension.reactadmin;
 
   // ContentRouter.use(helperController.approveOptionsRequest, ensureApiAuthenticated, helperController.fixCodeMirrorSubmit, helperController.fixFlattenedSubmit);
-
-  ContentRouter.post('/charts', (req, res, next) => {
-    res.send({ test: 'changed' });
-  })
   ContentRouter.get('/:dbname/secure-asset/:id/:filename', assetController.loadAsset, assetController.decryptAsset);
 
   ContentRouter.use(helperController.approveOptionsRequest, ensureApiAuthenticated);

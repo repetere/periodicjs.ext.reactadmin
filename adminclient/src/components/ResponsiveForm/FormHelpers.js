@@ -247,7 +247,9 @@ export function handleSuccessCallbacks(options) {
     }
   }
   if (this.props.updateFormOnResponse) {
-    this.setState(successData);
+    this.setState((this.props.flattenFormData)
+      ? Object.assign({}, successData, flatten(successData, this.props.flattenDataOptions))
+      : successData);
   }
 }
 
