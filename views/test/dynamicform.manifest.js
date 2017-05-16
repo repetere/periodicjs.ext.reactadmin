@@ -51,7 +51,7 @@ module.exports = {
               props: {
                 updateFormOnResponse: true,
                 onSubmit: {
-                  url: '/r-admin/contentdata/charts',
+                  url: '/test_reactadmin/charts',
                   options: {
                     method: 'POST',
                   },
