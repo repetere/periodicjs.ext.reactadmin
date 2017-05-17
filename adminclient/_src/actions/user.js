@@ -397,7 +397,11 @@ var user = {
       if (state.routing && state.routing.locationBeforeTransitions && state.routing.locationBeforeTransitions.pathname && state.routing.locationBeforeTransitions.pathname === returnUrl) {
         returnUrl = false;
       }
+      console.log('~~~~~~~~~~~~~~~~');
+      console.log('~~~~~~~~~~~~~~~~');
       console.debug({ formReturnURL: formReturnURL, returnUrl: returnUrl });
+      console.log('~~~~~~~~~~~~~~~~');
+      console.log('~~~~~~~~~~~~~~~~');
       // console.log('state.settings.auth', state.settings.auth);
       // console.log('state.user.isMFAAuthenticated', state.user.isMFAAuthenticated);
       // console.log('state.manifest.containers[/mfa]', state.manifest.containers[ '/mfa' ]);
@@ -580,6 +584,11 @@ var user = {
           'x-access-token': token
         }
       };
+      console.log('~~~~~~~~~~~~~~~~~~~');
+      console.log('~~~~~~~~~~~~~~~~~~~');
+      console.log('calling initialize user', token, ensureMFA, __returnURL);
+      console.log('~~~~~~~~~~~~~~~~~~~');
+      console.log('~~~~~~~~~~~~~~~~~~~');
       var state = getState();
       if (state.manifest && state.manifest.authenticated && state.manifest.authenticated.hasLoaded && state.settings && state.settings.user && state.settings.user.navigation && state.settings.user.navigation.hasLoaded && state.settings.user.preferences && state.settings.user.preferences.hasLoaded) {
         if (initializationTimeout) {
@@ -599,7 +608,7 @@ var user = {
               }).then(resolve).catch(reject);
             }, 10);
           };
-          throttle.destroyInactiveThrottle = resolve;
+          throttle.destroyInactiveThrottle = resolve.bind(null, false);
           return throttle;
         };
         return new _promise2.default(function (resolve, reject) {
