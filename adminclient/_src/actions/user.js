@@ -527,10 +527,8 @@ var user = {
         }).then(function () {
           //add ?refresh=true to fetch route below to reload configurations
           return _util2.default.setCacheConfiguration(function () {
-            var isInitial = state.manifest.authenticated.isInitial;
             var refreshComponents = state.settings.ui.initialization.refresh_components;
-            var pathname = typeof window !== 'undefined' && window.location.pathname ? window.location.pathname : _this8.props.location.pathname;
-            var params = isInitial || refreshComponents ? '?' + (isInitial ? 'initial=true&location=' + pathname : '') + (refreshComponents ? isInitial ? '&refresh=true' : 'refresh=true' : '') : '';
+            var params = refreshComponents ? '&refresh=true' : '';
             var configurationRoute = basename + '/load/configurations' + params;
             return _util2.default.fetchComponent(configurationRoute, options)().then(function (response) {
               if (response.result === 'error') return _promise2.default.reject(new Error(response.data.error));
@@ -543,7 +541,6 @@ var user = {
               dispatch(_this8.navigationSuccessResponse(responses.navigation));
               dispatch(_this8.preferenceSuccessResponse(responses.preferences));
               dispatch(_manifest2.default.receivedManifestData(responses.manifest.data.settings));
-              if (isInitial) _manifest2.default.fetchManifest((0, _assign2.default)(options, { skip_cache: true }))(dispatch, getState);
               return {
                 data: {
                   versions: response.data.versions,
@@ -551,7 +548,6 @@ var user = {
                 }
               };
             }).catch(function (e) {
-              console.log('FAILED TO LOAD', e);
               dispatch(_this8.navigationErrorResponse(e));
               dispatch(_this8.preferenceErrorResponse(e));
               dispatch(_manifest2.default.failedManifestRetrival(e));
@@ -563,7 +559,6 @@ var user = {
             unauthenticated_manifest: 'manifest.unauthenticated'
           }, { multi: true })();
         }).catch(function (e) {
-          console.log('OUTER FAILED', e);
           dispatch(_this8.navigationErrorResponse(e));
           dispatch(_this8.preferenceErrorResponse(e));
           dispatch(_manifest2.default.failedManifestRetrival(e));
