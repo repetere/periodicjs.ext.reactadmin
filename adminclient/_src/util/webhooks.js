@@ -32,7 +32,16 @@ var _invokeWebhooks = exports._invokeWebhooks = function _invokeWebhooks(functio
     if (typeof name === 'string') {
       var clean_name = getDynamicFunctionName(name);
       if (name.indexOf('func:this.props.reduxRouter') !== -1) {
-        result.push(typeof _this.props.reduxRouter[clean_name] === 'function' ? _this.props.reduxRouter[clean_name](argv) : undefined);
+        result.push(function () {
+          if (typeof _this.props[clean_name] === 'function') _this.props[clean_name](argv);
+          return new _promise2.default(function (resolve) {
+            var timeout = setTimeout(function () {
+              clearTimeout(timeout);
+              resolve();
+            }, 500);
+          });
+        }());
+        // result.push((typeof this.props.reduxRouter[clean_name] === 'function') ? this.props.reduxRouter[clean_name](argv) : undefined);
       } else if (name.indexOf('func:this.props') !== -1) {
         result.push(typeof _this.props[clean_name] === 'function' ? _this.props[clean_name](argv) : undefined);
       } else if (name.indexOf('func:window') !== -1) {
