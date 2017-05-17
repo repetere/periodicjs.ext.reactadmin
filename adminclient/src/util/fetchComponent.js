@@ -54,7 +54,7 @@ export const fetchPaths = function (basename, data = {}, headers) {
       : '';
     let route = val[0] || '';
     let fetchOptions = Object.assign({}, val[1], { headers, });
-    let { onSuccess, onError, blocking } = fetchOptions;
+    let { onSuccess, onError, blocking, renderOnError } = fetchOptions;
     delete fetchOptions.onSuccess;
     delete fetchOptions.onError;
     return fetchComponent(`${ basename }${ route }${ (route && route.indexOf('?') === -1) ? '?' : '' }${ (route && route.indexOf('?') !== -1) ? '&' : '' }${additionalParams}`, fetchOptions)()
@@ -69,6 +69,7 @@ export const fetchPaths = function (basename, data = {}, headers) {
         } 
       }, e => {
         if (typeof onError === 'string' || (Array.isArray(onError) && onError.length)) {
+          if (renderOnError === false) result.__hasError = true;
           if (blocking) {
             return _invokeWebhooks.call(this, onError, e);
           } else {

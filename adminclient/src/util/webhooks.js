@@ -18,26 +18,7 @@ export const _invokeWebhooks = function (function_names, argv) {
     if (typeof name === 'string') {
       let clean_name = getDynamicFunctionName(name);
       if (name.indexOf('func:this.props.reduxRouter') !== -1) {
-        result.push((() => {
-          console.log('~~~~~~~~~~~~~~~~~~~');
-          console.log('~~~~~~~~~~~~~~~~~~~');
-          console.log('calling redux router push');
-          console.log('~~~~~~~~~~~~~~~~~~~');
-          console.log('~~~~~~~~~~~~~~~~~~~');
-          if (typeof this.props.reduxRouter[clean_name] === 'function') this.props.reduxRouter[clean_name](argv);
-          return new Promise((resolve) => {
-            let timeout = setTimeout(() => {
-              clearTimeout(timeout);
-              console.log('~~~~~~~~~~~~~~~~~~~');
-              console.log('~~~~~~~~~~~~~~~~~~~');
-              console.log('resolving in push action block');
-              console.log('~~~~~~~~~~~~~~~~~~~');
-              console.log('~~~~~~~~~~~~~~~~~~~');
-              resolve();
-            }, 2000);
-          });
-        })());
-        // result.push((typeof this.props.reduxRouter[clean_name] === 'function') ? this.props.reduxRouter[clean_name](argv) : undefined);
+        result.push((typeof this.props.reduxRouter[clean_name] === 'function') ? this.props.reduxRouter[clean_name](argv) : undefined);
       } else if (name.indexOf('func:this.props') !== -1) {
         result.push((typeof this.props[clean_name] === 'function') ? this.props[clean_name](argv) : undefined);
       } else if (name.indexOf('func:window') !== -1) {

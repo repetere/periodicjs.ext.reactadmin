@@ -81,7 +81,8 @@ var fetchPaths = exports.fetchPaths = function fetchPaths(basename) {
     var fetchOptions = (0, _assign2.default)({}, val[1], { headers: headers });
     var onSuccess = fetchOptions.onSuccess,
         onError = fetchOptions.onError,
-        blocking = fetchOptions.blocking;
+        blocking = fetchOptions.blocking,
+        renderOnError = fetchOptions.renderOnError;
 
     delete fetchOptions.onSuccess;
     delete fetchOptions.onError;
@@ -96,6 +97,7 @@ var fetchPaths = exports.fetchPaths = function fetchPaths(basename) {
       }
     }, function (e) {
       if (typeof onError === 'string' || Array.isArray(onError) && onError.length) {
+        if (renderOnError === false) result.__hasError = true;
         if (blocking) {
           return _webhooks._invokeWebhooks.call(_this, onError, e);
         } else {
