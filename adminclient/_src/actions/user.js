@@ -79,7 +79,7 @@ var checkStatus = function checkStatus(response) {
 var _push = function _push() {
   console.log('calling push inside of user action');
   console.log(new Error('stack trace'));
-  _reactRouterRedux.push.apply(undefined, arguments);
+  return _reactRouterRedux.push.apply(undefined, arguments);
 };
 
 var initializationThrottle;

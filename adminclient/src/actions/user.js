@@ -24,7 +24,7 @@ const checkStatus = function (response) {
 const _push = function () {
   console.log('calling push inside of user action');
   console.log(new Error('stack trace'));
-  push(...arguments);
+  return push(...arguments);
 };
 
 var initializationThrottle;
