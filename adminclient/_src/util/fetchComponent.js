@@ -94,8 +94,14 @@ var fetchPaths = exports.fetchPaths = function fetchPaths(basename) {
           _webhooks._invokeWebhooks.call(_this, onSuccess, response);
         }
       }
-    }, typeof onError === 'string' || Array.isArray(onError) && onError.length ? _webhooks._invokeWebhooks.bind(_this, onError) : function (e) {
-      return _promise2.default.reject(e);
+    }, function (e) {
+      if (typeof onError === 'string' || Array.isArray(onError) && onError.length) {
+        if (blocking) {
+          return _webhooks._invokeWebhooks.call(_this, onError, e);
+        } else {
+          _webhooks._invokeWebhooks.call(_this, onError, e);
+        }
+      } else return _promise2.default.reject(e);
     }).catch(function (e) {
       return _promise2.default.reject(e);
     });

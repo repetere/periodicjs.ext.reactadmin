@@ -67,7 +67,16 @@ export const fetchPaths = function (basename, data = {}, headers) {
             _invokeWebhooks.call(this, onSuccess, response);
           }
         } 
-      }, (typeof onError === 'string' || (Array.isArray(onError) && onError.length)) ? _invokeWebhooks.bind(this, onError) : e => Promise.reject(e))
+      }, e => {
+        if (typeof onError === 'string' || (Array.isArray(onError) && onError.length)) {
+          if (blocking) {
+            return _invokeWebhooks.call(this, onError, e);
+          } else {
+            _invokeWebhooks.call(this, onError, e);
+          }
+        } 
+        else return Promise.reject(e);
+      })
       .catch(e => Promise.reject(e));
   });
   return Promise.all(finished)
