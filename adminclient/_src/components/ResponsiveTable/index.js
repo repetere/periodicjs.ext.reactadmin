@@ -1191,7 +1191,7 @@ var ResponsiveTable = function (_Component) {
                 { icon: 'fa fa-download', onClick: function onClick() {
                     _this8.props.fileSaver({
                       data: _this8.state.rows,
-                      filename: window.location.pathname.replace(/\//gi, '_')
+                      filename: window.location.pathname.replace(/\//gi, '_') + '.json'
                     });
                   } },
                 'JSON'
@@ -1205,7 +1205,7 @@ var ResponsiveTable = function (_Component) {
                       _this8.props.fileSaver({
                         data: csv,
                         type: 'text/csv;charset=utf-8',
-                        filename: window.location.pathname.replace(/\//gi, '_')
+                        filename: window.location.pathname.replace(/\//gi, '_') + '.csv'
                       });
                     }, {
                       checkSchemaDifferences: false,
@@ -1238,7 +1238,7 @@ var ResponsiveTable = function (_Component) {
                       _this8.props.fileSaver({
                         data: csv,
                         type: 'text/csv;charset=utf-8',
-                        filename: window.location.pathname.replace(/\//gi, '_')
+                        filename: window.location.pathname.replace(/\//gi, '_') + '.csv'
                       });
                     }, {
                       checkSchemaDifferences: false,

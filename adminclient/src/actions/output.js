@@ -1,5 +1,7 @@
 import constants from '../constants';
 import FileSaver from 'file-saver';
+import mime from 'mime';
+import path from 'path';
 // import { AsyncStorage, } from 'react-web';
 // import customSettings from '../content/config/settings.json';
 // import Immutable from 'immutable';
@@ -15,6 +17,9 @@ const getBlobData = (options) => {
   }
   if (type === 'json' || type === 'application/json;charset=utf-8') {
     data = JSON.stringify(data, null, 2);
+  }
+  if (type && filename && path.extname(filename) === '') {
+    filename += '.'+mime.extension(type);
   }
   if (!filename) {
     filename = 'output.json';

@@ -855,7 +855,7 @@ class ResponsiveTable extends Component {
                 <rb.Button icon="fa fa-download" onClick={() => {
                     this.props.fileSaver({
                       data: this.state.rows,
-                      filename: window.location.pathname.replace(/\//gi,'_'),
+                      filename: window.location.pathname.replace(/\//gi,'_')+'.json',
                     });
                   }}>JSON</rb.Button>
                   <rb.Button icon="fa fa-download" onClick={() => {
@@ -865,7 +865,7 @@ class ResponsiveTable extends Component {
                       this.props.fileSaver({
                         data: csv,
                         type:'text/csv;charset=utf-8',
-                        filename: window.location.pathname.replace(/\//gi,'_'),
+                        filename: window.location.pathname.replace(/\//gi,'_')+'.csv',
                       });
                     }, {
                       checkSchemaDifferences: false,
@@ -894,7 +894,7 @@ class ResponsiveTable extends Component {
                       this.props.fileSaver({
                         data: csv,
                         type:'text/csv;charset=utf-8',
-                        filename: window.location.pathname.replace(/\//gi,'_'),
+                        filename: window.location.pathname.replace(/\//gi,'_')+'.csv',
                       });
                     }, {
                       checkSchemaDifferences: false,
