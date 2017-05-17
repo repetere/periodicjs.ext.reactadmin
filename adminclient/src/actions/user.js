@@ -470,7 +470,7 @@ const user = {
             //add ?refresh=true to fetch route below to reload configurations
             return utilities.setCacheConfiguration(() => {
               let refreshComponents = state.settings.ui.initialization.refresh_components;
-              let params = (refreshComponents) ? '&refresh=true' : '';
+              let params = (refreshComponents) ? '?refresh=true' : '';
               let configurationRoute = `${ basename }/load/configurations${ params }`;
               return utilities.fetchComponent(configurationRoute, options)()
                 .then(response => {

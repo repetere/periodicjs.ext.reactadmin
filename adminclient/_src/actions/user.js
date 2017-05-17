@@ -528,7 +528,7 @@ var user = {
           //add ?refresh=true to fetch route below to reload configurations
           return _util2.default.setCacheConfiguration(function () {
             var refreshComponents = state.settings.ui.initialization.refresh_components;
-            var params = refreshComponents ? '&refresh=true' : '';
+            var params = refreshComponents ? '?refresh=true' : '';
             var configurationRoute = basename + '/load/configurations' + params;
             return _util2.default.fetchComponent(configurationRoute, options)().then(function (response) {
               if (response.result === 'error') return _promise2.default.reject(new Error(response.data.error));
