@@ -80,14 +80,23 @@ var fetchPaths = exports.fetchPaths = function fetchPaths(basename) {
     var route = val[0] || '';
     var fetchOptions = (0, _assign2.default)({}, val[1], { headers: headers });
     var onSuccess = fetchOptions.onSuccess,
-        onError = fetchOptions.onError;
+        onError = fetchOptions.onError,
+        blocking = fetchOptions.blocking;
 
     delete fetchOptions.onSuccess;
     delete fetchOptions.onError;
     return fetchComponent('' + basename + route + (route && route.indexOf('?') === -1 ? '?' : '') + (route && route.indexOf('?') !== -1 ? '&' : '') + additionalParams, fetchOptions)().then(function (response) {
       result[key] = response;
-      if (typeof onSuccess === 'string' || Array.isArray(onSuccess) && onSuccess.length) _webhooks._invokeWebhooks.call(_this, onSuccess, response);
+      if (typeof onSuccess === 'string' || Array.isArray(onSuccess) && onSuccess.length) {
+        if (blocking) {
+          return _webhooks._invokeWebhooks.call(_this, onSuccess, response);
+        } else {
+          _webhooks._invokeWebhooks.call(_this, onSuccess, response);
+        }
+      }
     }, typeof onError === 'string' || Array.isArray(onError) && onError.length ? _webhooks._invokeWebhooks.bind(_this, onError) : function (e) {
+      return _promise2.default.reject(e);
+    }).catch(function (e) {
       return _promise2.default.reject(e);
     });
   });

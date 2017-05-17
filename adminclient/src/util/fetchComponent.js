@@ -54,14 +54,21 @@ export const fetchPaths = function (basename, data = {}, headers) {
       : '';
     let route = val[0] || '';
     let fetchOptions = Object.assign({}, val[1], { headers, });
-    let { onSuccess, onError } = fetchOptions;
+    let { onSuccess, onError, blocking } = fetchOptions;
     delete fetchOptions.onSuccess;
     delete fetchOptions.onError;
     return fetchComponent(`${ basename }${ route }${ (route && route.indexOf('?') === -1) ? '?' : '' }${ (route && route.indexOf('?') !== -1) ? '&' : '' }${additionalParams}`, fetchOptions)()
       .then(response => {
         result[key] = response;
-        if (typeof onSuccess === 'string' || (Array.isArray(onSuccess) && onSuccess.length))  _invokeWebhooks.call(this, onSuccess, response);
-      }, (typeof onError === 'string' || (Array.isArray(onError) && onError.length)) ? _invokeWebhooks.bind(this, onError) : e => Promise.reject(e));
+        if (typeof onSuccess === 'string' || (Array.isArray(onSuccess) && onSuccess.length)) {
+          if (blocking) {
+            return _invokeWebhooks.call(this, onSuccess, response);
+          } else {
+            _invokeWebhooks.call(this, onSuccess, response);
+          }
+        } 
+      }, (typeof onError === 'string' || (Array.isArray(onError) && onError.length)) ? _invokeWebhooks.bind(this, onError) : e => Promise.reject(e))
+      .catch(e => Promise.reject(e));
   });
   return Promise.all(finished)
     .then(() => result)
