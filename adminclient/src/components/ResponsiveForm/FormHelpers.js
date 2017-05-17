@@ -76,7 +76,7 @@ export function assignHiddenFields(options) {
 export function getCallbackFromString(successCBProp) {
   let successCallback;
   if (Array.isArray(successCBProp) && successCBProp.length) {
-    let fns = successCBProp.map(getCallbackFromString);
+    let fns = successCBProp.map(getCallbackFromString.bind(this));
     successCallback = function () {
       for (let i = 0; i < fns.length; i++) {
         fns[i].call(this, ...arguments);

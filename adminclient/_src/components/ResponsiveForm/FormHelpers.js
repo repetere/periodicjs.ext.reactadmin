@@ -119,7 +119,7 @@ function assignHiddenFields(options) {
 function getCallbackFromString(successCBProp) {
   var successCallback = void 0;
   if (Array.isArray(successCBProp) && successCBProp.length) {
-    var fns = successCBProp.map(getCallbackFromString);
+    var fns = successCBProp.map(getCallbackFromString.bind(this));
     successCallback = function () {
       for (var i = 0; i < fns.length; i++) {
         var _fns$i;
