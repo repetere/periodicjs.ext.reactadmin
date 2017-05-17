@@ -33,7 +33,7 @@ var _invokeWebhooks = exports._invokeWebhooks = function _invokeWebhooks(functio
       var clean_name = getDynamicFunctionName(name);
       if (name.indexOf('func:this.props.reduxRouter') !== -1) {
         result.push(function () {
-          if (typeof _this.props[clean_name] === 'function') _this.props[clean_name](argv);
+          if (typeof _this.props.reduxRouter[clean_name] === 'function') _this.props.reduxRouter[clean_name](argv);
           return new _promise2.default(function (resolve) {
             var timeout = setTimeout(function () {
               clearTimeout(timeout);
