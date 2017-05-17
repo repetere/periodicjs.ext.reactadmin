@@ -76,12 +76,6 @@ var checkStatus = function checkStatus(response) {
   }
 };
 
-var _push = function _push() {
-  console.log('calling push inside of user action');
-  console.log(new Error('stack trace'));
-  return _reactRouterRedux.push.apply(undefined, arguments);
-};
-
 var initializationThrottle;
 var initializationTimeout;
 
@@ -403,11 +397,7 @@ var user = {
       if (state.routing && state.routing.locationBeforeTransitions && state.routing.locationBeforeTransitions.pathname && state.routing.locationBeforeTransitions.pathname === returnUrl) {
         returnUrl = false;
       }
-      console.log('~~~~~~~~~~~~~~~~');
-      console.log('~~~~~~~~~~~~~~~~');
-      console.debug({ formReturnURL: formReturnURL, returnUrl: returnUrl, stack: new Error('stack trace') });
-      console.log('~~~~~~~~~~~~~~~~');
-      console.log('~~~~~~~~~~~~~~~~');
+      console.debug({ formReturnURL: formReturnURL, returnUrl: returnUrl });
       // console.log('state.settings.auth', state.settings.auth);
       // console.log('state.user.isMFAAuthenticated', state.user.isMFAAuthenticated);
       // console.log('state.manifest.containers[/mfa]', state.manifest.containers[ '/mfa' ]);
@@ -415,7 +405,7 @@ var user = {
       if (state.settings.auth.enforce_mfa || extensionattributes && extensionattributes.login_mfa) {
         if (state.user.isMFAAuthenticated) {
           if (!noRedirect) {
-            if (state.user.isLoggedIn && returnUrl) dispatch(_push(returnUrl));else dispatch(_push(state.settings.auth.logged_in_homepage));
+            if (state.user.isLoggedIn && returnUrl) dispatch((0, _reactRouterRedux.push)(returnUrl));else dispatch((0, _reactRouterRedux.push)(state.settings.auth.logged_in_homepage));
           }
           return true;
         } else {
@@ -432,20 +422,15 @@ var user = {
             __global__returnURL = returnUrl;
             // console.debug({ mfapath,returnUrl }, 'window.location.href', window.location.href);
 
-            dispatch(_push('' + mfapath + (returnUrl ? '?return_url=' + returnUrl : '')));
+            dispatch((0, _reactRouterRedux.push)('' + mfapath + (returnUrl ? '?return_url=' + returnUrl : '')));
           }
           return false;
         }
       } else {
-        console.log('~~~~~~~~~~~~~~~');
-        console.log('~~~~~~~~~~~~~~~');
-        console.log(noRedirect, returnUrl);
-        console.log('~~~~~~~~~~~~~~~');
-        console.log('~~~~~~~~~~~~~~~');
         if (!noRedirect) {
-          if (state.user.isLoggedIn && returnUrl) dispatch(_push(returnUrl));else dispatch(_push(state.settings.auth.logged_in_homepage));
+          if (state.user.isLoggedIn && returnUrl) dispatch((0, _reactRouterRedux.push)(returnUrl));else dispatch((0, _reactRouterRedux.push)(state.settings.auth.logged_in_homepage));
         }
-        if (state.user.isLoggedIn && returnUrl) dispatch(_push(returnUrl));
+        if (state.user.isLoggedIn && returnUrl) dispatch((0, _reactRouterRedux.push)(returnUrl));
         if (state.notification.modals && state.notification.modals.length && state.notification.modals[0] && state.notification.modals[0].pathname && (state.notification.modals[0].pathname === '/signin' || state.notification.modals[0].pathname === '/login')) {
           dispatch(_notification2.default.hideModal('last'));
         }
@@ -595,11 +580,6 @@ var user = {
           'x-access-token': token
         }
       };
-      console.log('~~~~~~~~~~~~~~~~~~~');
-      console.log('~~~~~~~~~~~~~~~~~~~');
-      console.log('calling initialize user', token, ensureMFA, __returnURL);
-      console.log('~~~~~~~~~~~~~~~~~~~');
-      console.log('~~~~~~~~~~~~~~~~~~~');
       var state = getState();
       if (state.manifest && state.manifest.authenticated && state.manifest.authenticated.hasLoaded && state.settings && state.settings.user && state.settings.user.navigation && state.settings.user.navigation.hasLoaded && state.settings.user.preferences && state.settings.user.preferences.hasLoaded) {
         if (initializationTimeout) {
@@ -619,7 +599,7 @@ var user = {
               }).then(resolve).catch(reject);
             }, 10);
           };
-          throttle.destroyInactiveThrottle = resolve.bind(null, false);
+          throttle.destroyInactiveThrottle = resolve;
           return throttle;
         };
         return new _promise2.default(function (resolve, reject) {
