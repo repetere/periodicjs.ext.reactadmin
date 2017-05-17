@@ -81,7 +81,7 @@ const _handleComponentLifecycle = function () {
     }
   } else {
     return this.props.initializeAuthenticatedUser(parentState.user.jwt_token, false)
-      .then(isValid => (isValid) ? this.props.enforceMFA(true) : false)
+      .then(isValid => this.props.enforceMFA(true))
       .then(isValid => {
         if (isValid) this.fetchData();
       }, e => this.fetchDynamicErrorContent(pathname));
