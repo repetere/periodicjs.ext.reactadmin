@@ -76,6 +76,12 @@ var checkStatus = function checkStatus(response) {
   }
 };
 
+var _push = function _push() {
+  console.log('calling push inside of user action');
+  console.log(new Error('stack trace'));
+  _reactRouterRedux.push.apply(undefined, arguments);
+};
+
 var initializationThrottle;
 var initializationTimeout;
 
@@ -399,7 +405,7 @@ var user = {
       }
       console.log('~~~~~~~~~~~~~~~~');
       console.log('~~~~~~~~~~~~~~~~');
-      console.debug({ formReturnURL: formReturnURL, returnUrl: returnUrl });
+      console.debug({ formReturnURL: formReturnURL, returnUrl: returnUrl, stack: new Error('stack trace') });
       console.log('~~~~~~~~~~~~~~~~');
       console.log('~~~~~~~~~~~~~~~~');
       // console.log('state.settings.auth', state.settings.auth);
@@ -409,7 +415,7 @@ var user = {
       if (state.settings.auth.enforce_mfa || extensionattributes && extensionattributes.login_mfa) {
         if (state.user.isMFAAuthenticated) {
           if (!noRedirect) {
-            if (state.user.isLoggedIn && returnUrl) dispatch((0, _reactRouterRedux.push)(returnUrl));else dispatch((0, _reactRouterRedux.push)(state.settings.auth.logged_in_homepage));
+            if (state.user.isLoggedIn && returnUrl) dispatch(_push(returnUrl));else dispatch(_push(state.settings.auth.logged_in_homepage));
           }
           return true;
         } else {
@@ -426,15 +432,20 @@ var user = {
             __global__returnURL = returnUrl;
             // console.debug({ mfapath,returnUrl }, 'window.location.href', window.location.href);
 
-            dispatch((0, _reactRouterRedux.push)('' + mfapath + (returnUrl ? '?return_url=' + returnUrl : '')));
+            dispatch(_push('' + mfapath + (returnUrl ? '?return_url=' + returnUrl : '')));
           }
           return false;
         }
       } else {
+        console.log('~~~~~~~~~~~~~~~');
+        console.log('~~~~~~~~~~~~~~~');
+        console.log(noRedirect, returnUrl);
+        console.log('~~~~~~~~~~~~~~~');
+        console.log('~~~~~~~~~~~~~~~');
         if (!noRedirect) {
-          if (state.user.isLoggedIn && returnUrl) dispatch((0, _reactRouterRedux.push)(returnUrl));else dispatch((0, _reactRouterRedux.push)(state.settings.auth.logged_in_homepage));
+          if (state.user.isLoggedIn && returnUrl) dispatch(_push(returnUrl));else dispatch(_push(state.settings.auth.logged_in_homepage));
         }
-        if (state.user.isLoggedIn && returnUrl) dispatch((0, _reactRouterRedux.push)(returnUrl));
+        if (state.user.isLoggedIn && returnUrl) dispatch(_push(returnUrl));
         if (state.notification.modals && state.notification.modals.length && state.notification.modals[0] && state.notification.modals[0].pathname && (state.notification.modals[0].pathname === '/signin' || state.notification.modals[0].pathname === '/login')) {
           dispatch(_notification2.default.hideModal('last'));
         }

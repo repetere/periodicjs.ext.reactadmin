@@ -21,6 +21,12 @@ const checkStatus = function (response) {
   }
 };
 
+const _push = function () {
+  console.log('calling push inside of user action');
+  console.log(new Error('stack trace'));
+  push(...arguments);
+};
+
 var initializationThrottle;
 var initializationTimeout;
 
@@ -345,7 +351,7 @@ const user = {
       }
       console.log('~~~~~~~~~~~~~~~~');
       console.log('~~~~~~~~~~~~~~~~');
-      console.debug({ formReturnURL, returnUrl, });
+      console.debug({ formReturnURL, returnUrl, stack: new Error('stack trace') });
       console.log('~~~~~~~~~~~~~~~~');
       console.log('~~~~~~~~~~~~~~~~');
       // console.log('state.settings.auth', state.settings.auth);
@@ -355,8 +361,8 @@ const user = {
       if (state.settings.auth.enforce_mfa || (extensionattributes && extensionattributes.login_mfa)) {
         if (state.user.isMFAAuthenticated) {
           if (!noRedirect) {
-            if (state.user.isLoggedIn && returnUrl) dispatch(push(returnUrl));
-            else dispatch(push(state.settings.auth.logged_in_homepage));
+            if (state.user.isLoggedIn && returnUrl) dispatch(_push(returnUrl));
+            else dispatch(_push(state.settings.auth.logged_in_homepage));
           }
           return true;
         } else {
@@ -373,16 +379,21 @@ const user = {
             __global__returnURL = returnUrl;
             // console.debug({ mfapath,returnUrl }, 'window.location.href', window.location.href);
             
-            dispatch(push(`${mfapath}${(returnUrl) ? '?return_url=' + returnUrl : ''}`));
+            dispatch(_push(`${mfapath}${(returnUrl) ? '?return_url=' + returnUrl : ''}`));
           }
           return false;
         }
       } else {
+        console.log('~~~~~~~~~~~~~~~');
+        console.log('~~~~~~~~~~~~~~~');
+        console.log(noRedirect, returnUrl);
+        console.log('~~~~~~~~~~~~~~~');
+        console.log('~~~~~~~~~~~~~~~');
         if (!noRedirect) {
-          if (state.user.isLoggedIn && returnUrl) dispatch(push(returnUrl));
-          else dispatch(push(state.settings.auth.logged_in_homepage));
+          if (state.user.isLoggedIn && returnUrl) dispatch(_push(returnUrl));
+          else dispatch(_push(state.settings.auth.logged_in_homepage));
         }
-        if (state.user.isLoggedIn && returnUrl) dispatch(push(returnUrl));
+        if (state.user.isLoggedIn && returnUrl) dispatch(_push(returnUrl));
         if (state.notification.modals && state.notification.modals.length && state.notification.modals[0]&& state.notification.modals[0].pathname && (state.notification.modals[0].pathname==='/signin' || state.notification.modals[0].pathname==='/login')) {
           dispatch(notification.hideModal('last'));
         }
