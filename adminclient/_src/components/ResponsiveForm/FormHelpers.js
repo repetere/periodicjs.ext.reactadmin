@@ -120,11 +120,13 @@ function getCallbackFromString(successCBProp) {
   var successCallback = void 0;
   if (Array.isArray(successCBProp) && successCBProp.length) {
     var fns = successCBProp.map(getCallbackFromString);
-    successCallback = function successCallback() {
+    successCallback = function () {
       for (var i = 0; i < fns.length; i++) {
-        fns[i].apply(fns, arguments);
+        var _fns$i;
+
+        (_fns$i = fns[i]).call.apply(_fns$i, [this].concat(Array.prototype.slice.call(arguments)));
       }
-    };
+    }.bind(this);
   } else {
     if (typeof successCBProp === 'string' && successCBProp.indexOf('func:this.props.reduxRouter') !== -1) {
       successCallback = this.props.reduxRouter[successCBProp.replace('func:this.props.reduxRouter.', '')];

@@ -79,9 +79,9 @@ export function getCallbackFromString(successCBProp) {
     let fns = successCBProp.map(getCallbackFromString);
     successCallback = function () {
       for (let i = 0; i < fns.length; i++) {
-        fns[i](...arguments);
+        fns[i].call(this, ...arguments);
       }
-    };
+    }.bind(this);
   } else {
     if (typeof successCBProp === 'string' && successCBProp.indexOf('func:this.props.reduxRouter') !== -1) {
       successCallback = this.props.reduxRouter[successCBProp.replace('func:this.props.reduxRouter.', '')];
