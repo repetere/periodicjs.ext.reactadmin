@@ -469,10 +469,8 @@ const user = {
           .then(() => {
             //add ?refresh=true to fetch route below to reload configurations
             return utilities.setCacheConfiguration(() => {
-              let isInitial = state.manifest.authenticated.isInitial;
               let refreshComponents = state.settings.ui.initialization.refresh_components;
-              let pathname = (typeof window !== 'undefined' && window.location.pathname) ? window.location.pathname : this.props.location.pathname;
-              let params = (isInitial || refreshComponents) ? `?${ (isInitial) ? 'initial=true&location=' + pathname : '' }${ (refreshComponents) ? ((isInitial) ? '&refresh=true' : 'refresh=true') : '' }` : '';
+              let params = (refreshComponents) ? '&refresh=true' : '';
               let configurationRoute = `${ basename }/load/configurations${ params }`;
               return utilities.fetchComponent(configurationRoute, options)()
                 .then(response => {
@@ -486,7 +484,6 @@ const user = {
                   dispatch(this.navigationSuccessResponse(responses.navigation));
                   dispatch(this.preferenceSuccessResponse(responses.preferences));
                   dispatch(manifest.receivedManifestData(responses.manifest.data.settings));
-                  if (isInitial) manifest.fetchManifest(Object.assign(options, { skip_cache: true, }))(dispatch, getState);
                   return {
                     data: {
                       versions: response.data.versions,
@@ -495,7 +492,6 @@ const user = {
                   };
                 })
                 .catch(e => {
-                  console.log('FAILED TO LOAD', e);
                   dispatch(this.navigationErrorResponse(e));
                   dispatch(this.preferenceErrorResponse(e));
                   dispatch(manifest.failedManifestRetrival(e));
@@ -508,7 +504,6 @@ const user = {
             }, { multi: true, })();
           })
           .catch(e => {
-            console.log('OUTER FAILED', e);
             dispatch(this.navigationErrorResponse(e));
             dispatch(this.preferenceErrorResponse(e));
             dispatch(manifest.failedManifestRetrival(e));

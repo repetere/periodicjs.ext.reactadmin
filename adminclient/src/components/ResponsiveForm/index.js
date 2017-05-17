@@ -244,10 +244,10 @@ class ResponsiveForm extends Component{
             
             res.json()
               .then(successData => {
-                if (successData && typeof successData.successCallback === 'string') {
+                if (successData && (typeof successData.successCallback === 'string' || (Array.isArray(successData.successCallback) && successData.successCallback.length))) {
                   successCallback = getCBFromString(successData.successCallback);
                 }
-                if (successData && typeof successData.responseCallback === 'string') {
+                if (successData && (typeof successData.responseCallback === 'string' || (Array.isArray(successData.responseCallback) && successData.responseCallback.length))) {
                   responseCallback = getCBFromString(successData.responseCallback);
                 }
                 formSuccessCallbacks({ fetchOptions, submitFormData, successData, successCallback, responseCallback, });
@@ -259,7 +259,7 @@ class ResponsiveForm extends Component{
         })
         .catch(e => {
           __formStateUpdate();
-          if (typeof e === 'object' && typeof e.callback === 'string' &&  e.callbackProps) {
+          if (typeof e === 'object' && (typeof e.callback === 'string' || (Array.isArray(e.callback) && e.callback.length)) &&  e.callbackProps) {
             let errorCB = getCBFromString(e.callback);
             errorCB(e.callbackProps);
           } else {

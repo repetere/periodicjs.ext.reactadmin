@@ -118,12 +118,23 @@ function assignHiddenFields(options) {
 
 function getCallbackFromString(successCBProp) {
   var successCallback = void 0;
-  if (typeof successCBProp === 'string' && successCBProp.indexOf('func:this.props.reduxRouter') !== -1) {
-    successCallback = this.props.reduxRouter[successCBProp.replace('func:this.props.reduxRouter.', '')];
-  } else if (typeof successCBProp === 'string' && successCBProp.indexOf('func:window') !== -1 && typeof window[successCBProp.replace('func:window.', '')] === 'function') {
-    successCallback = window[successCBProp.replace('func:window.', '')].bind(this);
-  } else if (typeof successCBProp === 'string') {
-    successCallback = this.props[successCBProp.replace('func:this.props.', '')];
+  if (Array.isArray(successCBProp) && successCBProp.length) {
+    var fns = successCBProp.map(getCallbackFromString.bind(this));
+    successCallback = function () {
+      for (var i = 0; i < fns.length; i++) {
+        var _fns$i;
+
+        (_fns$i = fns[i]).call.apply(_fns$i, [this].concat(Array.prototype.slice.call(arguments)));
+      }
+    }.bind(this);
+  } else {
+    if (typeof successCBProp === 'string' && successCBProp.indexOf('func:this.props.reduxRouter') !== -1) {
+      successCallback = this.props.reduxRouter[successCBProp.replace('func:this.props.reduxRouter.', '')];
+    } else if (typeof successCBProp === 'string' && successCBProp.indexOf('func:window') !== -1 && typeof window[successCBProp.replace('func:window.', '')] === 'function') {
+      successCallback = window[successCBProp.replace('func:window.', '')].bind(this);
+    } else if (typeof successCBProp === 'string') {
+      successCallback = this.props[successCBProp.replace('func:this.props.', '')];
+    }
   }
   return successCallback;
 }

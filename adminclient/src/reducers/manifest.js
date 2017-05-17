@@ -10,7 +10,7 @@ const initialState = {
     hasLoaded: false,
     error: null,
     updatedAt: new Date(),
-    isInitial: true,
+    isInitial: false,
   },
   unauthenticated: {
     isFetching: false,
@@ -49,7 +49,7 @@ const manifestReducer = (state, action) => {
       containers: Object.assign({}, state.containers, manifestSuccessPayload.containers),
       authenticated: {
         isFetching: false,
-        hasLoaded: (state.authenticated.isInitial) ? false : true,
+        hasLoaded: true,
         isInitial: false,
         error: null,
         updatedAt: new Date(),

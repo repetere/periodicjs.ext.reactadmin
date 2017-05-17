@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.fetchAction = exports.fetchDynamicContent = exports.fetchSuccessContent = exports.fetchErrorContent = exports._handleFetchPaths = exports._invokeWebhooks = exports.getDynamicFunctionName = exports._handleDynamicParams = undefined;
+exports.fetchAction = exports.fetchDynamicContent = exports.fetchSuccessContent = exports.fetchErrorContent = exports._handleFetchPaths = exports._handleDynamicParams = undefined;
 
 var _typeof2 = require('babel-runtime/helpers/typeof');
 
@@ -13,10 +13,6 @@ var _assign = require('babel-runtime/core-js/object/assign');
 
 var _assign2 = _interopRequireDefault(_assign);
 
-var _promise = require('babel-runtime/core-js/promise');
-
-var _promise2 = _interopRequireDefault(_promise);
-
 var _keys = require('babel-runtime/core-js/object/keys');
 
 var _keys2 = _interopRequireDefault(_keys);
@@ -24,6 +20,8 @@ var _keys2 = _interopRequireDefault(_keys);
 var _index = require('./index');
 
 var _index2 = _interopRequireDefault(_index);
+
+var _webhooks = require('./webhooks');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -33,6 +31,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * Because these dynamic data fetching functions are used in multiple locations this function standardizes access to the getState function
  * @return {Function} Returns the getState function that is either on this.props or on this directly
  */
+// import React from 'react';
 var _getState = function _getState() {
   return this.props && typeof this.props.getState === 'function' ? this.props.getState : this.getState;
 };
@@ -44,7 +43,6 @@ var _getState = function _getState() {
  * @param  {string} [current]   The actual current window path. If this argument is not passed the window path will be pulled from the window object or from this.props
  * @return {Object}           Returns the resource object with populated dynamic routes
  */
-// import React from 'react';
 var _handleDynamicParams = exports._handleDynamicParams = function _handleDynamicParams(pathname, resources, current) {
   // console.log('_handleDynamicParams',{ pathname, resources, current });
   var currentPathname = void 0;
@@ -61,39 +59,6 @@ var _handleDynamicParams = exports._handleDynamicParams = function _handleDynami
   }, {});
 };
 
-var FUNCTION_NAME_REGEXP = /func:(?:this\.props|window)(?:\.reduxRouter)?\.(\D.+)*/;
-var getDynamicFunctionName = exports.getDynamicFunctionName = function _getDynamicFunctionName(function_name) {
-  return function_name.replace(FUNCTION_NAME_REGEXP, '$1');
-};
-
-/**
- * Takes a single function name or an array of function name and fires them if they exist on window, this.props or this.props.reduxRouter
- * @param  {string|string[]} function_names A single function name or array of function names in a specific format ie. "func:this.props"
- * @return {Object}                Returns a Promise which resolves after all functions have resolved
- */
-var _invokeWebhooks = exports._invokeWebhooks = function _invokeWebhooks(function_names) {
-  var _this = this;
-
-  if (typeof function_names !== 'string' && (!Array.isArray(function_names) || Array.isArray(function_names) && !function_names.length)) {
-    return false;
-  }
-  function_names = Array.isArray(function_names) ? function_names : [function_names];
-  var fns = function_names.reduce(function (result, name) {
-    if (typeof name === 'string') {
-      var clean_name = getDynamicFunctionName(name);
-      if (name.indexOf('func:this.props.reduxRouter') !== -1) {
-        result.push(typeof _this.props.reduxRouter[clean_name] === 'function' ? _this.props.reduxRouter[clean_name]() : undefined);
-      } else if (name.indexOf('func:this.props') !== -1) {
-        result.push(typeof _this.props[clean_name] === 'function' ? _this.props[clean_name]() : undefined);
-      } else if (name.indexOf('func:window') !== -1) {
-        result.push(typeof window[clean_name] === 'function' ? window[clean_name].call(_this) : undefined);
-      }
-    }
-    return result;
-  }, []);
-  return _promise2.default.all(fns);
-};
-
 /**
  * Handles making fetch requests for resource paths
  * @param  {Object} layout    Configuration for dynamic page, component or modal
@@ -103,7 +68,7 @@ var _invokeWebhooks = exports._invokeWebhooks = function _invokeWebhooks(functio
  * @param {Function} [options.onError] Optional error function
  */
 var _handleFetchPaths = exports._handleFetchPaths = function _handleFetchPaths(layout) {
-  var _this2 = this;
+  var _this = this;
 
   var resources = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
@@ -115,15 +80,17 @@ var _handleFetchPaths = exports._handleFetchPaths = function _handleFetchPaths(l
     headers['x-access-token'] = state.user.jwt_token;
   }
 
-  return _index2.default.fetchPaths(state.settings.basename, resources, headers).then(typeof options.onSuccess === 'function' ? options.onSuccess : function (_resources) {
-    _this2.uiLayout = _this2.getRenderedComponent(layout, _resources);
-    _this2.setState({ ui_is_loaded: true, async_data_is_loaded: true });
-    if (options.callbacks) _invokeWebhooks.call(_this2, options.callbacks);
+  return _index2.default.fetchPaths.call(this, state.settings.basename, resources, headers).then(typeof options.onSuccess === 'function' ? options.onSuccess : function (_resources) {
+    if (!_resources || _resources && !_resources.__hasError) {
+      _this.uiLayout = _this.getRenderedComponent(layout, _resources);
+      _this.setState({ ui_is_loaded: true, async_data_is_loaded: true });
+      if (options.callbacks) _webhooks._invokeWebhooks.call(_this, options.callbacks);
+    }
   }).catch(typeof options.onError === 'function' ? function (e) {
     return options.onError(e, 'fetchResources', resources);
   } : function (e) {
-    if (_this2.props && _this2.props.errorNotification) _this2.props.errorNotification(e);else console.error(e);
-    _this2.setState({ ui_is_loaded: true, async_data_is_loaded: true });
+    if (_this.props && _this.props.errorNotification) _this.props.errorNotification(e);else console.error(e);
+    _this.setState({ ui_is_loaded: true, async_data_is_loaded: true });
   });
 };
 
@@ -154,7 +121,7 @@ var fetchErrorContent = exports.fetchErrorContent = function _fetchErrorContent(
  * @param  {Boolean} hasParams If true will attempt to assign dynamic params to resource path
  */
 var fetchSuccessContent = exports.fetchSuccessContent = function _fetchSuccessContent(pathname, hasParams) {
-  var _this3 = this;
+  var _this2 = this;
 
   try {
     var getState = _getState.call(this);
@@ -163,7 +130,7 @@ var fetchSuccessContent = exports.fetchSuccessContent = function _fetchSuccessCo
     var layout = (0, _assign2.default)({}, containers[pathname].layout);
     if (containers[pathname].dynamic && (0, _typeof3.default)(containers[pathname].dynamic) === 'object') {
       (0, _keys2.default)(containers[pathname].dynamic).forEach(function (dynamicProp) {
-        _this3.props.setDynamicData(dynamicProp, containers[pathname].dynamic[dynamicProp]);
+        _this2.props.setDynamicData(dynamicProp, containers[pathname].dynamic[dynamicProp]);
       });
     }
     if (containers[pathname].resources && (0, _typeof3.default)(containers[pathname].resources) === 'object') {
@@ -178,7 +145,7 @@ var fetchSuccessContent = exports.fetchSuccessContent = function _fetchSuccessCo
         callbacks: containers[pathname].callbacks
       });
     } else {
-      if (containers[pathname].callbacks) _invokeWebhooks.call(this, containers[pathname].callbacks);
+      if (containers[pathname].callbacks) _webhooks._invokeWebhooks.call(this, containers[pathname].callbacks);
       this.uiLayout = this.getRenderedComponent(containers[pathname].layout);
       // if(window && window.scrollTo){
       //   window.scrollTo(0, 0);
@@ -225,7 +192,7 @@ var fetchDynamicContent = exports.fetchDynamicContent = function _fetchDynamicCo
 };
 
 var fetchAction = exports.fetchAction = function _fetchAction(pathname, fetchOptions, success) {
-  var _this4 = this;
+  var _this3 = this;
 
   // let pathname, fetchOptions, success;
   if ((typeof pathname === 'undefined' ? 'undefined' : (0, _typeof3.default)(pathname)) === 'object') {
@@ -246,25 +213,25 @@ var fetchAction = exports.fetchAction = function _fetchAction(pathname, fetchOpt
   fetch(pathname, fetchOptions).then(_index2.default.checkStatus).then(function (res) {
     if (success.success) {
       if (success.success.modal) {
-        _this4.props.createModal(success.success.modal);
+        _this3.props.createModal(success.success.modal);
       } else if (success.success.notification) {
-        _this4.props.createNotification(success.success.notification);
+        _this3.props.createNotification(success.success.notification);
       } else {
-        _this4.props.createNotification({ text: 'Saved', timeout: 4000, type: 'success' });
+        _this3.props.createNotification({ text: 'Saved', timeout: 4000, type: 'success' });
       }
     }
     if (success.successCallback) {
       res.json().then(function (successData) {
         var successCallbackProp = success.successCallback;
         if (typeof successCallbackProp === 'string' && successCallbackProp.indexOf('func:this.props.reduxRouter') !== -1) {
-          successCallback = _this4.props.reduxRouter[successCallbackProp.replace('func:this.props.reduxRouter.', '')];
+          successCallback = _this3.props.reduxRouter[successCallbackProp.replace('func:this.props.reduxRouter.', '')];
         } else if (typeof successCallbackProp === 'string' && successCallbackProp.indexOf('func:this.props') !== -1) {
-          successCallback = _this4.props[success.successCallback.replace('func:this.props.', '')];
+          successCallback = _this3.props[success.successCallback.replace('func:this.props.', '')];
         } else if (typeof successCallbackProp === 'string' && successCallbackProp.indexOf('func:window') !== -1 && typeof window[success.successCallback.replace('func:window.', '')] === 'function') {
-          successCallback = window[success.successCallback.replace('func:window.', '')].bind(_this4);
+          successCallback = window[success.successCallback.replace('func:window.', '')].bind(_this3);
         }
         if (fetchOptions.successCallback === 'func:this.props.setDynamicData') {
-          _this4.props.setDynamicData(success.dynamicField, success.successProps || successData);
+          _this3.props.setDynamicData(success.dynamicField, success.successProps || successData);
         } else {
           successCallback(success.successProps || successData);
         }
