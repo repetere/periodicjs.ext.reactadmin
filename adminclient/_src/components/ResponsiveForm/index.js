@@ -285,10 +285,10 @@ var ResponsiveForm = function (_Component) {
             var responseCallback = fetchOptions.responseCallback ? getCBFromString(fetchOptions.responseCallback) : false;
 
             res.json().then(function (successData) {
-              if (successData && typeof successData.successCallback === 'string') {
+              if (successData && (typeof successData.successCallback === 'string' || Array.isArray(successData.successCallback) && successData.successCallback.length)) {
                 successCallback = getCBFromString(successData.successCallback);
               }
-              if (successData && typeof successData.responseCallback === 'string') {
+              if (successData && (typeof successData.responseCallback === 'string' || Array.isArray(successData.responseCallback) && successData.responseCallback.length)) {
                 responseCallback = getCBFromString(successData.responseCallback);
               }
               formSuccessCallbacks({ fetchOptions: fetchOptions, submitFormData: submitFormData, successData: successData, successCallback: successCallback, responseCallback: responseCallback });
@@ -299,7 +299,7 @@ var ResponsiveForm = function (_Component) {
           }
         }).catch(function (e) {
           __formStateUpdate();
-          if ((typeof e === 'undefined' ? 'undefined' : (0, _typeof3.default)(e)) === 'object' && typeof e.callback === 'string' && e.callbackProps) {
+          if ((typeof e === 'undefined' ? 'undefined' : (0, _typeof3.default)(e)) === 'object' && (typeof e.callback === 'string' || Array.isArray(e.callback) && e.callback.length) && e.callbackProps) {
             var errorCB = getCBFromString(e.callback);
             errorCB(e.callbackProps);
           } else {

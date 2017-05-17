@@ -128,7 +128,7 @@ var _handleComponentLifecycle = function _handleComponentLifecycle() {
       if (isValid) this.fetchData();
     }
   } else {
-    return this.props.initializeAuthenticatedUser(parentState.user.jwt_token, false).then(function () {
+    return this.props.initializeAuthenticatedUser(parentState.user.jwt_token, false).then(function (isValid) {
       return _this.props.enforceMFA(true);
     }).then(function (isValid) {
       if (isValid) _this.fetchData();
