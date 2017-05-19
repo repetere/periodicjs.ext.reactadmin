@@ -33,9 +33,14 @@ export let AppLayoutMap = Object.assign({}, {
   recharts, ResponsiveForm, DynamicLayout, DynamicForm, RawOutput, RawStateOutput, FormItem, MenuAppLink, SubMenuLinks, ResponsiveTable, ResponsiveCard, DynamicChart, ResponsiveBar, ResponsiveTabs, ResponsiveDatalist, CodeMirror, Range, Slider, GoogleMap, Carousel, PreviewEditor, /* Editor,*/
   ResponsiveLink,
   ResponsiveButton,
-}, React.DOM, rebulma, { Link, });
+}, React.DOM, rebulma, window.__ra_custom_elements, { Link, });
 
 export function getRenderedComponent(componentObject, resources, debug) {
+  console.log('*********************');
+  console.log('*********************');
+  console.log('*********************');
+  console.log('*********************');
+  console.log(window.__ra_custom_elements);
   try {
     if (advancedBinding) {
       AppLayoutMap.ResponsiveLink = ResponsiveLink.bind(this);
