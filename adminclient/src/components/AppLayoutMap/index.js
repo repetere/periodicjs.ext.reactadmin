@@ -36,11 +36,6 @@ export let AppLayoutMap = Object.assign({}, {
 }, React.DOM, rebulma, window.__ra_custom_elements, { Link, });
 
 export function getRenderedComponent(componentObject, resources, debug) {
-  console.log('*********************');
-  console.log('*********************');
-  console.log('*********************');
-  console.log('*********************');
-  console.log(window.__ra_custom_elements);
   try {
     if (advancedBinding) {
       AppLayoutMap.ResponsiveLink = ResponsiveLink.bind(this);
