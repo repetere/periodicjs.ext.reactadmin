@@ -43,6 +43,9 @@ module.exports = {
                       hasWindowComponent: true,
                       props: {
                         content: 'func:window.__ra_custom_elements.Hello',
+                        windowCompProps: {
+                          toWhat: 'Iris!'
+                        },
                       },
                     },
                     {

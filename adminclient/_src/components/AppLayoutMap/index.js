@@ -175,15 +175,13 @@ function getRenderedComponent(componentObject, resources, debug) {
       });
     }
     if (componentObject.hasWindowComponent && window.__ra_custom_elements) {
-      console.log('in hasWindowComponent');
       (0, _keys2.default)(renderedCompProps).forEach(function (key) {
         if (typeof renderedCompProps[key] === 'string' && renderedCompProps[key].indexOf('func:window.__ra_custom_elements') !== -1 && typeof window.__ra_custom_elements[renderedCompProps[key].replace('func:window.__ra_custom_elements.', '')] === 'function') {
-          renderedCompProps[key] = _react2.default.createElement(window.__ra_custom_elements[renderedCompProps[key].replace('func:window.__ra_custom_elements.', '')], _this, null);
+          renderedCompProps[key] = _react2.default.createElement(window.__ra_custom_elements[renderedCompProps[key].replace('func:window.__ra_custom_elements.', '')], renderedCompProps['windowCompProps'] ? renderedCompProps['windowCompProps'] : _this.props, null);
           console.log('key', key);
           console.log('value', renderedCompProps[key]);
           console.log(window.__ra_custom_elements);
           console.log(renderedCompProps);
-          console.log(renderedCompProps[key]);
         }
       });
     }
