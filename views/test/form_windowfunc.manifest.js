@@ -39,6 +39,16 @@ module.exports = {
                         },
                       ],
                     },
+                    // {
+                    //   component: 'TestComponent',
+                    //   hasWindowComponent: true,
+                    //   props: {
+                    //     content: 'func:window.__ra_custom_elements.Hello',
+                    //     windowCompProps: {
+                    //       toWhat: 'Your Name'
+                    //     },
+                    //   },
+                    // },
                     {
                       component: 'Column',
                       children: [
