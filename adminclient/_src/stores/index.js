@@ -117,9 +117,9 @@ var getRouterHistoryType = function getRouterHistoryType(routerHistoryType) {
   return routerHistoryType === 'browserHistory' ? _reactRouter.browserHistory : _reactRouter.hashHistory;
 };
 
-var AppReduxStore = (0, _redux.createStore)(_reducers2.default, (0, _redux.applyMiddleware)(_reduxThunk2.default, (0, _reactRouterRedux.routerMiddleware)(getRouterHistoryType(AppConfigSettings.routerHistory))
+var AppReduxStore = (0, _redux.createStore)(_reducers2.default, (0, _redux.applyMiddleware)(_reduxThunk2.default, (0, _reactRouterRedux.routerMiddleware)(getRouterHistoryType(AppConfigSettings.routerHistory)
 // promise,
-, logger));
+), logger));
 
 if (module.hot) {
   // Enable Webpack hot module replacement for reducers
