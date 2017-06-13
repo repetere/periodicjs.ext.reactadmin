@@ -122,18 +122,18 @@ export const fetchSuccessContent = function _fetchSuccessContent (pathname, hasP
     } else {
       if (containers[pathname].callbacks) _invokeWebhooks.call(this, containers[pathname].callbacks);
       this.uiLayout = this.getRenderedComponent(containers[pathname].layout);
-      // if(window && window.scrollTo){
-      //   window.scrollTo(0, 0);
-      // }
       this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
+      if(window && window.scrollTo){
+        window.scrollTo(0, 0);
+      }
     }
   } catch (e) {
     if (this.props && this.props.errorNotification) this.props.errorNotification(e);
     else console.error(e);
-    // if(window && window.scrollTo){
-    //   window.scrollTo(0, 0);
-    // }
     this.setState({ ui_is_loaded: true, async_data_is_loaded: true, });
+    if(window && window.scrollTo){
+      window.scrollTo(0, 0);
+    }
   }
 };
 
