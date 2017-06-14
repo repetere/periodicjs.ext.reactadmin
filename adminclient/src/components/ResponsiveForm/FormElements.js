@@ -193,7 +193,9 @@ export function getFormDatatable(options){
   let useRowButtons = formElement.rowButtons;
   let ignoreTableHeaders = formElement.ignoreTableHeaders || [];
   let tableHeaders = (formElement.headers)
-    ? formElement.headers
+    ? (formElement.useStandardHeaders)
+      ? getTableHeaders( formElement.headers.map(header=>header.sortid) )
+      : formElement.headers
     : (initialValue && Array.isArray(initialValue) && initialValue.length)
       ? getTableHeaders(Object.keys(initialValue[0]).filter(header=>ignoreTableHeaders.indexOf(header)===-1))
       : [];
