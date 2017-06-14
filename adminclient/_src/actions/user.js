@@ -638,7 +638,6 @@ var user = {
         method: loginSettings.method || 'POST',
         headers: (0, _assign2.default)({
           'Accept': 'application/json'
-          // 'Content-Type': 'application/json',
         }, loginSettings.options.headers, {
           username: loginData.username,
           password: loginData.password

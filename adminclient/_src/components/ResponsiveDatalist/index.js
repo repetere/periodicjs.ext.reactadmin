@@ -143,7 +143,6 @@ var ResponsiveDatalist = function (_Component) {
           //   : undefined,
           search: options.search,
           allowSpecialCharacters: true
-          // pagenum: options.pagenum || 1,
         });
         var headers = (0, _assign2.default)({
           'x-access-token': stateProps.user.jwt_token

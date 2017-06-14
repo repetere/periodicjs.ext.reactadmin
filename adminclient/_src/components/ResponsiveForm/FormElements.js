@@ -283,7 +283,9 @@ function getFormDatatable(options) {
   };
   var useRowButtons = formElement.rowButtons;
   var ignoreTableHeaders = formElement.ignoreTableHeaders || [];
-  var tableHeaders = formElement.headers ? formElement.headers : initialValue && Array.isArray(initialValue) && initialValue.length ? getTableHeaders((0, _keys2.default)(initialValue[0]).filter(function (header) {
+  var tableHeaders = formElement.headers ? formElement.useStandardHeaders ? getTableHeaders(formElement.headers.map(function (header) {
+    return header.sortid;
+  })) : formElement.headers : initialValue && Array.isArray(initialValue) && initialValue.length ? getTableHeaders((0, _keys2.default)(initialValue[0]).filter(function (header) {
     return ignoreTableHeaders.indexOf(header) === -1;
   })) : [];
   tableHeaders = useRowButtons ? tableHeaders.concat({
