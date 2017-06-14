@@ -11,7 +11,7 @@ export function getAdvancedBinding() {
       parser.setUA(uastring);
       var parseUserAgent = parser.getResult();
       // console.debug({ parseUserAgent, });
-      if (parseUserAgent.browser.name === 'Chrome' && parseUserAgent.os.name === 'Android' && parseInt(parseUserAgent.browser.version, 10) < 50) {
+      if ((parseUserAgent.browser.name === 'Chrome' || parseUserAgent.browser.name === 'Chrome WebView' ) && parseUserAgent.os.name === 'Android' && parseInt(parseUserAgent.browser.version, 10) < 50) {
         return false;
       }
       if (parseUserAgent.browser.name === 'Android Browser') {
