@@ -48,6 +48,11 @@
         return data+"%";
       }
 
+      var formatSSN = function(e, element) {
+        let val =  e.target.value;
+        console.log({val});        
+      }
+
       var selectOnChange = function(element, event){
         element.passProps = {};
         element.passProps.className = 'select_on_change';

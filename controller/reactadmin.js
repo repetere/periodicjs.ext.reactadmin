@@ -268,6 +268,7 @@ var admin_index = function (req, res, next) {
         viewname = 'admin/support';
       } else if (parseUserAgent.browser.name === 'IE' && parseInt(parseUserAgent.browser.version, 10) < 11) {
         viewname = 'admin/support';
+        res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
       } else if (parseUserAgent.browser.name === 'Firefox' && parseInt(parseUserAgent.browser.version, 10) < 41) {
         viewname = 'admin/support';
       } else if (parseUserAgent.browser.name === 'Android Browser' && parseInt(parseUserAgent.browser.version, 10) < 5) {

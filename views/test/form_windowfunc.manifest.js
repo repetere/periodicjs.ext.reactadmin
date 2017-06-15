@@ -109,7 +109,7 @@ module.exports = {
                     cardForm: {},
                     dynamicField:'testform',
                     onSubmit: 'func:this.props.setDynamicData',
-                    onChange: 'func:this.props.setDynamicData',
+                    // onChange: 'func:this.props.setDynamicData',
                     // onChange: 'func:window.testWindowFuncOnChange',
                     flattenFormData: true,
                     style: {
@@ -175,8 +175,13 @@ module.exports = {
                     formgroups: [
                       {
                         gridProps: {},
-                        formElements: [
-                          
+                        formElements: [{
+                          type: 'text',
+                          name: 'ssn',
+                          label: 'Test SSN Formatter!',
+                          keyUp: 'func:window.formatSSN',
+                          disableOnChange: true,
+                        },
                           {
                             type: 'text',
                             name: 'testData',
