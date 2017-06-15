@@ -273,9 +273,9 @@ var admin_index = function (req, res, next) {
       } else if (parseUserAgent.browser.name === 'Android Browser' && parseInt(parseUserAgent.browser.version, 10) < 5) {
         viewname = 'admin/support';
       }
-    }
-    if (parseUserAgent.browser.name === 'IE') {
-      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      if (parseUserAgent.browser.name === 'IE') {
+        res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      }
     }
     // UserAgentParser.setUA(uastring);
     // logger.silly('render reactadmin, ssr', extsettings.server_side_react);
