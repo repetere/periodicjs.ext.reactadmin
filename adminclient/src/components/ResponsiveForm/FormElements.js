@@ -322,9 +322,7 @@ export function getFormTextInputArea(options) {
     initialValue = JSON.stringify(initialValue, null, 2);
   }
   if (formElement.disableOnChange) {
-    onChange = () => {
-      console.log('BLANK ON CHANGE');
-    };
+    onChange = () => {};
   } else if (!onChange) {
     onChange = (event) => {
       let text = event.target.value;
@@ -379,9 +377,7 @@ export function getFormTextArea(options) {
     initialValue = JSON.stringify(initialValue, null, 2);
   }
   if (formElement.disableOnChange) {
-    onChange = () => {
-      console.log('BLANK ON CHANGE')
-    };
+    onChange = () => {};
   } else if (!onChange) {
     onChange = valueChangeHandler.bind(this, formElement);
   }
