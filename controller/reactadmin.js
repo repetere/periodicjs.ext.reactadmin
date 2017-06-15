@@ -274,6 +274,9 @@ var admin_index = function (req, res, next) {
         viewname = 'admin/support';
       }
     }
+    if (parseUserAgent.browser.name === 'IE') {
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    }
     // UserAgentParser.setUA(uastring);
     // logger.silly('render reactadmin, ssr', extsettings.server_side_react);
     // logger.silly('render reactadmin, req.query.format',req.query.format);

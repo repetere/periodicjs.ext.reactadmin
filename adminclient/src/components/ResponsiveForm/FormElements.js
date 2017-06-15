@@ -321,7 +321,9 @@ export function getFormTextInputArea(options) {
   if (typeof initialValue !== 'string') {
     initialValue = JSON.stringify(initialValue, null, 2);
   }
-  if (!onChange) {
+  if (formElement.disableOnChange) {
+    onChange = () => {};
+  } else if (!onChange) {
     onChange = (event) => {
       let text = event.target.value;
       let updatedStateProp = {};
@@ -374,7 +376,9 @@ export function getFormTextArea(options) {
   if (typeof initialValue !== 'string') {
     initialValue = JSON.stringify(initialValue, null, 2);
   }
-  if (!onChange) {
+  if (formElement.disableOnChange) {
+    onChange = () => {};
+  } else if (!onChange) {
     onChange = valueChangeHandler.bind(this, formElement);
   }
 
@@ -403,7 +407,9 @@ export function getFormSelect(options) {
   if (typeof initialValue !== 'string') {
     initialValue = JSON.stringify(initialValue, null, 2);
   }
-  if (!onChange) {
+  if (formElement.disableOnChange) {
+    onChange = () => {};
+  } else if (!onChange) {
     onChange = valueChangeHandler.bind(this, formElement);
   }  
   let customCallbackfunction;
@@ -438,7 +444,9 @@ export function getFormCheckbox(options) {
   let hasError = getErrorStatus(this.state, formElement.name);
   let hasValue = (formElement.name && this.state[formElement.name])? true : false;
   let getFormDataLabel = getFormLabel.bind(this);
-  if (!onValueChange) {
+  if (formElement.disableOnChange) {
+    onValueChange = () => {};
+  } else if (!onValueChange) {
     onValueChange = (/*event*/) => {
       // let text = event.target.value;
       let updatedStateProp = {};
