@@ -151,12 +151,18 @@ var fetchSuccessContent = exports.fetchSuccessContent = function _fetchSuccessCo
       if (window && window.scrollTo) {
         window.scrollTo(0, 0);
       }
+      if (document && document.querySelector && document.querySelector('.reactadmin__app_div_content')) {
+        document.querySelector('.reactadmin__app_div_content').scrollIntoView(true);
+      }
     }
   } catch (e) {
     if (this.props && this.props.errorNotification) this.props.errorNotification(e);else console.error(e);
     this.setState({ ui_is_loaded: true, async_data_is_loaded: true });
     if (window && window.scrollTo) {
       window.scrollTo(0, 0);
+    }
+    if (document && document.querySelector && document.querySelector('.reactadmin__app_div_content')) {
+      document.querySelector('.reactadmin__app_div_content').scrollIntoView(true);
     }
   }
 };
