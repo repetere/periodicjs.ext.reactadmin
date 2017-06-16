@@ -712,7 +712,6 @@ export function getFormGroup(options) {
   </FormItem>);
 }
 
-//-------------
 export function getFormCode(options) {
   let { formElement, i, onValueChange, } = options;
   let hasError = getErrorStatus(this.state, formElement.name);
