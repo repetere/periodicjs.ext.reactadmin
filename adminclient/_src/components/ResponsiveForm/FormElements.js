@@ -4,6 +4,10 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _typeof2 = require('babel-runtime/helpers/typeof');
+
+var _typeof3 = _interopRequireDefault(_typeof2);
+
 var _clearImmediate2 = require('babel-runtime/core-js/clear-immediate');
 
 var _clearImmediate3 = _interopRequireDefault(_clearImmediate2);
@@ -35,6 +39,7 @@ var _assign2 = _interopRequireDefault(_assign);
 exports.getPropertyAttribute = getPropertyAttribute;
 exports.getFormDatatable = getFormDatatable;
 exports.getFormDatalist = getFormDatalist;
+exports.getFormMaskedInput = getFormMaskedInput;
 exports.getFormTextInputArea = getFormTextInputArea;
 exports.getFormTextArea = getFormTextArea;
 exports.getFormSelect = getFormSelect;
@@ -74,6 +79,10 @@ var _ResponsiveTable = require('../ResponsiveTable');
 
 var _ResponsiveTable2 = _interopRequireDefault(_ResponsiveTable);
 
+var _createNumberMask = require('text-mask-addons/dist/createNumberMask');
+
+var _createNumberMask2 = _interopRequireDefault(_createNumberMask);
+
 var _capitalize = require('capitalize');
 
 var _capitalize2 = _interopRequireDefault(_capitalize);
@@ -83,6 +92,10 @@ var _rcSlider = require('rc-slider');
 var _rcSlider2 = _interopRequireDefault(_rcSlider);
 
 var _reBulma = require('re-bulma');
+
+var _reactTextMask = require('react-text-mask');
+
+var _reactTextMask2 = _interopRequireDefault(_reactTextMask);
 
 var _moment = require('moment');
 
@@ -104,6 +117,9 @@ var _FormHelpers = require('./FormHelpers');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// import RAEditor from '../RAEditor';
+// import ResponsiveButton from '../ResponsiveButton';
+// import { EditorState, } from 'draft-js';
 function getPropertyAttribute(options) {
   var property = options.property,
       element = options.element;
@@ -125,10 +141,6 @@ function getPropertyAttribute(options) {
     return returnVal;
   }
 }
-// import RAEditor from '../RAEditor';
-// import ResponsiveButton from '../ResponsiveButton';
-// import { EditorState, } from 'draft-js';
-
 
 function getErrorStatus(state, name) {
   return state.formDataErrors && state.formDataErrors[name];
@@ -385,8 +397,81 @@ function getFormDatalist(options) {
   );
 }
 
-function getFormTextInputArea(options) {
+function getFormMaskedInput(options) {
   var _this5 = this;
+
+  var formElement = options.formElement,
+      i = options.i,
+      onChange = options.onChange;
+
+  var initialValue = getInitialValue(formElement, this.state);
+  var getPassablePropkeyevents = getPassablePropsKeyEvents.bind(this);
+  var fileClassname = '__reactadmin_file_' + formElement.name;
+  var hasError = getErrorStatus(this.state, formElement.name);
+  var hasValue = formElement.name && this.state[formElement.name] ? true : false;
+  var passableProps = (0, _assign2.default)({
+    type: formElement.type || 'text',
+    className: '__re-bulma_input'
+  }, formElement.passProps);
+  if (typeof initialValue !== 'string') {
+    initialValue = (0, _stringify2.default)(initialValue, null, 2);
+  }
+  if (formElement.disableOnChange) {
+    onChange = function onChange() {};
+  } else if (!onChange) {
+    onChange = function onChange(event) {
+      var text = event.target.value;
+      var updatedStateProp = {};
+      if (passableProps && passableProps.multiple) {
+        document.querySelector('.' + fileClassname + ' input').setAttribute('multiple', true);
+      }
+      updatedStateProp[formElement.name] = passableProps.maxLength ? text.substring(0, passableProps.maxLength) : text;
+      _this5.setState(updatedStateProp);
+    };
+  }
+  passableProps = getPassablePropkeyevents(passableProps, formElement);
+  if (passableProps && passableProps.multiple) {
+    var t = (0, _setImmediate3.default)(function () {
+      document.querySelector('.' + fileClassname + ' input').setAttribute('multiple', true);
+      (0, _clearImmediate3.default)(t);
+    });
+  }
+
+  formElement.customErrorProps = formElement.customErrorProps ? (0, _assign2.default)({}, { marginTop: '6px' }, formElement.customErrorProps) : { marginTop: '6px' };
+
+  var mask = [];
+  if (formElement.createNumberMask && passableProps.mask.indexOf('func:window') !== -1 && typeof window[passableProps.mask.replace('func:window.', '')] === 'function') {
+    var numberMaskConfig = (0, _typeof3.default)(window[passableProps.mask.replace('func:window.', '')].call(this, formElement)) === 'object' ? window[passableProps.mask.replace('func:window.', '')].call(this, formElement) : {};
+    mask = (0, _createNumberMask2.default)(numberMaskConfig);
+  } else if (passableProps.mask.indexOf('func:window') !== -1 && typeof window[passableProps.mask.replace('func:window.', '')] === 'function') {
+    mask = window[passableProps.mask.replace('func:window.', '')].bind(this, formElement);
+  }
+
+  var wrapperProps = (0, _assign2.default)({
+    className: '__re-bulma_control'
+  }, formElement.wrapperProps);
+
+  return _react2.default.createElement(
+    _FormItem2.default,
+    (0, _extends3.default)({ key: i }, formElement.layoutProps, { hasError: hasError, hasValue: hasValue }),
+    getFormLabel(formElement),
+    _react2.default.createElement(
+      'span',
+      wrapperProps,
+      _react2.default.createElement(_reactTextMask2.default, (0, _extends3.default)({}, passableProps, {
+        mask: mask,
+        className: hasError ? passableProps.className + ' __re-bulma_is-danger' : passableProps.className,
+        color: hasError ? 'isDanger' : undefined,
+        onChange: onChange,
+        placeholder: formElement.placeholder,
+        value: initialValue })),
+      getCustomErrorLabel(hasError, this.state, formElement)
+    )
+  );
+}
+
+function getFormTextInputArea(options) {
+  var _this6 = this;
 
   var formElement = options.formElement,
       i = options.i,
@@ -417,11 +502,11 @@ function getFormTextInputArea(options) {
       }
 
       if (passableProps && passableProps.type === 'file') {
-        updatedStateProp.formDataFiles = (0, _assign2.default)({}, _this5.state.formDataFiles, (0, _defineProperty3.default)({}, formElement.name, document.querySelector('.' + fileClassname + ' input')));
+        updatedStateProp.formDataFiles = (0, _assign2.default)({}, _this6.state.formDataFiles, (0, _defineProperty3.default)({}, formElement.name, document.querySelector('.' + fileClassname + ' input')));
       } else {
         updatedStateProp[formElement.name] = passableProps.maxLength ? text.substring(0, passableProps.maxLength) : text;
       }
-      _this5.setState(updatedStateProp);
+      _this6.setState(updatedStateProp);
     };
   }
   passableProps = getPassablePropkeyevents(passableProps, formElement);
@@ -540,7 +625,7 @@ function getFormSelect(options) {
 }
 
 function getFormCheckbox(options) {
-  var _this6 = this;
+  var _this7 = this;
 
   var formElement = options.formElement,
       i = options.i,
@@ -558,14 +643,14 @@ function getFormCheckbox(options) {
       // console.debug('before', { updatedStateProp, formElement, }, event.target);
       if (formElement.type === 'radio') {
         // event.target.value = 'on';
-        updatedStateProp[_this6.state[formElement.formdata_name] || formElement.name] = _this6.state[formElement.formdata_value] || formElement.value || 'on';
+        updatedStateProp[_this7.state[formElement.formdata_name] || formElement.name] = _this7.state[formElement.formdata_value] || formElement.value || 'on';
       } else {
-        updatedStateProp[_this6.state[formElement.formdata_name] || formElement.name] = _this6.state[_this6.state[formElement.formdata_name] || formElement.name] ? 0 : 'on';
+        updatedStateProp[_this7.state[formElement.formdata_name] || formElement.name] = _this7.state[_this7.state[formElement.formdata_name] || formElement.name] ? 0 : 'on';
       }
       // console.debug('after', { updatedStateProp, formElement, }, event.target);
-      _this6.setState(updatedStateProp, function () {
+      _this7.setState(updatedStateProp, function () {
         if (formElement.validateOnChange) {
-          _this6.validateFormElement({ formElement: formElement });
+          _this7.validateFormElement({ formElement: formElement });
         }
       });
     };
@@ -591,7 +676,7 @@ function getFormCheckbox(options) {
 }
 
 function getRawInput(options) {
-  var _this7 = this;
+  var _this8 = this;
 
   var formElement = options.formElement,
       i = options.i,
@@ -615,9 +700,9 @@ function getRawInput(options) {
     onValueChange = function onValueChange() /*event*/{
       // let text = event.target.value;
       var updatedStateProp = {};
-      updatedStateProp[formElement.name] = _this7.state[formElement.name] ? false : 'on';
+      updatedStateProp[formElement.name] = _this8.state[formElement.name] ? false : 'on';
       // console.log({ updatedStateProp });
-      _this7.setState(updatedStateProp);
+      _this8.setState(updatedStateProp);
     };
   }
 
@@ -639,7 +724,7 @@ function getRawInput(options) {
 }
 
 function getSliderInput(options) {
-  var _this8 = this;
+  var _this9 = this;
 
   var formElement = options.formElement,
       i = options.i,
@@ -686,7 +771,7 @@ function getSliderInput(options) {
       var updatedStateProp = {};
       updatedStateProp[formElement.name] = val;
       // console.log({ updatedStateProp });
-      _this8.setState(updatedStateProp);
+      _this9.setState(updatedStateProp);
       customCallbackfunction(val);
     };
   }
@@ -848,7 +933,7 @@ function getFormCode(options) {
 }
 
 function getFormEditor(options) {
-  var _this9 = this;
+  var _this10 = this;
 
   var formElement = options.formElement,
       i = options.i,
@@ -860,7 +945,7 @@ function getFormEditor(options) {
       // console.debug({ newvalue, });
       var updatedStateProp = {};
       updatedStateProp[formElement.name] = newvalue.target.value;
-      _this9.setState(updatedStateProp);
+      _this10.setState(updatedStateProp);
     };
   }
   // console.debug({ initialVal });
@@ -896,7 +981,7 @@ function getFormEditor(options) {
 }
 
 function getFormSubmit(options) {
-  var _this10 = this;
+  var _this11 = this;
 
   var formElement = options.formElement,
       i = options.i;
@@ -912,15 +997,15 @@ function getFormSubmit(options) {
       _reBulma.Button,
       (0, _extends3.default)({}, passableProps, {
         onClick: function onClick() {
-          var validated_formdata = _FormHelpers.validateForm.call(_this10, { formdata: _this10.state, validationErrors: {} });
+          var validated_formdata = _FormHelpers.validateForm.call(_this11, { formdata: _this11.state, validationErrors: {} });
           var updateStateData = {
             formDataErrors: validated_formdata.validationErrors
           };
-          if (_this10.props.sendSubmitButtonVal) {
+          if (_this11.props.sendSubmitButtonVal) {
             updateStateData['submitButtonVal'] = formElement.value;
           }
-          _this10.setState(updateStateData, function () {
-            formElement.confirmModal && (0, _keys2.default)(_this10.state.formDataErrors).length < 1 ? _this10.props.createModal((0, _assign2.default)({
+          _this11.setState(updateStateData, function () {
+            formElement.confirmModal && (0, _keys2.default)(_this11.state.formDataErrors).length < 1 ? _this11.props.createModal((0, _assign2.default)({
               title: 'Please Confirm',
               text: {
                 component: 'div',
@@ -953,8 +1038,8 @@ function getFormSubmit(options) {
                         color: 'isPrimary'
                       },
                       onClick: function onClick() {
-                        _this10.props.hideModal('last');
-                        _this10.submitForm.call(_this10);
+                        _this11.props.hideModal('last');
+                        _this11.submitForm.call(_this11);
                       },
                       onclickProps: 'last'
                     }, formElement.confirmModal.yesButtonProps),
@@ -974,7 +1059,7 @@ function getFormSubmit(options) {
                     children: formElement.confirmModal.noButtonText || 'No'
                   }]
                 }]
-              } }, formElement.confirmModal)) : _this10.submitForm.call(_this10);
+              } }, formElement.confirmModal)) : _this11.submitForm.call(_this11);
           });
         } }),
       formElement.value

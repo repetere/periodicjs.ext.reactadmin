@@ -18,7 +18,18 @@
         console.log({val});        
       }
 
+      var testMaskInput = function(rawValue) {
+        return ['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/];
+      }
+
+      var testMaskDollarInput = function(rawValue) {
+        return {
+          prefix: '$ ',
+          suffix: '' // This will put the dollar sign at the end, with a space.
+        };
+      }
+
       var selectOnChange = function(element, event){
         element.passProps = {};
         element.passProps.className = 'select_on_change';
-      }</script><script type="text/javascript" src="/extensions/periodicjs.ext.reactadmin/static/js/main.1f2393a8.js"></script></body></html>
+      }</script><script type="text/javascript" src="/extensions/periodicjs.ext.reactadmin/static/js/main.3bfa1ebd.js"></script></body></html>
