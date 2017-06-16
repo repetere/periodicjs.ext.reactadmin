@@ -99,7 +99,13 @@ module.exports = {
                   component: 'Title',
                   children:'TEST FORM',
                 },
-                
+                {
+                  component: 'MaskedInput',
+                  hasWindowFunc: true,
+                  props: {
+                    mask: 'func:window.testMaskInput',
+                  },
+                },
                 { 
                   component: 'ResponsiveForm',
                   // thisprops: {
@@ -116,6 +122,18 @@ module.exports = {
                       marginBottom:'20px',
                     },
                     'validations': [
+                    {
+                        'name': 'maskeddollar',
+                        'constraints': {
+                          'maskeddollar': {
+                            'presence': 'true',
+                            'length': {
+                              'minimum': 7,
+                              'message': 'has to be atleast 7 chars',
+                            },
+                          },
+                        },
+                      },
                       {
                         'name': 'testData',
                         'constraints': {
@@ -176,6 +194,23 @@ module.exports = {
                       {
                         gridProps: {},
                         formElements: [{
+                          type: 'maskedinput',
+                          name: 'masked',
+                          label: 'Test Mask Input',
+                          passProps: {
+                            mask: 'func:window.testMaskInput',
+                          }
+                        }, {
+                          type: 'maskedinput',
+                          name: 'maskeddollar',
+                          keyUp: true,
+                          validateOnKeyup: true,
+                          label: 'Test Mask Dollar Input',
+                          createNumberMask: true,
+                          passProps: {
+                            mask: 'func:window.testMaskDollarInput',
+                          }
+                        }, {
                           type: 'text',
                           name: 'ssn',
                           label: 'Test SSN Formatter!',
