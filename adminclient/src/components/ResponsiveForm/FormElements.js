@@ -309,7 +309,7 @@ export function getFormDatalist(options){
 
 export function getFormMaskedInput(options) {
   let { formElement, i, /*formgroup, width,*/ onChange, } = options;
-  let initialValue = getInitialValue(formElement, this.state); //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
+  let initialValue = getInitialValue(formElement, this.state);  
   let getPassablePropkeyevents = getPassablePropsKeyEvents.bind(this);
   let fileClassname = `__reactadmin_file_${formElement.name}`;
   let hasError = getErrorStatus(this.state, formElement.name);
@@ -335,8 +335,6 @@ export function getFormMaskedInput(options) {
     };
   }
   passableProps = getPassablePropkeyevents(passableProps, formElement);
-
-  // console.debug({ passableProps });
   if (passableProps && passableProps.multiple) {
     let t = setImmediate(() => { 
       document.querySelector(`.${fileClassname} input`).setAttribute('multiple', true);
@@ -370,7 +368,6 @@ export function getFormMaskedInput(options) {
     </span>
   </FormItem>);
 }
-
 
 export function getFormTextInputArea(options) {
   let { formElement, i, /*formgroup, width,*/ onChange, } = options;
