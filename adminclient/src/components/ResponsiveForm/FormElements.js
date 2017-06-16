@@ -4,12 +4,14 @@ import RACodeMirror from '../RACodeMirror';
 import PreviewEditor from '../PreviewEditor';
 import ResponsiveDatalist from '../ResponsiveDatalist';
 import ResponsiveTable from '../ResponsiveTable';
+import createNumberMask from 'text-mask-addons/dist/createNumberMask';
 import capitalize from 'capitalize';
 // import RAEditor from '../RAEditor';
 // import ResponsiveButton from '../ResponsiveButton';
 // import { EditorState, } from 'draft-js';
 import Slider from 'rc-slider';
-import { ControlLabel, Label, Input, Button, CardFooterItem, Select, Textarea, Group, Image, } from 're-bulma'; 
+import { ControlLabel, Label, Input, Button, CardFooterItem, Select, Textarea, Group, Image, } from 're-bulma';
+import MaskedInput from 'react-text-mask';
 import moment from 'moment';
 import numeral from 'numeral';
 import flatten, { unflatten, } from 'flat';
@@ -304,6 +306,71 @@ export function getFormDatalist(options){
       value={ initialValue } />
   </FormItem>);
 }
+
+export function getFormMaskedInput(options) {
+  let { formElement, i, /*formgroup, width,*/ onChange, } = options;
+  let initialValue = getInitialValue(formElement, this.state); //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
+  let getPassablePropkeyevents = getPassablePropsKeyEvents.bind(this);
+  let fileClassname = `__reactadmin_file_${formElement.name}`;
+  let hasError = getErrorStatus(this.state, formElement.name);
+  let hasValue = (formElement.name && this.state[formElement.name])? true : false;
+  let passableProps = Object.assign({
+    type: formElement.type || 'text',
+    className: '__re-bulma_input',
+  }, formElement.passProps);
+  if (typeof initialValue !== 'string') {
+    initialValue = JSON.stringify(initialValue, null, 2);
+  }
+  if (formElement.disableOnChange) {
+    onChange = () => {};
+  } else if (!onChange) {
+    onChange = (event) => {
+      let text = event.target.value;
+      let updatedStateProp = {};
+      if (passableProps && passableProps.multiple) {
+        document.querySelector(`.${fileClassname} input`).setAttribute('multiple', true);
+      }
+      updatedStateProp[ formElement.name ] = (passableProps.maxLength)? text.substring(0, passableProps.maxLength): text;
+      this.setState(updatedStateProp);
+    };
+  }
+  passableProps = getPassablePropkeyevents(passableProps, formElement);
+
+  // console.debug({ passableProps });
+  if (passableProps && passableProps.multiple) {
+    let t = setImmediate(() => { 
+      document.querySelector(`.${fileClassname} input`).setAttribute('multiple', true);
+      clearImmediate(t);
+    });
+  }
+
+  let mask = [];
+  if (formElement.createNumberMask && passableProps.mask.indexOf('func:window') !== -1 && typeof window[ passableProps.mask.replace('func:window.', '') ] === 'function') {
+    let numberMaskConfig = (typeof window[ passableProps.mask.replace('func:window.', '') ].call(this, formElement) === 'object') ? window[ passableProps.mask.replace('func:window.', '') ].call(this, formElement) : {};
+    mask = createNumberMask(numberMaskConfig);
+  } else if (passableProps.mask.indexOf('func:window') !== -1 && typeof window[ passableProps.mask.replace('func:window.', '') ] === 'function') {
+    mask = window[ passableProps.mask.replace('func:window.', '') ].bind(this, formElement);
+  }
+
+  let wrapperProps = Object.assign({
+    className: '__rebulma_control',
+  }, formElement.wrapperProps);
+
+  return (<FormItem key={i} {...formElement.layoutProps} hasError={hasError} hasValue={hasValue} >
+    {getFormLabel(formElement)}
+    <span {...wrapperProps}>
+      <MaskedInput
+      {...passableProps}
+      mask={mask}
+      color={(hasError)?'isDanger':undefined}
+      onChange={onChange}
+      placeholder={formElement.placeholder}
+      value={initialValue} />
+    {getCustomErrorLabel(hasError, this.state, formElement)}
+    </span>
+  </FormItem>);
+}
+
 
 export function getFormTextInputArea(options) {
   let { formElement, i, /*formgroup, width,*/ onChange, } = options;
@@ -648,6 +715,7 @@ export function getFormGroup(options) {
   </FormItem>);
 }
 
+//-------------
 export function getFormCode(options) {
   let { formElement, i, onValueChange, } = options;
   let hasError = getErrorStatus(this.state, formElement.name);

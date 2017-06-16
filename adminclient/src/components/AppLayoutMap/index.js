@@ -1,6 +1,7 @@
 import React, { createElement, } from 'react';
 import * as rebulma from 're-bulma';
 import * as recharts from 'recharts';
+import MaskedInput from 'react-text-mask';
 import { Link, } from 'react-router';
 import Slider, { Range, } from 'rc-slider';
 import { Carousel, } from 'react-responsive-carousel';
@@ -33,6 +34,7 @@ export let AppLayoutMap = Object.assign({}, {
   recharts, ResponsiveForm, DynamicLayout, DynamicForm, RawOutput, RawStateOutput, FormItem, MenuAppLink, SubMenuLinks, ResponsiveTable, ResponsiveCard, DynamicChart, ResponsiveBar, ResponsiveTabs, ResponsiveDatalist, CodeMirror, Range, Slider, GoogleMap, Carousel, PreviewEditor, /* Editor,*/
   ResponsiveLink,
   ResponsiveButton,
+  MaskedInput,
 }, React.DOM, rebulma, window.__ra_custom_elements, { Link, });
 
 export function getRenderedComponent(componentObject, resources, debug) {
