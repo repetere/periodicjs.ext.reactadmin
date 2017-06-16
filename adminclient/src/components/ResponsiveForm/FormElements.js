@@ -342,6 +342,8 @@ export function getFormMaskedInput(options) {
     });
   }
 
+  formElement.customErrorProps = (formElement.customErrorProps) ? Object.assign({}, { marginTop: '6px' }, formElement.customErrorProps) : {marginTop: '6px'};
+
   let mask = [];
   if (formElement.createNumberMask && passableProps.mask.indexOf('func:window') !== -1 && typeof window[ passableProps.mask.replace('func:window.', '') ] === 'function') {
     let numberMaskConfig = (typeof window[ passableProps.mask.replace('func:window.', '') ].call(this, formElement) === 'object') ? window[ passableProps.mask.replace('func:window.', '') ].call(this, formElement) : {};
@@ -351,7 +353,7 @@ export function getFormMaskedInput(options) {
   }
 
   let wrapperProps = Object.assign({
-    className: '__rebulma_control',
+    className: '__re-bulma_control',
   }, formElement.wrapperProps);
 
   return (<FormItem key={i} {...formElement.layoutProps} hasError={hasError} hasValue={hasValue} >
@@ -359,7 +361,8 @@ export function getFormMaskedInput(options) {
     <span {...wrapperProps}>
       <MaskedInput
       {...passableProps}
-      mask={mask}
+        mask={mask}
+        className={(hasError) ? passableProps.className + ' __re-bulma_is-danger' : passableProps.className}  
       color={(hasError)?'isDanger':undefined}
       onChange={onChange}
       placeholder={formElement.placeholder}

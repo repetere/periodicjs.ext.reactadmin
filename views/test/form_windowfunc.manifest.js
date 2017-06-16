@@ -193,8 +193,7 @@ module.exports = {
                     formgroups: [
                       {
                         gridProps: {},
-                        formElements: [
-                          {
+                        formElements: [{
                           type: 'maskedinput',
                           name: 'masked',
                           label: 'Test Mask Input',
@@ -211,8 +210,7 @@ module.exports = {
                           passProps: {
                             mask: 'func:window.testMaskDollarInput',
                           }
-                          },
-                          {
+                        }, {
                           type: 'text',
                           name: 'ssn',
                           label: 'Test SSN Formatter!',
