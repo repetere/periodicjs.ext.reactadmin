@@ -11,7 +11,6 @@ module.exports = {
             padding:'5rem 0',
           },
         },
-        // props: { size: 'isFullheight', },
         children: [ {
           component: 'HeroBody',
           props:{},
@@ -51,30 +50,25 @@ module.exports = {
                   component: 'Title',
                   children:'TEST TEXT MASK',
                 },
-                // {
-                //   component: 'MaskedInput',
-                //   hasWindowFunc: true,
-                //   props: {
-                //     mask: 'func:window.testMaskInput',
-                //   },
-                // }, {
-                //   component: 'MaskedInput',
-                //   hasWindowFunc: true,
-                //   props: {
-                //     mask: 'func:window.testMaskInput',
-                //   },
-                // },
+                {
+                  component: 'MaskedInput',
+                  hasWindowFunc: true,
+                  props: {
+                    mask: 'func:window.testMaskInput',
+                  },
+                }, {
+                  component: 'MaskedInput',
+                  hasWindowFunc: true,
+                  props: {
+                    mask: 'func:window.testMaskInput',
+                  },
+                },
                  { 
                   component: 'ResponsiveForm',
-                  // thisprops: {
-                  //   formdata:[ 'dynamic', ],
-                  // },
                   props: {
                     cardForm: {},
                     dynamicField:'testform',
                     onSubmit: 'func:this.props.setDynamicData',
-                    // onChange: 'func:this.props.setDynamicData',
-                    // onChange: 'func:window.testWindowFuncOnChange',
                     flattenFormData: true,
                     style: {
                       marginBottom:'20px',

@@ -318,11 +318,7 @@ export function getFormMaskedInput(options) {
     type: 'text',
     className: '__re-bulma_input',
   }, formElement.passProps);
-  console.log('~~~~~~~~~~~~~~~~~~~~~~~');
-  console.log('~~~~~~~~~~~~~~~~~~~~~~~');
-  console.log('~~~~~~~~~~~~~~~~~~~~~~~');
-  console.log(formElement.passProps);
-  console.log(passableProps);
+  
   if (typeof initialValue !== 'string') {
     initialValue = JSON.stringify(initialValue, null, 2);
   }
