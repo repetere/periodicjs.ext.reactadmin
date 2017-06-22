@@ -410,9 +410,10 @@ function getFormMaskedInput(options) {
   var hasError = getErrorStatus(this.state, formElement.name);
   var hasValue = formElement.name && this.state[formElement.name] ? true : false;
   var passableProps = (0, _assign2.default)({
-    type: formElement.type || 'text',
+    type: 'text',
     className: '__re-bulma_input'
   }, formElement.passProps);
+
   if (typeof initialValue !== 'string') {
     initialValue = (0, _stringify2.default)(initialValue, null, 2);
   }
@@ -549,7 +550,9 @@ function getFormTextArea(options) {
     initialValue = (0, _stringify2.default)(initialValue, null, 2);
   }
   if (formElement.disableOnChange) {
-    _onChange = function onChange() {};
+    _onChange = function onChange() {
+      return function () {};
+    };
   } else if (!_onChange) {
     _onChange = valueChangeHandler.bind(this, formElement);
   }
@@ -585,7 +588,9 @@ function getFormSelect(options) {
     initialValue = (0, _stringify2.default)(initialValue, null, 2);
   }
   if (formElement.disableOnChange) {
-    _onChange2 = function onChange() {};
+    _onChange2 = function onChange() {
+      return function () {};
+    };
   } else if (!_onChange2) {
     _onChange2 = valueChangeHandler.bind(this, formElement);
   }
