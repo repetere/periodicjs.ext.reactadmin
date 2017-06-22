@@ -315,9 +315,10 @@ export function getFormMaskedInput(options) {
   let hasError = getErrorStatus(this.state, formElement.name);
   let hasValue = (formElement.name && this.state[formElement.name])? true : false;
   let passableProps = Object.assign({
-    type: formElement.type || 'text',
+    type: 'text',
     className: '__re-bulma_input',
   }, formElement.passProps);
+  
   if (typeof initialValue !== 'string') {
     initialValue = JSON.stringify(initialValue, null, 2);
   }
@@ -444,7 +445,7 @@ export function getFormTextArea(options) {
     initialValue = JSON.stringify(initialValue, null, 2);
   }
   if (formElement.disableOnChange) {
-    onChange = () => {};
+    onChange = () => { return () => {}};
   } else if (!onChange) {
     onChange = valueChangeHandler.bind(this, formElement);
   }
@@ -475,7 +476,7 @@ export function getFormSelect(options) {
     initialValue = JSON.stringify(initialValue, null, 2);
   }
   if (formElement.disableOnChange) {
-    onChange = () => {};
+    onChange = () => { return () => {}};
   } else if (!onChange) {
     onChange = valueChangeHandler.bind(this, formElement);
   }  
