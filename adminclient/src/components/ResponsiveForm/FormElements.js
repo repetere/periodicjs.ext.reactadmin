@@ -58,6 +58,10 @@ function getCustomErrorLabel(hasError, state, formelement) {
   ): null;
 }
 
+function getCustomErrorIcon(hasError, state, formelement) {
+  return (hasError && (formelement.errorIconRight || formelement.errorIconLeft)) ? (<i className={'__re-bulma_fa fa fa-warning'}></i>): null;
+}
+
 function valueChangeHandler(formElement) {
   return  (event) => {
     let text = event.target.value;
@@ -356,7 +360,12 @@ export function getFormMaskedInput(options) {
   let wrapperProps = Object.assign({
     className: '__re-bulma_control',
   }, formElement.wrapperProps);
-
+ 
+  wrapperProps.className = (hasError && (formElement.errorIconRight || formElement.errorIconLeft)) ? (formElement.errorIconRight) ? 
+    wrapperProps.className + ' __re-bulma_has-icon __re-bulma_has-icon-right'
+    : wrapperProps.className + ' __re-bulma_has-icon __re-bulma_has-icon-left'
+    : wrapperProps.className;
+  
   return (<FormItem key={i} {...formElement.layoutProps} hasError={hasError} hasValue={hasValue} >
     {getFormLabel(formElement)}
     <span {...wrapperProps}>
@@ -368,7 +377,8 @@ export function getFormMaskedInput(options) {
       onChange={onChange}
       placeholder={formElement.placeholder}
       value={initialValue} />
-    {getCustomErrorLabel(hasError, this.state, formElement)}
+      {getCustomErrorIcon(hasError, this.state, formElement)}  
+      {getCustomErrorLabel(hasError, this.state, formElement)}
     </span>
   </FormItem>);
 }

@@ -80,8 +80,8 @@ module.exports = {
                           'maskeddollar': {
                             'presence': 'true',
                             'length': {
-                              'minimum': 7,
-                              'message': 'has to be atleast 7 chars',
+                              'minimum': 3,
+                              'message': 'has to be atleast 3 chars',
                             },
                           },
                         },
@@ -104,6 +104,7 @@ module.exports = {
                           keyUp: true,
                           validateOnKeyup: true,
                           label: 'Test Mask Dollar Input',
+                          errorIconLeft: true,
                           createNumberMask: true,
                           passProps: {
                             mask: 'func:window.testMaskDollarInput',
