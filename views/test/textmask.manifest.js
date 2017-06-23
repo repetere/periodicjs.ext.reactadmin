@@ -108,7 +108,6 @@ module.exports = {
                           createNumberMask: true,
                           passProps: {
                             mask: 'func:window.testMaskDollarInput',
-                            hasIconRight: true,
                           }
                         }, 
                           {
