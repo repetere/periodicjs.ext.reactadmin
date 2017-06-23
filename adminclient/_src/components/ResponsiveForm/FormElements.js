@@ -164,6 +164,10 @@ function getCustomErrorLabel(hasError, state, formelement) {
   ) : null;
 }
 
+function getCustomErrorIcon(hasError, state, formelement) {
+  return hasError && (formelement.errorIconRight || formelement.errorIconLeft) ? _react2.default.createElement('i', { className: '__re-bulma_fa fa fa-warning' }) : null;
+}
+
 function valueChangeHandler(formElement) {
   var _this = this;
 
@@ -452,6 +456,8 @@ function getFormMaskedInput(options) {
     className: '__re-bulma_control'
   }, formElement.wrapperProps);
 
+  wrapperProps.className = hasError && (formElement.errorIconRight || formElement.errorIconLeft) ? formElement.errorIconRight ? wrapperProps.className + ' __re-bulma_has-icon __re-bulma_has-icon-right' : wrapperProps.className + ' __re-bulma_has-icon __re-bulma_has-icon-left' : wrapperProps.className;
+
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps, { hasError: hasError, hasValue: hasValue }),
@@ -466,6 +472,7 @@ function getFormMaskedInput(options) {
         onChange: onChange,
         placeholder: formElement.placeholder,
         value: initialValue })),
+      getCustomErrorIcon(hasError, this.state, formElement),
       getCustomErrorLabel(hasError, this.state, formElement)
     )
   );
