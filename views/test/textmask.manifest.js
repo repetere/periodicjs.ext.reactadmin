@@ -104,7 +104,7 @@ module.exports = {
                           keyUp: true,
                           validateOnKeyup: true,
                           label: 'Test Mask Dollar Input',
-                          errorIconRight: true,
+                          errorIconLeft: true,
                           createNumberMask: true,
                           passProps: {
                             mask: 'func:window.testMaskDollarInput',

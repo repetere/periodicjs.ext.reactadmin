@@ -59,7 +59,7 @@ function getCustomErrorLabel(hasError, state, formelement) {
 }
 
 function getCustomErrorIcon(hasError, state, formelement) {
-  return (hasError && formelement.errorIconRight) ? (<i className={'__re-bulma_fa fa fa-warning'}></i>): null;
+  return (hasError && (formelement.errorIconRight || formelement.errorIconLeft)) ? (<i className={'__re-bulma_fa fa fa-warning'}></i>): null;
 }
 
 function valueChangeHandler(formElement) {
@@ -361,8 +361,10 @@ export function getFormMaskedInput(options) {
     className: '__re-bulma_control',
   }, formElement.wrapperProps);
  
-  wrapperProps.className = (hasError && formElement.errorIconRight) ? wrapperProps.className + ' __re-bulma_has-icon __re-bulma_has-icon-right'
-    : wrapperProps.className; 
+  wrapperProps.className = (hasError && (formElement.errorIconRight || formElement.errorIconLeft)) ? (formElement.errorIconRight) ? 
+    wrapperProps.className + ' __re-bulma_has-icon __re-bulma_has-icon-right'
+    : wrapperProps.className + ' __re-bulma_has-icon __re-bulma_has-icon-left'
+    : wrapperProps.className;
   
   return (<FormItem key={i} {...formElement.layoutProps} hasError={hasError} hasValue={hasValue} >
     {getFormLabel(formElement)}
