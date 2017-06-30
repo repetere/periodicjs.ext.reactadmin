@@ -302,16 +302,12 @@ export function getFormDatalist(options){
   if(formElement.datalist.staticSearch){
     // let datalistdata = this.state[formElement.name];
     let datalistdata = [];
-    let staticSearchField = '';
     if(this.props.__formOptions && this.props.__formOptions[formElement.name]){
       datalistdata = this.props.__formOptions[formElement.name];
-      staticSearchField = formElement.name;
     } else {
       datalistdata = this.props.formdata[pluralize(formElement.datalist.entity)] || [];
-      staticSearchField = formElement.datalist.field;
     }
     passedProps.datalistdata = datalistdata;
-    passedProps.staticSearchField = staticSearchField;
   }
   return (<FormItem key={i} {...formElement.layoutProps} >
   {getFormLabel(formElement)}  
