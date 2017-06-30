@@ -202,7 +202,7 @@ export const defaultNewRowData = {
 };
 
 export function getFilterOptions(options) {
-  const { rows, headers, filters, } = options;
+  const { rows, headers, filters, simpleSearchFilter, } = options;
   let selectOptions = [];
   let useableheaders = headers.map(header=>header.sortid);
   if (filters) {
@@ -210,7 +210,7 @@ export function getFilterOptions(options) {
       selectOptions.push({ label: filter.label || filter, value: filter.value || filter, });
     });
   } else {
-    if (rows && rows.length) {
+    if (rows && rows.length && !simpleSearchFilter) {
       let rowheaders = Object.keys(rows[ 0 ]);
       // console.debug({ rowheaders });
       useableheaders = Object.assign([], rowheaders, useableheaders);

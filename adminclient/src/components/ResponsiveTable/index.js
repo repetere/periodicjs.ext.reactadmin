@@ -43,7 +43,7 @@ class ResponsiveTable extends Component {
     if (props.flattenRowData) {
       rows = rows.map(row => Object.assign({}, row, flatten(row, props.flattenRowDataOptions)));
     }
-    this.filterSelectOptions = getFilterOptions({ rows, headers, filters: this.props.filterSelectOptions, });
+    this.filterSelectOptions = getFilterOptions({ rows, headers, filters: this.props.filterSelectOptions, simpleSearchFilter: this.props.simpleSearchFilter, });
     this.sortableSelctOptions = getFilterSortableOption({ headers, });
 
     this.state = {

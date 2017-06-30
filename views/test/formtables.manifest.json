@@ -283,6 +283,23 @@
                         }
                       ]
                     }
+                  }, {
+                    "component":"ResponsiveTable",
+                    "props":{
+                      "showFilterSearch": true,
+                      "flattenRowData": true,
+                      "simpleSearchFilter": false,
+                      "headers":[
+                        { "label": "#", "value":"--idx-ctr--" },
+                        { "label": "Email", "sortid":"email", "sortable":true }, 
+                        {"label":"First Name","sortid":"firstname", "sortable":true }
+                      ],
+                      "limit":10,
+                      "numItems":20
+                    },
+                    "asyncprops": {
+                      "rows": ["tabledata", "users" ]
+                    }
                   }
                 ]
               }
