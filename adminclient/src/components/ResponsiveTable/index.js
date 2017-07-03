@@ -14,6 +14,7 @@ import FileReaderInput from 'react-file-reader-input';
 import path from 'path';
 import { csv2json, json2csv, } from 'json-2-csv';
 import RACodeMirror from '../RACodeMirror';
+import ResponsiveDatalist from '../ResponsiveDatalist';
 import { filterQuerySelectOptions, propTypes, defaultProps, getOptionsHeaders, getHeadersFromRows, excludeEmptyHeaders, getFilterOptions, defaultNewRowData, filterQuerySelectOptionsMap, getFilterSortableOption, } from './TableHelpers';
 
 const filterLabelStyleProps = {
@@ -516,6 +517,22 @@ class ResponsiveTable extends Component {
             return <option key={k} disabled={opt.disabled} value={opt.value}>{opt.label || opt.value}</option>;
           })}
         </rb.Select>;
+      } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'datalist') {
+        let rowdata = Array.isArray(this.props.__tableOptions[ header.sortid ][ options.rowIndex ]) ? this.props.__tableOptions[ header.sortid ][ options.rowIndex ]
+          : Array.isArray(this.props.__tableOptions[ header.sortid ]) ? this.props.__tableOptions[ header.sortid ]
+            : [];
+        return <ResponsiveDatalist
+          value={value}
+          {...header.datalistProps}
+          datalistdata={ rowdata }
+          onChange={(event) => {
+            let text = event;
+            let name = header.sortid;
+            let rowIndex = options.rowIndex;
+            this.updateInlineRowText({ name, text, rowIndex, });
+          }}
+        >
+        </ResponsiveDatalist>
       } else if (typeof options.idx !=='undefined' && typeof returnValue==='string' && returnValue.indexOf('--idx--')!==-1) {
         returnValue = returnValue.replace('--idx--', options.idx);
       }
