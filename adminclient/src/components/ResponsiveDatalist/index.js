@@ -55,13 +55,18 @@ class ResponsiveDatalist extends Component {
     };
     this.inputProps = Object.assign({}, this.props.passableProps);
     this.searchFunction = debounce(this.updateDataList, 200);
-
+    this.filterStaticData = this.filterStaticData.bind(this);
   }
   componentWillReceiveProps(nextProps) {
     // console.debug({ nextProps });
     // this.setState(Object.assign({}, nextProps, this.props.getState()));
     // // console.log('this.state', this.state);
   }
+
+  filterStaticData(options){
+    return this.props.datalistdata.filter(item => (item[this.props.field].indexOf(options.search) > -1));
+  }
+
   updateDataList(options) {
     // console.log('this.props.resourceUrl', this.props.resourceUrl);
     if(this.props.resourceUrl){
@@ -89,6 +94,16 @@ class ResponsiveDatalist extends Component {
         }, e => {
           this.props.errorNotification(e);
         });
+    } else if (this.props.staticSearch){
+      this.setState({ isSearching: true, });
+      //options.search is the actual content
+      let updatedState = {};
+      updatedState.selectedData = this.filterStaticData(options);
+      updatedState.isSearching = false;
+      // console.debug({updatedState,response});
+      this.setState(updatedState);
+      //value is the array of selected values
+      //selectedData is the filtered list that changes everytime user types
     } else{
       console.debug({ options,  });
     }
