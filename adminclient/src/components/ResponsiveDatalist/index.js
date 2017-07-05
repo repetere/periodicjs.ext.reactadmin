@@ -23,6 +23,7 @@ const propTypes = {
   value: PropTypes.any,
   onChange: PropTypes.func,
   limit: PropTypes.number,
+  datalistdata: PropTypes.array,
 };
 
 const defaultProps = {
@@ -36,7 +37,8 @@ const defaultProps = {
   selector:'_id',
   displayField:'title',
   dbname:'periodic',
-  limit:10,
+  limit: 10,
+  datalistdata: [],
   onChange:(data)=>{
     console.debug('ResponsiveDatalist onChange', { data, })
 ;
@@ -63,8 +65,8 @@ class ResponsiveDatalist extends Component {
     // // console.log('this.state', this.state);
   }
 
-  filterStaticData(options){
-    return this.props.datalistdata.filter(item => (item[this.props.field].indexOf(options.search) > -1));
+  filterStaticData(options) {
+    return this.props.datalistdata.filter(item => (item[ this.props.field ].indexOf(options.search) > -1));
   }
 
   updateDataList(options) {
@@ -94,7 +96,7 @@ class ResponsiveDatalist extends Component {
         }, e => {
           this.props.errorNotification(e);
         });
-    } else if (this.props.staticSearch){
+    } else if (this.props.staticSearch) {
       this.setState({ isSearching: true, });
       //options.search is the actual content
       let updatedState = {};
