@@ -57,6 +57,7 @@ var propTypes = exports.propTypes = {
   showFilterSearch: _react.PropTypes.bool,
   usingFiltersInSearch: _react.PropTypes.bool,
   headers: _react.PropTypes.array,
+  __tableOptions: _react.PropTypes.object,
   rows: _react.PropTypes.array,
   tableFooter: _react.PropTypes.bool,
   onChange: _react.PropTypes.func,
@@ -216,7 +217,8 @@ var defaultNewRowData = exports.defaultNewRowData = {
 function getFilterOptions(options) {
   var rows = options.rows,
       headers = options.headers,
-      filters = options.filters;
+      filters = options.filters,
+      simpleSearchFilter = options.simpleSearchFilter;
 
   var selectOptions = [];
   var useableheaders = headers.map(function (header) {
@@ -227,7 +229,7 @@ function getFilterOptions(options) {
       selectOptions.push({ label: filter.label || filter, value: filter.value || filter });
     });
   } else {
-    if (rows && rows.length) {
+    if (rows && rows.length && !simpleSearchFilter) {
       var rowheaders = (0, _keys2.default)(rows[0]);
       // console.debug({ rowheaders });
       useableheaders = (0, _assign2.default)([], rowheaders, useableheaders);

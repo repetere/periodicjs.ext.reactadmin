@@ -105,6 +105,10 @@ var _numeral = require('numeral');
 
 var _numeral2 = _interopRequireDefault(_numeral);
 
+var _pluralize = require('pluralize');
+
+var _pluralize2 = _interopRequireDefault(_pluralize);
+
 var _flat = require('flat');
 
 var _flat2 = _interopRequireDefault(_flat);
@@ -117,9 +121,6 @@ var _FormHelpers = require('./FormHelpers');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// import RAEditor from '../RAEditor';
-// import ResponsiveButton from '../ResponsiveButton';
-// import { EditorState, } from 'draft-js';
 function getPropertyAttribute(options) {
   var property = options.property,
       element = options.element;
@@ -141,6 +142,10 @@ function getPropertyAttribute(options) {
     return returnVal;
   }
 }
+// import RAEditor from '../RAEditor';
+// import ResponsiveButton from '../ResponsiveButton';
+// import { EditorState, } from 'draft-js';
+
 
 function getErrorStatus(state, name) {
   return state.formDataErrors && state.formDataErrors[name];
@@ -386,6 +391,16 @@ function getFormDatalist(options) {
   }, formElement.datalist);
   // console.debug({formElement,initialValue, },'this.state',this.state);
   // console.debug({ passedProps });
+  if (formElement.datalist.staticSearch) {
+    // let datalistdata = this.state[formElement.name];
+    var datalistdata = [];
+    if (this.props.__formOptions && this.props.__formOptions[formElement.name]) {
+      datalistdata = this.props.__formOptions[formElement.name];
+    } else {
+      datalistdata = this.props.formdata[(0, _pluralize2.default)(formElement.datalist.entity)] || [];
+    }
+    passedProps.datalistdata = datalistdata;
+  }
   return _react2.default.createElement(
     _FormItem2.default,
     (0, _extends3.default)({ key: i }, formElement.layoutProps),

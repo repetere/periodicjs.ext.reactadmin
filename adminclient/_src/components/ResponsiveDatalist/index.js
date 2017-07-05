@@ -77,7 +77,8 @@ var propTypes = {
   selectedData: _react.PropTypes.object,
   value: _react.PropTypes.any,
   onChange: _react.PropTypes.func,
-  limit: _react.PropTypes.number
+  limit: _react.PropTypes.number,
+  datalistdata: _react.PropTypes.array
 };
 // import flatten from 'flat';
 
@@ -94,6 +95,7 @@ var defaultProps = {
   displayField: 'title',
   dbname: 'periodic',
   limit: 10,
+  datalistdata: [],
   onChange: function onChange(data) {
     console.debug('ResponsiveDatalist onChange', { data: data });
   }
@@ -116,7 +118,7 @@ var ResponsiveDatalist = function (_Component) {
     };
     _this.inputProps = (0, _assign2.default)({}, _this.props.passableProps);
     _this.searchFunction = (0, _debounce2.default)(_this.updateDataList, 200);
-
+    _this.filterStaticData = _this.filterStaticData.bind(_this);
     return _this;
   }
 
@@ -128,9 +130,18 @@ var ResponsiveDatalist = function (_Component) {
       // // console.log('this.state', this.state);
     }
   }, {
+    key: 'filterStaticData',
+    value: function filterStaticData(options) {
+      var _this2 = this;
+
+      return this.props.datalistdata.filter(function (item) {
+        return item[_this2.props.field].indexOf(options.search) > -1;
+      });
+    }
+  }, {
     key: 'updateDataList',
     value: function updateDataList(options) {
-      var _this2 = this;
+      var _this3 = this;
 
       // console.log('this.props.resourceUrl', this.props.resourceUrl);
       if (this.props.resourceUrl) {
@@ -149,13 +160,23 @@ var ResponsiveDatalist = function (_Component) {
         }, stateProps.settings.userprofile.options.headers);
         _util2.default.fetchComponent(fetchURL, { headers: headers })().then(function (response) {
           var updatedState = {};
-          updatedState.selectedData = response[(0, _pluralize2.default)(_this2.props.entity)];
+          updatedState.selectedData = response[(0, _pluralize2.default)(_this3.props.entity)];
           updatedState.isSearching = false;
           // console.debug({updatedState,response});
-          _this2.setState(updatedState);
+          _this3.setState(updatedState);
         }, function (e) {
-          _this2.props.errorNotification(e);
+          _this3.props.errorNotification(e);
         });
+      } else if (this.props.staticSearch) {
+        this.setState({ isSearching: true });
+        //options.search is the actual content
+        var updatedState = {};
+        updatedState.selectedData = this.filterStaticData(options);
+        updatedState.isSearching = false;
+        // console.debug({updatedState,response});
+        this.setState(updatedState);
+        //value is the array of selected values
+        //selectedData is the filtered list that changes everytime user types
       } else {
         console.debug({ options: options });
       }
@@ -228,7 +249,7 @@ var ResponsiveDatalist = function (_Component) {
   }, {
     key: 'render',
     value: function render() {
-      var _this3 = this;
+      var _this4 = this;
 
       var notificationStyle = {
         marginBottom: '5px',
@@ -246,15 +267,15 @@ var ResponsiveDatalist = function (_Component) {
             key: k,
             enableCloseButton: true,
             closeButtonProps: {
-              onClick: _this3.removeDatalistItem.bind(_this3, k),
+              onClick: _this4.removeDatalistItem.bind(_this4, k),
               style: notificationCloseStyle
             },
             style: notificationStyle
           },
-          _this3.getDatalistDisplay({
+          _this4.getDatalistDisplay({
             datum: selected,
-            displayField: _this3.props.displayField,
-            selector: _this3.props.selector
+            displayField: _this4.props.displayField,
+            selector: _this4.props.selector
           })
         );
       }) : null : this.state.value ? _react2.default.createElement(
@@ -292,25 +313,25 @@ var ResponsiveDatalist = function (_Component) {
             },
             onClick: function onClick() {
               // console.debug('clicked onclick',this.props);
-              if (_this3.props.multi) {
-                var newValue = _this3.state.value && Array.isArray(_this3.state.value) && _this3.state.value.length ? _this3.state.value.concat([datum]) : [datum];
-                _this3.setState({
+              if (_this4.props.multi) {
+                var newValue = _this4.state.value && Array.isArray(_this4.state.value) && _this4.state.value.length ? _this4.state.value.concat([datum]) : [datum];
+                _this4.setState({
                   value: newValue,
                   selectedData: false
                 });
-                _this3.props.onChange(newValue);
+                _this4.props.onChange(newValue);
               } else {
-                _this3.setState({
+                _this4.setState({
                   value: datum,
                   selectedData: false
                 });
-                _this3.props.onChange(datum);
+                _this4.props.onChange(datum);
               }
             } }),
-          _this3.getDatalistDisplay({
+          _this4.getDatalistDisplay({
             datum: datum,
-            displayField: _this3.props.displayField,
-            selector: _this3.props.selector
+            displayField: _this4.props.displayField,
+            selector: _this4.props.selector
           })
         );
       }) : null;
@@ -324,7 +345,7 @@ var ResponsiveDatalist = function (_Component) {
             state: this.state.isSearching || undefined,
             onChange: this.onChangeHandler.bind(this),
             ref: function ref(input) {
-              _this3.textInput = input;
+              _this4.textInput = input;
             }
           }))
         ),

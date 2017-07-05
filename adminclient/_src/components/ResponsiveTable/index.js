@@ -100,20 +100,24 @@ var _RACodeMirror = require('../RACodeMirror');
 
 var _RACodeMirror2 = _interopRequireDefault(_RACodeMirror);
 
+var _ResponsiveDatalist = require('../ResponsiveDatalist');
+
+var _ResponsiveDatalist2 = _interopRequireDefault(_ResponsiveDatalist);
+
 var _TableHelpers = require('./TableHelpers');
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// import capitalize from 'capitalize';
+// import pluralize from 'pluralize';
 var filterLabelStyleProps = {
   alignItems: 'center',
   display: 'flex',
   flex: 1,
   height: '100%'
 };
-// import capitalize from 'capitalize';
-// import pluralize from 'pluralize';
 
 var ResponsiveTable = function (_Component) {
   (0, _inherits3.default)(ResponsiveTable, _Component);
@@ -140,7 +144,7 @@ var ResponsiveTable = function (_Component) {
         return (0, _assign2.default)({}, row, (0, _flat.flatten)(row, props.flattenRowDataOptions));
       });
     }
-    _this.filterSelectOptions = (0, _TableHelpers.getFilterOptions)({ rows: rows, headers: headers, filters: _this.props.filterSelectOptions });
+    _this.filterSelectOptions = (0, _TableHelpers.getFilterOptions)({ rows: rows, headers: headers, filters: _this.props.filterSelectOptions, simpleSearchFilter: _this.props.simpleSearchFilter });
     _this.sortableSelctOptions = (0, _TableHelpers.getFilterSortableOption)({ headers: headers });
 
     _this.state = {
@@ -661,6 +665,19 @@ var ResponsiveTable = function (_Component) {
               );
             })
           );
+        } else if (this.props.useInputRows && header && header.formtype && header.formtype === 'datalist') {
+          var rowdata = Array.isArray(this.props.__tableOptions[header.sortid][options.rowIndex]) ? this.props.__tableOptions[header.sortid][options.rowIndex] : Array.isArray(this.props.__tableOptions[header.sortid]) ? this.props.__tableOptions[header.sortid] : [];
+          return _react2.default.createElement(_ResponsiveDatalist2.default, (0, _extends3.default)({
+            value: value
+          }, header.datalistProps, {
+            datalistdata: rowdata,
+            onChange: function onChange(event) {
+              var text = event;
+              var name = header.sortid;
+              var rowIndex = options.rowIndex;
+              _this6.updateInlineRowText({ name: name, text: text, rowIndex: rowIndex });
+            }
+          }));
         } else if (typeof options.idx !== 'undefined' && typeof returnValue === 'string' && returnValue.indexOf('--idx--') !== -1) {
           returnValue = returnValue.replace('--idx--', options.idx);
         }
