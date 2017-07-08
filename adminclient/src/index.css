@@ -1,0 +1,156 @@
+html{
+  height:100%;
+}
+body {
+  margin: 0;
+  padding: 0;
+  font-family: system, -apple-system, ".SFNSText-Regular", "San Francisco", "Roboto", "Segoe UI", "Helvetica Neue", "Lucida Grande", sans-serif;
+  height:100%;
+  overflow-x:hidden;
+}
+a{
+  color:#42afe3; 
+  /*color:#42afe3; info*/
+  /*color:#1fc8db; primary*/
+}
+.Medium-Speed{
+  animation-duration: .25s;
+}
+.Slow-Speed{
+  animation-duration: .5s;
+}
+.Header-Speed{
+  animation-duration: .25s;
+}
+.Nav-Sidebar-Speed{
+  /*-webkit-animation-duration: .25s;*/
+  animation-duration: .25s;
+  width:10rem;
+}
+#root{
+  height:100%;
+}
+div[data-reactroot]{
+  height:100%;
+}
+.__re-bulma_select, .__re-bulma_select select{
+  width:100%;
+}
+.__re-bulma_modal.__re-bulma_is-active .__re-bulma_modal-background{
+  display: none;
+}
+.__re-bulma_table thead td, .__re-bulma_table thead th {
+    /*border-width: 0 0 2px;*/
+    color: #222324;
+}
+.__re-bulma_card-content {
+    /*padding: 5px;*/
+}
+.CodeMirror.cm-s-default{
+  height:100%;
+}
+.__reactadmin_icon_button .__re-bulma_icon:last-child{
+  margin-left: 0;
+}
+.ssr-index{
+  visibility: hidden;
+}
+.__reactadmin_slider__ctr {
+  width: 100%;
+  padding-top: 25px;
+  padding-bottom: 10px;
+}
+
+.__reactadmin_slider__label {
+  display: inline-block;
+  padding-top: 10px;
+  color: #999;
+  font-size: 13px;
+}
+
+.__reactadmin_slider__label:last-child {
+  float: right;
+}
+
+.__reactadmin_slider__handle {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  width: 141px;
+  height: 58px;
+  line-height: 58px;
+  border: 1px solid #CCCCCC;
+  border-radius: 7px;
+  font-weight: 700;
+  background: #fff;
+  font-size: 21px;
+  text-align: center;
+  top: 10px;
+}
+
+.__reactadmin_arrow-right {
+  vertical-align: middle;
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-top: 13px solid transparent;
+  border-bottom: 13px solid transparent;
+  border-left: 13px solid #CCCCCC;
+  margin-left: 12px;
+}
+
+.__reactadmin_arrow-left {
+  vertical-align: middle;
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-top: 13px solid transparent;
+  border-bottom: 13px solid transparent;
+  border-right:13px solid #CCCCCC;
+  margin-right: 12px;
+}
+
+.rc-slider {
+  margin-bottom: 30px;
+}
+
+.rc-slider-track {
+  /*height: 14px;*/
+  background-color: #333;
+}
+
+.__ra_no_border{
+  border:none !important;
+}
+
+/*.rc-slider-rail {
+  height: 14px;
+}*/
+
+.__reactadmin_dp_loading,
+.__reactadmin_dp_loaded{
+  width: '100%';
+  height: '100%';
+}
+@media only screen and (max-width: 480px) {
+  .__reactadmin_slider__handle {
+    width: 120px;
+    height: 50px;
+    line-height: 50px;
+    font-size: 16px;
+  }
+
+  .__reactadmin_arrow-right {
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-left: 10px solid #CCCCCC;
+    margin-left: 12px;
+  }
+
+  .__reactadmin_arrow-left {
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-right:10px solid #CCCCCC;
+    margin-right: 12px;
+  }
+}

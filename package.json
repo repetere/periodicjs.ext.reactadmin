@@ -1,13 +1,11 @@
 {
   "name": "periodicjs.ext.reactadmin",
   "description": "sample extension.",
-  "version": "0.0.1",
+  "version": "3.0.0",
   "main": "index.js",
   "engines": {
     "node": "^6.x"
   },
-  "contributors": [],
-  "repository": {},
   "config": {
     "blanket": {
       "pattern": [
@@ -19,7 +17,12 @@
   "scripts": {
     "test": "mocha -R spec --recursive",
     "postinstall": "cd ../../ && periodicjs aex periodicjs.ext.reactadmin",
-    "postuninstall": "cd ../../ && periodicjs rex periodicjs.ext.reactadmin"
+    "postuninstall": "cd ../../ && periodicjs rex periodicjs.ext.reactadmin",
+    "build_ie": "node_modules/.bin/webpack --config adminclient/config/webpack.config.ie.js --debug --progress",
+    "build_ie_full": "node_modules/.bin/webpack --config adminclient/config/webpack.config.ie.js && cp -r public/ ../../../public/themes/periodicjs.theme.cis/",
+    "ssr_build": "babel adminclient/src -d adminclient/_src --ignore adminclient/src/components/RACodeMirror/",
+    "ssr": "babel utility/ssr_manifest_es6.js > utility/ssr_manifest.js && babel adminclient/src -d adminclient/_src --ignore adminclient/src/components/RACodeMirror/,adminclient/src/index.js",
+    "package": "cd adminclient && npm run build && cd .. && rm -rf public/static/* && npm run ssr && grunt copy"
   },
   "dependencies": {},
   "devDependencies": {
@@ -52,9 +55,30 @@
     "sinon": "^1.17.4",
     "sinon-chai": "^2.8.0"
   },
-  "keywords": [],
-  "bugs": {},
+  "keywords": ["server-side-react", "cms", "admin", "periodicjs"],
   "maintainers": [],
+  "contributors": [{
+      "email": "janbialostok@gmail.com",
+      "name": "Jan Bialostok",
+      "url": "https://github.com/janbialostok"
+    },
+    {
+      "email": "yoojungdan@gmail.com",
+      "name": "Iris Dan"
+    }
+  ],
+  "author": {
+    "email": "yaw.etse@gmail.com",
+    "name": "Yaw Joseph Etse",
+    "url": "http://about.me/yawjosephetse"
+  },
+  "bugs": {
+    "url": "https://github.com/typesettin/periodicjs.ext.reactadmin/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/typesettin/periodicjs.ext.reactadmin.git"
+  },
   "directories": {},
   "optionalDependencies": {}
 }

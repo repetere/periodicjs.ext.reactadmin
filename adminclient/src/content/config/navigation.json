@@ -1,0 +1,48 @@
+{
+  "wrapper":{
+    "style":{
+
+    }
+  },
+  "container":{
+    "style":{
+
+    }
+  },
+  "layout":{
+    "component":"Menu",
+    "props":{
+      "style":{
+        "paddingBottom":70,
+        "width":"10rem"
+      }
+    },
+    "children":[
+      {
+        "component":"MenuLabel",
+        "children":"System"
+      },
+      {
+        "component":"MenuList",
+        "children":[
+          {
+            "component":"MenuAppLink",
+            "props":{
+              "href":"/dashboard",
+              "label":"Dashboard",
+              "id": "dashboard"
+            }
+          },
+          {
+            "component":"MenuAppLink",
+            "props":{
+              "href":"/#logout",
+              "label":"Logout",
+              "onClick": "func:this.props.logoutUser"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

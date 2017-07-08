@@ -1,0 +1,46 @@
+{
+  "containers":{
+    "/healthcheck":{
+      "layout":{
+        "component":"Hero",
+        "props":{
+          "size":"isFullheight"
+        },
+        "children":[
+          {
+            "component":"HeroBody",
+            "props":{
+
+            },
+            "children":[
+              {
+                "component":"Container",
+                "props":{
+                },
+                "children":[
+                  {
+                    "component":"RawOutput",
+                    "asyncprops": {
+                      "healthcheck": ["healthcheckStatus"]
+                    }
+                  },
+                  {
+                    "component":"Title",
+                    "children":"Documentation Page Healthcheck"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "resources":{
+      },
+      "onFinish":"render",
+      "pageData":{
+        "title":"Healthcheck",
+        "navLabel":"Healthcheck"
+      }
+    }
+  }
+}
