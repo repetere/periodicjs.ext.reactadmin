@@ -1,0 +1,160 @@
+{
+  "author": {
+    "email": "yaw.etse@gmail.com",
+    "name": "Yaw Joseph Etse",
+    "url": "http://about.me/yawjosephetse"
+  },
+  "bugs": {
+    "url": "https://github.com/typesettin/periodicjs.ext.reactadmin/issues"
+  },
+  "contributors": [
+    {
+      "email": "hello@vishnu.io",
+      "name": "Vishnu Ravi",
+      "url": "http://www.vishnu.io"
+    },
+    {
+      "email": "alandavidgarcia@gmail.com",
+      "name": "Alan David Garcia",
+      "url": "http://alangalan.tumblr.com"
+    },
+    {
+      "email": "ecasilla@icloud.com",
+      "name": "Ernie Casilla",
+      "url": "http://www.erniecasilla.com"
+    },
+    {
+      "email": "janbialostok@gmail.com",
+      "name": "Jan Bialostok",
+      "url": "https://github.com/janbialostok"
+    },
+    {
+      "email": "yoojungdan@gmail.com",
+      "name": "Iris Dan"
+    }
+  ],
+  "dependencies": {
+    "babel-polyfill": "^6.23.0",
+    "capitalize": "^1.0.0",
+    "debounce": "^1.0.0",
+    "dms2dec": "^1.1.0",
+    "exif": "^0.6.0",
+    "file-saver": "^1.3.3",
+    "flat": "^2.0.1",
+    "google-map-react": "^0.23.0",
+    "isomorphic-fetch": "^2.2.1",
+    "json-2-csv": "^2.1.0",
+    "mime": "^1.3.6",
+    "path-to-regexp": "^1.7.0",
+    "pluralize": "^3.1.0",
+    "prettysize": "0.0.3",
+    "promisie": "~1.6.1",
+    "rc-slider": "^6.2.0",
+    "re-bulma": "^0.4.3",
+    "react": "15.3.2",
+    "react-dom": "15.3.2",
+    "react-file-reader-input": "^1.1.0",
+    "react-responsive-carousel": "^3.1.3",
+    "react-router": "^3.0.2",
+    "react-text-mask": "^5.0.2",
+    "recharts": "^0.21.2",
+    "semver": "^5.3.0",
+    "socket.io": "^1.3.5",
+    "socket.io-client": "^1.4.0",
+    "text-mask-addons": "^3.6.0",
+    "ua-parser-js": "^0.7.12",
+    "useragent": "^2.1.13",
+    "validate.js": "^0.11.1",
+    "whatwg-fetch": "^2.0.3"
+  },
+  "description": "An authentication extension for periodicjs that uses passport to authenticate user sessions.",
+  "devDependencies": {
+    "async": "^2.0.0-rc.5",
+    "babel-cli": "^6.23.0",
+    "babel-core": "^6.24.1",
+    "babel-loader": "^7.0.0",
+    "babel-plugin-inline-json-import": "^0.2.0",
+    "babel-plugin-module-resolver": "^2.5.0",
+    "babel-plugin-react-css-modules": "^2.5.0",
+    "babel-plugin-transform-dev": "^2.0.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.23.0",
+    "babel-plugin-transform-global-defs": "^0.1.1",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.4.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-es2015-ie": "^6.7.0",
+    "babel-preset-es2016": "^6.24.1",
+    "babel-preset-es2017": "^6.24.1",
+    "babel-preset-react": "^6.23.0",
+    "babel-register": "^6.23.0",
+    "chai": "^3.0.0",
+    "coveralls": "^2.11.11",
+    "ejs": "^2.4.1",
+    "flat": "^2.0.1",
+    "grunt": "^1.0.1",
+    "grunt-browserify": "^5.0.0",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-cssmin": "^1.0.1",
+    "grunt-contrib-jshint": "^1.0.0",
+    "grunt-contrib-less": "^1.0.1",
+    "grunt-contrib-uglify": "^1.0.1",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-coveralls": "^1.0.1",
+    "grunt-jsbeautifier": "^0.2.12",
+    "grunt-jsdoc": "^2.0.0",
+    "grunt-mocha-cov": "^0.4.0",
+    "grunt-mocha-istanbul": "^4.0.2",
+    "grunt-newer": "^1.1.1",
+    "grunt-simple-mocha": "^0.4.1",
+    "istanbul": "^0.4.4",
+    "jsdoc": "^3.3.2",
+    "mocha": "^2.4.5",
+    "mocha-lcov-reporter": "^1.2.0",
+    "string-to-json": "^0.1.0",
+    "uglify-js": "^2.4.15",
+    "uglifyify": "^3.0.1",
+    "webpack": "^2.4.1"
+  },
+  "directories": {},
+  "engines": {
+    "node": ">=6.x"
+  },
+  "gitHead": "5815ea1110e2dca76fdea369310bcacf1ab4023e",
+  "homepage": "https://github.com/typesettin/periodicjs.ext.reactadmin",
+  "keywords": [
+    "authentication",
+    "cms",
+    "drupal",
+    "express",
+    "passport",
+    "periodicjs",
+    "react",
+    "wordpress"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "maintainers": [
+    {
+      "email": "yaw.etse@gmail.com",
+      "name": "yawetse"
+    }
+  ],
+  "name": "periodicjs.ext.reactadmin",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/typesettin/periodicjs.ext.reactadmin.git"
+  },
+  "scripts": {
+    "postinstall": "node install.js",
+    "postuninstall": "node uninstall.js",
+    "test": "mocha",
+    "build_ie": "node_modules/.bin/webpack --config adminclient/config/webpack.config.ie.js --debug --progress",
+    "build_ie_full": "node_modules/.bin/webpack --config adminclient/config/webpack.config.ie.js && cp -r public/ ../../../public/themes/periodicjs.theme.cis/",
+    "ssr_build": "babel adminclient/src -d adminclient/_src --ignore adminclient/src/components/RACodeMirror/",
+    "ssr": "babel utility/ssr_manifest_es6.js > utility/ssr_manifest.js && babel adminclient/src -d adminclient/_src --ignore adminclient/src/components/RACodeMirror/,adminclient/src/index.js",
+    "package": "cd adminclient && npm run build && cd .. && rm -rf public/static/* && npm run ssr && grunt copy"
+  },
+  "version": "1.5.9"
+}
