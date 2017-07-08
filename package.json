@@ -21,7 +21,7 @@
     "build_ie": "node_modules/.bin/webpack --config adminclient/config/webpack.config.ie.js --debug --progress",
     "build_ie_full": "node_modules/.bin/webpack --config adminclient/config/webpack.config.ie.js && cp -r public/ ../../../public/themes/periodicjs.theme.cis/",
     "ssr_build": "babel adminclient/src -d adminclient/_src --ignore adminclient/src/components/RACodeMirror/",
-    "ssr": "babel utility/ssr_manifest_es6.js > utility/ssr_manifest.js && babel adminclient/src -d adminclient/_src --ignore adminclient/src/components/RACodeMirror/,adminclient/src/index.js",
+    "ssr": "babel utilities/ssr_manifest_es6.js > utilities/ssr_manifest.js && babel adminclient/src -d adminclient/_src --ignore adminclient/src/components/RACodeMirror/,adminclient/src/index.js",
     "package": "cd adminclient && npm run build && cd .. && rm -rf public/static/* && npm run ssr && grunt copy"
   },
   "dependencies": {
@@ -109,7 +109,12 @@
     "string-to-json": "^0.1.0",
     "webpack": "^2.4.1"
   },
-  "keywords": ["server-side-react", "cms", "admin", "periodicjs"],
+  "keywords": [
+    "server-side-react",
+    "cms",
+    "admin",
+    "periodicjs"
+  ],
   "maintainers": [],
   "contributors": [{
       "email": "janbialostok@gmail.com",

@@ -46,7 +46,7 @@ var _styles = require('../../styles');
 
 var _styles2 = _interopRequireDefault(_styles);
 
-var _route_prefixes = require('../../../../utility/route_prefixes');
+var _route_prefixes = require('../../../../utilities/route_prefixes');
 
 var _capitalize = require('capitalize');
 
@@ -57,10 +57,10 @@ var _AppLayoutMap = require('../AppLayoutMap');
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // FormHorizontal, NavToggle, ControlLabel, Group,
-var AppHeader = function (_Component) {
+var AppHeader = function(_Component) {
   (0, _inherits3.default)(AppHeader, _Component);
 
-  function AppHeader(props /*, context*/) {
+  function AppHeader(props /*, context*/ ) {
     (0, _classCallCheck3.default)(this, AppHeader);
 
     var _this = (0, _possibleConstructorReturn3.default)(this, (AppHeader.__proto__ || (0, _getPrototypeOf2.default)(AppHeader)).call(this, props));
@@ -88,29 +88,30 @@ var AppHeader = function (_Component) {
       // console.debug('this.all_prefixes.manifest_prefix', this.all_prefixes.manifest_prefix);
       var buttonColor = this.props.settings.ui.header.buttonColor;
       var globalSearch = this.props.settings.ui.header.useGlobalSearch ? _react2.default.createElement(
-        _reBulma.NavGroup,
-        { align: 'center', style: { flex: 3 } },
+        _reBulma.NavGroup, { align: 'center', style: { flex: 3 } },
         _react2.default.createElement(
-          _reBulma.NavItem,
-          { style: _styles2.default.fullWidth },
+          _reBulma.NavItem, { style: _styles2.default.fullWidth },
           _react2.default.createElement(_reBulma.Input, { type: 'text', placeholder: 'Search', isExpanded: true, style: _styles2.default.fullWidth })
         )
       ) : null;
       var navLabelTitle = !this.props.settings.ui.header.useGlobalSearch && this.props.ui.nav_label ? _react2.default.createElement(
-        _reBulma.NavItem,
-        { style: (0, _assign2.default)({
+        _reBulma.NavItem, {
+          style: (0, _assign2.default)({
             justifyContent: 'flex-start'
-          }, _styles2.default.fullWidth) },
+          }, _styles2.default.fullWidth)
+        },
         _react2.default.createElement(
-          'span',
-          { style: (0, _assign2.default)({ fontSize: '20px' }, this.props.settings.ui.header.navLabelStyle) },
+          'span', { style: (0, _assign2.default)({ fontSize: '20px' }, this.props.settings.ui.header.navLabelStyle) },
           this.props.ui.nav_label
         )
       ) : null;
       return _react2.default.createElement(
-        _reBulma.Hero,
-        { color: this.props.settings.ui.header.color, isBold: this.props.settings.ui.header.isBold, style: (0, _assign2.default)(_styles2.default.fixedTop, _styles2.default.navContainer, this.props.settings.ui.header.containerStyle),
-          className: this.props.settings.ui.initialization.show_header || this.props.user.isLoggedIn ? 'animated fadeInDown Header-Speed' : 'animated slideOutDown Header-Speed' },
+        _reBulma.Hero, {
+          color: this.props.settings.ui.header.color,
+          isBold: this.props.settings.ui.header.isBold,
+          style: (0, _assign2.default)(_styles2.default.fixedTop, _styles2.default.navContainer, this.props.settings.ui.header.containerStyle),
+          className: this.props.settings.ui.initialization.show_header || this.props.user.isLoggedIn ? 'animated fadeInDown Header-Speed' : 'animated slideOutDown Header-Speed'
+        },
         this.props.ui && this.props.ui.components && this.props.ui.components.header && (0, _typeof3.default)(this.props.ui.components.header) === 'object' && this.props.ui.components.header.layout ? this.getRenderedComponent(this.props.ui.components.header.layout) : _react2.default.createElement(
           _reBulma.HeroHead,
           null,
@@ -118,11 +119,9 @@ var AppHeader = function (_Component) {
             _reBulma.Container,
             null,
             _react2.default.createElement(
-              _reBulma.Nav,
-              { style: { boxShadow: 'none' } },
+              _reBulma.Nav, { style: { boxShadow: 'none' } },
               _react2.default.createElement(
-                _reBulma.NavGroup,
-                { align: 'left' },
+                _reBulma.NavGroup, { align: 'left' },
                 _react2.default.createElement(
                   _reBulma.NavItem,
                   null,
@@ -132,14 +131,12 @@ var AppHeader = function (_Component) {
               ),
               globalSearch,
               _react2.default.createElement(
-                _reBulma.NavGroup,
-                { align: 'right', isMenu: true },
+                _reBulma.NavGroup, { align: 'right', isMenu: true },
                 _react2.default.createElement(
                   _reBulma.NavItem,
                   null,
                   _react2.default.createElement(
-                    _reactRouter.Link,
-                    { to: this.all_prefixes.manifest_prefix + 'account/profile', style: (0, _assign2.default)({ fontSize: '20px' }, _styles2.default.noUnderline, this.props.settings.ui.header.userNameStyle) },
+                    _reactRouter.Link, { to: this.all_prefixes.manifest_prefix + 'account/profile', style: (0, _assign2.default)({ fontSize: '20px' }, _styles2.default.noUnderline, this.props.settings.ui.header.userNameStyle) },
                     (0, _capitalize2.default)(this.state.user.firstname || '') + ' ' + (0, _capitalize2.default)(this.state.user.lastname || '')
                   )
                 ),

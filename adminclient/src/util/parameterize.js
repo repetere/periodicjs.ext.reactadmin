@@ -1,6 +1,6 @@
 // import PathRegExp from 'path-to-regexp';
 import querystring from 'querystring';
-import { findMatchingRoutePath, getParameterizedPath, } from '../../../utility/find_matching_route';
+import { findMatchingRoutePath, getParameterizedPath, } from '../../../utilities/find_matching_route';
 
 export const getParameterized = getParameterizedPath;
 
@@ -10,7 +10,7 @@ export const getParameterized = getParameterizedPath;
  * @param  {string} location Url path that should have params pulled out of it
  * @return {string[]} parameterized values from location string
  */
-export const parameterize = function (route, location) {
+export const parameterize = function(route, location) {
   // console.debug({ route, location });
   let regexp = getParameterized(route);
   let params = regexp.re.exec(location);
@@ -35,7 +35,7 @@ export const parameterize = function (route, location) {
  * @param {Object|string} [options.query] Query params that should be assigned to the resource route. These are assigned regardless of whether matching params are assigned
  * @return {string} The compiled resource route
  */
-export const setParameters = function (options = {}) {
+export const setParameters = function(options = {}) {
   let params = (options.params && Array.isArray(options.params)) ? options.params : parameterize(options.route, options.location);
   let pkeys = Object.keys(params);
   for (let i = 0; i < pkeys.length; i++) {

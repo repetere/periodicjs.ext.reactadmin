@@ -12,7 +12,7 @@ module.exports = function(periodic) {
   ExtensionRouter.use(`${reactadmin.manifest_prefix}securecontent`, SecureContentRouter);
   ExtensionRouter.use(`${reactadmin.manifest_prefix}contentdata`, ContentRouter);
   ExtensionRouter.use(`${reactadmin.manifest_prefix}load`, ComponentRouter);
-  ExtensionRouter.use(`${reactadmin.manifest_prefix}`, ReactAdminRouter);  
+  ExtensionRouter.use(`${reactadmin.manifest_prefix}`, ReactAdminRouter);
 
   return ExtensionRouter;
 };
