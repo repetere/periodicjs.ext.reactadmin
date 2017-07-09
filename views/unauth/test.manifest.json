@@ -1,0 +1,60 @@
+{
+  "containers": {
+    "/pub/home": {
+      "layout": {
+       "component": "Hero",
+        "props": { "size": "isFullheight" },
+        "children": [ {
+          "component": "HeroBody",
+          "children": [ {
+            "component": "Container",
+            "props":{},
+            "children":[{
+              "component": "Content",
+              "props": {},
+              "children": [{
+                "component": "h1",
+                "children": "NO AUTH"
+              }]
+            } ]
+          } ]
+        } ]
+      },
+      "resources": {
+      },
+      "onFinish": "render",
+      "pageData": {
+        "title": "Home",
+        "navLabel": "Home"
+      }
+    },
+    "/pub/ext": {
+      "layout": {
+       "component": "Hero",
+        "props": { "size": "isFullheight" },
+        "children": [ {
+          "component": "HeroBody",
+          "children": [ {
+            "component": "Container",
+            "props":{},
+            "children":[{
+              "component": "Content",
+              "props": {},
+              "children": [{
+                "component": "h1",
+                "children": "NO AUTH IN EXTENSION"
+              }]
+            } ]
+          } ]
+        } ]
+      },
+      "resources": {
+      },
+      "onFinish": "render",
+      "pageData": {
+        "title": "Home",
+        "navLabel": "Home"
+      }
+    }
+  }
+}

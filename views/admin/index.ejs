@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="/favicon.png">
+    <title><%if(typeof pagedata!=='undefined' && pagedata.title){
+      %><%- pagedata.title %><%
+    } else if(locals.reactadmin.settings.title){
+      %><%- locals.reactadmin.settings.title %><%
+    } else if(locals.reactadmin.settings.name){
+      %><%- locals.reactadmin.settings.name %><%
+    } else{%>'Welcome'<%}%></title>
+    <link href="/extensions/periodicjs.ext.reactadmin/static/css/main.c0dda779.css" rel="stylesheet">
+    <%- (locals.reactadmin.settings.custom_css_stylesheet)?`<link href="${locals.reactadmin.settings.custom_css_stylesheet}" rel="stylesheet">`:'' %>
+    <% if(locals.reactadmin.settings.application.additional_header){ %><%- include(`../../../../content/themes/${locals.theme_name}/views/shared/reactadmin/header`,{locals}) ;%><% } %>
+  </head>
+  <body>
+    <div id="root"><%- (typeof body!=='undefined')?body:'' %></div>
+    <script type="text/javascript">
+      <%- locals.periodic.viewHelper.passObjToClient(locals.reactadmin.settings,"__padmin") %>
+    </script>
+      <% if(locals.reactadmin.settings.application.use_custom_elements){ %><%- include(`../../../../content/themes/${locals.theme_name}/views/shared/reactadmin/custom_elements`,{locals});%><% } %>
+    
+    <script type="text/javascript" src="/extensions/periodicjs.ext.reactadmin/static/js/main.7b5be586.js"></script>
+    <% if(locals.reactadmin.settings.application.additional_footer){ %><%- include(`../../../../content/themes/${locals.theme_name}/views/shared/reactadmin/footer`,{locals}) ;%><% } %>
+  </body>
+</html>

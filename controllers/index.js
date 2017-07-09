@@ -1,9 +1,8 @@
 'use strict';
-const periodic = require('periodicjs');
+const reactadmin = require('./reactadmin');
+// const extensions = require('./extensions');
 
 module.exports = {
-  test: (req, res, next) => {
-    periodic.logger.silly('test middleware');
-    next();
-  }
-}
+  reactadmin,
+  // extensions,
+};

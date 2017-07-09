@@ -1,0 +1,38 @@
+{  
+  "layout": {
+    "component": "Hero",
+    "props": { "size": "isFullheight" },
+    "children": [ {
+      "component": "HeroBody",
+      "children": [ {
+        "component": "Container",
+        "props":{},
+        "children":[{
+          "component": "Content",
+          "props": {},
+          "children": [{
+            "component": "h1",
+            "children": "404 FROM EXTENSION PAGE NOT FOUND"
+          },
+          // {
+          // 	"component": "div",
+          // 	"children": "Some dynamic content"
+          //   },
+          {
+            "component": "RawOutput",
+            "props": {
+              "select": "locationdata",  
+              "type": "block",
+              "display": true
+            },  
+            "windowprops": {
+              "locationdata":["location", "href"]
+            }  
+          } ]
+        } ]
+      } ]
+    } ]
+  },
+  "resources": {  },
+  "onFinish":"render"
+}

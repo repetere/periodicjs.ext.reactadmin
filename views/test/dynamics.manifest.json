@@ -1,0 +1,180 @@
+{
+  "containers":{
+    "/r-admin/content/dynamics":{
+      "layout":{
+        "component":"Hero",
+        "props":{
+          "size":"isFullheight"
+        },
+        "children":[
+          {
+            "component":"HeroBody",
+            "props":{
+              "className":"testTest",
+              "style":{
+                "padding":"80px 0"
+              }
+            },
+            "children":[
+              {
+                "component":"Container",
+                "props":{
+                },
+                "children":[
+                  {
+                    "component":"ResponsiveTabs",
+                    "props":{
+                      "tabsType":"navBar",
+                      "tabLabel":"navpages",
+                      "tabLabelProps":{
+                        "style":{
+                          "color":"red"
+                        }
+                      },
+                      "tabs":[
+                        {
+                          "name":"tab 1",
+                          "layout":{
+                            "component":"Section",
+                            "children":"tab content 1"
+                          }
+                        },
+                        {
+                          "name":"tab 2",
+                          "layout":{
+                            "component":"Section",
+                            "children":"tab content 2"
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "component":"div",
+                    "props":{
+                      "dangerouslySetInnerHTML":{
+                        "__html":"<h1>TEST HOME PAGE</h1>"
+                      }
+                    },  
+                    "thisprops": {
+                      "userdata":["user","userdata"]
+                    } ,
+                    "conditionalprops":{
+                      "useractivated":["userdata","activated"],
+                      "useractivated2":["userdata","activated"]
+                    } 
+                  },
+                  {
+                    "component":"div",
+                    "props":{
+                      "dangerouslySetInnerHTML":{
+                        "__html":"<h1>DANGEROUSLY SET VIA INNERHTML</h1>"
+                      }
+                    }
+                  },
+                  {
+                    "component":"Title",
+                    "children":"Standard Documentation Page"
+                  },
+                  {
+                    "component":"DynamicLayout",
+                    "asyncprops":{
+                      "items":["tabledata","users"]
+                    },
+                    "props":{
+                      "style":{
+                        "flexDirection":"column"
+                      },
+                      "layout":{
+                        "component":"Card",
+                        "bindprops":true,
+                        "children":[
+                          {
+                            "component":"CardContent",
+                            "bindprops":true,
+                            "children":[
+                              {
+                                "component":"Content",
+                                "bindprops":true,
+                                "children":[
+                                  {
+                                    "component":"h1",
+                                    "thisprops":{
+                                      "children":["email"]
+                                    }
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      } 
+                    }
+                  },
+                  {
+                    "component":"DynamicLayout",
+                    "props":{
+                      "items":[
+                        {
+                          "title":"title 1",
+                          "description":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec iaculis mauris. @bulmaio. #css #responsive11:09 PM - 1 Jan 2016"
+                        },
+                        {
+                          "title":"title 2",
+                          "description":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec iaculis mauris. @bulmaio. #css #responsive11:09 PM - 1 Jan 2016"
+                        },
+                        {
+                          "title":"title 3",
+                          "description":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec iaculis mauris. @bulmaio. #css #responsive11:09 PM - 1 Jan 2016"
+                        }
+                      ],
+                      "layout":{
+                        "component":"Card",
+                        "bindprops":true,
+                        "children":[
+                          {
+                            "component":"CardContent",
+                            "bindprops":true,
+                            "children":[
+                              {
+                                "component":"Content",
+                                "thisprops":{
+                                  "children":["description"]
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "component":"div",
+                            "bindprops":true,
+                            "children":[
+                              {
+                                "component":"Content",
+                                "thisprops":{
+                                  "children":["title"]
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      } 
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "resources":{
+        "tabledata":"/r-admin/contentdata/periodic/users?format=json&limit=10"
+      },
+      "onFinish":"render",
+      "pageData":{
+        "title":"Home",
+        "navLabel":"Home"
+      }
+    }
+  }
+}
+

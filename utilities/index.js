@@ -24,7 +24,7 @@ function getParameterized(route) {
     });
     return { keys, re: result, };
   }
-};
+}
 
 function findMatchingRoute(routes, location) {
   let matching;
@@ -34,7 +34,7 @@ function findMatchingRoute(routes, location) {
     if (result.re.test(location) && !matching) matching = key;
   });
   return matching;
-};
+}
 
 function reactadmin() {
   const extensionConfig = getSettings();

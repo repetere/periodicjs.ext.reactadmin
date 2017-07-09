@@ -1,0 +1,358 @@
+{
+  "containers":{
+    "/r-admin/content/testtables":{
+      "layout":{
+        "component":"Hero",
+        "props":{
+          "size":"isFullheight"
+        },
+        "children":[
+          {
+            "component":"HeroBody",
+            "props":{
+              "className":"testTest",
+              "style":{
+                "padding":"80px 0"
+              }
+            },
+            "children":[
+              {
+                "component":"Container",
+                "props":{
+                },
+                "children":[
+                  {
+                    "component":"div",
+                    "props":{
+                      "dangerouslySetInnerHTML":{
+                        "__html":"<h1>TEST HOME PAGE</h1>"
+                      }
+                    },  
+                    "thisprops": {
+                      "userdata":["user","userdata"]
+                    } ,
+                    "conditionalprops":{
+                      "useractivated":["userdata","activated"],
+                      "useractivated2":["userdata","activated"]
+                    } 
+                  },
+                  {
+                    "component":"Title",
+                    "children":"Standard Table Documentation Page"
+                  },
+                  {
+                    "component": "ResponsiveButton",
+                    "props": {
+                      "style": {
+                        "margin": 10
+                      },
+                      "buttonProps": {
+                        "size": "isLarge",
+                        "color": "isPrimary"
+                      },
+                      "confirmModal":{}
+                    },
+                    "children":"TEST BUTTON"
+                  },
+                  {
+                    "component":"ResponsiveTable",
+                    "props":{
+                      "filterSearch":true,
+                      "tableSearch":true,
+                      "searchField":"email",
+                      "headers":[
+                        { "label": "#", "value":"--idx-ctr--" },
+                        { "label": "Email", "sortid":"email", "sortable":true },
+                        {"label":"Likes","sortid":"likes"},
+                        {"invalidheaderprop":true}
+                      ],
+                      "limit":10,
+                      "numItems":20,
+                      "rows":[
+                        {
+                          "email":"yaw.etse@gmail.com",
+                          "likes":300
+                        },
+                        {
+                          "email":"odlyaw@gmail.com",
+                          "likes":45
+                        },
+                        {
+                          "email":"newyaw@gmail.com",
+                          "likes":0
+                        },
+                        {
+                          "email":"med@gmail.com",
+                          "likes":2
+                        },
+                        {
+                          "email":"yaw.etse@gmail.com",
+                          "likes":300
+                        },
+                        {
+                          "email":"odlyaw@gmail.com",
+                          "likes":45
+                        },
+                        {
+                          "email":"newyaw@gmail.com",
+                          "likes":0
+                        },
+                        {
+                          "email":"med@gmail.com",
+                          "likes":2
+                        },
+                        {
+                          "email":"yaw.etse@gmail.com",
+                          "likes":300
+                        },
+                        {
+                          "email":"odlyaw@gmail.com",
+                          "likes":45
+                        },
+                        {
+                          "email":"newyaw@gmail.com",
+                          "likes":0
+                        },
+                        {
+                          "email":"med@gmail.com",
+                          "likes":2
+                        },
+                        {
+                          "email":"yaw.etse@gmail.com",
+                          "likes":300
+                        },
+                        {
+                          "email":"odlyaw@gmail.com",
+                          "likes":45
+                        },
+                        {
+                          "email":"newyaw@gmail.com",
+                          "likes":0
+                        },
+                        {
+                          "email":"med@gmail.com",
+                          "likes":2
+                        },
+                        {
+                          "email":"yaw.etse@gmail.com",
+                          "likes":300
+                        },
+                        {
+                          "email":"odlyaw@gmail.com",
+                          "likes":45
+                        },
+                        {
+                          "email":"newyaw@gmail.com",
+                          "likes":0
+                        },
+                        {
+                          "email":"med@gmail.com",
+                          "likes":2
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "component":"ResponsiveTable",
+                    "props":{
+                      "headers":[
+                        { "label": "#", "value":"--idx-ctr--" },
+                        { "label": "Email", "sortid":"email", "sortable":true },
+                        { "label":"Likes", "sortid":"likes", 
+                          "buttons":[
+                            {
+                              "IGNOREbaseUrl":"/r-admin/contentdata/users/:id",
+                              "children":"like",
+                              "passProps":{
+                                "onClick":"func:this.props.fetchAction","onclickBaseUrl":"/r-admin/contentdata/users/:id",
+                                "onclickLinkParams":[{"key":":id","val":"_id"}],
+                                "fetchProps":{
+                                  "method":"GET"
+                                },
+                                "successProps":{
+                                  "success":true
+                                },
+                                "confirmModal":{}
+                              }
+                            }
+                          ]
+                        }
+                      ],
+                      "limit":10,
+                      "IGNOREnumItems":20,
+                      "rows":[
+                        {
+                          "_id":"yaw",
+                          "email":"single@gmail.com",
+                          "likes":"3 likes"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "component":"ResponsiveForm",
+                    "thisprops":{
+                      "formdata":["user","userdata"]
+                    },
+                    "props":{
+                      "notificationForm":{},
+                      "onSubmit":{
+                        "url": "http://localhost:8786/r-admin/contentdata/periodic/users?format=json",
+                        "options":{
+                          "method":"GET"
+                        },
+                        "responseCallback":"func:this.props.debug"
+                      },
+                      "formgroups":[
+                        {
+                          "formElements":[
+                            {
+                              "type":"text",
+                              "name":"search",
+                              "label":"SEARCH"
+                            },
+                            {
+                              "type":"text",
+                              "name":"email",
+                              "label":"Email"
+                            },
+                            {
+                              "type":"text",
+                              "name":"_id",
+                              "value":"58d147779abb3a0c60516c44",
+                              "label":"mongo user id"
+                            },
+                            {
+                              "type":"submit",
+                              "value":"search users"
+                            },
+                            {
+                              "type":"layout",
+                              "value":{
+
+                                "component":"ResponsiveButton",
+                                "bindpropsSKIP":true,
+                                "thispropsSKIP":{
+                                  "formdata":["formdata"]
+                                },
+                                "props":{
+                                  "onclickThisProp":"formdata",
+                                  "onclickBaseUrl": "/r-admin/content/periodic/users/:id",
+                                  "onclickLinkParams": [{
+                                    "key": ":id", 
+                                    "val": "_id"
+                                  }],
+                                  "aProps":{
+                                    "style":{
+                                      "background":"blue",
+                                      "color":"white",
+                                      "borderRadius":"3px",
+                                      "padding":"5px 10px"
+                                    }
+                                  }
+                                },
+                                "children":"Profile Page"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "component": "RawOutput",
+                    "props": {
+                      "select": "userdata",  
+                      "type": "block"
+                    },  
+                    "thisprops": {
+                      "userdata":["user","userdata"]
+                    }  
+                  },
+                  {
+                    "component": "Title",
+                    "props": {
+                      "style": {
+                        "marginTop": 60
+                      }
+                    },
+                    "children": "Suppress Null Values"
+                  },
+                  {
+                    "component":"ResponsiveTable",
+                    "props":{
+                      "headers":[
+                        { "label": "#", "value":"--idx-ctr--" },
+                        { "label": "Email", "sortid":"email", "sortable":true },
+                        {"label":"Likes","sortid":"likes"}
+                      ],
+                      "suppressNullValues": true,
+                      "limit":10,
+                      "numItems":20,
+                      "rows":[
+                        {
+                          "email":"med@gmail.com",
+                          "likes": null
+                        },
+                        {
+                          "email":"yaw.etse@gmail.com",
+                          "likes":300
+                        },
+                        {
+                          "email":"odlyaw@gmail.com",
+                          "likes": null
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "component": "Title",
+                    "children": "Don't Suppress Null Values"
+                  },
+                  {
+                    "component":"ResponsiveTable",
+                    "props":{
+                      "showFilterSearch": true,
+                      "headers":[
+                        { "label": "#", "value":"--idx-ctr--" },
+                        { "label": "Email", "sortid":"email", "sortable":true },
+                        {"label":"Likes","sortid":"likes", "numeralFormat": "$0,0"}
+                      ],
+                      "limit":10,
+                      "numItems":20,
+                      "rows":[
+                        {
+                          "email":"med@gmail.com"
+                        },
+                        {
+                          "email":"yaw.etse@gmail.com",
+                          "likes":3000000
+                        },
+                        {
+                          "email":"odlyaw@gmail.com",
+                          "likes": 400000,
+                          "followers": 20,
+                          "commaVal": "hi, well testing"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "resources":{
+        "tabledata":"/r-admin/contentdata/standard/users?format=json&limit=10"
+      },
+      "callbacks":["func:this.props.debug","func:window.getEORG"],
+      "onFinish":"render",
+      "pageData":{
+        "title":"Home",
+        "navLabel":"Home"
+      }
+    }
+  }
+}
+

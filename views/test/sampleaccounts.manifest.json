@@ -1,0 +1,574 @@
+{
+  "containers":{
+    "/r-admin/content/accounts_sample":{
+      "layout":{
+        "component":"Hero",
+        "props":{
+          "size":"isFullheight"
+        },
+        "children":[
+          {
+            "component":"HeroBody",
+            "children":[{
+              "component":"Container",
+              "props":{
+                "style":{
+                  "paddingTop":80
+                }
+              },
+              "children":[
+                {
+                  "component": "Tabs",
+                  "props":{
+                    "style":{
+                    }
+                  },
+                  "children": [{
+                    "component": "TabGroup",
+                    "props":{
+                      "className":"breadcrumb",
+                      "style":{
+                        "border":"1px solid black",
+                        "color":"red"
+                      }
+                    },
+                    "children": [{
+                      "component": "Tab",
+                      "props": {
+                        "isActive": true,
+                        "style": {}
+                      },
+                      "children": [{
+                        "component": "ResponsiveButton",
+                        "props": {
+                          "selectProps": {
+                            "selected":"loan",
+                            "values":{
+                              "customer":{
+                                "label":"Customer",
+                                "buttonProps":{
+                                  "onClick": "func:this.props.reduxRouter.push",
+                                  "onclickProps": "/crm/applications",
+                                  "onclickBaseUrl":"/r-admin/contentdata/customer/:id",
+                                  "onclickThisProp":"buttonPropsAdded",
+                                  "onclickLinkParams":[{"key":":id","val":"userlimit"}]
+                                }
+                              },
+                              "application":{
+                                "label":"Application",
+                                "buttonProps":{
+                                  "onClick": "func:this.props.reduxRouter.push",
+                                  "onclickProps": "/crm/applications",
+                                  "onclickBaseUrl":"/r-admin/contentdata/application/:id",
+                                  "onclickThisProp":"buttonPropsAdded",
+                                  "onclickLinkParams":[{"key":":id","val":"userlimit"}]
+                                }
+                              },
+                              "loan":{
+                                "label":"loan",
+                                "buttonProps":{
+                                  "onClick": "func:this.props.reduxRouter.push",
+                                  "onclickProps": "/crm/loans",
+                                  "onclickBaseUrl":"/r-admin/contentdata/loan/:id",
+                                  "onclickThisProp":"buttonPropsAdded",
+                                  "onclickLinkParams":[{"key":":id","val":"userlimit"}]
+                                }
+                              },
+                              "cards":{
+                                "label":"cards",
+                                "buttonProps":{
+                                  "onClick": "func:this.props.reduxRouter.push",
+                                  "onclickProps": "/crm/cardss",
+                                  "onclickBaseUrl":"/r-admin/contentdata/cards/:id",
+                                  "onclickThisProp":"buttonPropsAdded",
+                                  "onclickLinkParams":[{"key":":id","val":"userlimit"}]
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "asyncprops":{
+                          "buttonPropsAdded":["tabledata"]
+                        },
+                        "children": "customer"      
+                      }]
+                    },
+                    {
+                      "component": "Tab",
+                      "props": {
+                        "isActive": false                      },
+                      "children": [{
+                        "component": "ResponsiveButton",
+                        "props": {
+                          "onClick": "func:this.props.reduxRouter.push",
+                          "onclickProps": "/crm/applications",
+                          "onclickBaseUrl":"/r-admin/contentdata/accounts/:id",
+                          "onclickLinkParams":[{"key":":id","val":"userlimit"}],
+                          "style": {}
+                        },
+                        "asyncprops":{
+                          "onclickPropObject":["tabledata"]
+                        },
+                        "children": "application"      
+                      }]
+                    },
+                    {
+                      "component": "Tab",
+                      "props": {
+                        "isActive": false
+                      },
+                      "children": [{
+                        "component": "ResponsiveButton",
+                        "props": {
+                          "onclickProps": "/crm/applications"
+                        },
+                        "children": "debug"      
+                      }]
+                    }]
+                  }]
+                },
+                {
+                  "component":"div",
+                  "props":{
+                    "dangerouslySetInnerHTML":{
+                      "__html":"<h1>Accounts: the most used line in code</h1>"
+                    }
+                  }
+                },
+                {
+                  "component": "ResponsiveCard",
+                  "props": {
+                    "cardTitle": "Application Results(# Records)",
+                    "leftIcon":true
+                  },
+                  "children": [{
+                    "component": "ResponsiveTable",
+                    "props": {
+                      "limit":10,
+                      "filterSearch":true,
+                      "tableSearch":true,
+                      "flattenRowData":true,
+                      "baseUrl":"/r-admin/contentdata/users?format=json",
+                      "dataMap":[{
+                        "key":"rows",
+                        "value":"users"
+                      },{
+                        "key":"numItems",
+                        "value":"userscount"
+                      },{
+                        "key":"numPages",
+                        "value":"userpages"
+                      }],
+                      "headerLinkProps":{
+                        "style":{
+                          "textDecoration":"none"
+                        }
+                      },
+                      "headers": [
+                        { "label": "#", "value":"--idx-ctr--" },
+                        { 
+                          "label": "Id", 
+                          "sortid":"_id", 
+                          "link":{
+                            "baseUrl":"/r-admin/contentdata/users/:id",
+                            "params":[{"key":":id","val":"_id"}]
+                          },
+                          "linkProps":{
+                            "style":{
+                              "textDecoration":"none"
+                            }
+                          } 
+                        },
+                        { "label": "Email", "sortid":"email", "sortable":true },
+                        { 
+                          "label": "First Name", 
+                          "sortid":"firstname", 
+                          "sortable":true, 
+                          "columnProps":{
+                            "style":{
+                              "backgroundColor":"lightgrey",
+                              "color":"grey"
+                            }
+                          }, 
+                          "headerColumnProps":{
+                            "style":{
+                              "backgroundColor":"black",
+                              "color":"white"
+                            }
+                          }
+                        }, 
+                        { "label": "Last Name", "sortid":"lastname", "sortable":true }, 
+                        { "label": "Create Date", "sortid":"createdat", "momentFormat":"lll", "sortable":true }
+                      ]
+                    },
+                    "asyncprops":{
+                      "rows":[
+                        "tabledata","users"
+                      ],
+                      "numItems":[
+                        "tabledata","userscount"
+                      ],
+                      "numPages":[
+                        "tabledata","userpages"
+                      ]
+                    }
+                  }]
+                },
+                {
+                  "component":"ResponsiveForm",
+                  "props":{
+                    "notificationForm":true,
+                    "flattenFormData":true,
+                    "onSubmit":"func:this.props.debug",
+                    "style":{
+                      "marginBottom":50
+                    },
+                    "validations":[{
+                      "name":"baseurl",
+                      "constraints":{
+                        "baseurl":{
+                          "presence":"true",
+                          "length":{
+                            "minimum":3,
+                            "message":"THIS has to be an email and is  required"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "name":"originalurl",
+                      "constraints":{
+                        "originalurl":{
+                          "presence":"true",
+                          "length":{
+                            "minimum":3,
+                            "message":"has to be an email and is  required"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "name":"testSelect",
+                      "constraints":{
+                        "testSelect":{
+                          "presence":"true"
+                        }
+                      }
+                    },
+                    {
+                      "name":"testTextAreaInputts",
+                      "constraints":{
+                        "testTextAreaInputts":{
+                          "presence":"true"
+                        }
+                      }
+                    },
+                    {
+                      "name":"jsCode",
+                      "constraints":{
+                        "jsCode":{
+                          "presence":"true",
+                          "length":{
+                            "minimum":3,
+                            "message":"has to be an email and is  required"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "name":"samplecheck",
+                      "constraints":{
+                        "samplecheck":{
+                          "presence":{
+                            "message":"^THIS true"
+                            }
+                        }
+                      }
+                    }],
+                    "formgroups":[
+                    {
+                      "formElements":[
+                      {
+                        "type":"layout",
+                        "layoutProps":{
+                          "style":{
+                            "width":"100%"
+                          }
+                        },
+                        "value":{
+                          "component":"div",
+                          "props":{
+                            "style":{
+                              "textAlign":"center"
+                            }
+                          },
+                          "children":[{
+                            "component":"Title",
+                            "props":{
+                              "size":"is2",
+                              "style":{
+                                "margin":"auto"
+                              }
+                            },
+                            "children":"CUSTOM LAYOUT text"
+                          },{
+                            "component":"span",
+                            "children":"random text"
+                          }]
+                        }
+                      }]
+                    },
+                    {
+                      "formElements":[
+                      {
+                        "type":"checkbox",
+                        "name":"samplecheck",
+                        "value":"on",
+                        "label":"save",
+                        "placeholder":"rememberme"
+                      },
+                      {
+                        "type":"link",
+                        "name":"myaccount",
+                        "label":"My Account",
+                        "linkWrapperProps":{
+                          "style": {
+                            "padding": "0 5px",
+                            "width":"100%"
+                          }
+                        },
+                        "value":{
+                          "component": "ResponsiveButton",
+                          "props": {
+                            "onClick": "func:this.props.reduxRouter.push",
+                            "onclickProps": "/crm/applications",
+                            "onclickBaseUrl":"/r-admin/contentdata/accounts/:id",
+                            "onclickThisProp":"formdata",
+                            "displayThisProps":"userlimit",
+                            "onclickLinkParams":[{"key":":id","val":"userlimit"}],
+                            "style": {
+                              "width":"100%"
+                            }
+                          },
+                          "children":"my account button"
+                        }
+                      },
+                      {
+                        "type":"submit",
+                        "passProps":{
+                          "color":"isInfo",
+                          "size":"isLarge"
+                        },
+                        "confirmModal":{},
+                        "value":"Debug Form"
+                      }]
+                    },
+                    {
+                      "formElements":[
+                      {
+                        "type":"text",
+                        "name":"state",
+                        "placeholder":"new jersey",
+                        "label":"state"
+                      },
+                      {
+                        "type":"group",
+                        "label":"Address",
+                        "layoutProps":{
+                        },
+                        "groupElements":[
+                          {
+                            "type":"text",
+                            "name":"street",
+                            "placeholder":"22 hudson pl",
+                            "layoutProps":{
+                              "innerFormItem":true
+                            }
+                          },
+                          {
+                            "type":"text",
+                            "name":"city",
+                            "placeholder":"hoboken NEW JERSEY IN HEREE",
+                            "layoutProps":{
+                              "innerFormItem":true
+                            }
+                          },
+                          {
+                            "type":"text",
+                            "name":"zip",
+                            "placeholder":"07030",
+                            "layoutProps":{
+                              "innerFormItem":true
+                            },
+                            "passProps":{
+                              "isExpanded":true
+                            }
+                          }
+                        ]
+                      }]
+                    },
+                    {
+                      "formElements":[
+                      {
+                        "type":"text",
+                        "name":"baseurl",
+                        "label":"baseurl"
+                      },
+                      {
+                        "type":"text",
+                        "name":"originalurl",
+                        "label":"originalurl"
+                      },
+                      {
+                        "type":"select",
+                        "name":"testSelect",
+                        "label":"status",
+                        "options":[{
+                          "label":"true",
+                          "value":true
+                        },{
+                          "label":"false",
+                          "value":false
+                        },{
+                          "label":"Turn Off",
+                          "value":"off"
+                        },{
+                          "label":"Turn On",
+                          "value":"on"
+                        }]
+                      }]
+                    },
+                    {
+                      "formElements":[{
+                        "type":"code",
+                        "name":"jsCode",
+                        "passProps": {
+                          "mode": "javascript"
+                        },
+                        "value":"console.log('this is a code mirror');"
+                 
+                      },{
+                        "type":"textarea",
+                        "name":"testTextAreaInputts",
+                        "label":"blog"
+                      }]
+                    }]
+                  },
+                  "asyncprops":{
+                    "formdata":["tabledata"]
+                  }
+                },
+                {
+                  "component":"ResponsiveCard",
+                  "props":{
+                    "cardTitle":"upload new asset",
+                    "iconImage":{
+                      "size":"is48X48"
+                    },
+                    "icon":"https://s3-us-west-2.amazonaws.com/promisefinancial.com/cloudfiles%2F2015%2F07%2F03%2F800x800-yaw-etse-portrait-min.jpg",
+                    "iconDown":"https://s3-us-west-2.amazonaws.com/promisefinancial.com/cloudfiles%2F2015%2F07%2F03%2F800x800-yaw-etse-portrait-min.jpg",
+                    "iconUp":"https://promisefinancial.com/favicon.png"
+                  },
+                  "children":[
+                    {
+                      "component":"ResponsiveForm",
+                      "props":{
+                        "onSubmit":{
+                          "url":"http://localhost:8786/r-admin/contentdata/periodic/assets?handleupload=true",
+                          "options":{
+                            "method":"post"
+                          },
+                          "success":{
+                            "modal":{"text":"uploaded file","timeout":3000}
+                          }
+                        },
+                        "card":{
+                          "props":{
+                            "cardTitle":"Upload New Asset"
+                          }
+                        },
+                        "formgroups":[
+                          {
+                            "formElements":[
+                              {
+                                "type":"text",
+                                "name":"title",
+                                "label":"title",
+                                "value":"my new file"
+                              },{
+                                "type":"textarea",
+                                "name":"firstname",
+                                "label":"firstname",
+                                "value":"my new file"
+                              },
+                              {
+                                "type":"select",
+                                "name":"status",
+                                "label":"status",
+                                "value":"invalid",
+                                "options":[
+                                {
+                                  "label":"valid",
+                                  "value":"VALID"
+                                },
+                                {
+                                  "label":"invalid",
+                                  "value":"INVALID"
+                                }]
+                              }
+                            ]
+                          },
+                          {
+                            "formElements":[
+                              {
+                                "type":"editor",
+                                "value":"no desc",
+                                "name":"description",
+                                "label":"description",
+                                "passProps":{
+                                  "isExpanded":true
+                                }
+                              },
+                              {
+                                "type":"file",
+                                "name":"assetfile",
+                                "label":"asset file",
+                                "passProps":{
+                                  "type":"file"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "formElements":[
+                              {
+                                "type":"submit",
+                                "value":"upload"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "thisprops":{
+                        "formdata":["user","userdata"]
+                      }
+                    }
+                  ]
+                }
+              ]
+            }]
+          }
+        ]
+      },
+      "resources":{
+        "tabledata":"/r-admin/contentdata/standard/users?format=json&limit=10"
+      },
+      "onFinish":"render",
+      "pageData":{
+        "title":"Accounts",
+        "navLabel":"Accounts"
+      }
+    }
+  }
+}
+

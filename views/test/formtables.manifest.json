@@ -1,0 +1,321 @@
+{
+  "containers":{
+    "/r-admin/content/testformtables":{
+      "layout":{
+        "component":"Hero",
+        "props":{
+          "size":"isFullheight"
+        },
+        "children":[
+          {
+            "component":"HeroBody",
+            "props":{
+              "className":"testTest",
+              "style":{
+                "padding":"80px 0"
+              }
+            },
+            "children":[
+              {
+                "component":"Container",
+                "props":{
+                },
+                "children":[
+                  {
+                    "component":"Title",
+                    "children":"Standard Form Table Documentation Page"
+                  },
+                  {
+                    "component":"ResponsiveForm",
+                    "props":{
+                      "blockPageUI":true,
+                      "blockPageUILayout":{
+                        "component":"div",
+                        "children":"Random Loading Text"
+                      },
+                      "useFormOptions":true,
+                      "flattenFormData":true,
+                      "formdata":{
+                        "food":"kale",
+                        "favorite":true,
+                        "recipe":"sauted kale",
+                        "backlog":{
+                          "history":[
+                            {
+                              "food":"kale",
+                              "favorite":true,
+                              "recipe":"sauted kale"
+                            },
+                            {
+                              "food":"chicken",
+                              "favorite":false,
+                              "recipe":"fried chicken"
+                            },
+                            {
+                              "food":"margarita pizza",
+                              "favorite":false,
+                              "recipe":"pizza"
+                            }
+                          ]
+                        },
+                        "log":[
+                          {
+                            "food":"beer",
+                            "favorite":true,
+                            "recipe":"ithaca ale"
+                          },
+                          {
+                            "food":"steamed fish",
+                            "favorite":false,
+                            "recipe":"this is one line \r\n and on another line \r\n garlic and spiced samon"
+                          },
+                          {
+                            "food":"pepperoni pizza",
+                            "favorite":false,
+                            "recipe":"pizza"
+                          },
+                          {
+                            "food":"kale",
+                            "favorite":true,
+                            "recipe":"sauted kale"
+                          },
+                          {
+                            "food":"chicken",
+                            "favorite":false,
+                            "recipe":"fried chicken"
+                          },
+                          {
+                            "food":"margarita pizza",
+                            "favorite":false,
+                            "recipe":"pizza"
+                          }
+                        ]
+                      },
+                      "__formOptions":{
+                        "food":[
+                            {
+                              "value":"pizza"  
+                            },
+                            {
+                              "value":"chicken",
+                              "label":"CHICKIES",
+                              "disabled":true
+                            },
+                            {
+                              "value":"kale"  
+                            },
+                            {
+                              "value":"beer"  
+                            }
+                          ]
+                      },
+                      "notificationForm":{
+                        "color":"isWhite",
+                        "style":{
+                          "border":"1px solid lightgrey"
+                        }
+                      },
+                      "style":{
+                        "marginBottom":"10px",
+                        "color":"white"
+                      },
+                      "formgroups":[
+                        {
+                          "formElements":[
+                            {
+                              "type":"radio",
+                              "name":"favorite",
+                              "value":true,
+                              "label":"Favorite",
+                              "placeholder":"fav"
+                            },
+                            {
+                              "type":"text",
+                              "name":"recipe",
+                              "label":"Recipe",
+                              "submitOnEnter":true,
+                              "keyUp":"func:window.testWindowFunction"
+                            },
+                            {
+                              "type":"select",
+                              "label":"Food",
+                              "name":"food",
+                              "passProps":{
+                              },
+                              "value":"Debug Form"
+                            }
+                          ]
+                        },
+                        {
+                          "formElements":[
+                            {
+                              "type":"datatable",
+                              "selectEntireRow":true,
+                              "flattenRowData":false,
+                              "useInputRows":true,
+                              "rowButtons":true,
+                              "selectOptionSortId":"favorite",
+                              "tableHeaderType":{
+                                "food":"select",
+                                "recipe":"code"
+                              },
+                              "ignoreTableHeaders":["favorite"],
+                              "name":"log",
+                              "value":"Debug Form"
+                            },
+                            {
+                              "type":"datatable",
+                              "flattenRowData":false,
+                              "addNewRows":false,
+                              "rowButtons":false,
+                              "name":"log"
+                            }
+                          ]
+                        },
+                        {
+                          "formElements":[
+                            {
+                              "type":"submit",
+                              "passProps":{
+                                "color":"isInfo",
+                                "size":"isLarge"
+                              },
+                              "confirmModalDISABLE":{},
+                              "value":"Debug Form"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "component":"ResponsiveTable",
+                    "props":{
+                      "tableSearch":true,
+                      "searchField":"email",
+                      "headers":[
+                        { "label": "#", "value":"--idx-ctr--" },
+                        { "label": "Email", "sortid":"email", "sortable":true },
+                        {"label":"Likes","sortid":"likes", "sortable":true }
+                      ],
+                      "limit":10,
+                      "numItems":20,
+                      "rows":[
+                        {
+                          "email":"yaw.etse@gmail.com",
+                          "likes":300
+                        },
+                        {
+                          "email":"odlyaw@gmail.com",
+                          "likes":45
+                        },
+                        {
+                          "email":"newyaw@gmail.com",
+                          "likes":0
+                        },
+                        {
+                          "email":"med@gmail.com",
+                          "likes":2
+                        },
+                        {
+                          "email":"yaw.etse@gmail.com",
+                          "likes":300
+                        },
+                        {
+                          "email":"odlyaw@gmail.com",
+                          "likes":45
+                        },
+                        {
+                          "email":"newyaw@gmail.com",
+                          "likes":0
+                        },
+                        {
+                          "email":"med@gmail.com",
+                          "likes":2
+                        },
+                        {
+                          "email":"yaw.etse@gmail.com",
+                          "likes":300
+                        },
+                        {
+                          "email":"odlyaw@gmail.com",
+                          "likes":45
+                        },
+                        {
+                          "email":"newyaw@gmail.com",
+                          "likes":0
+                        },
+                        {
+                          "email":"med@gmail.com",
+                          "likes":2
+                        },
+                        {
+                          "email":"yaw.etse@gmail.com",
+                          "likes":300
+                        },
+                        {
+                          "email":"odlyaw@gmail.com",
+                          "likes":45
+                        },
+                        {
+                          "email":"newyaw@gmail.com",
+                          "likes":0
+                        },
+                        {
+                          "email":"med@gmail.com",
+                          "likes":2
+                        },
+                        {
+                          "email":"yaw.etse@gmail.com",
+                          "likes":300
+                        },
+                        {
+                          "email":"odlyaw@gmail.com",
+                          "likes":45
+                        },
+                        {
+                          "email":"newyaw@gmail.com",
+                          "likes":0
+                        },
+                        {
+                          "email":"med@gmail.com",
+                          "likes":2
+                        }
+                      ]
+                    }
+                  }, {
+                    "component":"ResponsiveTable",
+                    "props":{
+                      "showFilterSearch": true,
+                      "flattenRowData": true,
+                      "simpleSearchFilter": false,
+                      "headers":[
+                        { "label": "#", "value":"--idx-ctr--" },
+                        { "label": "Email", "sortid":"email", "sortable":true }, 
+                        {"label":"First Name","sortid":"firstname", "sortable":true }
+                      ],
+                      "limit":10,
+                      "numItems":20
+                    },
+                    "asyncprops": {
+                      "rows": ["tabledata", "users" ]
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "resources":{
+        "tabledata":"/r-admin/contentdata/standard/users?format=json&limit=10"
+      },
+      "onFinish":"render",
+      "pageData":{
+        "title":"Home",
+        "navLabel":"Home"
+      }
+    }
+  }
+}
+
