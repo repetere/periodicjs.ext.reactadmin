@@ -12,6 +12,7 @@ if (reactAdminExtSettings.include_index_route) {
 }
 if (!reactAdminExtSettings.skip_catch_all_route) {
   reactadminRouter.get('/*', controllers.reactadmin.index);
+  reactadminRouter.get('*', controllers.reactadmin.index);
 }
 
 module.exports = reactadminRouter;

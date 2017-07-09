@@ -454,7 +454,22 @@ var finalizeSettingsWithTheme = function(data) {
       return { manifest: manifests, navigation, unauthenticated_manifest: unauthenticated_manifests, };
     })
     .catch(e => {
-      console.error(`There is not a reactadmin config for ${ appSettings.theme || appSettings.themename }`, e);
+      logger.error(`There is not a reactadmin config for ${appSettings.theme || appSettings.themename}`, e);
+      fs.outputJson(path.join(periodic.config.app_root, 'content/container', appSettings.theme || appSettings.themename, 'periodicjs.reactadmin.json'), {
+        'periodicjs.ext.reactadmin': {
+          manifests: [],
+          'unauthenticated_manifests': [],
+          'navigation': false,
+          'components': {
+            'login': false,
+            'main': {},
+            'error': {
+              '404': false,
+              '400': false,
+            },
+          },
+        },
+      }, { spaces: 2, });
       let manifest = { containers: Object.assign({}, (data.default_manifests) ? data.default_manifests.containers : {}, (data.manifests) ? data.manifests.containers : {}), };
       let unauthenticated_manifest = { containers: Object.assign({}, (data.default_unauthenticated_manifests) ? data.default_unauthenticated_manifests.containers : {}, (data.unauthenticated_manifests) ? data.unauthenticated_manifests.containers : {}), };
       let navigationChildren = (data.default_navigation && data.default_navigation.layout && Array.isArray(data.default_navigation.layout.children)) ? data.default_navigation.layout.children : [];
@@ -658,7 +673,10 @@ var assignComponentStatus = function(component) {
  */
 var pullComponentSettings = function(refresh) {
   if (components && !refresh) return Promisie.resolve(components);
-  return readAndStoreConfigurations([handleAmbiguousExtensionType.bind(null, path.join(__dirname, '../periodicjs.reactadmin.json')), handleAmbiguousExtensionType.bind(null, path.join(__dirname, `../../../content/themes/${ appSettings.theme || appSettings.themename }/periodicjs.reactadmin.json`)), ])
+  return readAndStoreConfigurations([
+      handleAmbiguousExtensionType.bind(null, path.join(__dirname, '../periodicjs.reactadmin.json')),
+      handleAmbiguousExtensionType.bind(null, path.join(__dirname, `../../../content/container/${appSettings.theme || appSettings.themename}/periodicjs.reactadmin.json`)),
+    ])
     .then(results => {
       switch (Object.keys(results).length.toString()) {
         case '1':
