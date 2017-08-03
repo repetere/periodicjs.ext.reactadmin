@@ -3,18 +3,15 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports._invokeWebhooks = exports.getDynamicFunctionName = undefined;
+exports._invokeWebhooks = undefined;
 
 var _promise = require('babel-runtime/core-js/promise');
 
 var _promise2 = _interopRequireDefault(_promise);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _dynamics = require('./dynamics');
 
-var FUNCTION_NAME_REGEXP = /func:(?:this\.props|window)(?:\.reduxRouter)?\.(\D.+)*/;
-var getDynamicFunctionName = exports.getDynamicFunctionName = function _getDynamicFunctionName(function_name) {
-  return function_name.replace(FUNCTION_NAME_REGEXP, '$1');
-};
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * Takes a single function name or an array of function name and fires them if they exist on window, this.props or this.props.reduxRouter
@@ -30,7 +27,7 @@ var _invokeWebhooks = exports._invokeWebhooks = function _invokeWebhooks(functio
   function_names = Array.isArray(function_names) ? function_names : [function_names];
   var fns = function_names.reduce(function (result, name) {
     if (typeof name === 'string') {
-      var clean_name = getDynamicFunctionName(name);
+      var clean_name = (0, _dynamics.getDynamicFunctionName)(name);
       if (name.indexOf('func:this.props.reduxRouter') !== -1) {
         result.push(typeof _this.props.reduxRouter[clean_name] === 'function' ? _this.props.reduxRouter[clean_name](argv) : undefined);
       } else if (name.indexOf('func:this.props') !== -1) {

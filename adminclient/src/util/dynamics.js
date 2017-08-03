@@ -184,6 +184,11 @@ export const fetchDynamicContent = function _fetchDynamicContent (_pathname, onS
   }
 };
 
+const FUNCTION_NAME_REGEXP = /func:(?:this\.props|window)(?:\.reduxRouter)?\.(\D.+)*/;
+export const getDynamicFunctionName = function _getDynamicFunctionName (function_name) {
+  return function_name.replace(FUNCTION_NAME_REGEXP, '$1');
+};
+
 export const fetchAction = function _fetchAction(pathname, fetchOptions, success) {
   // let pathname, fetchOptions, success;
   if (typeof pathname === 'object') {
