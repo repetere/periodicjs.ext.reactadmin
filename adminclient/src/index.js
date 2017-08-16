@@ -8,6 +8,8 @@ import 'font-awesome/css/font-awesome.css';
 import 'animate.css/animate.css';
 import 'react-responsive-carousel/lib/styles/carousel.css';
 import 'rc-slider/assets/index.css';
+import 'rc-steps/assets/index.css';
+import 'rc-steps/assets/iconfont.css';
 import './index.css';
 import insertCss from 'insert-css';
 import css from 're-bulma/build/css';
