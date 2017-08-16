@@ -171,6 +171,7 @@ var packageJSON = {
     'json-2-csv': '^2.1.0',
     mime: '^1.3.6',
     'rc-slider': '^6.2.0',
+    'rc-steps': '^2.5.1',
     're-bulma': '^0.4.3',
     react: '15.3.2',
     'react-codemirror': '^0.3.0',
