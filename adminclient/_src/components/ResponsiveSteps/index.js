@@ -51,13 +51,13 @@ var defaultProps = {
   }]
 };
 
-var ResponsiveStep = function (_Component) {
-  (0, _inherits3.default)(ResponsiveStep, _Component);
+var ResponsiveSteps = function (_Component) {
+  (0, _inherits3.default)(ResponsiveSteps, _Component);
 
-  function ResponsiveStep(props) {
-    (0, _classCallCheck3.default)(this, ResponsiveStep);
+  function ResponsiveSteps(props) {
+    (0, _classCallCheck3.default)(this, ResponsiveSteps);
 
-    var _this = (0, _possibleConstructorReturn3.default)(this, (ResponsiveStep.__proto__ || (0, _getPrototypeOf2.default)(ResponsiveStep)).call(this, props));
+    var _this = (0, _possibleConstructorReturn3.default)(this, (ResponsiveSteps.__proto__ || (0, _getPrototypeOf2.default)(ResponsiveSteps)).call(this, props));
 
     _this.state = {
       stepsProps: props.stepProps,
@@ -66,7 +66,7 @@ var ResponsiveStep = function (_Component) {
     return _this;
   }
 
-  (0, _createClass3.default)(ResponsiveStep, [{
+  (0, _createClass3.default)(ResponsiveSteps, [{
     key: 'addStep',
     value: function addStep(title, description) {
       var steps = this.state.steps;
@@ -95,10 +95,10 @@ var ResponsiveStep = function (_Component) {
       return fullSteps;
     }
   }]);
-  return ResponsiveStep;
+  return ResponsiveSteps;
 }(_react.Component);
 
-ResponsiveStep.propTypes = propTypes;
-ResponsiveStep.defaultProps = defaultProps;
+ResponsiveSteps.propTypes = propTypes;
+ResponsiveSteps.defaultProps = defaultProps;
 
-exports.default = ResponsiveStep;
+exports.default = ResponsiveSteps;

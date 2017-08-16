@@ -14,7 +14,7 @@ const defaultProps = {
   }, ],
 };
 
-class ResponsiveStep extends Component {
+class ResponsiveSteps extends Component {
   constructor(props) {
     super(props);
 
@@ -52,7 +52,7 @@ class ResponsiveStep extends Component {
   }
 }
 
-ResponsiveStep.propTypes = propTypes;
-ResponsiveStep.defaultProps = defaultProps;
+ResponsiveSteps.propTypes = propTypes;
+ResponsiveSteps.defaultProps = defaultProps;
 
-export default ResponsiveStep;
+export default ResponsiveSteps;
