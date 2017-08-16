@@ -32,10 +32,6 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-require('rc-steps/assets/index.css');
-
-require('rc-steps/assets/iconfont.css');
-
 var _rcSteps = require('rc-steps');
 
 var _rcSteps2 = _interopRequireDefault(_rcSteps);

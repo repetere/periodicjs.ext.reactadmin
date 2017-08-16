@@ -1,6 +1,4 @@
 import React, { Component, PropTypes, } from 'react';
-import 'rc-steps/assets/index.css';
-import 'rc-steps/assets/iconfont.css';
 import Steps, { Step, } from 'rc-steps';
 
 const propTypes = {
