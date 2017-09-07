@@ -48,7 +48,8 @@ export const propTypes = {
   usingFiltersInSearch:PropTypes.bool,  
   headers: PropTypes.array,
   __tableOptions: PropTypes.object,
-  rows:PropTypes.array,  
+  rows:PropTypes.array,
+  turnOffTableSort: PropTypes.bool,
   tableFooter:PropTypes.bool,
   onChange:PropTypes.func,
   tableForm: PropTypes.bool,
@@ -88,6 +89,7 @@ export const defaultProps = {
   showFilterSearch:false,  
   usingFiltersInSearch: false,
   tableForm: false,
+  turnOffTableSort: false,
   filterAddonProps:{
     style:{
       marginBottom:'20px',
