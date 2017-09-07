@@ -413,6 +413,8 @@ var ResponsiveTable = function (_Component) {
           updatedState.rows = updatedState.rows.sort(_util2.default.sortObject(newSortOptions.sortOrder, options.sort));
           updatedState.sortOrder = newSortOptions.sortOrder;
           updatedState.sortProp = options.sort;
+        } else if (this.props.turnOffTableSort) {
+          updatedState.rows = updatedState.rows;
         } else if (this.state.sortOrder || this.state.sortProp) {
           newSortOptions.sortProp = this.state.sortProp;
           newSortOptions.sortOrder = this.state.sortOrder === 'desc' || this.state.sortOrder === '-' ? 'desc' : 'asc';
@@ -505,6 +507,8 @@ var ResponsiveTable = function (_Component) {
           } else {
             newSortOptions.sortOrder = '';
           }
+        } else if (this.props.turnOffTableSort) {
+          updatedState.rows = updatedState.rows;
         } else if (this.state.sortOrder || this.state.sortProp) {
           newSortOptions.sortProp = this.state.sortProp;
           newSortOptions.sortOrder = this.state.sortOrder === 'desc' || this.state.sortOrder === '-' ? '-' : '';
@@ -550,7 +554,6 @@ var ResponsiveTable = function (_Component) {
           updatedState.limit = _this5.state.limit;
           updatedState.currentPage = typeof options.pagenum !== 'undefined' ? options.pagenum : _this5.props.currentPage;
           updatedState.isLoading = false;
-
           if (options.sort) {
             updatedState.sortOrder = newSortOptions.sortOrder;
             updatedState.sortProp = options.sort;
