@@ -245,191 +245,192 @@ class ResponsiveTable extends Component {
   }
   updateTableData(options) {
       // console.debug({ options, });
-      let updatedState = {};
-      let newSortOptions = {};
-      if (options.clearNewRowData) {
-        updatedState.newRowData = {};
-      }
-      if (typeof options.selectedRowIndex !== undefined) {
-        updatedState.selectedRowIndex = options.selectedRowIndex;
-      }
-      if (typeof options.selectedRowData !== undefined) {
-        updatedState.selectedRowData = options.selectedRowData;
-      }
-      if (!this.props.baseUrl) {
-        // console.debug({options})
-        updatedState.rows = (typeof options.rows !== 'undefined') ? options.rows : this.props.rows;
-        // console.debug({ updatedState, });
+    let updatedState = {};
+    let newSortOptions = {};
+    if (options.clearNewRowData) {
+      updatedState.newRowData = {};
+    }
+    if (typeof options.selectedRowIndex !== undefined) {
+      updatedState.selectedRowIndex = options.selectedRowIndex;
+    }
+    if (typeof options.selectedRowData !== undefined) {
+      updatedState.selectedRowData = options.selectedRowData;
+    }
+    if (!this.props.baseUrl) {
+      // console.debug({options})
+      updatedState.rows = (typeof options.rows !== 'undefined') ? options.rows : this.props.rows;
+      // console.debug({ updatedState, });
 
-        if (options.sort) {
-          newSortOptions.sortProp = options.sort;
-          if (this.state.sortProp === options.sort) {
-            newSortOptions.sortOrder = (this.state.sortOrder !== 'desc') ? 'desc' : 'asc';
-          } else {
-            newSortOptions.sortOrder = 'desc';
-          }
-          updatedState.rows = updatedState.rows.sort(utilities.sortObject(newSortOptions.sortOrder, options.sort));
-          updatedState.sortOrder = newSortOptions.sortOrder;
-          updatedState.sortProp = options.sort;
-        } else if (this.state.sortOrder || this.state.sortProp) {
-          newSortOptions.sortProp = this.state.sortProp;
-          newSortOptions.sortOrder = (this.state.sortOrder === 'desc' || this.state.sortOrder === '-') ? 'desc' : 'asc';
-          updatedState.rows = updatedState.rows.sort(utilities.sortObject(newSortOptions.sortOrder, newSortOptions.sortProp));
-
+      if (options.sort) {
+        newSortOptions.sortProp = options.sort;
+        if (this.state.sortProp === options.sort) {
+          newSortOptions.sortOrder = (this.state.sortOrder !== 'desc') ? 'desc' : 'asc';
+        } else {
+          newSortOptions.sortOrder = 'desc';
         }
-        if (this.props.tableSearch && this.props.searchField && options.search) {
-          updatedState.rows = this.props.rows.filter(row => row[this.props.searchField].indexOf(options.search) !== -1);
-        }
-        if (this.props.tableSearch && this.state.filterRowData && this.state.filterRowData.length) {
-          let filteredRows = [];
-          updatedState.rows.forEach(row => {
-            this.state.filterRowData.forEach(filter => {
-              if (row[filter.property]) {
-                switch (filter.filter_value) {
-                  case 'like':
-                  case 'in':
-                    if (row[filter.property].indexOf(filter.value) !== -1) filteredRows.push(row);
-                    break;
-                  case 'not':
-                    if (row[filter.property] !== filter.value) filteredRows.push(row);
-                    break;
-                  case 'not-like':
-                  case 'not-in':
-                    if (row[filter.property].indexOf(filter.value) === -1) filteredRows.push(row);
-                    break;
-                  case 'lt':
-                    if (row[filter.property] < filter.value) filteredRows.push(row);
-                    break;
-                  case 'lte':
-                    if (row[filter.property] <= filter.value) filteredRows.push(row);
-                    break;
-                  case 'gt':
-                    if (row[filter.property] > filter.value) filteredRows.push(row);
-                    break;
-                  case 'gte':
-                    if (row[filter.property] >= filter.value) filteredRows.push(row);
-                    break;
-                  case 'exists':
-                    if (typeof row[filter.property] !== 'undefined') filteredRows.push(row);
-                    break;
-                  case 'size':
-                    if (row[filter.property].length > filter.value) filteredRows.push(row);
-                    break;
-                  case 'is-date':
-                    if (moment(row[filter.property]).isSame(filter.value)) filteredRows.push(row);
-                    break;
-                  case 'lte-date':
-                    if (moment(row[filter.property]).isSameOrBefore(filter.value)) filteredRows.push(row);
-                    break;
-                  case 'lt-date':
-                    if (moment(row[filter.property]).isBefore(filter.value)) filteredRows.push(row);
-                    break;
-                  case 'gte-date':
-                    if (moment(row[filter.property]).isSameOrAfter(filter.value)) filteredRows.push(row);
-                    break;
-                  case 'gt-date':
-                    if (moment(row[filter.property]).isAfter(filter.value)) filteredRows.push(row);
-                    break;
-                  case 'is':
-                  default:
-                    if (row[filter.property] === filter.value) filteredRows.push(row);
-                    break;
-                }
+        updatedState.rows = updatedState.rows.sort(utilities.sortObject(newSortOptions.sortOrder, options.sort));
+        updatedState.sortOrder = newSortOptions.sortOrder;
+        updatedState.sortProp = options.sort;
+      } else if (this.props.turnOffTableSort){
+        updatedState.rows = updatedState.rows;
+      } else if (this.state.sortOrder || this.state.sortProp) {
+        newSortOptions.sortProp = this.state.sortProp;
+        newSortOptions.sortOrder = (this.state.sortOrder === 'desc' || this.state.sortOrder === '-') ? 'desc' : 'asc';
+        updatedState.rows = updatedState.rows.sort(utilities.sortObject(newSortOptions.sortOrder, newSortOptions.sortProp));
+      }
+      if (this.props.tableSearch && this.props.searchField && options.search) {
+        updatedState.rows = this.props.rows.filter(row => row[this.props.searchField].indexOf(options.search) !== -1);
+      }
+      if (this.props.tableSearch && this.state.filterRowData && this.state.filterRowData.length) {
+        let filteredRows = [];
+        updatedState.rows.forEach(row => {
+          this.state.filterRowData.forEach(filter => {
+            if (row[filter.property]) {
+              switch (filter.filter_value) {
+                case 'like':
+                case 'in':
+                  if (row[filter.property].indexOf(filter.value) !== -1) filteredRows.push(row);
+                  break;
+                case 'not':
+                  if (row[filter.property] !== filter.value) filteredRows.push(row);
+                  break;
+                case 'not-like':
+                case 'not-in':
+                  if (row[filter.property].indexOf(filter.value) === -1) filteredRows.push(row);
+                  break;
+                case 'lt':
+                  if (row[filter.property] < filter.value) filteredRows.push(row);
+                  break;
+                case 'lte':
+                  if (row[filter.property] <= filter.value) filteredRows.push(row);
+                  break;
+                case 'gt':
+                  if (row[filter.property] > filter.value) filteredRows.push(row);
+                  break;
+                case 'gte':
+                  if (row[filter.property] >= filter.value) filteredRows.push(row);
+                  break;
+                case 'exists':
+                  if (typeof row[filter.property] !== 'undefined') filteredRows.push(row);
+                  break;
+                case 'size':
+                  if (row[filter.property].length > filter.value) filteredRows.push(row);
+                  break;
+                case 'is-date':
+                  if (moment(row[filter.property]).isSame(filter.value)) filteredRows.push(row);
+                  break;
+                case 'lte-date':
+                  if (moment(row[filter.property]).isSameOrBefore(filter.value)) filteredRows.push(row);
+                  break;
+                case 'lt-date':
+                  if (moment(row[filter.property]).isBefore(filter.value)) filteredRows.push(row);
+                  break;
+                case 'gte-date':
+                  if (moment(row[filter.property]).isSameOrAfter(filter.value)) filteredRows.push(row);
+                  break;
+                case 'gt-date':
+                  if (moment(row[filter.property]).isAfter(filter.value)) filteredRows.push(row);
+                  break;
+                case 'is':
+                default:
+                  if (row[filter.property] === filter.value) filteredRows.push(row);
+                  break;
               }
-            });
-            // row[ this.props.searchField ].indexOf(options.search) !== -1
-          });
-          updatedState.rows = filteredRows;
-          // console.debug('updatedState.rows', updatedState.rows, { filteredRows, });
-        }
-        updatedState.numPages = Math.ceil(updatedState.rows.length / this.state.limit);
-        updatedState.limit = this.state.limit;
-        updatedState.currentPage = (typeof options.pagenum !== 'undefined') ?
-          options.pagenum :
-          (this.state.currentPage && this.state.currentPage <= updatedState.numPages) ?
-          this.state.currentPage :
-          1;
-        updatedState.isLoading = false;
-
-        if (this.props.tableForm) {
-          // console.debug('befroe', {updatedState})
-          this.props.onChange(updatedState);
-        }
-        // else {
-        this.setState(updatedState);
-        // }
-
-      } else {
-        if (options.sort) {
-          newSortOptions.sortProp = options.sort;
-          if (this.state.sortProp === options.sort) {
-            newSortOptions.sortOrder = (this.state.sortOrder === '') ? '-' : '';
-          } else {
-            newSortOptions.sortOrder = '';
-          }
-        } else if (this.state.sortOrder || this.state.sortProp) {
-          newSortOptions.sortProp = this.state.sortProp;
-          newSortOptions.sortOrder = (this.state.sortOrder === 'desc' || this.state.sortOrder === '-') ? '-' : '';
-        }
-        if (options.pagenum < 1) {
-          options.pagenum = 1;
-        }
-        this.setState({ isLoading: true, });
-        let stateProps = this.props.getState();
-        let fetchURL = `${stateProps.settings.basename}${this.props.baseUrl}&${qs.stringify({
-        limit: this.state.limit || this.props.limit,
-        sort: (newSortOptions.sortProp)
-          ? `${newSortOptions.sortOrder}${newSortOptions.sortProp}`
-          : undefined,
-        fq: (this.state.filterRowData && this.state.filterRowData.length)
-          ? this.state.filterRowData.map(frd => {
-            return `${frd.property}|||${frd.filter_value}|||${frd.value}`;
-          })
-          : undefined,
-        search: options.search,
-        allowSpecialCharacters: true,
-        pagenum: options.pagenum || 1,
-      })}`;
-      // console.debug('this.state.filterRowData', this.state.filterRowData, { options, fetchURL, });
-      let headers = Object.assign({
-        'x-access-token': stateProps.user.jwt_token,
-      }, stateProps.settings.userprofile.options.headers);
-      utilities.fetchComponent(fetchURL, { headers, })()  
-        .then(response => { 
-          // let usingResponsePages = false;
-          // console.debug('this.props.dataMap',this.props.dataMap)
-          this.props.dataMap.forEach(data => { 
-            if (data.key === 'rows') {
-              let rows = response[ data.value ] || [];
-              if (this.props.flattenRowData) {
-                updatedState[ data.key ] = rows.map(row => flatten(row, this.props.flattenRowDataOptions));
-              }
-            } else {
-              // if (data.key === 'numPages') {
-              //   usingResponsePages = true;
-              // }
-              updatedState[ data.key ] = response[ data.value ];
             }
           });
-          updatedState.numPages = Math.ceil(updatedState.numItems / this.state.limit);
-          updatedState.limit = this.state.limit;
-          updatedState.currentPage = (typeof options.pagenum !=='undefined') ? options.pagenum : this.props.currentPage;
-          updatedState.isLoading = false;
-
-          if (options.sort) {
-            updatedState.sortOrder = newSortOptions.sortOrder;
-            updatedState.sortProp = options.sort;
-          }
-
-          if (this.props.tableForm) {
-            this.props.onChange(updatedState);
-          }
-          this.setState(updatedState);
-        }, e => {
-          this.props.errorNotification(e);
+          // row[ this.props.searchField ].indexOf(options.search) !== -1
         });
+        updatedState.rows = filteredRows;
+        // console.debug('updatedState.rows', updatedState.rows, { filteredRows, });
+      }
+      updatedState.numPages = Math.ceil(updatedState.rows.length / this.state.limit);
+      updatedState.limit = this.state.limit;
+      updatedState.currentPage = (typeof options.pagenum !== 'undefined') ?
+        options.pagenum :
+        (this.state.currentPage && this.state.currentPage <= updatedState.numPages) ?
+        this.state.currentPage :
+        1;
+      updatedState.isLoading = false;
+
+      if (this.props.tableForm) {
+        // console.debug('befroe', {updatedState})
+        this.props.onChange(updatedState);
+      }
+      // else {
+      this.setState(updatedState);
+      // }
+
+    } else {
+      if (options.sort) {
+        newSortOptions.sortProp = options.sort;
+        if (this.state.sortProp === options.sort) {
+          newSortOptions.sortOrder = (this.state.sortOrder === '') ? '-' : '';
+        } else {
+          newSortOptions.sortOrder = '';
+        }
+      } else if (this.state.sortOrder || this.state.sortProp) {
+        newSortOptions.sortProp = this.state.sortProp;
+        newSortOptions.sortOrder = (this.state.sortOrder === 'desc' || this.state.sortOrder === '-') ? '-' : '';
+      }
+      if (options.pagenum < 1) {
+        options.pagenum = 1;
+      }
+      this.setState({ isLoading: true, });
+      let stateProps = this.props.getState();
+      let fetchURL = `${stateProps.settings.basename}${this.props.baseUrl}&${qs.stringify({
+      limit: this.state.limit || this.props.limit,
+      sort: (newSortOptions.sortProp)
+        ? `${newSortOptions.sortOrder}${newSortOptions.sortProp}`
+        : undefined,
+      fq: (this.state.filterRowData && this.state.filterRowData.length)
+        ? this.state.filterRowData.map(frd => {
+          return `${frd.property}|||${frd.filter_value}|||${frd.value}`;
+        })
+        : undefined,
+      search: options.search,
+      allowSpecialCharacters: true,
+      pagenum: options.pagenum || 1,
+    })}`;
+    // console.debug('this.state.filterRowData', this.state.filterRowData, { options, fetchURL, });
+    let headers = Object.assign({
+      'x-access-token': stateProps.user.jwt_token,
+    }, stateProps.settings.userprofile.options.headers);
+    utilities.fetchComponent(fetchURL, { headers, })()  
+      .then(response => { 
+        // let usingResponsePages = false;
+        // console.debug('this.props.dataMap',this.props.dataMap)
+        this.props.dataMap.forEach(data => { 
+          if (data.key === 'rows') {
+            let rows = response[ data.value ] || [];
+            if (this.props.flattenRowData) {
+              updatedState[ data.key ] = rows.map(row => flatten(row, this.props.flattenRowDataOptions));
+            }
+          } else {
+            // if (data.key === 'numPages') {
+            //   usingResponsePages = true;
+            // }
+            updatedState[ data.key ] = response[ data.value ];
+          }
+        });
+        updatedState.numPages = Math.ceil(updatedState.numItems / this.state.limit);
+        updatedState.limit = this.state.limit;
+        updatedState.currentPage = (typeof options.pagenum !=='undefined') ? options.pagenum : this.props.currentPage;
+        updatedState.isLoading = false;
+        if (options.sort) {
+          updatedState.sortOrder = newSortOptions.sortOrder;
+          updatedState.sortProp = options.sort;
+        }
+
+        if (this.props.tableForm) {
+          this.props.onChange(updatedState);
+        }
+        this.setState(updatedState);
+      }, e => {
+        this.props.errorNotification(e);
+      });
     }
   }
+
   formatValue(value, row, options, header) {
    
     try {

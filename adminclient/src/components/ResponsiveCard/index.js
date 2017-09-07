@@ -1,5 +1,6 @@
 import React, { Component, PropTypes, } from 'react';
 import { Card, CardHeader, CardHeaderIcon, CardContent, CardHeaderTitle, Image } from 're-bulma';
+import { getRenderedComponent, } from '../AppLayoutMap';
 // import 'font-awesome/css/font-awesome.css';
 // import styles from '../../styles';
 
@@ -28,7 +29,7 @@ const defaultProps = {
 class ResponsiveCard extends Component {
   constructor(props) {
     super(props);
-
+    this.getRenderedComponent = getRenderedComponent.bind(this);
     this.state = {
       headerColor: props.headerColor,
       headerTextColor: props.headerTextColor,
@@ -57,7 +58,8 @@ class ResponsiveCard extends Component {
         <CardHeader style={Object.assign({ cursor:'pointer', }, this.props.headerStyle)}>
           {leftIcon}
           <CardHeaderTitle style={this.props.headerTitleStyle} onClick={() => this.expandCard()}>
-            {this.state.cardTitle}
+            {(!this.state.cardTitle || typeof this.state.cardTitle ==='string')? this.state.cardTitle
+              : this.getRenderedComponent(this.state.cardTitle)}
           </CardHeaderTitle>
           {rightIcon}
         </CardHeader>
