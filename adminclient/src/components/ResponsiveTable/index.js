@@ -368,6 +368,8 @@ class ResponsiveTable extends Component {
         } else {
           newSortOptions.sortOrder = '';
         }
+      } else if (this.props.turnOffTableSort){
+        updatedState.rows = updatedState.rows;
       } else if (this.state.sortOrder || this.state.sortProp) {
         newSortOptions.sortProp = this.state.sortProp;
         newSortOptions.sortOrder = (this.state.sortOrder === 'desc' || this.state.sortOrder === '-') ? '-' : '';
