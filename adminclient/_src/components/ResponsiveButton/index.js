@@ -135,6 +135,9 @@ var ResponsiveButton = function (_Component) {
         onclickFunction = clickprop;
       }
       // onclickFunction = onclickFunction.bind(this);
+      if (typeof clickprop === 'string' && clickprop === 'func:this.props.createModal') {
+        onclickProp.pathname = onclickProp.params ? this.getButtonLink(onclickProp.pathname, onclickProp.params, linkSelectionProp) : onclickProp.pathname;
+      }
       if (this.props.confirmModal) {
         return this.props.createModal((0, _assign2.default)({
           title: 'Please Confirm',
