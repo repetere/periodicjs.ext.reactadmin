@@ -138,8 +138,8 @@ module.exports = {
                               onclickProps: {
                                 title: 'Edit Condition',
                                 pathname: `/r-admin/modals/testparams/:id`,
+                                params: [{ key: ':id', val: 'email' }],
                                 // someprops: 'some test prop'
-                                params: [{key: ':id', val: 'email'}]
                               },
                             },
                           }]
@@ -164,8 +164,7 @@ module.exports = {
           }]
         }]
       },
-      "resources": {
-      },
+      "resources": {},
       "onFinish": "render",
       "pageData": {
         "title": "Home",

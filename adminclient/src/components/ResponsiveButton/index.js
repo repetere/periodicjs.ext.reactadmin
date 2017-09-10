@@ -19,7 +19,6 @@ class ResponsiveButton extends Component {
   //   super(props);
   // }
   getButtonLink(baseurl, params, prop) {
-    // console.debug({ baseurl, params, prop });
     let returnLink = baseurl;
     try {
       if (params && params.length > 0) {
@@ -55,7 +54,6 @@ class ResponsiveButton extends Component {
     let onclickProp = (clickBaseUrl)
       ? this.getButtonLink(clickBaseUrl, clickLinkParams, linkSelectionProp)
       : clickPassProps;
-    
     if (typeof clickprop === 'string' && clickprop.indexOf('func:this.props.reduxRouter') !== -1) { 
       onclickFunction = this.props.reduxRouter[ clickprop.replace('func:this.props.reduxRouter.', '') ];
     } else if (typeof clickprop === 'string' && clickprop.indexOf('func:this.funcs') !== -1) { 
@@ -67,11 +65,6 @@ class ResponsiveButton extends Component {
       onclickFunction = this.props[ clickprop.replace('func:this.props.', '') ];
     } else if (typeof clickprop === 'function') {
       onclickFunction = clickprop;
-    }
-    // onclickFunction = onclickFunction.bind(this);
-    if(typeof clickprop === 'string' && clickprop === 'func:this.props.createModal'){
-      onclickProp.pathname = (onclickProp.params)? this.getButtonLink(onclickProp.pathname, onclickProp.params, linkSelectionProp)
-      : onclickProp.pathname;
     }
     if (this.props.confirmModal) {
       return this.props.createModal(Object.assign({
@@ -130,6 +123,10 @@ class ResponsiveButton extends Component {
           ],
         },
       }, this.props.confirmModal));
+    } else if (typeof clickprop === 'string' && clickprop === 'func:this.props.createModal') {
+      let modalPathName = (onclickProp.params)? this.getButtonLink(onclickProp.pathname, onclickProp.params, linkSelectionProp)
+      : onclickProp.pathname;
+      return onclickFunction.call(this, {pathname: modalPathName }, clickFetchProps, clickSuccessProps);
     } else {
       // console.debug('debugging this regular onclick', this);
       return onclickFunction.call(this, onclickProp, clickFetchProps, clickSuccessProps);
