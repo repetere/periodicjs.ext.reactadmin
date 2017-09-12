@@ -67,6 +67,7 @@ class ResponsiveTable extends Component {
       selectedRowData: {},
       selectedRowIndex: {},
       showFilterSearch: props.showFilterSearch,
+      disableSort: props.disableSort,
       // usingFiltersInSearch: props.usingFiltersInSearch,
     };
     this.searchFunction = debounce(this.updateTableData, 200);
@@ -273,7 +274,7 @@ class ResponsiveTable extends Component {
         updatedState.sortProp = options.sort;
       } else if (this.props.turnOffTableSort){
         updatedState.rows = updatedState.rows;
-      } else if (this.state.sortOrder || this.state.sortProp) {
+      } else if ((this.state.sortOrder || this.state.sortProp) && !this.state.disableSort) {
         newSortOptions.sortProp = this.state.sortProp;
         newSortOptions.sortOrder = (this.state.sortOrder === 'desc' || this.state.sortOrder === '-') ? 'desc' : 'asc';
         updatedState.rows = updatedState.rows.sort(utilities.sortObject(newSortOptions.sortOrder, newSortOptions.sortProp));

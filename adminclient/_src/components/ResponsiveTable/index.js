@@ -166,7 +166,8 @@ var ResponsiveTable = function (_Component) {
       newRowData: {},
       selectedRowData: {},
       selectedRowIndex: {},
-      showFilterSearch: props.showFilterSearch
+      showFilterSearch: props.showFilterSearch,
+      disableSort: props.disableSort
     };
     _this.searchFunction = (0, _debounce2.default)(_this.updateTableData, 200);
     _this.getRenderedComponent = _AppLayoutMap.getRenderedComponent.bind(_this);
@@ -415,7 +416,7 @@ var ResponsiveTable = function (_Component) {
           updatedState.sortProp = options.sort;
         } else if (this.props.turnOffTableSort) {
           updatedState.rows = updatedState.rows;
-        } else if (this.state.sortOrder || this.state.sortProp) {
+        } else if ((this.state.sortOrder || this.state.sortProp) && !this.state.disableSort) {
           newSortOptions.sortProp = this.state.sortProp;
           newSortOptions.sortOrder = this.state.sortOrder === 'desc' || this.state.sortOrder === '-' ? 'desc' : 'asc';
           updatedState.rows = updatedState.rows.sort(_util2.default.sortObject(newSortOptions.sortOrder, newSortOptions.sortProp));
