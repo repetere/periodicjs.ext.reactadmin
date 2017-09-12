@@ -126,7 +126,7 @@ class ResponsiveButton extends Component {
     } else if (typeof clickprop === 'string' && clickprop === 'func:this.props.createModal') {
       let modalPathName = (onclickProp.params)? this.getButtonLink(onclickProp.pathname, onclickProp.params, linkSelectionProp)
       : onclickProp.pathname;
-      return onclickFunction.call(this, {pathname: modalPathName }, clickFetchProps, clickSuccessProps);
+      return onclickFunction.call(this, Object.assign({}, onclickProp, {pathname: modalPathName }), clickFetchProps, clickSuccessProps);
     } else {
       // console.debug('debugging this regular onclick', this);
       return onclickFunction.call(this, onclickProp, clickFetchProps, clickSuccessProps);
