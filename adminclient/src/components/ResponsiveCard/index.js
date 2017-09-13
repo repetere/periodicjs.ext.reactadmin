@@ -7,7 +7,7 @@ import { getRenderedComponent, } from '../AppLayoutMap';
 const propTypes = {
   headerColor: PropTypes.object,
   headerTextColor: PropTypes.object,
-  cardTitle: PropTypes.string,
+  cardTitle: PropTypes.any,
   display: PropTypes.bool,
   leftIcon: PropTypes.bool,
   icon: PropTypes.string,

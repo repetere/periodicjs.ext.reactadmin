@@ -52,25 +52,25 @@ var handleConfigurationVersioning = function (data, type, options = {}) {
 export const setCacheConfiguration = function (fn, type, options = {}) {
   return function () {
     let invoked = fn(...arguments);
-    if (invoked && typeof invoked.then === 'function' && typeof invoked.catch === 'function') {
-      return invoked
-        .then(result => {
-          let settings = result.data.settings;
-          return AsyncStorage.getItem(constants.cache.CONFIGURATION_CACHE)
-            .then(_result => {
-              _result = { configuration: _result, versions: result.data.versions, };
-              if (options.multi) return Object.assign(_result, settings);
-              return Object.assign(_result, { settings: settings, });
-            }, e => Promise.reject(e));
-        })
-        .then(result => handleConfigurationVersioning(result, type, options))
-        .then(result => {
-          // console.log({ type, result, });
-          return AsyncStorage.setItem(constants.cache.CONFIGURATION_CACHE, JSON.stringify(result))
-            .then(() => result, e => Promise.reject(e));
-        })
-        .catch(e => Promise.reject(e));
-    }
+    // if (invoked && typeof invoked.then === 'function' && typeof invoked.catch === 'function') {
+    //   return invoked
+    //     .then(result => {
+    //       let settings = result.data.settings;
+    //       return AsyncStorage.getItem(constants.cache.CONFIGURATION_CACHE)
+    //         .then(_result => {
+    //           _result = { configuration: _result, versions: result.data.versions, };
+    //           if (options.multi) return Object.assign(_result, settings);
+    //           return Object.assign(_result, { settings: settings, });
+    //         }, e => Promise.reject(e));
+    //     })
+    //     .then(result => handleConfigurationVersioning(result, type, options))
+    //     .then(result => {
+    //       // console.log({ type, result, });
+    //       return AsyncStorage.setItem(constants.cache.CONFIGURATION_CACHE, JSON.stringify(result))
+    //         .then(() => result, e => Promise.reject(e));
+    //     })
+    //     .catch(e => Promise.reject(e));
+    // }
     return invoked;
   };
 };
