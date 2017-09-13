@@ -48,7 +48,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var propTypes = {
   headerColor: _react.PropTypes.object,
   headerTextColor: _react.PropTypes.object,
-  cardTitle: _react.PropTypes.string,
+  cardTitle: _react.PropTypes.any,
   display: _react.PropTypes.bool,
   leftIcon: _react.PropTypes.bool,
   icon: _react.PropTypes.string

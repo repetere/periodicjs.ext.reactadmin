@@ -97,29 +97,25 @@ var setCacheConfiguration = exports.setCacheConfiguration = function setCacheCon
 
   return function () {
     var invoked = fn.apply(undefined, arguments);
-    if (invoked && typeof invoked.then === 'function' && typeof invoked.catch === 'function') {
-      return invoked.then(function (result) {
-        var settings = result.data.settings;
-        return _serverSideReactNative.AsyncStorage.getItem(_constants2.default.cache.CONFIGURATION_CACHE).then(function (_result) {
-          _result = { configuration: _result, versions: result.data.versions };
-          if (options.multi) return (0, _assign2.default)(_result, settings);
-          return (0, _assign2.default)(_result, { settings: settings });
-        }, function (e) {
-          return _promise2.default.reject(e);
-        });
-      }).then(function (result) {
-        return handleConfigurationVersioning(result, type, options);
-      }).then(function (result) {
-        // console.log({ type, result, });
-        return _serverSideReactNative.AsyncStorage.setItem(_constants2.default.cache.CONFIGURATION_CACHE, (0, _stringify2.default)(result)).then(function () {
-          return result;
-        }, function (e) {
-          return _promise2.default.reject(e);
-        });
-      }).catch(function (e) {
-        return _promise2.default.reject(e);
-      });
-    }
+    // if (invoked && typeof invoked.then === 'function' && typeof invoked.catch === 'function') {
+    //   return invoked
+    //     .then(result => {
+    //       let settings = result.data.settings;
+    //       return AsyncStorage.getItem(constants.cache.CONFIGURATION_CACHE)
+    //         .then(_result => {
+    //           _result = { configuration: _result, versions: result.data.versions, };
+    //           if (options.multi) return Object.assign(_result, settings);
+    //           return Object.assign(_result, { settings: settings, });
+    //         }, e => Promise.reject(e));
+    //     })
+    //     .then(result => handleConfigurationVersioning(result, type, options))
+    //     .then(result => {
+    //       // console.log({ type, result, });
+    //       return AsyncStorage.setItem(constants.cache.CONFIGURATION_CACHE, JSON.stringify(result))
+    //         .then(() => result, e => Promise.reject(e));
+    //     })
+    //     .catch(e => Promise.reject(e));
+    // }
     return invoked;
   };
 };
