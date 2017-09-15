@@ -189,6 +189,9 @@ function getRenderedComponent(componentObject, resources, debug) {
         }
       });
     }
+    if (renderedCompProps._children && !componentObject.children) {
+      componentObject.children = renderedCompProps._children;
+    }
     var comparisons = {};
     // if (thisprops) {
     //   console.debug({ thisprops, renderedCompProps });
