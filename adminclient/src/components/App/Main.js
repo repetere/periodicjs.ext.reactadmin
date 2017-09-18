@@ -23,7 +23,7 @@ class MainApp extends Component{
     // console.log('componentWillReceiveProps nextProps', nextProps);
     this.setState(nextProps);
     if (document && document.body && document.body.setAttribute) {
-      document.body.setAttribute('id', encodeURIComponent(nextProps.location.pathname).replace('%2', '_'));
+      document.body.setAttribute('id', encodeURIComponent(nextProps.location.pathname).replace(new RegExp(/%2F|%2/, 'g'), '_'));
     } 
   }
   componentDidMount() {
