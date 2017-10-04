@@ -614,7 +614,11 @@ const user = {
           return this.enforceMFA()(dispatch, getState);
         })
         .catch((error) => {
-          dispatch(notification.errorNotification(error));
+          if(notificationsSettings.login_error_message){
+            dispatch(notification.errorNotification(notificationsSettings.login_error_message));
+          } else {
+            dispatch(notification.errorNotification(error));
+          }
           dispatch(this.failedUserRequest(url, error));
         });
     };

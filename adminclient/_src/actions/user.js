@@ -664,7 +664,11 @@ var user = {
         }
         return _this10.enforceMFA()(dispatch, getState);
       }).catch(function (error) {
-        dispatch(_notification2.default.errorNotification(error));
+        if (notificationsSettings.login_error_message) {
+          dispatch(_notification2.default.errorNotification(notificationsSettings.login_error_message));
+        } else {
+          dispatch(_notification2.default.errorNotification(error));
+        }
         dispatch(_this10.failedUserRequest(url, error));
       });
     };
