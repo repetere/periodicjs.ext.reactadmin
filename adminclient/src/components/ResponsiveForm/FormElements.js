@@ -448,9 +448,8 @@ export function getFormTextInputArea(options) {
         const onChangeFunc = getFunctionFromProps.call(this, { propFunc: formElement.onChangeFilter });
         updatedStateProp = onChangeFunc.call(this, Object.assign({},this.state,updatedStateProp), updatedStateProp);
       }
-      // console.debug('DATATABLE',updatedStateProp);
-      this.setState(updatedStateProp);
 
+      this.setState(updatedStateProp);
     };
   }
   passableProps = getPassablePropkeyevents(passableProps, formElement);
