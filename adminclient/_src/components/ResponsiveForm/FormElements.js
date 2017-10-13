@@ -151,6 +151,23 @@ function getErrorStatus(state, name) {
   return state.formDataErrors && state.formDataErrors[name];
 }
 
+function getFunctionFromProps(options) {
+  var propFunc = options.propFunc;
+
+
+  if (typeof propFunc === 'string' && propFunc.indexOf('func:this.props.reduxRouter') !== -1) {
+    return this.props.reduxRouter[this.props.replace('func:this.props.reduxRouter.', '')];
+  } else if (typeof propFunc === 'string' && propFunc.indexOf('func:this.props') !== -1) {
+    return this.props[this.props.replace('func:this.props.', '')];
+  } else if (typeof propFunc === 'string' && propFunc.indexOf('func:window') !== -1 && typeof window[propFunc.replace('func:window.', '')] === 'function') {
+    return window[propFunc.replace('func:window.', '')];
+  } else if (typeof this.props[propFunc] === 'function') {
+    return propFunc;
+  } else {
+    return function () {};
+  }
+}
+
 function getFormElementHelp(hasError, state, name) {
   return hasError ? {
     color: 'isDanger',
@@ -529,6 +546,12 @@ function getFormTextInputArea(options) {
       } else {
         updatedStateProp[formElement.name] = passableProps.maxLength ? text.substring(0, passableProps.maxLength) : text;
       }
+
+      if (formElement.onChangeFilter) {
+        var onChangeFunc = getFunctionFromProps.call(_this6, { propFunc: formElement.onChangeFilter });
+        updatedStateProp = onChangeFunc.call(_this6, (0, _assign2.default)({}, _this6.state, updatedStateProp), updatedStateProp);
+      }
+      // console.debug('DATATABLE',updatedStateProp);
       _this6.setState(updatedStateProp);
     };
   }
