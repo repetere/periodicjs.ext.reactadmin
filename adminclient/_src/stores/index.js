@@ -107,7 +107,16 @@ var AppConfigSettings = {
   }
 }; // import promise from 'redux-promise';
 
-var logger = (0, _reduxLogger2.default)();
+var windowState = typeof window !== 'undefined' && window.__padmin ? window.__padmin : {};
+var disableLogger = function disableLogger(store) {
+  return function (next) {
+    return function (action) {
+      // console .log('dispatching: ', action,{store});
+      return next(action);
+    };
+  };
+};
+var logger = windowState.disableLogger ? disableLogger : (0, _reduxLogger2.default)();
 // const logger = (store) => (next) => (action) => {
 //   console.log('dispatching: ', action,{store});
 //   return next(action);

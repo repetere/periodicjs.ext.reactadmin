@@ -5,7 +5,12 @@ import { routerMiddleware, } from 'react-router-redux';
 import { browserHistory, hashHistory, } from 'react-router';
 import AppConfigSettings from '../content/config/settings.json'; // import promise from 'redux-promise';
 import createLogger from 'redux-logger';
-const logger = createLogger();
+const windowState = (typeof window !=='undefined' && window.__padmin) ? window.__padmin : {};
+const disableLogger = (store) => (next) => (action) => {
+  // console .log('dispatching: ', action,{store});
+  return next(action);
+};
+const logger = (windowState.disableLogger) ? disableLogger : createLogger();
 // const logger = (store) => (next) => (action) => {
 //   console.log('dispatching: ', action,{store});
 //   return next(action);

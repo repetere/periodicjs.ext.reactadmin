@@ -551,7 +551,7 @@ function getFormTextInputArea(options) {
         var onChangeFunc = getFunctionFromProps.call(_this6, { propFunc: formElement.onChangeFilter });
         updatedStateProp = onChangeFunc.call(_this6, (0, _assign2.default)({}, _this6.state, updatedStateProp), updatedStateProp);
       }
-      // console.debug('DATATABLE',updatedStateProp);
+
       _this6.setState(updatedStateProp);
     };
   }
