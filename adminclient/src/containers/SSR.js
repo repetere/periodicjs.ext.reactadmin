@@ -9,7 +9,9 @@
         };
       }
     };
-    global[ 'navigator' ] = {};
+    global[ 'navigator' ] = {
+      userAgent: '',
+    };
     process.env.NODE_ENV = 'production';
   }
 })();

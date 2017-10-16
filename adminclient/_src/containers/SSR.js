@@ -25,7 +25,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
         };
       }
     };
-    global['navigator'] = {};
+    global['navigator'] = {
+      userAgent: ''
+    };
     process.env.NODE_ENV = 'production';
   }
 })();
