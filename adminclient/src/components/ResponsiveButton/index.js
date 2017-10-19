@@ -52,8 +52,8 @@ class ResponsiveButton extends Component {
       ? thisDotProp[clickThisProp]
       : clickPropObject;
     let onclickProp = (clickBaseUrl)
-      ? this.getButtonLink(clickBaseUrl, clickLinkParams, linkSelectionProp)
-      : clickPassProps;
+    ? this.getButtonLink(clickBaseUrl, clickLinkParams, linkSelectionProp)
+    : clickPassProps || clickPropObject;
     if (typeof clickprop === 'string' && clickprop.indexOf('func:this.props.reduxRouter') !== -1) { 
       onclickFunction = this.props.reduxRouter[ clickprop.replace('func:this.props.reduxRouter.', '') ];
     } else if (typeof clickprop === 'string' && clickprop.indexOf('func:this.funcs') !== -1) { 

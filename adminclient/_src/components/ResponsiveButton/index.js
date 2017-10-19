@@ -119,7 +119,7 @@ var ResponsiveButton = function (_Component) {
         console.debug('ResponsiveButton', { data: data });
       };
       var linkSelectionProp = clickThisProp ? thisDotProp[clickThisProp] : clickPropObject;
-      var onclickProp = clickBaseUrl ? this.getButtonLink(clickBaseUrl, clickLinkParams, linkSelectionProp) : clickPassProps;
+      var onclickProp = clickBaseUrl ? this.getButtonLink(clickBaseUrl, clickLinkParams, linkSelectionProp) : clickPassProps || clickPropObject;
       if (typeof clickprop === 'string' && clickprop.indexOf('func:this.props.reduxRouter') !== -1) {
         onclickFunction = this.props.reduxRouter[clickprop.replace('func:this.props.reduxRouter.', '')];
       } else if (typeof clickprop === 'string' && clickprop.indexOf('func:this.funcs') !== -1) {
