@@ -574,6 +574,10 @@ const user = {
       let notificationsSettings = getState().settings.ui.notifications;
       let url = loginSettings.url;
 
+      loginData.username = (loginSettings.lowercaseUsername)
+      ? loginData.username.toLowerCase()
+      : loginData.username;
+
       dispatch(this.loginRequest(url));
       fetch(url, {
         method: loginSettings.method || 'POST',
