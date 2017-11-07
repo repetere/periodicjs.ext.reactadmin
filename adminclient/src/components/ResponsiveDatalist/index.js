@@ -30,7 +30,7 @@ const propTypes = {
 const defaultProps = {
   disabled: false,
   data: false,
-  selectedData: false,
+  selectedData: [],
   createable: false,
   value: undefined,
   flattenDataList:true,
@@ -60,6 +60,7 @@ class ResponsiveDatalist extends Component {
       selectedData: props.selectedData,
       isSearching:false,
     };
+    // console.log('this.state', this.state, { props });
     this.inputProps = Object.assign({}, this.props.passableProps);
     // this.searchFunction = debounce(this.updateDataList, 200);
     this.searchFunction = this.updateDataList.bind(this);
@@ -74,7 +75,9 @@ class ResponsiveDatalist extends Component {
   filterStaticData(options) {
     console.log('in filterStaticData');
     console.log({ options });
-    return this.props.datalistdata.filter(item => (item[ this.props.field ].indexOf(options.search) > -1));
+    return (options.search)
+      ? this.props.datalistdata.filter(item => (item[ this.props.field ].indexOf(options.search) > -1))
+      : this.props.datalistdata;
   }
 
   updateDataList(options) {
@@ -122,7 +125,7 @@ class ResponsiveDatalist extends Component {
   onChangeHandler(event) {
     console.log('event target value');
     console.log(event.target.value);
-    this.searchFunction({ search: event.target.value, });
+    this.searchFunction({ search: event.target.value||'', });
   }
   onFocusHandler(event) {
     console.log('in onclickhandler');
@@ -135,8 +138,7 @@ class ResponsiveDatalist extends Component {
   }
   getDatalistDisplay(options){
     let { displayField, selector, datum, } = options;
-    // console.debug('getDatalistDisplay', { options });
-    let displayText = datum[ displayField ] || datum.title || datum.name || datum.username || datum.email || datum[ selector ] || datum;
+    let displayText = (datum[ displayField ] || datum.title || datum.name || datum.username || datum.email || datum[ selector ] || '');
     return (<span style={{
       wordBreak: 'break-all',
       textOverflow: 'ellipsis',
@@ -185,7 +187,14 @@ class ResponsiveDatalist extends Component {
     }
   }
 
+  onBlurHandler() {
+    setTimeout(() => {
+        this.setState({ selectedData: [] });
+    }, 400)
+  }
+
   render() {
+    try {
       let notificationStyle={
         marginBottom: '5px', 
         padding:'5px', 
@@ -232,57 +241,62 @@ class ResponsiveDatalist extends Component {
               })}
             </rb.Notification>)
           : null;
-      let displayOptions = (this.state.selectedData && this.state.selectedData.length)
+      
+
+      let displayOptions = (Array.isArray(this.state.selectedData) &&this.state.selectedData && this.state.selectedData.length)
         ? this.state.selectedData.map((datum, k)=>{
           return (
             <rb.Notification
               key={k}
-              color="isWhite"
+              color="isDanger"
               style={notificationStyle}
             >
-              <rb.Button 
-                icon="fa fa-plus" 
-                size="isSmall" 
-                style={{
-                  alignSelf:'flex-end',
-                  borderRadius:'20px',
-                  float: 'right',
-                  paddingRight: '0px',
-                }}
-                onClick={()=>{
-                  // console.debug('clicked onclick',this.props);
-                  if(this.props.multi){
-                    let newValue = (this.state.value && Array.isArray(this.state.value) && this.state.value.length)
-                      ? this.state.value.concat([datum, ])
-                      : [datum, ];
-                    this.setState({
-                      value:newValue,
-                      selectedData: false,
-                    });
-                    this.props.onChange(newValue);
-                  }                else{
-                    this.setState({
-                      value:datum,
-                      selectedData: false,
-                    });
-                    this.props.onChange(datum);
-                  }
-                }}/>
-              {this.getDatalistDisplay({
-                datum,
-                displayField: this.props.displayField,
-                selector: this.props.selector,
-              })}
-            </rb.Notification>);
-        })
+               <rb.Button 
+                 icon="fa fa-plus" 
+                 size="isSmall" 
+                 style={{
+                   alignSelf:'flex-end',
+                   borderRadius:'20px',
+                   float: 'right',
+                   paddingRight: '0px',
+                 }}
+                 onClick={()=>{
+                    console.debug('clicked onclick',this.props);
+                   if(this.props.multi){
+                     let newValue = (this.state.value && Array.isArray(this.state.value) && this.state.value.length)
+                       ? this.state.value.concat([datum, ])
+                       : [datum, ];
+                     this.setState({
+                       value:newValue,
+                       selectedData: false,
+                     });
+                     this.props.onChange(newValue);
+                   } else {
+                     this.setState({
+                       value:datum,
+                       selectedData: false,
+                     });
+                     this.props.onChange(datum);
+                   }
+                 }}/>
+               {this.getDatalistDisplay({
+                 datum,
+                 displayField: this.props.displayField,
+                 selector: this.props.selector,
+               })}
+            </rb.Notification>
+          );
+        }
+        )
         : null;
-      
-    return(<div {...this.props.wrapperProps}>
+    
+      return (<div {...this.props.wrapperProps}>
       <div style={{ width:'100%', }}>
         <rb.Input {...this.inputProps}
           state={this.state.isSearching || undefined}
           onChange={this.onChangeHandler.bind(this)}
-          onFocus={this.onFocusHandler.bind(this)}
+          onFocus={this.onChangeHandler.bind(this)}
+          onBlur={this.onBlurHandler.bind(this)}  
           ref={(input)=>{
             this.textInput = input; 
           }}
@@ -290,7 +304,13 @@ class ResponsiveDatalist extends Component {
       </div>
       <div> { displayOptions }</div>
       <div>{ selectData }</div>
-    </div>);
+    </div>); 
+            
+    } catch (e) {
+      console.error(e);
+      return <span>some error</span>
+      }
+     
   }
 }
 ResponsiveDatalist.propType = propTypes;
