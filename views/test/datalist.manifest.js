@@ -109,8 +109,8 @@ module.exports = {
                       datalist: {
                         staticSearch: true,
                         selector: 'value',
-                        displayField: 'value',
-                        multi: true,
+                        displayField: 'label',
+                        multi: false,
                         field: 'value',
                         entity: '',
                         dbname: '',

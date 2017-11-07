@@ -125,14 +125,14 @@ function getReactAdminConfig (options, overwrites) {
 module.exports = {
   test: getReactAdminConfig({
     environment: 'test',
-    basename:'http://localhost:8786',
-    loginurl:'http://localhost:8786/api/jwt/token',
+    basename:'https://dcp-dev.marinerfinance.io:8788',
+    loginurl:'https://dcp-dev.marinerfinance.io:8788/api/jwt/token',
     loginheaders:{
       'Accept':'application/json',
       'clientid':'CLIENT**ID**NEEDED',
       'entitytype':'account',
     },
-    profileurl:'http://localhost:8786/api/jwt/profile',
+    profileurl:'https://dcp-dev.marinerfinance.io:8788/api/jwt/profile',
     profileheaders:{
       'Accept':'application/json',
       'Content-Type':'application/json',
@@ -142,14 +142,14 @@ module.exports = {
   }, {}),
   development:getReactAdminConfig({
     environment: 'development',
-    basename:'http://localhost:8786',
-    loginurl:'http://localhost:8786/api/jwt/token',
+    basename:'https://dcp-dev.marinerfinance.io:8788',
+    loginurl:'https://dcp-dev.marinerfinance.io:8788/api/jwt/token',
     loginheaders:{
       'Accept':'application/json',
       'clientid':'CLIENT**ID**NEEDED',
       'entitytype':'account',
     },
-    profileurl:'http://localhost:8786/api/jwt/profile',
+    profileurl:'https://dcp-dev.marinerfinance.io:8788/api/jwt/profile',
     profileheaders:{
       'Accept':'application/json',
       'Content-Type':'application/json',

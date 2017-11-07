@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   "containers": {
-    "/r-admin/content/testbuttonmodal": {
+    "/r-admin/content/testautofill": {
       "layout": {
         "component": "Hero",
         "props": {
@@ -20,7 +20,7 @@ module.exports = {
             "props": {},
             "children": [{
                 "component": "Title",
-                "children": "THIS UPDATED"
+                "children": "ResponsiveTable onClick event"
               },
               {
                 "component": "ResponsiveForm",

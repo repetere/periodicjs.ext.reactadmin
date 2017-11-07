@@ -1,6 +1,6 @@
 {
   "name":"Admin Panel",
-  "basename": "http://localhost:8786",
+  "basename": "https://dcp-dev.marinerfinance.io:8788",
   "adminPath":"/r-admin",
   "routerHistory":"browserHistory",
   "hot_reload": false,
@@ -54,8 +54,8 @@
     "logged_out_path":"/login"
   },
   "login":{
-    "url":"http://localhost:8786/api/jwt/token",
-    "devurl":"http://localhost:8786/api/jwt/token",
+    "url":"https://dcp-dev.marinerfinance.io:8788/api/jwt/token",
+    "devurl":"https://dcp-dev.marinerfinance.io:8788/api/jwt/token",
     "options":{
       "method":"POST",
       "headers":{
@@ -66,8 +66,8 @@
     }
   },
   "userprofile":{
-    "url":"http://localhost:8786/api/jwt/profile",
-    "devurl":"http://localhost:8786/api/jwt/profile",
+    "url":"https://dcp-dev.marinerfinance.io:8788/api/jwt/profile",
+    "devurl":"https://dcp-dev.marinerfinance.io:8788/api/jwt/profile",
     "options":{
       "method":"POST",
       "headers":{
