@@ -11,6 +11,7 @@ const propTypes = {
   disabled: PropTypes.bool,
   selector: PropTypes.string,
   displayfield: PropTypes.string,
+  displayProps: PropTypes.object,
   dbname: PropTypes.string,
   multi: PropTypes.bool,
   createable: PropTypes.bool,
@@ -33,6 +34,7 @@ const defaultProps = {
   selectedData: [],
   createable: false,
   value: undefined,
+  displayProps: {},
   flattenDataList:true,
   flattenDataListOptions: {},
   selector:'_id',
@@ -296,13 +298,13 @@ class ResponsiveDatalist extends Component {
           state={this.state.isSearching || undefined}
           onChange={this.onChangeHandler.bind(this)}
           onFocus={this.onChangeHandler.bind(this)}
-          onBlur={this.onBlurHandler.bind(this)}  
+          onBlur={this.onBlurHandler.bind(this)}
           ref={(input)=>{
             this.textInput = input; 
           }}
         />
       </div>
-      <div> { displayOptions }</div>
+      <div {...this.props.displayProps}> { displayOptions }</div>
       <div>{ selectData }</div>
     </div>); 
             
