@@ -899,7 +899,7 @@ export function getFormSubmit(options) {
                             color:'isPrimary',
                           },
                           onClick: () => {
-                            this.props.hideModal('last');
+                            this.props.hideModal.call(this, 'last');
                             this.submitForm.call(this);
                           },
                           onclickProps:'last',
