@@ -106,10 +106,8 @@ function getFormLabel(formElement) {
 }
 
 function getInitialValue(formElement, state) {
-  // console.debug({formElement, state})
   let formElementValue = formElement.value;
- 
-  if (state[ formElement.name ] === null || formElementValue === null || formElementValue === 'null') {
+  if ( !formElement.showNullValue && (state[ formElement.name ] === null || formElementValue === null || formElementValue === 'null')) {
     return '';
   } else {
     let returnVal = (typeof state[ formElement.name ] !== 'undefined')
