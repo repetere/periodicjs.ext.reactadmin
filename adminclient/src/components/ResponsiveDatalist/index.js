@@ -62,21 +62,15 @@ class ResponsiveDatalist extends Component {
       selectedData: props.selectedData,
       isSearching:false,
     };
-    // console.log('this.state', this.state, { props });
     this.inputProps = Object.assign({}, this.props.passableProps);
     // this.searchFunction = debounce(this.updateDataList, 200);
     this.searchFunction = this.updateDataList.bind(this);
     this.filterStaticData = this.filterStaticData.bind(this);
   }
   componentWillReceiveProps(nextProps) {
-    // console.debug({ nextProps });
-    // this.setState(Object.assign({}, nextProps, this.props.getState()));
-    // // console.log('this.state', this.state);
   }
 
   filterStaticData(options) {
-    console.log('in filterStaticData');
-    console.log({ options });
     return (options.search)
       ? this.props.datalistdata.filter(item => (item[ this.props.field ].indexOf(options.search) > -1))
       : this.props.datalistdata;
@@ -125,18 +119,13 @@ class ResponsiveDatalist extends Component {
     }
   }
   onChangeHandler(event) {
-    console.log('event target value');
-    console.log(event.target.value);
     this.searchFunction({ search: event.target.value||'', });
   }
   onFocusHandler(event) {
-    console.log('in onclickhandler');
     let updatedState = {};
-    // updatedState.selectedData = this.props.datalistdata;
     updatedState.selectedData = this.props.datalistdata.map(data => data.value);
     updatedState.isSearching = false;
     this.setState(updatedState);
-    // this.searchFunction({ search: event.target.value, });
   }
   getDatalistDisplay(options){
     let { displayField, selector, datum, } = options;
@@ -263,7 +252,6 @@ class ResponsiveDatalist extends Component {
                    paddingRight: '0px',
                  }}
                  onClick={()=>{
-                    console.debug('clicked onclick',this.props);
                    if(this.props.multi){
                      let newValue = (this.state.value && Array.isArray(this.state.value) && this.state.value.length)
                        ? this.state.value.concat([datum, ])
