@@ -219,10 +219,8 @@ function getFormLabel(formElement) {
 }
 
 function getInitialValue(formElement, state) {
-  // console.debug({formElement, state})
   var formElementValue = formElement.value;
-
-  if (state[formElement.name] === null || formElementValue === null || formElementValue === 'null') {
+  if (!formElement.showNullValue && (state[formElement.name] === null || formElementValue === null || formElementValue === 'null')) {
     return '';
   } else {
     var returnVal = typeof state[formElement.name] !== 'undefined' ? state[formElement.name] : formElementValue;
@@ -411,6 +409,7 @@ function getFormDatalist(options) {
   if (formElement.datalist.staticSearch) {
     // let datalistdata = this.state[formElement.name];
     var datalistdata = [];
+    console.log(this.props.__formOptions);
     if (this.props.__formOptions && this.props.__formOptions[formElement.name]) {
       datalistdata = this.props.__formOptions[formElement.name];
     } else {
@@ -1088,7 +1087,7 @@ function getFormSubmit(options) {
                         color: 'isPrimary'
                       },
                       onClick: function onClick() {
-                        _this11.props.hideModal('last');
+                        _this11.props.hideModal.call(_this11, 'last');
                         _this11.submitForm.call(_this11);
                       },
                       onclickProps: 'last'

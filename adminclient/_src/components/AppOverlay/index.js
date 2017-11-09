@@ -201,7 +201,6 @@ var Overlay = function (_Component3) {
     value: function render() {
       var _this5 = this;
 
-      // console.log('Overlay this.props.notification', this.props.notification);
       window.overlayProps = this.props;
       var overlayStyleOverrides = this.props.getState().settings.ui.overlayStyleProps;
       var notices = this.props.notification.notifications && this.props.notification.notifications.length > 0 ? this.props.notification.notifications.map(function (notice, key) {
@@ -211,12 +210,15 @@ var Overlay = function (_Component3) {
             }
           }, key: key }, notice));
       }) : null;
-      var modal = this.props.notification.modals && this.props.notification.modals.length > 0 ? _react2.default.createElement(ModalUI, (0, _extends3.default)({}, this.props.notification.modals[this.props.notification.modals.length - 1], {
-        getState: this.props.getState,
-        hide: function hide() {
-          _this5.props.hideModal(_this5.props.notification.modals[0].id);
-        },
-        dynamicRenderComponent: this.getRenderedComponent })) : null;
+      var modal = this.props.notification.modals && this.props.notification.modals.length > 0 ? this.props.notification.modals.map(function (modal, index) {
+        return _react2.default.createElement(ModalUI, (0, _extends3.default)({}, _this5.props.notification.modals[index], {
+          getState: _this5.props.getState,
+          key: index,
+          hide: function hide() {
+            _this5.props.hideModal(_this5.props.notification.modals[index].id);
+          },
+          dynamicRenderComponent: _this5.getRenderedComponent }));
+      }) : null;
       return _react2.default.createElement(
         'div',
         (0, _extends3.default)({ className: '__reactadmin_overlay' }, overlayStyleOverrides, { style: { position: 'fixed', bottom: 0, width: 'auto', zIndex: 100000 } }),

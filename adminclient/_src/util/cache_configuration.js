@@ -9,31 +9,23 @@ var _stringify = require('babel-runtime/core-js/json/stringify');
 
 var _stringify2 = _interopRequireDefault(_stringify);
 
-var _promise = require('babel-runtime/core-js/promise');
+var _keys = require('babel-runtime/core-js/object/keys');
 
-var _promise2 = _interopRequireDefault(_promise);
+var _keys2 = _interopRequireDefault(_keys);
 
 var _typeof2 = require('babel-runtime/helpers/typeof');
 
 var _typeof3 = _interopRequireDefault(_typeof2);
 
-var _keys = require('babel-runtime/core-js/object/keys');
+var _promise = require('babel-runtime/core-js/promise');
 
-var _keys2 = _interopRequireDefault(_keys);
-
-var _assign = require('babel-runtime/core-js/object/assign');
-
-var _assign2 = _interopRequireDefault(_assign);
+var _promise2 = _interopRequireDefault(_promise);
 
 var _serverSideReactNative = require('./server-side-react-native');
 
 var _constants = require('../constants');
 
 var _constants2 = _interopRequireDefault(_constants);
-
-var _semver = require('semver');
-
-var _semver2 = _interopRequireDefault(_semver);
 
 var _stringToJson = require('string-to-json');
 
@@ -45,53 +37,52 @@ var _flat2 = _interopRequireDefault(_flat);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var settleVersioning = function settleVersioning(original, update) {
-  if (!original.versions) return true;
-  if (typeof original.versions.theme !== 'string' || typeof original.versions.reactadmin !== 'string') return true;
-  if (!update.versions) return true;
-  var themeOutofDate = typeof update.versions.theme === 'string' ? _semver2.default.lt(original.versions.theme, update.versions.theme) : false;
-  var reactadminOutofDate = typeof update.versions.reactadmin === 'string' ? _semver2.default.lt(original.versions.reactadmin, update.versions.reactadmin) : false;
-  return themeOutofDate || reactadminOutofDate;
-};
+// var settleVersioning = function (original, update) {
+//   if (!original.versions) return true;
+//   if (typeof original.versions.theme !== 'string' || typeof original.versions.reactadmin !== 'string') return true;
+//   if (!update.versions) return true;
+//   let themeOutofDate = (typeof update.versions.theme === 'string') ? semver.lt(original.versions.theme, update.versions.theme) : false;
+//   let reactadminOutofDate = (typeof update.versions.reactadmin === 'string') ? semver.lt(original.versions.reactadmin, update.versions.reactadmin) : false;
+//   return (themeOutofDate || reactadminOutofDate);
+// };
 
-var handleConfigurationAssigment = function handleConfigurationAssigment(original, update) {
-  if (original && settleVersioning(original, update)) {
-    original = (0, _assign2.default)({}, update);
-  } else if (!original) {
-    original = (0, _assign2.default)({}, update);
-  }
-  return original;
-};
+// var handleConfigurationAssigment = function (original, update) {
+//   if (original && settleVersioning(original, update)) {
+//     original = Object.assign({}, update);
+//   } else if (!original) {
+//     original = Object.assign({}, update);
+//   }
+//   return original;
+// };
 
-var handleConfigurationVersioning = function handleConfigurationVersioning(data, type) {
-  var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+// var handleConfigurationVersioning = function (data, type, options = {}) {
+//   if (!type) throw new Error('Configurations must have a specified type');
+//   let configuration;
+//   try {
+//     configuration = JSON.parse(data.configuration) || {};
+//   } catch (e) {
+//     configuration = {};
+//   }
+//   configuration = flatten(configuration || {}, { safe: true, maxDepth: options.depth || 2, });
+//   if (options.multi === true) {
+//     if (typeof type === 'string') {
+//       configuration[type] = Object.keys(data).reduce((result, key) => {
+//         result[key] = handleConfigurationAssigment(result[key], Object.assign(data[key].data.settings, { versions: data.versions, }));
+//         return result;
+//       }, configuration[type] || {});
+//     } else if (type && typeof type === 'object') {
+//       configuration = Object.keys(data).reduce((result, key) => {
+//         if (type[key]) result[type[key]] = handleConfigurationAssigment(result[type[key]], Object.assign(data[key].data.settings, { versions: data.versions, }));
+//         return result;
+//       }, configuration || {});
+//     }
+//   } else {
+//     configuration[type] = handleConfigurationAssigment(configuration[type], Object.assign(data.settings, { versions: data.versions, }));
+//   }
+//   return str2json.convert(configuration);
+// };
 
-  if (!type) throw new Error('Configurations must have a specified type');
-  var configuration = void 0;
-  try {
-    configuration = JSON.parse(data.configuration) || {};
-  } catch (e) {
-    configuration = {};
-  }
-  configuration = (0, _flat2.default)(configuration || {}, { safe: true, maxDepth: options.depth || 2 });
-  if (options.multi === true) {
-    if (typeof type === 'string') {
-      configuration[type] = (0, _keys2.default)(data).reduce(function (result, key) {
-        result[key] = handleConfigurationAssigment(result[key], (0, _assign2.default)(data[key].data.settings, { versions: data.versions }));
-        return result;
-      }, configuration[type] || {});
-    } else if (type && (typeof type === 'undefined' ? 'undefined' : (0, _typeof3.default)(type)) === 'object') {
-      configuration = (0, _keys2.default)(data).reduce(function (result, key) {
-        if (type[key]) result[type[key]] = handleConfigurationAssigment(result[type[key]], (0, _assign2.default)(data[key].data.settings, { versions: data.versions }));
-        return result;
-      }, configuration || {});
-    }
-  } else {
-    configuration[type] = handleConfigurationAssigment(configuration[type], (0, _assign2.default)(data.settings, { versions: data.versions }));
-  }
-  return _stringToJson2.default.convert(configuration);
-};
-
+// import semver from 'semver';
 var setCacheConfiguration = exports.setCacheConfiguration = function setCacheConfiguration(fn, type) {
   var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 

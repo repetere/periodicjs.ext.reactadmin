@@ -46,10 +46,6 @@ var _reBulma = require('re-bulma');
 
 var rb = _interopRequireWildcard(_reBulma);
 
-var _debounce = require('debounce');
-
-var _debounce2 = _interopRequireDefault(_debounce);
-
 var _util = require('../../util');
 
 var _util2 = _interopRequireDefault(_util);
@@ -62,10 +58,14 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// import debounce from 'debounce';
+
+// import flatten from 'flat';
 var propTypes = {
   disabled: _react.PropTypes.bool,
   selector: _react.PropTypes.string,
   displayfield: _react.PropTypes.string,
+  displayProps: _react.PropTypes.object,
   dbname: _react.PropTypes.string,
   multi: _react.PropTypes.bool,
   createable: _react.PropTypes.bool,
@@ -74,21 +74,21 @@ var propTypes = {
   resourceUrl: _react.PropTypes.string,
   createResourceUrl: _react.PropTypes.string,
   data: _react.PropTypes.array,
-  selectedData: _react.PropTypes.object,
+  selectedData: _react.PropTypes.any,
   value: _react.PropTypes.any,
   onChange: _react.PropTypes.func,
+  onFocus: _react.PropTypes.func,
   limit: _react.PropTypes.number,
   datalistdata: _react.PropTypes.array
 };
-// import flatten from 'flat';
-
 
 var defaultProps = {
   disabled: false,
   data: false,
-  selectedData: false,
+  selectedData: [],
   createable: false,
   value: undefined,
+  displayProps: {},
   flattenDataList: true,
   flattenDataListOptions: {},
   selector: '_id',
@@ -98,6 +98,9 @@ var defaultProps = {
   datalistdata: [],
   onChange: function onChange(data) {
     console.debug('ResponsiveDatalist onChange', { data: data });
+  },
+  onFocus: function onFocus(data) {
+    console.debug('ResponsiveDatalist onFocus', { data: data });
   }
 };
 
@@ -117,33 +120,29 @@ var ResponsiveDatalist = function (_Component) {
       isSearching: false
     };
     _this.inputProps = (0, _assign2.default)({}, _this.props.passableProps);
-    _this.searchFunction = (0, _debounce2.default)(_this.updateDataList, 200);
+    // this.searchFunction = debounce(this.updateDataList, 200);
+    _this.searchFunction = _this.updateDataList.bind(_this);
     _this.filterStaticData = _this.filterStaticData.bind(_this);
     return _this;
   }
 
   (0, _createClass3.default)(ResponsiveDatalist, [{
     key: 'componentWillReceiveProps',
-    value: function componentWillReceiveProps(nextProps) {
-      // console.debug({ nextProps });
-      // this.setState(Object.assign({}, nextProps, this.props.getState()));
-      // // console.log('this.state', this.state);
-    }
+    value: function componentWillReceiveProps(nextProps) {}
   }, {
     key: 'filterStaticData',
     value: function filterStaticData(options) {
       var _this2 = this;
 
-      return this.props.datalistdata.filter(function (item) {
+      return options.search ? this.props.datalistdata.filter(function (item) {
         return item[_this2.props.field].indexOf(options.search) > -1;
-      });
+      }) : this.props.datalistdata;
     }
   }, {
     key: 'updateDataList',
     value: function updateDataList(options) {
       var _this3 = this;
 
-      // console.log('this.props.resourceUrl', this.props.resourceUrl);
       if (this.props.resourceUrl) {
         this.setState({ isSearching: true });
         var stateProps = this.props.getState();
@@ -154,6 +153,7 @@ var ResponsiveDatalist = function (_Component) {
           //   : undefined,
           search: options.search,
           allowSpecialCharacters: true
+          // pagenum: options.pagenum || 1,
         });
         var headers = (0, _assign2.default)({
           'x-access-token': stateProps.user.jwt_token
@@ -168,6 +168,7 @@ var ResponsiveDatalist = function (_Component) {
           _this3.props.errorNotification(e);
         });
       } else if (this.props.staticSearch) {
+
         this.setState({ isSearching: true });
         //options.search is the actual content
         var updatedState = {};
@@ -175,6 +176,7 @@ var ResponsiveDatalist = function (_Component) {
         updatedState.isSearching = false;
         // console.debug({updatedState,response});
         this.setState(updatedState);
+
         //value is the array of selected values
         //selectedData is the filtered list that changes everytime user types
       } else {
@@ -184,7 +186,17 @@ var ResponsiveDatalist = function (_Component) {
   }, {
     key: 'onChangeHandler',
     value: function onChangeHandler(event) {
-      this.searchFunction({ search: event.target.value });
+      this.searchFunction({ search: event.target.value || '' });
+    }
+  }, {
+    key: 'onFocusHandler',
+    value: function onFocusHandler(event) {
+      var updatedState = {};
+      updatedState.selectedData = this.props.datalistdata.map(function (data) {
+        return data.value;
+      });
+      updatedState.isSearching = false;
+      this.setState(updatedState);
     }
   }, {
     key: 'getDatalistDisplay',
@@ -192,9 +204,8 @@ var ResponsiveDatalist = function (_Component) {
       var displayField = options.displayField,
           selector = options.selector,
           datum = options.datum;
-      // console.debug('getDatalistDisplay', { options });
 
-      var displayText = datum[displayField] || datum.title || datum.name || datum.username || datum.email || datum[selector] || datum;
+      var displayText = datum[displayField] || datum.title || datum.name || datum.username || datum.email || datum[selector] || '';
       return _react2.default.createElement(
         'span',
         { style: {
@@ -247,120 +258,141 @@ var ResponsiveDatalist = function (_Component) {
       }
     }
   }, {
-    key: 'render',
-    value: function render() {
+    key: 'onBlurHandler',
+    value: function onBlurHandler() {
       var _this4 = this;
 
-      var notificationStyle = {
-        marginBottom: '5px',
-        padding: '5px',
-        border: '1px solid lightgrey'
-      };
-      var notificationCloseStyle = {
-        margin: '0px 0px 0px 20px',
-        borderRadius: '19px'
-      };
-      var selectData = this.props.multi ? this.state.value && this.state.value.length ? this.state.value.map(function (selected, k) {
-        return _react2.default.createElement(
+      setTimeout(function () {
+        _this4.setState({ selectedData: [] });
+      }, 400);
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this5 = this;
+
+      try {
+        var notificationStyle = {
+          marginBottom: '5px',
+          padding: '5px',
+          border: '1px solid lightgrey'
+        };
+        var notificationCloseStyle = {
+          margin: '0px 0px 0px 20px',
+          borderRadius: '19px'
+        };
+        var selectData = this.props.multi ? this.state.value && this.state.value.length ? this.state.value.map(function (selected, k) {
+          return _react2.default.createElement(
+            rb.Notification,
+            {
+              key: k,
+              enableCloseButton: true,
+              closeButtonProps: {
+                onClick: _this5.removeDatalistItem.bind(_this5, k),
+                style: notificationCloseStyle
+              },
+              style: notificationStyle
+            },
+            _this5.getDatalistDisplay({
+              datum: selected,
+              displayField: _this5.props.displayField,
+              selector: _this5.props.selector
+            })
+          );
+        }) : null : this.state.value ? _react2.default.createElement(
           rb.Notification,
           {
-            key: k,
             enableCloseButton: true,
             closeButtonProps: {
-              onClick: _this4.removeDatalistItem.bind(_this4, k),
+              onClick: this.removeDatalistItem.bind(this),
               style: notificationCloseStyle
             },
             style: notificationStyle
           },
-          _this4.getDatalistDisplay({
-            datum: selected,
-            displayField: _this4.props.displayField,
-            selector: _this4.props.selector
+          this.getDatalistDisplay({
+            datum: this.state.value,
+            displayField: this.props.displayField,
+            selector: this.props.selector
           })
-        );
-      }) : null : this.state.value ? _react2.default.createElement(
-        rb.Notification,
-        {
-          enableCloseButton: true,
-          closeButtonProps: {
-            onClick: this.removeDatalistItem.bind(this),
-            style: notificationCloseStyle
-          },
-          style: notificationStyle
-        },
-        this.getDatalistDisplay({
-          datum: this.state.value,
-          displayField: this.props.displayField,
-          selector: this.props.selector
-        })
-      ) : null;
-      var displayOptions = this.state.selectedData && this.state.selectedData.length ? this.state.selectedData.map(function (datum, k) {
-        return _react2.default.createElement(
-          rb.Notification,
-          {
-            key: k,
-            color: 'isWhite',
-            style: notificationStyle
-          },
-          _react2.default.createElement(rb.Button, {
-            icon: 'fa fa-plus',
-            size: 'isSmall',
-            style: {
-              alignSelf: 'flex-end',
-              borderRadius: '20px',
-              float: 'right',
-              paddingRight: '0px'
+        ) : null;
+
+        var displayOptions = Array.isArray(this.state.selectedData) && this.state.selectedData && this.state.selectedData.length ? this.state.selectedData.map(function (datum, k) {
+          return _react2.default.createElement(
+            rb.Notification,
+            {
+              key: k,
+              color: 'isWhite',
+              style: notificationStyle
             },
-            onClick: function onClick() {
-              // console.debug('clicked onclick',this.props);
-              if (_this4.props.multi) {
-                var newValue = _this4.state.value && Array.isArray(_this4.state.value) && _this4.state.value.length ? _this4.state.value.concat([datum]) : [datum];
-                _this4.setState({
-                  value: newValue,
-                  selectedData: false
-                });
-                _this4.props.onChange(newValue);
-              } else {
-                _this4.setState({
-                  value: datum,
-                  selectedData: false
-                });
-                _this4.props.onChange(datum);
+            _react2.default.createElement(rb.Button, {
+              icon: 'fa fa-plus',
+              size: 'isSmall',
+              style: {
+                alignSelf: 'flex-end',
+                borderRadius: '20px',
+                float: 'right',
+                paddingRight: '0px'
+              },
+              onClick: function onClick() {
+                if (_this5.props.multi) {
+                  var newValue = _this5.state.value && Array.isArray(_this5.state.value) && _this5.state.value.length ? _this5.state.value.concat([datum]) : [datum];
+                  _this5.setState({
+                    value: newValue,
+                    selectedData: false
+                  });
+                  _this5.props.onChange(newValue);
+                } else {
+                  _this5.setState({
+                    value: datum,
+                    selectedData: false
+                  });
+                  _this5.props.onChange(datum);
+                }
+              } }),
+            _this5.getDatalistDisplay({
+              datum: datum,
+              displayField: _this5.props.displayField,
+              selector: _this5.props.selector
+            })
+          );
+        }) : null;
+
+        return _react2.default.createElement(
+          'div',
+          this.props.wrapperProps,
+          _react2.default.createElement(
+            'div',
+            { style: { width: '100%' } },
+            _react2.default.createElement(rb.Input, (0, _extends3.default)({}, this.inputProps, {
+              state: this.state.isSearching || undefined,
+              onChange: this.onChangeHandler.bind(this),
+              onFocus: this.onChangeHandler.bind(this),
+              onBlur: this.onBlurHandler.bind(this),
+              ref: function ref(input) {
+                _this5.textInput = input;
               }
-            } }),
-          _this4.getDatalistDisplay({
-            datum: datum,
-            displayField: _this4.props.displayField,
-            selector: _this4.props.selector
-          })
+            }))
+          ),
+          _react2.default.createElement(
+            'div',
+            this.props.displayProps,
+            ' ',
+            displayOptions
+          ),
+          _react2.default.createElement(
+            'div',
+            null,
+            selectData
+          )
         );
-      }) : null;
-      return _react2.default.createElement(
-        'div',
-        this.props.wrapperProps,
-        _react2.default.createElement(
-          'div',
-          { style: { width: '100%' } },
-          _react2.default.createElement(rb.Input, (0, _extends3.default)({}, this.inputProps, {
-            state: this.state.isSearching || undefined,
-            onChange: this.onChangeHandler.bind(this),
-            ref: function ref(input) {
-              _this4.textInput = input;
-            }
-          }))
-        ),
-        _react2.default.createElement(
-          'div',
+      } catch (e) {
+        console.error(e);
+        return _react2.default.createElement(
+          'span',
           null,
-          ' ',
-          displayOptions
-        ),
-        _react2.default.createElement(
-          'div',
-          null,
-          selectData
-        )
-      );
+          'some error'
+        );
+      }
     }
   }]);
   return ResponsiveDatalist;
