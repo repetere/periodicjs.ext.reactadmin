@@ -129,7 +129,7 @@ class ResponsiveDatalist extends Component {
   }
   getDatalistDisplay(options){
     let { displayField, selector, datum, } = options;
-    let displayText = (datum[ displayField ] || datum.title || datum.name || datum.username || datum.email || datum[ selector ] || '');
+    let displayText = (datum[ displayField ] || datum.title || datum.name || datum.username || datum.email || datum[ selector ] ||  typeof datum === 'string'? datum : '');
     return (<span style={{
       wordBreak: 'break-all',
       textOverflow: 'ellipsis',
