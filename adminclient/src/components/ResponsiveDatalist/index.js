@@ -239,7 +239,7 @@ class ResponsiveDatalist extends Component {
           return (
             <rb.Notification
               key={k}
-              color="isDanger"
+              color="isWhite"
               style={notificationStyle}
             >
                <rb.Button 
