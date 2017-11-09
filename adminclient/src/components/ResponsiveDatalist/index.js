@@ -3,7 +3,7 @@ import { Link, } from 'react-router';
 // import flatten from 'flat';
 import qs from 'querystring';
 import * as rb from 're-bulma';
-import debounce from 'debounce';
+// import debounce from 'debounce';
 import utilities from '../../util';
 import pluralize from 'pluralize';
 
@@ -11,6 +11,7 @@ const propTypes = {
   disabled: PropTypes.bool,
   selector: PropTypes.string,
   displayfield: PropTypes.string,
+  displayProps: PropTypes.object,
   dbname: PropTypes.string,
   multi: PropTypes.bool,
   createable: PropTypes.bool,
@@ -19,9 +20,10 @@ const propTypes = {
   resourceUrl: PropTypes.string,
   createResourceUrl: PropTypes.string,
   data: PropTypes.array,
-  selectedData: PropTypes.object,
+  selectedData: PropTypes.any,
   value: PropTypes.any,
   onChange: PropTypes.func,
+  onFocus: PropTypes.func,
   limit: PropTypes.number,
   datalistdata: PropTypes.array,
 };
@@ -29,9 +31,10 @@ const propTypes = {
 const defaultProps = {
   disabled: false,
   data: false,
-  selectedData: false,
+  selectedData: [],
   createable: false,
-  value:undefined,
+  value: undefined,
+  displayProps: {},
   flattenDataList:true,
   flattenDataListOptions: {},
   selector:'_id',
@@ -40,7 +43,11 @@ const defaultProps = {
   limit: 10,
   datalistdata: [],
   onChange:(data)=>{
-    console.debug('ResponsiveDatalist onChange', { data, })
+    console.debug('ResponsiveDatalist onChange', { data, })  
+;
+  },
+  onFocus: (data)=>{
+    console.debug('ResponsiveDatalist onFocus', { data, })  
 ;
   },
 };
@@ -56,21 +63,20 @@ class ResponsiveDatalist extends Component {
       isSearching:false,
     };
     this.inputProps = Object.assign({}, this.props.passableProps);
-    this.searchFunction = debounce(this.updateDataList, 200);
+    // this.searchFunction = debounce(this.updateDataList, 200);
+    this.searchFunction = this.updateDataList.bind(this);
     this.filterStaticData = this.filterStaticData.bind(this);
   }
   componentWillReceiveProps(nextProps) {
-    // console.debug({ nextProps });
-    // this.setState(Object.assign({}, nextProps, this.props.getState()));
-    // // console.log('this.state', this.state);
   }
 
   filterStaticData(options) {
-    return this.props.datalistdata.filter(item => (item[ this.props.field ].indexOf(options.search) > -1));
+    return (options.search)
+      ? this.props.datalistdata.filter(item => (item[ this.props.field ].indexOf(options.search) > -1))
+      : this.props.datalistdata;
   }
 
   updateDataList(options) {
-    // console.log('this.props.resourceUrl', this.props.resourceUrl);
     if(this.props.resourceUrl){
       this.setState({ isSearching: true, });
       let stateProps = this.props.getState();
@@ -97,26 +103,33 @@ class ResponsiveDatalist extends Component {
           this.props.errorNotification(e);
         });
     } else if (this.props.staticSearch) {
-      this.setState({ isSearching: true, });
-      //options.search is the actual content
-      let updatedState = {};
-      updatedState.selectedData = this.filterStaticData(options);
-      updatedState.isSearching = false;
-      // console.debug({updatedState,response});
-      this.setState(updatedState);
+
+        this.setState({ isSearching: true, });
+        //options.search is the actual content
+        let updatedState = {};
+        updatedState.selectedData = this.filterStaticData(options);
+        updatedState.isSearching = false;
+        // console.debug({updatedState,response});
+        this.setState(updatedState);
+        
       //value is the array of selected values
       //selectedData is the filtered list that changes everytime user types
     } else{
       console.debug({ options,  });
     }
   }
-  onChangeHandler(event){
-    this.searchFunction({ search: event.target.value, });
+  onChangeHandler(event) {
+    this.searchFunction({ search: event.target.value||'', });
+  }
+  onFocusHandler(event) {
+    let updatedState = {};
+    updatedState.selectedData = this.props.datalistdata.map(data => data.value);
+    updatedState.isSearching = false;
+    this.setState(updatedState);
   }
   getDatalistDisplay(options){
     let { displayField, selector, datum, } = options;
-    // console.debug('getDatalistDisplay', { options });
-    let displayText = datum[ displayField ] || datum.title || datum.name || datum.username || datum.email || datum[ selector ] || datum;
+    let displayText = (datum[ displayField ] || datum.title || datum.name || datum.username || datum.email || datum[ selector ] || '');
     return (<span style={{
       wordBreak: 'break-all',
       textOverflow: 'ellipsis',
@@ -164,110 +177,130 @@ class ResponsiveDatalist extends Component {
       this.props.onChange(datum);
     }
   }
-  render() {
-    let notificationStyle={
-      marginBottom: '5px', 
-      padding:'5px', 
-      border:'1px solid lightgrey',
-    };
-    let notificationCloseStyle={
-      margin: '0px 0px 0px 20px',
-      borderRadius: '19px',
-    };
-    let selectData = (this.props.multi) 
-      ? (this.state.value && this.state.value.length ) 
-        ? (this.state.value.map((selected, k)=>{
-          return (<rb.Notification
-          key={k}
-            enableCloseButton
-            closeButtonProps={{ 
-              onClick: this.removeDatalistItem.bind(this, k),
-              style: notificationCloseStyle,
-            }}
-            style={notificationStyle}
-          >
-            {this.getDatalistDisplay({
-              datum:selected,
-              displayField: this.props.displayField,
-              selector: this.props.selector,
-            })}
-          </rb.Notification>);
-        }))
-        : null
-      : (this.state.value)
-        ?(<rb.Notification
-            enableCloseButton
-            closeButtonProps={{ 
-              onClick: this.removeDatalistItem.bind(this),
-              style: notificationCloseStyle,
-            }}
-            style={notificationStyle}
-          >
 
-            {this.getDatalistDisplay({
-              datum:this.state.value,
-              displayField: this.props.displayField,
-              selector: this.props.selector,
-            })}
-          </rb.Notification>)
-        : null;
-    let displayOptions = (this.state.selectedData && this.state.selectedData.length)
-      ? this.state.selectedData.map((datum, k)=>{
-        return (
-          <rb.Notification
+  onBlurHandler() {
+    setTimeout(() => {
+        this.setState({ selectedData: [] });
+    }, 400)
+  }
+
+  render() {
+    try {
+      let notificationStyle={
+        marginBottom: '5px', 
+        padding:'5px', 
+        border:'1px solid lightgrey',
+      };
+      let notificationCloseStyle={
+        margin: '0px 0px 0px 20px',
+        borderRadius: '19px',
+      };
+      let selectData = (this.props.multi) 
+        ? (this.state.value && this.state.value.length ) 
+          ? (this.state.value.map((selected, k)=>{
+            return (<rb.Notification
             key={k}
-            color="isWhite"
-            style={notificationStyle}
-          >
-            <rb.Button 
-              icon="fa fa-plus" 
-              size="isSmall" 
-              style={{
-                alignSelf:'flex-end',
-                borderRadius:'20px',
-                float: 'right',
-                paddingRight: '0px',
+              enableCloseButton
+              closeButtonProps={{ 
+                onClick: this.removeDatalistItem.bind(this, k),
+                style: notificationCloseStyle,
               }}
-              onClick={()=>{
-                // console.debug('clicked onclick',this.props);
-                if(this.props.multi){
-                  let newValue = (this.state.value && Array.isArray(this.state.value) && this.state.value.length)
-                    ? this.state.value.concat([datum, ])
-                    : [datum, ];
-                  this.setState({
-                    value:newValue,
-                    selectedData: false,
-                  });
-                  this.props.onChange(newValue);
-                }                else{
-                  this.setState({
-                    value:datum,
-                    selectedData: false,
-                  });
-                  this.props.onChange(datum);
-                }
-              }}/>
-            {this.getDatalistDisplay({
-              datum,
-              displayField: this.props.displayField,
-              selector: this.props.selector,
-            })}
-          </rb.Notification>);
-      })
-      : null;
-    return(<div {...this.props.wrapperProps}>
+              style={notificationStyle}
+            >
+              {this.getDatalistDisplay({
+                datum:selected,
+                displayField: this.props.displayField,
+                selector: this.props.selector,
+              })}
+            </rb.Notification>);
+          }))
+          : null
+        : (this.state.value)
+          ?(<rb.Notification
+              enableCloseButton
+              closeButtonProps={{ 
+                onClick: this.removeDatalistItem.bind(this),
+                style: notificationCloseStyle,
+              }}
+              style={notificationStyle}
+            >
+  
+              {this.getDatalistDisplay({
+                datum:this.state.value,
+                displayField: this.props.displayField,
+                selector: this.props.selector,
+              })}
+            </rb.Notification>)
+          : null;
+      
+
+      let displayOptions = (Array.isArray(this.state.selectedData) &&this.state.selectedData && this.state.selectedData.length)
+        ? this.state.selectedData.map((datum, k)=>{
+          return (
+            <rb.Notification
+              key={k}
+              color="isWhite"
+              style={notificationStyle}
+            >
+               <rb.Button 
+                 icon="fa fa-plus" 
+                 size="isSmall" 
+                 style={{
+                   alignSelf:'flex-end',
+                   borderRadius:'20px',
+                   float: 'right',
+                   paddingRight: '0px',
+                 }}
+                 onClick={()=>{
+                   if(this.props.multi){
+                     let newValue = (this.state.value && Array.isArray(this.state.value) && this.state.value.length)
+                       ? this.state.value.concat([datum, ])
+                       : [datum, ];
+                     this.setState({
+                       value:newValue,
+                       selectedData: false,
+                     });
+                     this.props.onChange(newValue);
+                   } else {
+                     this.setState({
+                       value:datum,
+                       selectedData: false,
+                     });
+                     this.props.onChange(datum);
+                   }
+                 }}/>
+               {this.getDatalistDisplay({
+                 datum,
+                 displayField: this.props.displayField,
+                 selector: this.props.selector,
+               })}
+            </rb.Notification>
+          );
+        }
+        )
+        : null;
+    
+      return (<div {...this.props.wrapperProps}>
       <div style={{ width:'100%', }}>
         <rb.Input {...this.inputProps}
-          state={this.state.isSearching||undefined}
+          state={this.state.isSearching || undefined}
           onChange={this.onChangeHandler.bind(this)}
+          onFocus={this.onChangeHandler.bind(this)}
+          onBlur={this.onBlurHandler.bind(this)}
           ref={(input)=>{
             this.textInput = input; 
           }}
         />
       </div>
-      <div> { displayOptions }</div>
+      <div {...this.props.displayProps}> { displayOptions }</div>
       <div>{ selectData }</div>
-    </div>);
+    </div>); 
+            
+    } catch (e) {
+      console.error(e);
+      return <span>some error</span>
+      }
+     
   }
 }
 ResponsiveDatalist.propType = propTypes;

@@ -106,10 +106,8 @@ function getFormLabel(formElement) {
 }
 
 function getInitialValue(formElement, state) {
-  // console.debug({formElement, state})
   let formElementValue = formElement.value;
- 
-  if (state[ formElement.name ] === null || formElementValue === null || formElementValue === 'null') {
+  if ( !formElement.showNullValue && (state[ formElement.name ] === null || formElementValue === null || formElementValue === 'null')) {
     return '';
   } else {
     let returnVal = (typeof state[ formElement.name ] !== 'undefined')
@@ -318,6 +316,7 @@ export function getFormDatalist(options){
   if(formElement.datalist.staticSearch){
     // let datalistdata = this.state[formElement.name];
     let datalistdata = [];
+    console.log(this.props.__formOptions);
     if(this.props.__formOptions && this.props.__formOptions[formElement.name]){
       datalistdata = this.props.__formOptions[formElement.name];
     } else {
@@ -898,7 +897,7 @@ export function getFormSubmit(options) {
                             color:'isPrimary',
                           },
                           onClick: () => {
-                            this.props.hideModal('last');
+                            this.props.hideModal.call(this, 'last');
                             this.submitForm.call(this);
                           },
                           onclickProps:'last',
