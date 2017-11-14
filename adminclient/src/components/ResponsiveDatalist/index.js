@@ -67,7 +67,7 @@ class ResponsiveDatalist extends Component {
     this.searchFunction = this.updateDataList.bind(this);
     this.filterStaticData = this.filterStaticData.bind(this);
   }
-  componentWillReceiveProps(nextProps) {
+  componentWillUpdate(nextProps) {
   }
 
   filterStaticData(options) {
@@ -128,8 +128,8 @@ class ResponsiveDatalist extends Component {
     this.setState(updatedState);
   }
   getDatalistDisplay(options){
-    let { displayField, selector, datum, } = options;
-    let displayText = (datum[ displayField ] || datum.title || datum.name || datum.username || datum.email || datum[ selector ] || '');
+    let { displayField, selector, datum} = options;
+    let displayText = (datum[ displayField ] || datum.title || datum.name || datum.username || datum.email || datum[ selector ] || ((datum && typeof datum === 'string') ? datum : ''));
     return (<span style={{
       wordBreak: 'break-all',
       textOverflow: 'ellipsis',
@@ -197,22 +197,22 @@ class ResponsiveDatalist extends Component {
       };
       let selectData = (this.props.multi) 
         ? (this.state.value && this.state.value.length ) 
-          ? (this.state.value.map((selected, k)=>{
+          ? (this.state.value.map((selected, k) => {
             return (<rb.Notification
-            key={k}
-              enableCloseButton
-              closeButtonProps={{ 
-                onClick: this.removeDatalistItem.bind(this, k),
-                style: notificationCloseStyle,
-              }}
-              style={notificationStyle}
-            >
-              {this.getDatalistDisplay({
-                datum:selected,
-                displayField: this.props.displayField,
-                selector: this.props.selector,
-              })}
-            </rb.Notification>);
+              key={k}
+                enableCloseButton
+                closeButtonProps={{ 
+                  onClick: this.removeDatalistItem.bind(this, k),
+                  style: notificationCloseStyle,
+                }}
+                style={notificationStyle}
+              >
+                {this.getDatalistDisplay({
+                  datum:selected,
+                  displayField: this.props.displayField,
+                  selector: this.props.selector,
+                })}
+              </rb.Notification>);
           }))
           : null
         : (this.state.value)
@@ -224,7 +224,6 @@ class ResponsiveDatalist extends Component {
               }}
               style={notificationStyle}
             >
-  
               {this.getDatalistDisplay({
                 datum:this.state.value,
                 displayField: this.props.displayField,
@@ -232,7 +231,6 @@ class ResponsiveDatalist extends Component {
               })}
             </rb.Notification>)
           : null;
-      
 
       let displayOptions = (Array.isArray(this.state.selectedData) &&this.state.selectedData && this.state.selectedData.length)
         ? this.state.selectedData.map((datum, k)=>{
@@ -269,11 +267,13 @@ class ResponsiveDatalist extends Component {
                      this.props.onChange(datum);
                    }
                  }}/>
-               {this.getDatalistDisplay({
+              {
+                this.getDatalistDisplay({
                  datum,
                  displayField: this.props.displayField,
-                 selector: this.props.selector,
-               })}
+                  selector: this.props.selector,
+                })
+              }
             </rb.Notification>
           );
         }
