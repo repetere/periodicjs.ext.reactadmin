@@ -68,8 +68,6 @@ class ResponsiveDatalist extends Component {
     this.filterStaticData = this.filterStaticData.bind(this);
   }
   componentWillUpdate(nextProps) {
-    // console.log('in component will receive props');
-    // console.log({ nextProps });
   }
 
   filterStaticData(options) {
