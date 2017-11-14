@@ -127,8 +127,8 @@ var ResponsiveDatalist = function (_Component) {
   }
 
   (0, _createClass3.default)(ResponsiveDatalist, [{
-    key: 'componentWillReceiveProps',
-    value: function componentWillReceiveProps(nextProps) {}
+    key: 'componentWillUpdate',
+    value: function componentWillUpdate(nextProps) {}
   }, {
     key: 'filterStaticData',
     value: function filterStaticData(options) {
@@ -205,7 +205,7 @@ var ResponsiveDatalist = function (_Component) {
           selector = options.selector,
           datum = options.datum;
 
-      var displayText = datum[displayField] || datum.title || datum.name || datum.username || datum.email || datum[selector] || '';
+      var displayText = datum[displayField] || datum.title || datum.name || datum.username || datum.email || datum[selector] || (datum && typeof datum === 'string' ? datum : '');
       return _react2.default.createElement(
         'span',
         { style: {

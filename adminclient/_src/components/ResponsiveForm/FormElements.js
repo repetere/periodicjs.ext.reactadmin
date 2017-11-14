@@ -409,7 +409,6 @@ function getFormDatalist(options) {
   if (formElement.datalist.staticSearch) {
     // let datalistdata = this.state[formElement.name];
     var datalistdata = [];
-    console.log(this.props.__formOptions);
     if (this.props.__formOptions && this.props.__formOptions[formElement.name]) {
       datalistdata = this.props.__formOptions[formElement.name];
     } else {
