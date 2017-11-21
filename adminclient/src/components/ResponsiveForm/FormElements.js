@@ -10,7 +10,6 @@ import capitalize from 'capitalize';
 // import ResponsiveButton from '../ResponsiveButton';
 // import { EditorState, } from 'draft-js';
 import Slider from 'rc-slider';
-import { default as RCSwitch } from 'rc-switch';
 import { ControlLabel, Label, Input, Button, CardFooterItem, Select, Textarea, Group, Image, } from 're-bulma';
 import MaskedInput from 'react-text-mask';
 import moment from 'moment';
@@ -38,6 +37,21 @@ export function getPropertyAttribute(options) {
   } else {
     return returnVal;
   }
+}
+function getFunctionFromProps(options) {
+  const { propFunc, } = options;
+
+  if (typeof propFunc === 'string' && propFunc.indexOf('func:this.props.reduxRouter') !== -1) {		
+    return this.props.reduxRouter[ this.props.replace('func:this.props.reduxRouter.', '') ];		
+  } else if (typeof propFunc === 'string' && propFunc.indexOf('func:this.props') !== -1) {		
+    return this.props[ this.props.replace('func:this.props.', '') ];		
+  } else if (typeof propFunc === 'string' && propFunc.indexOf('func:window') !== -1 && typeof window[propFunc.replace('func:window.', '')] ==='function') {		
+    return window[ propFunc.replace('func:window.', '') ];		
+  } else if(typeof this.props[propFunc] ==='function') {		
+    return propFunc;		
+  } else {		
+    return function () { }		
+  }		
 }
 
 function getErrorStatus(state, name) {
@@ -85,10 +99,6 @@ function valueChangeHandler(formElement) {
     // console.debug({ text, formElement, });
     let updatedStateProp = {};
     updatedStateProp[ formElement.name ] = text;
-    if (formElement.onChangeFilter) {
-      const onChangeFunc = getFunctionFromProps.call(this, { propFunc: formElement.onChangeFilter });
-      updatedStateProp = onChangeFunc.call(this, Object.assign({},this.state,updatedStateProp), updatedStateProp);
-    }
     this.setState(updatedStateProp, () => {
       if(formElement.validateOnChange){
       this.validateFormElement({ formElement, });
@@ -110,10 +120,9 @@ function getFormLabel(formElement) {
 }
 
 function getInitialValue(formElement, state) {
-  // console.debug({formElement, state})
   let formElementValue = formElement.value;
  
-  if (state[ formElement.name ] === null || formElementValue === null || formElementValue === 'null') {
+if ( !formElement.showNullValue && (state[ formElement.name ] === null || formElementValue === null || formElementValue === 'null')) {
     return '';
   } else {
     let returnVal = (typeof state[ formElement.name ] !== 'undefined')
@@ -228,7 +237,7 @@ export function getFormDatatable(options){
       return {
         label: capitalize(rowkey),
         sortid: rowkey,
-        sortable: (typeof formElement.sortable !=='undefined')
+        sortable: (formElement.sortable)
           ? formElement.sortable
           : true,
         formtype: (formElement.tableHeaderType && formElement.tableHeaderType[rowkey])
@@ -312,11 +321,6 @@ export function getFormDatatable(options){
           formDataTables: Object.assign({}, this.state.formDataTables, { [ formElement.name ]: newvalue.rows, }),
           [ formElement.name ]: newvalue.rows,
         }, flattenedData, selectedRowData);
-        if (formElement.onChangeFilter) {
-          const onChangeFunc = getFunctionFromProps.call(this, { propFunc: formElement.onChangeFilter });
-          updatedStateProp = onChangeFunc.call(this, Object.assign({},this.state,updatedStateProp), updatedStateProp);
-        }
-        // console.debug('DATATABLE',updatedStateProp);
         this.setState(updatedStateProp);
       }}
       value={initialValue} />
@@ -379,7 +383,7 @@ export function getFormMaskedInput(options) {
   let { formElement, i, /*formgroup, width,*/ onChange, } = options;
   let initialValue = getInitialValue(formElement, this.state);  
   let getPassablePropkeyevents = getPassablePropsKeyEvents.bind(this);
-  let fileClassname = `__reactapp_file_${formElement.name}`;
+  let fileClassname = `__reactadmin_file_${formElement.name}`;
   let hasError = getErrorStatus(this.state, formElement.name);
   let isValid = getValidStatus(this.state, formElement.name);
   let hasValue = (formElement.name && this.state[formElement.name])? true : false;
@@ -415,31 +419,13 @@ export function getFormMaskedInput(options) {
   formElement.customErrorProps = (formElement.customErrorProps) ? Object.assign({}, { marginTop: '6px' }, formElement.customErrorProps) : {marginTop: '6px'};
 
   let mask = [];
-  function maskFunction(maskProp) {
-    return function () {
-      // return [ '(', /[1-9]/, /\d/, /\d/, ')', '\u2000', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/ ];
-      if (Array.isArray(maskProp)) {
-        const maskArray = maskProp.map(maskItem => {
-          if (maskItem.charAt(0) === '/' && maskItem.charAt(maskItem.length - 1) === '/') {
-            if (maskItem.charAt(1) === '[') {
-              return new RegExp(maskItem.slice(1, maskItem.length - 1));
-            } else {
-              return new RegExp(`\\${maskItem.slice(1, maskItem.length - 1)}`);
-            }
-          } else {
-            return maskItem;
-          }
-        });
-        return maskArray;
-      } else {
-        return maskProp;
-      }
-    }
-  }
+  if (formElement.createNumberMask && passableProps.mask.indexOf('func:window') !== -1 && typeof window[passableProps.mask.replace('func:window.', '')] === 'function') {
   if (formElement.createNumberMask && typeof passableProps.mask ==='string' && passableProps.mask.indexOf('func:window') !== -1 && typeof window[ passableProps.mask.replace('func:window.', '') ] === 'function') {
-    let numberMaskConfig = (typeof window[ passableProps.mask.replace('func:window.', '') ].call(this, formElement) === 'object') ? window[ passableProps.mask.replace('func:window.', '') ].call(this, formElement) : {};
+    
+    let numberMaskConfig = (typeof window[passableProps.mask.replace('func:window.', '')].call(this, formElement) === 'object') ? window[passableProps.mask.replace('func:window.', '')].call(this, formElement) : {};
     mask = createNumberMask(numberMaskConfig);
-  } else if (typeof passableProps.mask ==='string' && passableProps.mask.indexOf('func:window') !== -1 && typeof window[ passableProps.mask.replace('func:window.', '') ] === 'function') {
+
+  } else if (passableProps.mask.indexOf('func:window') !== -1 && typeof window[ passableProps.mask.replace('func:window.', '') ] === 'function') {
     mask = window[ passableProps.mask.replace('func:window.', '') ].bind(this, formElement);
   } else if (formElement.createNumberMask) {
     // console.log('passableProps.numberMask',passableProps.numberMask)
@@ -447,7 +433,7 @@ export function getFormMaskedInput(options) {
   } else if (passableProps.mask) {
     mask = maskFunction(passableProps.mask);
   }
-  // console.log({mask})
+
   let wrapperProps = Object.assign({
     className: '__re-bulma_control',
   }, formElement.wrapperProps);
@@ -478,7 +464,7 @@ export function getFormTextInputArea(options) {
   let { formElement, i, /*formgroup, width,*/ onChange, } = options;
   let initialValue = getInitialValue(formElement, this.state); //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
   let getPassablePropkeyevents = getPassablePropsKeyEvents.bind(this);
-  let fileClassname = `__reactapp_file_${formElement.name}`;
+  let fileClassname = `__reactadmin_file_${formElement.name}`;
   let hasError = getErrorStatus(this.state, formElement.name);
   let isValid = getValidStatus(this.state, formElement.name);
   let hasValue = (formElement.name && this.state[formElement.name])? true : false;
@@ -507,10 +493,6 @@ export function getFormTextInputArea(options) {
         });
       } else {
         updatedStateProp[ formElement.name ] =(passableProps.maxLength)? text.substring(0, passableProps.maxLength): text;
-      }
-      if (formElement.onChangeFilter) {
-        const onChangeFunc = getFunctionFromProps.call(this, { propFunc: formElement.onChangeFilter });
-        updatedStateProp = onChangeFunc.call(this, Object.assign({},this.state,updatedStateProp), updatedStateProp);
       }
       this.setState(updatedStateProp);
     };
@@ -653,10 +635,7 @@ export function getFormCheckbox(options) {
         updatedStateProp[ this.state[ formElement.formdata_name] || formElement.name ] = (this.state[ this.state[ formElement.formdata_name] || formElement.name ] ) ? 0 : 'on';
       }
       // console.debug('after', { updatedStateProp, formElement, }, event.target);
-      if (formElement.onChangeFilter) {
-        const onChangeFunc = getFunctionFromProps.call(this, { propFunc: formElement.onChangeFilter });
-        updatedStateProp = onChangeFunc.call(this, Object.assign({},this.state,updatedStateProp), updatedStateProp);
-      }
+
       this.setState(updatedStateProp, () => {
         if(formElement.validateOnChange){
           this.validateFormElement({ formElement, });
@@ -676,56 +655,6 @@ export function getFormCheckbox(options) {
       onChange={onValueChange}
     >
     </input>
-    <span {...formElement.placeholderProps}>{this.state[ formElement.formdata_placeholder] || formElement.placeholder}</span>
-    {getCustomErrorLabel(hasError, this.state, formElement)}
-  </FormItem>);
-}
-
-export function getFormSwitch(options) {
-  let { formElement, i, onValueChange, } = options;
-  let hasError = getErrorStatus(this.state, formElement.name);
-  let hasValue = (formElement.name && this.state[formElement.name])? true : false;
-  let getFormDataLabel = getFormLabel.bind(this);
-  if (formElement.disableOnChange) {
-    onValueChange = () => {};
-  } else if (!onValueChange) {
-    onValueChange = (/*event*/) => {
-      // let text = event.target.value;
-      let updatedStateProp = {};
-      // console.debug('before', { updatedStateProp, formElement, }, event.target);
-      updatedStateProp[ this.state[ formElement.formdata_name] || formElement.name ] = (this.state[ this.state[ formElement.formdata_name] || formElement.name ] ) ? 0 : 'on';
-      
-      // console.debug('after', { updatedStateProp, formElement, }, event.target);
-      if (formElement.onChange) {
-        const onChangeFunc = getFunctionFromProps.call(this, { propFunc: formElement.onChange });
-        onChangeFunc.call(this, Object.assign({},this.state,updatedStateProp), updatedStateProp);
-      }
-      if (formElement.onChangeFilter) {
-        const onChangeFunc = getFunctionFromProps.call(this, { propFunc: formElement.onChangeFilter });
-        updatedStateProp = onChangeFunc.call(this, Object.assign({},this.state,updatedStateProp), updatedStateProp);
-      }
-      this.setState(updatedStateProp, () => {
-        if(formElement.validateOnChange){
-          this.validateFormElement({ formElement, });
-        }
-      });
-    };
-  }
-
-  return (<FormItem key={i} {...formElement.layoutProps} hasError={hasError} hasValue={hasValue} >
-    {getFormDataLabel(formElement)}  
-    <div>
-      <RCSwitch
-        {...formElement.passProps}
-    // type={formElement.type || 'checkbox'}
-    // name={this.state[ formElement.formdata_name] || formElement.name}
-    checked={this.state[ formElement.name ]}
-    // disabled={this.state.disabled}
-    // checkedChildren={'on'}
-    // unCheckedChildren={''}
-    onChange={onValueChange}
-    />
-    </div>
     <span {...formElement.placeholderProps}>{this.state[ formElement.formdata_placeholder] || formElement.placeholder}</span>
     {getCustomErrorLabel(hasError, this.state, formElement)}
   </FormItem>);
@@ -753,10 +682,6 @@ export function getRawInput(options) {
       let updatedStateProp = {};
       updatedStateProp[ formElement.name ] = (this.state[ formElement.name ] ) ? false : 'on';
       // console.log({ updatedStateProp });
-      if (formElement.onChangeFilter) {
-        const onChangeFunc = getFunctionFromProps.call(this, { propFunc: formElement.onChangeFilter });
-        updatedStateProp = onChangeFunc.call(this, Object.assign({},this.state,updatedStateProp), updatedStateProp);
-      }
       this.setState(updatedStateProp);
     };
   }
@@ -794,10 +719,10 @@ export function getSliderInput(options) {
   let customCallbackfunction = () => { };
   if (formElement.handle) {
     passableProps.handle = ({ value, offset, }) => (
-      <div style={{ left: `${offset}%`, }} className="__reactapp_slider__handle">
-        <span className="__reactapp_arrow-left" />
+      <div style={{ left: `${offset}%`, }} className="__reactadmin_slider__handle">
+        <span className="__reactadmin_arrow-left" />
         {(formElement.numeralFormat) ? numeral(value).format(formElement.numeralFormat) : value}
-        <span className="__reactapp_arrow-right" />
+        <span className="__reactadmin_arrow-right" />
       </div>
     );
   }
@@ -814,10 +739,6 @@ export function getSliderInput(options) {
       let updatedStateProp = {};
       updatedStateProp[ formElement.name ] = val;
       // console.log({ updatedStateProp });
-      if (formElement.onChangeFilter) {
-        const onChangeFunc = getFunctionFromProps.call(this, { propFunc: formElement.onChangeFilter });
-        updatedStateProp = onChangeFunc.call(this, Object.assign({},this.state,updatedStateProp), updatedStateProp);
-      }
       this.setState(updatedStateProp);
       customCallbackfunction(val);
     };
@@ -831,11 +752,11 @@ export function getSliderInput(options) {
         onChange={onValueChange}
       >
         {(formElement.leftLabel)
-          ? (<span className="__reactapp_slider__label __reactapp_slider__label_left">{formElement.leftLabel}</span>)
+          ? (<span className="__reactadmin_slider__label __reactadmin_slider__label_left">{formElement.leftLabel}</span>)
           : null
         } 
         {(formElement.rightLabel)
-          ? (<span className="__reactapp_slider__label __reactapp_slider__label_right">{formElement.rightLabel}</span>)
+          ? (<span className="__reactadmin_slider__label __reactadmin_slider__label_right">{formElement.rightLabel}</span>)
           : null
         }  
       </Slider>  
@@ -923,10 +844,6 @@ export function getFormCode(options) {
         newvalue = (formElement.stringify) ? JSON.parse(newvalue) : newvalue;
         let updatedStateProp = {};
         updatedStateProp[ formElement.name ] = newvalue;
-        if (formElement.onChangeFilter) {
-          const onChangeFunc = getFunctionFromProps.call(this, { propFunc: formElement.onChangeFilter });
-          updatedStateProp = onChangeFunc.call(this, Object.assign({},this.state,updatedStateProp), updatedStateProp);
-        }
         this.setState(updatedStateProp);
       }.bind(this) : onValueChange,
     }, formElement.codeMirrorProps),
@@ -958,10 +875,6 @@ export function getFormEditor(options) {
       // console.debug({ newvalue, });
       let updatedStateProp = {};
       updatedStateProp[ formElement.name ] = newvalue.target.value;
-      if (formElement.onChangeFilter) {
-        const onChangeFunc = getFunctionFromProps.call(this, { propFunc: formElement.onChangeFilter });
-        updatedStateProp = onChangeFunc.call(this, Object.assign({},this.state,updatedStateProp), updatedStateProp);
-      }
       this.setState(updatedStateProp);
     };
   }
@@ -1002,12 +915,7 @@ export function getFormSubmit(options) {
     state: (formElement.confirmModal && Object.keys(this.state.formDataErrors).length>0)
       ? 'isDisabled'
       : undefined,
-  }, (this.props.useLoadingButtons && this.state.__formIsSubmitting)
-      ? {
-        state:'isLoading'
-      }
-      : {},
-    formElement.passProps);
+  }, formElement.passProps);
   return (<FormItem key={i} {...formElement.layoutProps} >
     {getFormLabel(formElement)}  
     <Button {...passableProps}
@@ -1057,7 +965,7 @@ export function getFormSubmit(options) {
                             color:'isPrimary',
                           },
                           onClick: () => {
-                            this.props.hideModal('last');
+                            this.props.hideModal.call(this, 'last');
                             this.submitForm.call(this);
                           },
                           onclickProps:'last',
