@@ -103,6 +103,12 @@ class ResponsiveForm extends Component{
     this.getFormGroup = getFormGroup.bind(this);
     this.getImage = getImage.bind(this);
     this.validateFormElement = validateFormElement.bind(this);
+    this.staticLayouts = (this.props.staticLayouts)
+      ? Object.keys(this.props.staticLayouts).reduce((result, layout) => {
+        result[layout] = this.getRenderedComponent(this.props.staticLayouts[layout], this.state);
+        return result;
+      }, {})
+      : {};
   }
   componentWillReceiveProps(nextProps) {
     // console.debug('componentWillReceiveProps', nextProps);
@@ -354,7 +360,9 @@ class ResponsiveForm extends Component{
         } else if (formElement.type === 'image') {
           return this.getImage({ formElement,  i:j, formgroup, }); 
         } else if (formElement.type === 'slider') {
-          return this.getSliderInput({ formElement,  i:j, formgroup, }); 
+          return this.getSliderInput({ formElement, i: j, formgroup, }); 
+        } else if (formElement.type === 'staticLayout') {
+          return this.staticLayouts[formElement.value]; 
         } else if (formElement.type === 'layout') {
           return (<Column key={j} {...formElement.layoutProps}>{this.getRenderedComponent(formElement.value)}</Column>);
         } else if (formElement.type === 'submit') {

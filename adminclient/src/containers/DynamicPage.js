@@ -94,6 +94,7 @@ class DynamicPage extends Component {
     this.state = {
       ui_is_loaded: false,
       async_data_is_loaded: false,
+      ui: this.props.getState().ui,
     };
     this.overlayUIWrapperStyle = this.props.getState().ui.customOverlayWrapperStyle;
     this.uiLayout = null;

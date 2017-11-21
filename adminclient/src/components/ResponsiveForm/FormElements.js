@@ -38,26 +38,30 @@ export function getPropertyAttribute(options) {
     return returnVal;
   }
 }
+function getFunctionFromProps(options) {
+  const { propFunc, } = options;
+
+  if (typeof propFunc === 'string' && propFunc.indexOf('func:this.props.reduxRouter') !== -1) {		
+    return this.props.reduxRouter[ this.props.replace('func:this.props.reduxRouter.', '') ];		
+  } else if (typeof propFunc === 'string' && propFunc.indexOf('func:this.props') !== -1) {		
+    return this.props[ this.props.replace('func:this.props.', '') ];		
+  } else if (typeof propFunc === 'string' && propFunc.indexOf('func:window') !== -1 && typeof window[propFunc.replace('func:window.', '')] ==='function') {		
+    return window[ propFunc.replace('func:window.', '') ];		
+  } else if(typeof this.props[propFunc] ==='function') {		
+    return propFunc;		
+  } else {		
+    return function () { }		
+  }		
+}
 
 function getErrorStatus(state, name) {
   return (state.formDataErrors && state.formDataErrors[ name ]);
 }
 
-function getFunctionFromProps(options) {
-  const { propFunc, } = options;
-
-  if (typeof propFunc === 'string' && propFunc.indexOf('func:this.props.reduxRouter') !== -1) {
-    return this.props.reduxRouter[ this.props.replace('func:this.props.reduxRouter.', '') ];
-  } else if (typeof propFunc === 'string' && propFunc.indexOf('func:this.props') !== -1) {
-    return this.props[ this.props.replace('func:this.props.', '') ];
-  } else if (typeof propFunc === 'string' && propFunc.indexOf('func:window') !== -1 && typeof window[propFunc.replace('func:window.', '')] ==='function') {
-    return window[ propFunc.replace('func:window.', '') ];
-  } else if(typeof this.props[propFunc] ==='function') {
-    return propFunc;
-  } else {
-    return function () { }
-  }
+function getValidStatus(state, name) {
+  return (state.formDataValid && state.formDataValid[ name ]);
 }
+
 
 function getFormElementHelp(hasError, state, name) {
   return (hasError) ? {
@@ -75,8 +79,18 @@ function getCustomErrorLabel(hasError, state, formelement) {
   ): null;
 }
 
-function getCustomErrorIcon(hasError, state, formelement) {
-  return (hasError && (formelement.errorIconRight || formelement.errorIconLeft)) ? (<i className={'__re-bulma_fa fa fa-warning'}></i>): null;
+function getCustomErrorIcon(hasError, isValid, state, formelement, iconStyle) {
+  let iconVar = (hasError)
+    ? formelement.errorIcon || 'fa fa-warning'
+    : (isValid)
+      ? formelement.validIcon || 'fa fa-check'
+      : (formelement.initialIcon)
+        ? formelement.initialIcon
+        : '';
+  
+  return (formelement.errorIconRight || formelement.errorIconLeft)
+    ? <i className={`__re-bulma_fa ${iconVar}`} style={iconStyle}></i>
+    : null;
 }
 
 function valueChangeHandler(formElement) {
@@ -107,7 +121,8 @@ function getFormLabel(formElement) {
 
 function getInitialValue(formElement, state) {
   let formElementValue = formElement.value;
-  if ( !formElement.showNullValue && (state[ formElement.name ] === null || formElementValue === null || formElementValue === 'null')) {
+ 
+if ( !formElement.showNullValue && (state[ formElement.name ] === null || formElementValue === null || formElementValue === 'null')) {
     return '';
   } else {
     let returnVal = (typeof state[ formElement.name ] !== 'undefined')
@@ -162,6 +177,17 @@ function getPassablePropsKeyEvents(passableProps, formElement) {
       customonBlur(e, formElement);
     };
   }
+  if (formElement.onFocus) {
+    let customFocus = () => { };
+    if (typeof formElement.onFocus==='string' && formElement.onFocus.indexOf('func:this.props') !== -1) {
+      customFocus= this.props[ formElement.onFocus.replace('func:this.props.', '') ];
+    } else if (typeof formElement.onFocus==='string' && formElement.onFocus.indexOf('func:window') !== -1 && typeof window[ formElement.onFocus.replace('func:window.', '') ] ==='function') {
+      customFocus= window[ formElement.onFocus.replace('func:window.', '') ].bind(this);
+    } 
+    passableProps.onFocus = (e) => {
+      customFocus(e, formElement);
+    };
+  }
   if (formElement.keyUp) {
     let customkeyUp = () => { };
     if (typeof formElement.keyUp==='string' && formElement.keyUp.indexOf('func:this.props') !== -1) {
@@ -190,6 +216,8 @@ export function getFormDatatable(options){
       let selectOptions = (this.state.__formOptions && this.state.__formOptions[ rowkey ])
         ? this.state.__formOptions[ rowkey ]
         : [];
+      // console.log({ selectOptions });
+
       return {
         label: capitalize(rowkey),
         sortid: rowkey,
@@ -253,6 +281,7 @@ export function getFormDatatable(options){
     },
     formElement.passProps
   );// formElement.datalist,
+  // console.log({ tableHeaders, useRowButtons,passedProps });
   // console.debug({tableHeaders})
   // let shape ={};// this is the header of of the footer which has elements for new insert
   // let inlineshape ={};// if true, should look like a regular form row, else form below
@@ -276,7 +305,6 @@ export function getFormDatatable(options){
           formDataTables: Object.assign({}, this.state.formDataTables, { [ formElement.name ]: newvalue.rows, }),
           [ formElement.name ]: newvalue.rows,
         }, flattenedData, selectedRowData);
-        // console.debug({ flattenedData,updatedStateProp });
         this.setState(updatedStateProp);
       }}
       value={initialValue} />
@@ -327,7 +355,6 @@ export function getFormDatalist(options){
   {getFormLabel(formElement)}  
     <ResponsiveDatalist {...passedProps}
       onChange={(newvalue)=>{
-        // console.debug({ newvalue });
         let updatedStateProp = {};
         updatedStateProp[ formElement.name ] = newvalue;
         this.setState(updatedStateProp);
@@ -342,6 +369,7 @@ export function getFormMaskedInput(options) {
   let getPassablePropkeyevents = getPassablePropsKeyEvents.bind(this);
   let fileClassname = `__reactadmin_file_${formElement.name}`;
   let hasError = getErrorStatus(this.state, formElement.name);
+  let isValid = getValidStatus(this.state, formElement.name);
   let hasValue = (formElement.name && this.state[formElement.name])? true : false;
   let passableProps = Object.assign({
     type: 'text',
@@ -386,12 +414,12 @@ export function getFormMaskedInput(options) {
     className: '__re-bulma_control',
   }, formElement.wrapperProps);
  
-  wrapperProps.className = (hasError && (formElement.errorIconRight || formElement.errorIconLeft)) ? (formElement.errorIconRight) ? 
+wrapperProps.className = ((hasError || isValid || formElement.initialIcon) && (formElement.errorIconRight || formElement.errorIconLeft)) ? (formElement.errorIconRight) ? 
     wrapperProps.className + ' __re-bulma_has-icon __re-bulma_has-icon-right'
     : wrapperProps.className + ' __re-bulma_has-icon __re-bulma_has-icon-left'
     : wrapperProps.className;
   
-  return (<FormItem key={i} {...formElement.layoutProps} hasError={hasError} hasValue={hasValue} >
+ return (<FormItem key={i} {...formElement.layoutProps} initialIcon={formElement.initialIcon} isValid={isValid} hasError={hasError} hasValue={hasValue} >
     {getFormLabel(formElement)}
     <span {...wrapperProps}>
       <MaskedInput
@@ -402,7 +430,7 @@ export function getFormMaskedInput(options) {
       onChange={onChange}
       placeholder={formElement.placeholder}
       value={initialValue} />
-      {getCustomErrorIcon(hasError, this.state, formElement)}  
+      {getCustomErrorIcon(hasError, isValid, this.state, formElement)}
       {getCustomErrorLabel(hasError, this.state, formElement)}
     </span>
   </FormItem>);
@@ -414,6 +442,7 @@ export function getFormTextInputArea(options) {
   let getPassablePropkeyevents = getPassablePropsKeyEvents.bind(this);
   let fileClassname = `__reactadmin_file_${formElement.name}`;
   let hasError = getErrorStatus(this.state, formElement.name);
+  let isValid = getValidStatus(this.state, formElement.name);
   let hasValue = (formElement.name && this.state[formElement.name])? true : false;
   let passableProps = Object.assign({
     type: formElement.type || 'text',
@@ -459,12 +488,12 @@ export function getFormTextInputArea(options) {
       clearImmediate(t);
     });
   }
-  return (<FormItem key={i} {...formElement.layoutProps} hasError={hasError} hasValue={hasValue} >
+  return (<FormItem key={i} {...formElement.layoutProps} initialIcon={formElement.initialIcon} isValid={isValid} hasError={hasError} hasValue={hasValue} >
     {getFormLabel(formElement)}  
     <Input {...passableProps}
       help={getFormElementHelp(hasError, this.state, formElement.name)}
       color={(hasError)?'isDanger':undefined}
-      icon={(hasError) ? formElement.errorIcon || 'fa fa-warning' : undefined}
+      icon={(hasError) ? formElement.errorIcon || 'fa fa-warning' : (isValid) ? formElement.validIcon || 'fa fa-check' : (formElement.initialIcon) ? formElement.initialIcon : undefined}
       hasIconRight={formElement.errorIconRight}
       onChange={onChange}
       placeholder={formElement.placeholder}
@@ -476,6 +505,7 @@ export function getFormTextArea(options) {
   let { formElement, i, /*formgroup, width,*/ onChange, } = options;
   let initialValue = getInitialValue(formElement, this.state); //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
   let hasError = getErrorStatus(this.state, formElement.name);
+  let isValid = getValidStatus(this.state, formElement.name);
   let hasValue = (formElement.name && this.state[formElement.name])? true : false;
   let passableProps = Object.assign({
   }, formElement.passProps);
@@ -491,12 +521,12 @@ export function getFormTextArea(options) {
     onChange = valueChangeHandler.bind(this, formElement);
   }
 
-  return (<FormItem key={i} {...formElement.layoutProps} hasError={hasError} hasValue={hasValue} >
+  return (<FormItem key={i} {...formElement.layoutProps} initialIcon={formElement.initialIcon} isValid={isValid} hasError={hasError} hasValue={hasValue} >
     {getFormLabel(formElement)}  
     <Textarea {...passableProps}
       onChange={(event)=>onChange()(event)}
       help={getFormElementHelp(hasError, this.state, formElement.name)}
-      icon={(hasError)?formElement.errorIcon || 'fa fa-warning':undefined}
+      icon={(hasError) ? formElement.errorIcon || 'fa fa-warning' : (isValid) ? formElement.validIcon || 'fa fa-check' : (formElement.initialIcon) ? formElement.initialIcon : undefined}
       color={(hasError)?'isDanger':undefined}
       hasIconRight={formElement.errorIconRight}
       placeholder={formElement.placeholder||formElement.label}
@@ -508,10 +538,28 @@ export function getFormSelect(options) {
   let { formElement, i, /*formgroup, width,*/ onChange, } = options;
   let initialValue = getInitialValue(formElement, this.state); //formElement.value || this.state[ formElement.name ] || getPropertyAttribute({ element:formElement, property:this.state, });
   let hasError = getErrorStatus(this.state, formElement.name);
+  let isValid = getValidStatus(this.state, formElement.name);
   let hasValue = (formElement.name && this.state[formElement.name])? true : false;
   let selectOptions = (this.state.__formOptions && this.state.__formOptions[ formElement.name ])
     ? this.state.__formOptions[ formElement.name ]
     : formElement.options || [];
+  let iconStyle = {
+    display: 'inline-block',
+    fontSize: '1rem',
+    height: '24px',
+    lineHeight: '24px',
+    textAlign: 'center',
+    verticalAlign: 'top',
+    width: '24px',
+    color: '#aeb1b5',
+    pointerEvents: 'none',
+    position: 'absolute',
+    top: '0',
+    bottom: '0',
+    margin: 'auto',
+    zIndex: '4',
+    right: '24px'
+  };
   
   if (typeof initialValue !== 'string') {
     initialValue = JSON.stringify(initialValue, null, 2);
@@ -530,21 +578,25 @@ export function getFormSelect(options) {
     } 
   }
 
-  return (<FormItem key={i} {...formElement.layoutProps} hasError={hasError} hasValue={hasValue} >
+  return (<FormItem key={i} {...formElement.layoutProps} initialIcon={formElement.initialIcon} isValid={isValid} hasError={hasError} hasValue={hasValue} >
     {getFormLabel(formElement)}  
-    <Select {...formElement.passProps}
-      help={getFormElementHelp(hasError, this.state, formElement.name)}
-      color={(hasError)?'isDanger':undefined}
-      onChange={(event)=>{
-        onChange()(event);
-        if(customCallbackfunction) customCallbackfunction(event);
-      }}
-      placeholder={formElement.placeholder||formElement.label}
-      value={this.state[ formElement.name ] || initialValue} >
-      {selectOptions.map((opt, k) => {
-        return <option key={k} disabled={opt.disabled} value={opt.value}>{opt.label || opt.value}</option>;
-      })}
-    </Select>
+    <span className="__re-bulma_control" style={{ position: 'relative', display: 'block'}}>
+      <Select {...formElement.passProps}
+        style={Object.assign({}, { flex: 'inherit' }, (formElement.passProps && formElement.passProps.style) ? formElement.passProps.style : {})}  
+        help={getFormElementHelp(hasError, this.state, formElement.name)}
+        color={(hasError)?'isDanger':undefined}
+        onChange={(event)=>{
+          onChange()(event);
+          if(customCallbackfunction) customCallbackfunction(event);
+        }}
+        placeholder={formElement.placeholder||formElement.label}
+        value={this.state[ formElement.name ] || initialValue} >
+        {selectOptions.map((opt, k) => {
+          return <option key={k} disabled={opt.disabled} value={opt.value}>{opt.label || opt.value}</option>;
+        })}
+        </Select>
+      {(!formElement.errorIconLeft) ? getCustomErrorIcon(hasError, isValid, this.state, formElement, iconStyle) : null}  
+    </span>  
   </FormItem>);
 }
 
@@ -567,6 +619,7 @@ export function getFormCheckbox(options) {
         updatedStateProp[ this.state[ formElement.formdata_name] || formElement.name ] = (this.state[ this.state[ formElement.formdata_name] || formElement.name ] ) ? 0 : 'on';
       }
       // console.debug('after', { updatedStateProp, formElement, }, event.target);
+
       this.setState(updatedStateProp, () => {
         if(formElement.validateOnChange){
           this.validateFormElement({ formElement, });
@@ -853,7 +906,7 @@ export function getFormSubmit(options) {
       onClick={() => { 
         let validated_formdata = validateForm.call(this, { formdata: this.state, validationErrors: {} });
         let updateStateData = {
-          formDataErrors: validated_formdata.validationErrors
+          formDataErrors: validated_formdata.validationErrors,
         };
         if (this.props.sendSubmitButtonVal) {
           updateStateData[ 'submitButtonVal' ] = formElement.value;
