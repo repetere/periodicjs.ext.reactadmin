@@ -548,7 +548,9 @@ export function getFormSelect(options) {
     color: '#aeb1b5',
     pointerEvents: 'none',
     position: 'absolute',
-    top: '4px',
+    top: '0',
+    bottom: '0',
+    margin: 'auto',
     zIndex: '4',
     right: '24px'
   };
