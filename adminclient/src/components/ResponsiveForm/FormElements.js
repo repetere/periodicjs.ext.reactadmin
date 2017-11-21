@@ -205,22 +205,6 @@ function getPassablePropsKeyEvents(passableProps, formElement) {
   return passableProps;
 }
 
-function getFunctionFromProps(options) {
-  const { propFunc } = options;
-
-  if (typeof propFunc === 'string' && propFunc.indexOf('func:this.props.reduxRouter') !== -1) {
-    return this.props.reduxRouter[ this.props.replace('func:this.props.reduxRouter.', '') ];
-  } else if (typeof propFunc === 'string' && propFunc.indexOf('func:this.props') !== -1) {
-    return this.props[ this.props.replace('func:this.props.', '') ];
-  } else if (typeof propFunc === 'string' && propFunc.indexOf('func:window') !== -1 && typeof window[propFunc.replace('func:window.', '')] ==='function') {
-    return window[ propFunc.replace('func:window.', '') ];
-  } else if(typeof this.props[propFunc] ==='function') {
-    return propFunc;
-  } else {
-    return function () { }
-  }
-}
-
 export function getFormDatatable(options){
   let { formElement, i, } = options;
   let initialValue = getInitialValue(formElement,
