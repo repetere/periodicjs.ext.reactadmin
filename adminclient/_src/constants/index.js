@@ -117,7 +117,6 @@ exports.default = {
     NAVIGATION_LOAD_ERROR: 'navigation failed',
     NAVIGATION_REQUEST: 'navigation request',
     MFA_AUTHENTICATED: 'mfa authenticated'
-    // CURRENT_USER_STATUS:'get current login status',    
   },
   clientCacheData: {
     CLIENT_CACHE_DATA_REQUEST: 'client cache data save request',
@@ -126,12 +125,10 @@ exports.default = {
   },
   dynamic: {
     SET_DYNAMIC_DATA: 'set dynamic data'
-    // SHOW_ERROR:'show error notification',
   },
   output: {
     OUTPUT_FILE_DATA_SUCCESS: 'output data to file',
     OUTPUT_FILE_DATA_ERROR: 'error outputing data to file'
-    // SHOW_ERROR:'show error notification',
   },
   jwt_token: {
     TOKEN_NAME: AppConfigSettings.name + '_jwt_token',
@@ -168,7 +165,6 @@ exports.default = {
     MAIN_COMPONENT: 'fetchMainComponent',
     ERROR_COMPONENTS: 'fetchErrorComponents',
     SET_SELECTED_NAV_STATE: 'making nav item active'
-    // GET_APP_STATE:'get current app state',
   },
   settings: {
     UPDATE_APP_SETTINGS: 'update application settings'

@@ -162,6 +162,10 @@ var ResponsiveForm = function (_Component) {
     _this.getFormGroup = _FormElements.getFormGroup.bind(_this);
     _this.getImage = _FormElements.getImage.bind(_this);
     _this.validateFormElement = _FormHelpers.validateFormElement.bind(_this);
+    _this.staticLayouts = _this.props.staticLayouts ? (0, _keys2.default)(_this.props.staticLayouts).reduce(function (result, layout) {
+      result[layout] = _this.getRenderedComponent(_this.props.staticLayouts[layout], _this.state);
+      return result;
+    }, {}) : {};
     return _this;
   }
 
@@ -409,6 +413,8 @@ var ResponsiveForm = function (_Component) {
             return _this3.getImage({ formElement: formElement, i: j, formgroup: formgroup });
           } else if (formElement.type === 'slider') {
             return _this3.getSliderInput({ formElement: formElement, i: j, formgroup: formgroup });
+          } else if (formElement.type === 'staticLayout') {
+            return _this3.staticLayouts[formElement.value];
           } else if (formElement.type === 'layout') {
             return _react2.default.createElement(
               _reBulma.Column,

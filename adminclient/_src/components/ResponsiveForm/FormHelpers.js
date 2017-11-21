@@ -53,14 +53,23 @@ function validateFormElement(options) {
     if (validation) {
       var validationerror = (0, _validate4.default)((0, _defineProperty3.default)({}, validation.name, this.state[validation.name]), validation.constraints);
       var validationErrors = void 0;
+      var validationValid = void 0;
       if (validationerror) {
         validationErrors = (0, _assign2.default)({}, this.state.formDataErrors);
         validationErrors[validation.name] = validationerror[validation.name];
+        if (this.state.formDataValid) {
+          validationValid = (0, _assign2.default)({}, this.state.formDataValid);
+          delete validationValid[validation.name];
+        }
       } else {
-        validationErrors = (0, _assign2.default)({}, this.state.formDataErrors);
-        delete validationErrors[validation.name];
+        validationValid = (0, _assign2.default)({}, this.state.formDataValid);
+        validationValid[validation.name] = true;
+        if (this.state.formDataErrors) {
+          validationErrors = (0, _assign2.default)({}, this.state.formDataErrors);
+          delete validationErrors[validation.name];
+        }
       }
-      this.setState({ formDataErrors: validationErrors });
+      this.setState({ formDataErrors: validationErrors, formDataValid: validationValid });
       // console.debug('has errors', validationErrors, 'this.state[formElement.name]', this.state[ formElement.name ]);
     }
   } catch (e) {
@@ -79,6 +88,8 @@ function validateForm(options) {
       // console.debug(formdata[ validation.name ], { validation, validationerror, });
       if (validationerror) {
         validationErrors[validation.name] = validationerror[validation.name];
+      } else {
+        delete validationErrors[validation.name];
       }
     });
   } else {

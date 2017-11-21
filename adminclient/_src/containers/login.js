@@ -237,7 +237,6 @@ function getLoginLayout() /*options*/{
                       style: {
                         justifyContent: 'center'
                       }
-                      // "horizontalform": true
                     }
                   }]
                 }]

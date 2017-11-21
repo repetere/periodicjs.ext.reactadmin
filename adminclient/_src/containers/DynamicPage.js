@@ -148,7 +148,8 @@ var DynamicPage = function (_Component) {
 
     _this2.state = {
       ui_is_loaded: false,
-      async_data_is_loaded: false
+      async_data_is_loaded: false,
+      ui: _this2.props.getState().ui
     };
     _this2.overlayUIWrapperStyle = _this2.props.getState().ui.customOverlayWrapperStyle;
     _this2.uiLayout = null;

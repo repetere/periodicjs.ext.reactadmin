@@ -49,6 +49,8 @@ var FormItem = function (_Component) {
     value: function render() {
       var className = this.props.hasValue ? '__form_element_has_value' : '';
       className = this.props.hasError ? (className ? className + ' ' : '') + '__form_element_has_error' : className;
+      className = this.props.isValid ? (className ? className + ' ' : '') + '__form_element_is_valid' : className;
+      className = this.props.initialIcon ? (className ? className + ' ' : '') + '__form_element_initial_icon' : className;
       if (this.props.innerFormItem) {
         return this.props.horizontalform ? _react2.default.createElement(
           _reBulma.FormHorizontal,
