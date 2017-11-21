@@ -403,31 +403,23 @@ export function getFormMaskedInput(options) {
   formElement.customErrorProps = (formElement.customErrorProps) ? Object.assign({}, { marginTop: '6px' }, formElement.customErrorProps) : {marginTop: '6px'};
 
   let mask = [];
-  if (formElement.createNumberMask && passableProps.mask.indexOf('func:window') !== -1 && typeof window[passableProps.mask.replace('func:window.', '')] === 'function') {
-  if (formElement.createNumberMask && typeof passableProps.mask ==='string' && passableProps.mask.indexOf('func:window') !== -1 && typeof window[ passableProps.mask.replace('func:window.', '') ] === 'function') {
-    
-    let numberMaskConfig = (typeof window[passableProps.mask.replace('func:window.', '')].call(this, formElement) === 'object') ? window[passableProps.mask.replace('func:window.', '')].call(this, formElement) : {};
+  if (formElement.createNumberMask && passableProps.mask.indexOf('func:window') !== -1 && typeof window[ passableProps.mask.replace('func:window.', '') ] === 'function') {
+    let numberMaskConfig = (typeof window[ passableProps.mask.replace('func:window.', '') ].call(this, formElement) === 'object') ? window[ passableProps.mask.replace('func:window.', '') ].call(this, formElement) : {};
     mask = createNumberMask(numberMaskConfig);
-
   } else if (passableProps.mask.indexOf('func:window') !== -1 && typeof window[ passableProps.mask.replace('func:window.', '') ] === 'function') {
     mask = window[ passableProps.mask.replace('func:window.', '') ].bind(this, formElement);
-  } else if (formElement.createNumberMask) {
-    // console.log('passableProps.numberMask',passableProps.numberMask)
-    mask = createNumberMask(maskFunction(passableProps.mask));
-  } else if (passableProps.mask) {
-    mask = maskFunction(passableProps.mask);
   }
 
   let wrapperProps = Object.assign({
     className: '__re-bulma_control',
   }, formElement.wrapperProps);
  
-  wrapperProps.className = ((hasError || isValid || formElement.initialIcon) && (formElement.errorIconRight || formElement.errorIconLeft)) ? (formElement.errorIconRight) ? 
+wrapperProps.className = ((hasError || isValid || formElement.initialIcon) && (formElement.errorIconRight || formElement.errorIconLeft)) ? (formElement.errorIconRight) ? 
     wrapperProps.className + ' __re-bulma_has-icon __re-bulma_has-icon-right'
     : wrapperProps.className + ' __re-bulma_has-icon __re-bulma_has-icon-left'
     : wrapperProps.className;
   
-  return (<FormItem key={i} {...formElement.layoutProps} initialIcon={formElement.initialIcon} isValid={isValid} hasError={hasError} hasValue={hasValue} >
+ return (<FormItem key={i} {...formElement.layoutProps} initialIcon={formElement.initialIcon} isValid={isValid} hasError={hasError} hasValue={hasValue} >
     {getFormLabel(formElement)}
     <span {...wrapperProps}>
       <MaskedInput
@@ -438,7 +430,7 @@ export function getFormMaskedInput(options) {
       onChange={onChange}
       placeholder={formElement.placeholder}
       value={initialValue} />
-      {getCustomErrorIcon(hasError, isValid, this.state, formElement)}  
+      {getCustomErrorIcon(hasError, isValid, this.state, formElement)}
       {getCustomErrorLabel(hasError, this.state, formElement)}
     </span>
   </FormItem>);
