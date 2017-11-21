@@ -470,6 +470,12 @@ export function getFormTextInputArea(options) {
       } else {
         updatedStateProp[ formElement.name ] =(passableProps.maxLength)? text.substring(0, passableProps.maxLength): text;
       }
+
+      if (formElement.onChangeFilter) {
+        const onChangeFunc = getFunctionFromProps.call(this, { propFunc: formElement.onChangeFilter });
+        updatedStateProp = onChangeFunc.call(this, Object.assign({},this.state,updatedStateProp), updatedStateProp);
+      }
+
       this.setState(updatedStateProp);
     };
   }
