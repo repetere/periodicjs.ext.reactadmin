@@ -580,7 +580,7 @@ export function getFormSelect(options) {
     {getFormLabel(formElement)}  
     <span className="__re-bulma_control" style={{ position: 'relative', display: 'block'}}>
       <Select {...formElement.passProps}
-        style={Object.assign({}, { flex: 'inherit' }, (formElement.passProps && formElement.passProps.style) ? formElement.passProps.style : {})}  
+        style={Object.assign({}, { flex: 'inherit', marginBottom: 0 }, (formElement.passProps && formElement.passProps.style) ? formElement.passProps.style : {})}  
         help={getFormElementHelp(hasError, this.state, formElement.name)}
         color={(hasError)?'isDanger':undefined}
         onChange={(event)=>{
