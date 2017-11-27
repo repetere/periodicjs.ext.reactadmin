@@ -186,6 +186,9 @@ var mapStateToProps = function mapStateToProps(state) {
     user: state.user,
     manifest: state.manifest,
     notification: state.notification
+    // tabBarExtensions: state.tabBarExtensions,
+    // fetchData: state.fetchData,
+    // messageBar: state.messageBar,
   };
 };
 window.__reactadmin = (0, _assign2.default)({}, {

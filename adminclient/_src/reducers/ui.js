@@ -47,6 +47,7 @@ var uiReducer = function uiReducer(state, action) {
         custom_ui_layout: uiStatePayload.customLayout
       } : {
         ui_is_loaded: uiStatePayload
+        // custom_ui_layout: undefined,
       });
     case _constants2.default.ui.SET_NAV_LABEL:
       var navLabelPaylod = action.payload;

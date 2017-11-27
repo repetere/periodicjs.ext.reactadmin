@@ -659,9 +659,7 @@ function getFormSelect(options) {
     color: '#aeb1b5',
     pointerEvents: 'none',
     position: 'absolute',
-    top: '0',
-    bottom: '0',
-    margin: 'auto',
+    top: '5px',
     zIndex: '4',
     right: '24px'
   };
@@ -695,7 +693,7 @@ function getFormSelect(options) {
       _react2.default.createElement(
         _reBulma.Select,
         (0, _extends3.default)({}, formElement.passProps, {
-          style: (0, _assign2.default)({}, { flex: 'inherit' }, formElement.passProps && formElement.passProps.style ? formElement.passProps.style : {}),
+          style: (0, _assign2.default)({}, { flex: 'inherit', marginBottom: 0 }, formElement.passProps && formElement.passProps.style ? formElement.passProps.style : {}),
           help: getFormElementHelp(hasError, this.state, formElement.name),
           color: hasError ? 'isDanger' : undefined,
           onChange: function onChange(event) {
