@@ -15,7 +15,7 @@ var _constants2 = _interopRequireDefault(_constants);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // import navigationSettings from '../content/config/navigation';
-var windowState = window && window.__padmin && window.__padmin.navigation ? window.__padmin.navigation : {};
+var windowState = window && window.__padmin && window.__padmin.ui ? window.__padmin.ui : {};
 //TODO - if we want to use default navigation move to navigation reducer
 var initialState = (0, _assign2.default)({
   sidebar_is_open: false,
@@ -47,7 +47,6 @@ var uiReducer = function uiReducer(state, action) {
         custom_ui_layout: uiStatePayload.customLayout
       } : {
         ui_is_loaded: uiStatePayload
-        // custom_ui_layout: undefined,
       });
     case _constants2.default.ui.SET_NAV_LABEL:
       var navLabelPaylod = action.payload;
