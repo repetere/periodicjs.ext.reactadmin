@@ -1,6 +1,6 @@
 import constants from '../constants';
 // import navigationSettings from '../content/config/navigation';
-let windowState = (window && window.__padmin && window.__padmin.navigation) ? window.__padmin.navigation : {};
+let windowState = (window && window.__padmin && window.__padmin.ui) ? window.__padmin.ui : {};
 //TODO - if we want to use default navigation move to navigation reducer
 const initialState = Object.assign({
   sidebar_is_open: false,
@@ -36,7 +36,6 @@ const uiReducer = (state, action) => {
       }
       : {
         ui_is_loaded: uiStatePayload,
-        // custom_ui_layout: undefined,
       });  
   case constants.ui.SET_NAV_LABEL:
     var navLabelPaylod = action.payload;
