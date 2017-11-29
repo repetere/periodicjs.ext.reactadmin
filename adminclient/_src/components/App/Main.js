@@ -120,9 +120,7 @@ var MainApp = function (_Component) {
           _this2.props.setUILoadedState(true);
         });
       } else {
-        _promise2.default.all([_serverSideReactNative.AsyncStorage.getItem(_constants2.default.jwt_token.TOKEN_NAME), _serverSideReactNative.AsyncStorage.getItem(_constants2.default.jwt_token.TOKEN_DATA), _serverSideReactNative.AsyncStorage.getItem(_constants2.default.jwt_token.PROFILE_JSON), this.props.fetchMainComponent(), this.props.fetchErrorComponents(), this.props.fetchUnauthenticatedManifest(), _serverSideReactNative.AsyncStorage.getItem(_constants2.default.user.MFA_AUTHENTICATED)]
-        //AsyncStorage.getItem(constants.async_token.TABBAR_TOKEN),
-        ).then(function (results) {
+        _promise2.default.all([_serverSideReactNative.AsyncStorage.getItem(_constants2.default.jwt_token.TOKEN_NAME), _serverSideReactNative.AsyncStorage.getItem(_constants2.default.jwt_token.TOKEN_DATA), _serverSideReactNative.AsyncStorage.getItem(_constants2.default.jwt_token.PROFILE_JSON), this.props.fetchMainComponent(), this.props.fetchErrorComponents(), this.props.fetchUnauthenticatedManifest(), _serverSideReactNative.AsyncStorage.getItem(_constants2.default.user.MFA_AUTHENTICATED)]).then(function (results) {
           try {
             if (results[results.length - 1] === 'true') {
               _this2.props.authenticatedMFA();

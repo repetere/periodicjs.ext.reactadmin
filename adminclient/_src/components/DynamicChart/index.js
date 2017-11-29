@@ -73,7 +73,6 @@ var DynamicChart = function (_Component) {
           component: 'recharts.' + this.props.chartComponent,
           props: (0, _assign2.default)({}, this.props.chartProps, this.state),
           children: this.props.children
-          // cloneElement: true,
         })
       );
     }
