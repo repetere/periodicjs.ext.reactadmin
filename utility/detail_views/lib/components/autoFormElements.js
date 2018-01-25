@@ -9,7 +9,8 @@ var generateTableElement = function (label, data) {
   try {
     if (data.length > 1) {
       data = data.reduce((result, val, index) => {
-        result[0] = result[0] || {};
+        if (result && result[ 0 ]) result[ 0 ] = result[ 0 ] || {};
+        else result = [{}];
         if (val && typeof val === 'object') return [Object.assign(result[0], val), ];
         else result[0][index] = val;
       }, []);

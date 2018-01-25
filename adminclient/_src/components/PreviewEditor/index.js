@@ -199,6 +199,7 @@ var PreviewEditor = function (_Component) {
       var codeState = {
         showEditor: this.state.showEditor ? false : true,
         value: this.getInnerHTML()
+        // date: new Date().toString(),
       };
       // console.debug('clicked toggler', 'codeState',codeState);
       this.setState(codeState);

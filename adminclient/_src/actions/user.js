@@ -261,7 +261,9 @@ var user = {
       var state = getState();
       // console.debug({ state });
       dispatch(_pages2.default.resetAppLoadedState());
-      _promise2.default.all([_serverSideReactNative.AsyncStorage.removeItem(_constants2.default.jwt_token.TOKEN_NAME), _serverSideReactNative.AsyncStorage.removeItem(_constants2.default.jwt_token.TOKEN_DATA), _serverSideReactNative.AsyncStorage.removeItem(_constants2.default.jwt_token.PROFILE_JSON), _serverSideReactNative.AsyncStorage.removeItem(_constants2.default.user.MFA_AUTHENTICATED), _util2.default.flushCacheConfiguration(['manifest.authenticated', 'user.navigation', 'user.preferences'])]).then(function () /*results*/{
+      _promise2.default.all([_serverSideReactNative.AsyncStorage.removeItem(_constants2.default.jwt_token.TOKEN_NAME), _serverSideReactNative.AsyncStorage.removeItem(_constants2.default.jwt_token.TOKEN_DATA), _serverSideReactNative.AsyncStorage.removeItem(_constants2.default.jwt_token.PROFILE_JSON), _serverSideReactNative.AsyncStorage.removeItem(_constants2.default.user.MFA_AUTHENTICATED), _util2.default.flushCacheConfiguration(['manifest.authenticated', 'user.navigation', 'user.preferences'])]
+      // AsyncStorage.removeItem(constants.pages.ASYNCSTORAGE_KEY),
+      ).then(function () /*results*/{
         dispatch(_this2.logoutUserSuccess());
         dispatch(_pages2.default.initialAppLoaded());
         dispatch(_ui2.default.closeUISidebar());
@@ -640,6 +642,7 @@ var user = {
         method: loginSettings.method || 'POST',
         headers: (0, _assign2.default)({
           'Accept': 'application/json'
+          // 'Content-Type': 'application/json',
         }, loginSettings.options.headers, {
           username: loginData.username,
           password: loginData.password
