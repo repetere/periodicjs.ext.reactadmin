@@ -617,12 +617,12 @@ const user = {
               headers: Object.assign({
                 'Accept': 'application/json',
               }, loginSettings.options.headers, {
-                username: loginSettings.username || loginData.username,
-                password: loginSettings.password || loginData.password,
+                username: loginData.username,
+                password: loginData.password,
               }),
               body: JSON.stringify({
-                username: loginSettings.username || loginData.username,
-                password: loginSettings.password || loginData.password,
+                username: loginData.username,
+                password: loginData.password,
                 response: cachedResponseData,
               }),
             });
