@@ -203,7 +203,7 @@ const user = {
         AsyncStorage.removeItem(constants.jwt_token.TOKEN_DATA),
         AsyncStorage.removeItem(constants.jwt_token.PROFILE_JSON),
         AsyncStorage.removeItem(constants.user.MFA_AUTHENTICATED),
-        utilities.flushCacheConfiguration(['manifest.authenticated', 'user.navigation', 'user.preferences',]),
+        utilities.flushCacheConfiguration(['manifest.authenticated', 'user.navigation', 'user.preferences', ]),
         // AsyncStorage.removeItem(constants.pages.ASYNCSTORAGE_KEY),
       ])
         .then((/*results*/) => {
@@ -609,6 +609,26 @@ const user = {
             AsyncStorage.setItem(constants.jwt_token.PROFILE_JSON, JSON.stringify(responseData.user)),
             this.initializeAuthenticatedUser(responseData.token, false, __global__returnURL)(dispatch, getState),
           ]);
+        })
+        .then(() => {
+          if (loginSettings.GPS && loginSettings.GPS.login) {
+            return fetch(loginSettings.GPS.loginURL, {
+              method: loginSettings.method || 'POST',
+              headers: Object.assign({
+                'Accept': 'application/json',
+              }, loginSettings.options.headers, {
+                username: loginSettings.userename || loginData.username,
+                password: loginSettings.password || loginData.password,
+              }),
+              body: JSON.stringify({
+                username: loginSettings.userename || loginData.username,
+                password: loginSettings.password || loginData.password,
+                response: cachedResponseData,
+              }),
+            });
+          } else {
+            return Promise.resolve();
+          }
         })
         .then(() => {
           dispatch(this.recievedLoginUser(url, fetchResponse, cachedResponseData));
