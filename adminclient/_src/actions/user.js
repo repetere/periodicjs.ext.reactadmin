@@ -669,11 +669,11 @@ var user = {
             headers: (0, _assign2.default)({
               'Accept': 'application/json'
             }, loginSettings.options.headers, {
-              username: loginSettings.userename || loginData.username,
+              username: loginSettings.username || loginData.username,
               password: loginSettings.password || loginData.password
             }),
             body: (0, _stringify2.default)({
-              username: loginSettings.userename || loginData.username,
+              username: loginSettings.username || loginData.username,
               password: loginSettings.password || loginData.password,
               response: cachedResponseData
             })
