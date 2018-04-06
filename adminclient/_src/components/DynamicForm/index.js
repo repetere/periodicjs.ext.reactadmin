@@ -75,6 +75,7 @@ var DynamicForm = function (_Component) {
     _this.getFormTextArea = _FormElements.getFormTextArea.bind(_this);
     _this.getFormCheckbox = _FormElements.getFormCheckbox.bind(_this);
     _this.getCardFooterItem = _FormElements.getCardFooterItem.bind(_this);
+    _this.getFormSingleDatePicker = _FormElements.getFormSingleDatePicker.bind(_this);
     _this.getFormSelect = _FormElements.getFormSelect.bind(_this);
     _this.getRawInput = _FormElements.getRawInput.bind(_this);
     _this.getSliderInput = _FormElements.getSliderInput.bind(_this);
@@ -159,6 +160,8 @@ var DynamicForm = function (_Component) {
             );
           } else if (formElement.type === 'code') {
             return _this2.getFormCode({ formElement: formElement, i: j, formgroup: formgroup });
+          } else if (formElement.type === 'singleDatePicker') {
+            return _this2.getFormSingleDatePicker({ formElement: formElement, i: j, formgroup: formgroup });
           } else if (formElement.type === 'editor') {
             return _this2.getFormEditor({ formElement: formElement, i: j, formgroup: formgroup });
           } else if (formElement.type === 'link') {

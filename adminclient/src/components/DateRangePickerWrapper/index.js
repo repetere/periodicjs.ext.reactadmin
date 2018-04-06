@@ -3,7 +3,6 @@ import momentPropTypes from 'react-moment-proptypes';
 import moment from 'moment';
 import omit from 'lodash/omit';
 import 'react-dates/initialize';
-import 'react-dates/lib/css/_datepicker.css';
 import { getRenderedComponent, } from '../AppLayoutMap';
 
 import { DateRangePicker, DateRangePickerShape, DateRangePickerPhrases, isInclusivelyAfterDay } from 'react-dates';

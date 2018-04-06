@@ -121,6 +121,14 @@ var _ResponsiveButton = require('../ResponsiveButton');
 
 var _ResponsiveButton2 = _interopRequireDefault(_ResponsiveButton);
 
+var _SingleDatePickerWrapper = require('../SingleDatePickerWrapper');
+
+var _SingleDatePickerWrapper2 = _interopRequireDefault(_SingleDatePickerWrapper);
+
+var _DateRangePickerWrapper = require('../DateRangePickerWrapper');
+
+var _DateRangePickerWrapper2 = _interopRequireDefault(_DateRangePickerWrapper);
+
 var _FormItem = require('../FormItem');
 
 var _FormItem2 = _interopRequireDefault(_FormItem);
@@ -138,7 +146,7 @@ var advancedBinding = (0, _advancedBinding.getAdvancedBinding)();
 var renderIndex = 0;
 
 var AppLayoutMap = exports.AppLayoutMap = (0, _assign2.default)({}, {
-  recharts: recharts, ResponsiveForm: _ResponsiveForm2.default, DynamicLayout: _DynamicLayout2.default, DynamicForm: _DynamicForm2.default, RawOutput: _RawOutput2.default, RawStateOutput: _RawStateOutput2.default, FormItem: _FormItem2.default, MenuAppLink: _MenuAppLink2.default, SubMenuLinks: _SubMenuLinks2.default, ResponsiveTable: _ResponsiveTable2.default, ResponsiveCard: _ResponsiveCard2.default, DynamicChart: _DynamicChart2.default, ResponsiveBar: _ResponsiveBar2.default, ResponsiveTabs: _ResponsiveTabs2.default, ResponsiveSteps: _ResponsiveSteps2.default, ResponsiveDatalist: _ResponsiveDatalist2.default, CodeMirror: _RACodeMirror2.default, Range: _rcSlider.Range, Slider: _rcSlider2.default, GoogleMap: _googleMapReact2.default, Carousel: _reactResponsiveCarousel.Carousel, PreviewEditor: _PreviewEditor2.default, /* Editor,*/
+  recharts: recharts, ResponsiveForm: _ResponsiveForm2.default, DynamicLayout: _DynamicLayout2.default, DynamicForm: _DynamicForm2.default, RawOutput: _RawOutput2.default, RawStateOutput: _RawStateOutput2.default, FormItem: _FormItem2.default, MenuAppLink: _MenuAppLink2.default, SubMenuLinks: _SubMenuLinks2.default, ResponsiveTable: _ResponsiveTable2.default, ResponsiveCard: _ResponsiveCard2.default, DynamicChart: _DynamicChart2.default, ResponsiveBar: _ResponsiveBar2.default, ResponsiveTabs: _ResponsiveTabs2.default, ResponsiveSteps: _ResponsiveSteps2.default, ResponsiveDatalist: _ResponsiveDatalist2.default, CodeMirror: _RACodeMirror2.default, Range: _rcSlider.Range, Slider: _rcSlider2.default, GoogleMap: _googleMapReact2.default, Carousel: _reactResponsiveCarousel.Carousel, PreviewEditor: _PreviewEditor2.default, SingleDatePickerWrapper: _SingleDatePickerWrapper2.default, DateRangePickerWrapper: _DateRangePickerWrapper2.default, /* Editor,*/
   ResponsiveLink: _ResponsiveLink2.default,
   ResponsiveButton: _ResponsiveButton2.default,
   MaskedInput: _reactTextMask2.default

@@ -401,6 +401,8 @@ var ResponsiveForm = function (_Component) {
             );
           } else if (formElement.type === 'code') {
             return _this3.getFormCode({ formElement: formElement, i: j, formgroup: formgroup });
+          } else if (formElement.type === 'singleDatePicker' || formElement.type === 'rangeDatePicker') {
+            return _this3.getFormDatePicker({ formElement: formElement, i: j, formgroup: formgroup });
           } else if (formElement.type === 'editor') {
             return _this3.getFormEditor({ formElement: formElement, i: j, formgroup: formgroup });
           } else if (formElement.type === 'link') {

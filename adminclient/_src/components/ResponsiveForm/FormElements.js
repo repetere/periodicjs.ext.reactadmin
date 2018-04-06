@@ -52,6 +52,7 @@ exports.getFormLink = getFormLink;
 exports.getFormGroup = getFormGroup;
 exports.getFormCode = getFormCode;
 exports.getFormEditor = getFormEditor;
+exports.getFormDatePicker = getFormDatePicker;
 exports.getFormSubmit = getFormSubmit;
 exports.getCardFooterItem = getCardFooterItem;
 
@@ -112,6 +113,14 @@ var _pluralize2 = _interopRequireDefault(_pluralize);
 var _flat = require('flat');
 
 var _flat2 = _interopRequireDefault(_flat);
+
+var _SingleDatePickerWrapper = require('../SingleDatePickerWrapper');
+
+var _SingleDatePickerWrapper2 = _interopRequireDefault(_SingleDatePickerWrapper);
+
+var _DateRangePickerWrapper = require('../DateRangePickerWrapper');
+
+var _DateRangePickerWrapper2 = _interopRequireDefault(_DateRangePickerWrapper);
 
 var _styles = require('../../styles');
 
@@ -1072,8 +1081,66 @@ function getFormEditor(options) {
   );
 }
 
+function getFormDatePicker(options) {
+  var formElement = options.formElement,
+      i = options.i,
+      onValueChange = options.onValueChange;
+
+  var hasError = getErrorStatus(this.state, formElement.name);
+  var initialVal = getInitialValue(formElement, this.state);
+  var singleCustomOnChange = function singleCustomOnChange(_ref3) {
+    var _this11 = this;
+
+    var date = _ref3.date;
+
+    this.setState((0, _defineProperty3.default)({}, formElement.name, date ? date.toISOString() : null), function () {
+      if (formElement.validateOnChange) {
+        _this11.validateFormElement({ formElement: formElement });
+      }
+    });
+  };
+  var rangeCustomOnChange = function rangeCustomOnChange(_ref4) {
+    var _this12 = this;
+
+    var startDate = _ref4.startDate,
+        endDate = _ref4.endDate;
+
+    var combined_date = startDate.toISOString() + ';' + endDate.toISOString();
+    this.setState((0, _defineProperty3.default)({}, formElement.name, combined_date), function () {
+      if (formElement.validateOnChange) {
+        _this12.validateFormElement({ formElement: formElement });
+      }
+    });
+  };
+  var SingleDatePickerProps = (0, _assign2.default)({}, {
+    customOnChange: singleCustomOnChange.bind(this),
+    initialDate: initialVal ? new _moment2.default(initialVal) : null
+  }, formElement.passProps);
+  var RangeDatePickerProps = (0, _assign2.default)({}, {
+    customOnChange: rangeCustomOnChange.bind(this),
+    initialDate: initialVal ? new _moment2.default(initialVal) : null
+  }, formElement.passProps);
+  if (formElement.type === 'singleDatePicker') {
+    return _react2.default.createElement(
+      _FormItem2.default,
+      (0, _extends3.default)({ key: i }, formElement.layoutProps),
+      getFormLabel(formElement),
+      _react2.default.createElement(_SingleDatePickerWrapper2.default, (0, _extends3.default)({ key: i }, SingleDatePickerProps)),
+      getCustomErrorLabel(hasError, this.state, formElement)
+    );
+  } else if (formElement.type === 'rangeDatePicker') {
+    return _react2.default.createElement(
+      _FormItem2.default,
+      (0, _extends3.default)({ key: i }, formElement.layoutProps),
+      getFormLabel(formElement),
+      _react2.default.createElement(_DateRangePickerWrapper2.default, (0, _extends3.default)({ key: i }, RangeDatePickerProps)),
+      getCustomErrorLabel(hasError, this.state, formElement)
+    );
+  }
+}
+
 function getFormSubmit(options) {
-  var _this11 = this;
+  var _this13 = this;
 
   var formElement = options.formElement,
       i = options.i;
@@ -1089,15 +1156,15 @@ function getFormSubmit(options) {
       _reBulma.Button,
       (0, _extends3.default)({}, passableProps, {
         onClick: function onClick() {
-          var validated_formdata = _FormHelpers.validateForm.call(_this11, { formdata: _this11.state, validationErrors: {} });
+          var validated_formdata = _FormHelpers.validateForm.call(_this13, { formdata: _this13.state, validationErrors: {} });
           var updateStateData = {
             formDataErrors: validated_formdata.validationErrors
           };
-          if (_this11.props.sendSubmitButtonVal) {
+          if (_this13.props.sendSubmitButtonVal) {
             updateStateData['submitButtonVal'] = formElement.value;
           }
-          _this11.setState(updateStateData, function () {
-            formElement.confirmModal && (0, _keys2.default)(_this11.state.formDataErrors).length < 1 ? _this11.props.createModal((0, _assign2.default)({
+          _this13.setState(updateStateData, function () {
+            formElement.confirmModal && (0, _keys2.default)(_this13.state.formDataErrors).length < 1 ? _this13.props.createModal((0, _assign2.default)({
               title: 'Please Confirm',
               text: {
                 component: 'div',
@@ -1130,8 +1197,8 @@ function getFormSubmit(options) {
                         color: 'isPrimary'
                       },
                       onClick: function onClick() {
-                        _this11.props.hideModal.call(_this11, 'last');
-                        _this11.submitForm.call(_this11);
+                        _this13.props.hideModal.call(_this13, 'last');
+                        _this13.submitForm.call(_this13);
                       },
                       onclickProps: 'last'
                     }, formElement.confirmModal.yesButtonProps),
@@ -1151,7 +1218,7 @@ function getFormSubmit(options) {
                     children: formElement.confirmModal.noButtonText || 'No'
                   }]
                 }]
-              } }, formElement.confirmModal)) : _this11.submitForm.call(_this11);
+              } }, formElement.confirmModal)) : _this13.submitForm.call(_this13);
           });
         } }),
       formElement.value
