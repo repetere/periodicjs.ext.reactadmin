@@ -161,6 +161,7 @@ var ResponsiveForm = function (_Component) {
     _this.getFormLink = _FormElements.getFormLink.bind(_this);
     _this.getFormGroup = _FormElements.getFormGroup.bind(_this);
     _this.getImage = _FormElements.getImage.bind(_this);
+    _this.getFormDatePicker = _FormElements.getFormDatePicker.bind(_this);
     _this.validateFormElement = _FormHelpers.validateFormElement.bind(_this);
     _this.staticLayouts = _this.props.staticLayouts ? (0, _keys2.default)(_this.props.staticLayouts).reduce(function (result, layout) {
       result[layout] = _this.getRenderedComponent(_this.props.staticLayouts[layout], _this.state);
