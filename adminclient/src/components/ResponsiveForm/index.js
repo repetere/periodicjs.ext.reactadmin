@@ -102,6 +102,7 @@ class ResponsiveForm extends Component{
     this.getFormLink = getFormLink.bind(this);
     this.getFormGroup = getFormGroup.bind(this);
     this.getImage = getImage.bind(this);
+    this.getFormDatePicker = getFormDatePicker.bind(this);
     this.validateFormElement = validateFormElement.bind(this);
     this.staticLayouts = (this.props.staticLayouts)
       ? Object.keys(this.props.staticLayouts).reduce((result, layout) => {
