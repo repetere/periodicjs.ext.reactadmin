@@ -16,6 +16,8 @@ import moment from 'moment';
 import numeral from 'numeral';
 import pluralize from 'pluralize';
 import flatten, { unflatten, } from 'flat';
+import SingleDatePickerWrapper from '../SingleDatePickerWrapper';
+import DateRangePickerWrapper from '../DateRangePickerWrapper';
 import styles from '../../styles';
 import { validateForm, } from './FormHelpers';
 
@@ -50,7 +52,7 @@ function getFunctionFromProps(options) {
   } else if(typeof this.props[propFunc] ==='function') {		
     return propFunc;		
   } else {		
-    return function () { }		
+    return function () { };		
   }		
 }
 
@@ -101,8 +103,9 @@ function valueChangeHandler(formElement) {
     updatedStateProp[ formElement.name ] = text;
     this.setState(updatedStateProp, () => {
       if(formElement.validateOnChange){
-      this.validateFormElement({ formElement, });
-    }});
+        this.validateFormElement({ formElement, });
+      }
+    });
   };
 }
 
@@ -122,7 +125,7 @@ function getFormLabel(formElement) {
 function getInitialValue(formElement, state) {
   let formElementValue = formElement.value;
  
-if ( !formElement.showNullValue && (state[ formElement.name ] === null || formElementValue === null || formElementValue === 'null')) {
+  if ( !formElement.showNullValue && (state[ formElement.name ] === null || formElementValue === null || formElementValue === 'null')) {
     return '';
   } else {
     let returnVal = (typeof state[ formElement.name ] !== 'undefined')
@@ -130,11 +133,11 @@ if ( !formElement.showNullValue && (state[ formElement.name ] === null || formEl
       : formElementValue;
     
     if (formElement.momentFormat) {
-      returnVal = moment(returnVal).format(formElement.momentFormat);
-    }
+    returnVal = moment(returnVal).format(formElement.momentFormat);
+  }
     if (formElement.numeralFormat) {
-      returnVal = numeral(returnVal).format(formElement.numeralFormat);
-    }
+    returnVal = numeral(returnVal).format(formElement.numeralFormat);
+  }
 
     return returnVal;
   }
@@ -208,7 +211,7 @@ function getPassablePropsKeyEvents(passableProps, formElement) {
 export function getFormDatatable(options){
   let { formElement, i, } = options;
   let initialValue = getInitialValue(formElement,
-  (Object.keys(this.state.formDataTables).length && this.state.formDataTables[formElement.name])?this.state.formDataTables :  Object.assign({}, this.state, unflatten(this.state, { overwrite: true })));
+  (Object.keys(this.state.formDataTables).length && this.state.formDataTables[formElement.name])?this.state.formDataTables :  Object.assign({}, this.state, unflatten(this.state, { overwrite: true, })));
   // console.debug({ initialValue },this.state, this.state[formElement.name]);
   let hasError = getErrorStatus(this.state, formElement.name);
   const getTableHeaders = (row) => {
@@ -400,7 +403,7 @@ export function getFormMaskedInput(options) {
     });
   }
 
-  formElement.customErrorProps = (formElement.customErrorProps) ? Object.assign({}, { marginTop: '6px' }, formElement.customErrorProps) : {marginTop: '6px'};
+  formElement.customErrorProps = (formElement.customErrorProps) ? Object.assign({}, { marginTop: '6px', }, formElement.customErrorProps) : { marginTop: '6px', };
 
   let mask = [];
   if (formElement.createNumberMask && passableProps.mask.indexOf('func:window') !== -1 && typeof window[ passableProps.mask.replace('func:window.', '') ] === 'function') {
@@ -414,12 +417,12 @@ export function getFormMaskedInput(options) {
     className: '__re-bulma_control',
   }, formElement.wrapperProps);
  
-wrapperProps.className = ((hasError || isValid || formElement.initialIcon) && (formElement.errorIconRight || formElement.errorIconLeft)) ? (formElement.errorIconRight) ? 
+  wrapperProps.className = ((hasError || isValid || formElement.initialIcon) && (formElement.errorIconRight || formElement.errorIconLeft)) ? (formElement.errorIconRight) ? 
     wrapperProps.className + ' __re-bulma_has-icon __re-bulma_has-icon-right'
     : wrapperProps.className + ' __re-bulma_has-icon __re-bulma_has-icon-left'
     : wrapperProps.className;
   
- return (<FormItem key={i} {...formElement.layoutProps} initialIcon={formElement.initialIcon} isValid={isValid} hasError={hasError} hasValue={hasValue} >
+  return (<FormItem key={i} {...formElement.layoutProps} initialIcon={formElement.initialIcon} isValid={isValid} hasError={hasError} hasValue={hasValue} >
     {getFormLabel(formElement)}
     <span {...wrapperProps}>
       <MaskedInput
@@ -472,8 +475,8 @@ export function getFormTextInputArea(options) {
       }
 
       if (formElement.onChangeFilter) {
-        const onChangeFunc = getFunctionFromProps.call(this, { propFunc: formElement.onChangeFilter });
-        updatedStateProp = onChangeFunc.call(this, Object.assign({},this.state,updatedStateProp), updatedStateProp);
+        const onChangeFunc = getFunctionFromProps.call(this, { propFunc: formElement.onChangeFilter, });
+        updatedStateProp = onChangeFunc.call(this, Object.assign({}, this.state, updatedStateProp), updatedStateProp);
       }
 
       this.setState(updatedStateProp);
@@ -516,7 +519,10 @@ export function getFormTextArea(options) {
     initialValue = JSON.stringify(initialValue, null, 2);
   }
   if (formElement.disableOnChange) {
-    onChange = () => { return () => {}};
+    onChange = () => {
+      return () => {}
+;
+};
   } else if (!onChange) {
     onChange = valueChangeHandler.bind(this, formElement);
   }
@@ -556,14 +562,17 @@ export function getFormSelect(options) {
     position: 'absolute',
     top: '5px',
     zIndex: '4',
-    right: '24px'
+    right: '24px',
   };
   
   if (typeof initialValue !== 'string') {
     initialValue = JSON.stringify(initialValue, null, 2);
   }
   if (formElement.disableOnChange) {
-    onChange = () => { return () => {}};
+    onChange = () => {
+      return () => {}
+;
+};
   } else if (!onChange) {
     onChange = valueChangeHandler.bind(this, formElement);
   }  
@@ -578,9 +587,9 @@ export function getFormSelect(options) {
 
   return (<FormItem key={i} {...formElement.layoutProps} initialIcon={formElement.initialIcon} isValid={isValid} hasError={hasError} hasValue={hasValue} >
     {getFormLabel(formElement)}  
-    <span className="__re-bulma_control" style={{ position: 'relative', display: 'block'}}>
+    <span className="__re-bulma_control" style={{ position: 'relative', display: 'block', }}>
       <Select {...formElement.passProps}
-        style={Object.assign({}, { flex: 'inherit', marginBottom: 0 }, (formElement.passProps && formElement.passProps.style) ? formElement.passProps.style : {})}  
+        style={Object.assign({}, { flex: 'inherit', marginBottom: 0, }, (formElement.passProps && formElement.passProps.style) ? formElement.passProps.style : {})}  
         help={getFormElementHelp(hasError, this.state, formElement.name)}
         color={(hasError)?'isDanger':undefined}
         onChange={(event)=>{
@@ -891,6 +900,50 @@ export function getFormEditor(options) {
   );
 }
 
+export function getFormDatePicker(options) {
+  let { formElement, i, onValueChange, } = options;
+  let hasError = getErrorStatus(this.state, formElement.name);
+  let initialVal = getInitialValue(formElement, this.state);
+  let singleCustomOnChange = function({ date, }) {
+    this.setState({ [formElement.name]: (date) ? date.toISOString() : null, }, () => {
+      if(formElement.validateOnChange){
+        this.validateFormElement({ formElement, });
+      }
+    });
+  };
+  let rangeCustomOnChange = function({ startDate, endDate, }) {
+    let combined_date = `${startDate.toISOString()};${endDate.toISOString()}`;
+    this.setState({ [formElement.name]: combined_date, }, () => {
+      if(formElement.validateOnChange){
+        this.validateFormElement({ formElement, });
+      }
+    });
+  };
+  let SingleDatePickerProps = Object.assign({}, {
+    customOnChange: singleCustomOnChange.bind(this),
+    initialDate: (initialVal) ? new moment(initialVal) : null,
+  }, formElement.passProps);
+  let RangeDatePickerProps = Object.assign({}, {
+    customOnChange: rangeCustomOnChange.bind(this),
+    initialDate: (initialVal) ? new moment(initialVal) : null,
+  }, formElement.passProps);
+  if (formElement.type === 'singleDatePicker') {
+    return (<FormItem key={i} {...formElement.layoutProps} >
+      {getFormLabel(formElement)}  
+      <SingleDatePickerWrapper key={i} {...SingleDatePickerProps} />
+      {getCustomErrorLabel(hasError, this.state, formElement)}
+    </FormItem>
+    );
+  } else if (formElement.type === 'rangeDatePicker') {
+    return (<FormItem key={i} {...formElement.layoutProps} >
+      {getFormLabel(formElement)}  
+      <DateRangePickerWrapper key={i} {...RangeDatePickerProps}  />
+      {getCustomErrorLabel(hasError, this.state, formElement)}
+    </FormItem>
+    );
+  }
+}
+
 export function getFormSubmit(options) {
   let { formElement, i, } = options;
   let passableProps = Object.assign({
@@ -902,7 +955,7 @@ export function getFormSubmit(options) {
     {getFormLabel(formElement)}  
     <Button {...passableProps}
       onClick={() => { 
-        let validated_formdata = validateForm.call(this, { formdata: this.state, validationErrors: {} });
+        let validated_formdata = validateForm.call(this, { formdata: this.state, validationErrors: {}, });
         let updateStateData = {
           formDataErrors: validated_formdata.validationErrors,
         };
@@ -971,7 +1024,7 @@ export function getFormSubmit(options) {
                     ], 
                   },
                 ],
-              } ,}, formElement.confirmModal))
+              },  }, formElement.confirmModal))
             : this.submitForm.call(this);
         });
       }}>

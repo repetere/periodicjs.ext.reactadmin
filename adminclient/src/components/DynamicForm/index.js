@@ -2,7 +2,7 @@ import React, { Component, } from 'react';
 import { Columns, Column, Label, } from 're-bulma'; 
 import { getRenderedComponent, } from '../AppLayoutMap';
 // import utilities from '../../util';
-import { getFormTextInputArea, getFormCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, getFormTextArea, getFormEditor, getFormLink, getHiddenInput, getFormGroup, getImage, getFormDatalist, getRawInput, getSliderInput, getFormDatatable, } from '../ResponsiveForm/FormElements';
+import { getFormTextInputArea, getFormCheckbox, getFormSubmit, getFormSelect, getCardFooterItem, getFormCode, getFormTextArea, getFormEditor, getFormLink, getHiddenInput, getFormGroup, getImage, getFormDatalist, getRawInput, getSliderInput, getFormDatatable, getFormSingleDatePicker, } from '../ResponsiveForm/FormElements';
 import flatten from 'flat';
 
 class DynamicForm extends Component{
@@ -31,6 +31,7 @@ class DynamicForm extends Component{
     this.getFormTextArea = getFormTextArea.bind(this);
     this.getFormCheckbox = getFormCheckbox.bind(this);
     this.getCardFooterItem = getCardFooterItem.bind(this);
+    this.getFormSingleDatePicker = getFormSingleDatePicker.bind(this);
     this.getFormSelect = getFormSelect.bind(this);
     this.getRawInput = getRawInput.bind(this);
     this.getSliderInput = getSliderInput.bind(this);
@@ -103,6 +104,8 @@ class DynamicForm extends Component{
           </Column>);
         } else if (formElement.type === 'code') {
           return this.getFormCode({ formElement,  i:j, formgroup, }); 
+        } else if (formElement.type === 'singleDatePicker') {
+          return this.getFormSingleDatePicker({ formElement, i:j, formgroup, });
         } else if (formElement.type === 'editor') {
           return this.getFormEditor({ formElement,  i:j, formgroup, }); 
         } else if (formElement.type === 'link') {
