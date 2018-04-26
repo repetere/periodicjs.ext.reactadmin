@@ -560,13 +560,14 @@ const user = {
       }
     };
   },
+  
   /**
   * @param {string} url url for fetch request
   * @param {object} options what-wg fetch options
   * @param {function} responseFormatter custom reponse formatter, must be a function that returns a promise that resolves to json/javascript object
   */
   loginUser(loginData, __returnURL) {
-    // console.debug('loginUser', { loginData, __returnURL, });
+  // console.debug('loginUser', { loginData, __returnURL, });
     return (dispatch, getState) => {
       let fetchResponse;
       let cachedResponseData;
@@ -575,15 +576,15 @@ const user = {
       let url = loginSettings.url;
 
       loginData.username = (loginSettings.lowercaseUsername)
-      ? loginData.username.toLowerCase()
-      : loginData.username;
+    ? loginData.username.toLowerCase()
+    : loginData.username;
 
       dispatch(this.loginRequest(url));
       fetch(url, {
         method: loginSettings.method || 'POST',
         headers: Object.assign({
           'Accept': 'application/json',
-          // 'Content-Type': 'application/json',
+        // 'Content-Type': 'application/json',
         }, loginSettings.options.headers, {
           username: loginData.username,
           password: loginData.password,
@@ -593,58 +594,46 @@ const user = {
           password: loginData.password,
         }),
       })
-        .then(checkStatus)
-        .then((response) => response.json())
-        .then((responseData) => {
-          cachedResponseData = responseData;
-          // console.debug('loginData.__returnURL', loginData.__returnURL);
-          __global__returnURL = loginData.__returnURL || __returnURL;
-          return Promise.all([
-            AsyncStorage.setItem(constants.jwt_token.TOKEN_NAME, responseData.token),
-            AsyncStorage.setItem(constants.jwt_token.TOKEN_DATA, JSON.stringify({
-              expires: responseData.expires,
-              timeout: responseData.timeout,
-              token: responseData.token,
-            })),
-            AsyncStorage.setItem(constants.jwt_token.PROFILE_JSON, JSON.stringify(responseData.user)),
-            this.initializeAuthenticatedUser(responseData.token, false, __global__returnURL)(dispatch, getState),
-          ]);
-        })
-        .then(() => {
-          if (loginSettings.GPS && loginSettings.GPS.login) {
-            return fetch(loginSettings.GPS.loginURL, {
-              method: loginSettings.method || 'POST',
-              headers: Object.assign({
-                'Accept': 'application/json',
-              }, loginSettings.options.headers, {
-                username: loginData.username,
-                password: loginData.password,
-              }),
-              body: JSON.stringify({
-                username: loginData.username,
-                password: loginData.password,
-                response: cachedResponseData,
-              }),
-            });
-          } else {
-            return Promise.resolve();
-          }
-        })
-        .then(() => {
-          dispatch(this.recievedLoginUser(url, fetchResponse, cachedResponseData));
-          if(!notificationsSettings.hide_login_notification){
-            dispatch(notification.createNotification({ text: 'Welcome back', timeout:4000, type:'success', }));
-          }
-          return this.enforceMFA()(dispatch, getState);
-        })
-        .catch((error) => {
-          if(notificationsSettings.login_error_message){
-            dispatch(notification.errorNotification(notificationsSettings.login_error_message));
-          } else {
-            dispatch(notification.errorNotification(error));
-          }
-          dispatch(this.failedUserRequest(url, error));
-        });
+      .then(checkStatus)
+      .then((response) => response.json())
+      .then((responseData) => {
+        if (responseData.user && responseData.user.locked) {
+          dispatch(notification.errorNotification(notificationsSettings.locked_user_account_error || 'User account is locked. Please contact us.'));
+          dispatch(this.failedUserRequest(url, notificationsSettings.locked_user_account_error));
+        } else {
+          return responseData;
+        }
+      })
+      .then((responseData) => {
+        cachedResponseData = responseData;
+        // console.debug('loginData.__returnURL', loginData.__returnURL);
+        __global__returnURL = loginData.__returnURL || __returnURL;
+        return Promise.all([
+          AsyncStorage.setItem(constants.jwt_token.TOKEN_NAME, responseData.token),
+          AsyncStorage.setItem(constants.jwt_token.TOKEN_DATA, JSON.stringify({
+            expires: responseData.expires,
+            timeout: responseData.timeout,
+            token: responseData.token,
+          })),
+          AsyncStorage.setItem(constants.jwt_token.PROFILE_JSON, JSON.stringify(responseData.user)),
+          this.initializeAuthenticatedUser(responseData.token, false, __global__returnURL)(dispatch, getState),
+        ]);
+      })
+      .then(() => {
+        dispatch(this.recievedLoginUser(url, fetchResponse, cachedResponseData));
+        if(!notificationsSettings.hide_login_notification){
+          dispatch(notification.createNotification({ text: 'Welcome back', timeout:4000, type:'success', }));
+        }
+        return this.enforceMFA()(dispatch, getState);
+      })
+      .catch((error) => {
+        if(notificationsSettings.login_error_message){
+          dispatch(notification.errorNotification(notificationsSettings.login_error_message));
+        } else {
+          dispatch(notification.errorNotification(error));
+        }
+        dispatch(this.failedUserRequest(url, error));
+      });
     };
   },
 };

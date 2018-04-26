@@ -619,6 +619,7 @@ var user = {
     };
   },
 
+
   /**
   * @param {string} url url for fetch request
   * @param {object} options what-wg fetch options
@@ -654,6 +655,13 @@ var user = {
       }).then(checkStatus).then(function (response) {
         return response.json();
       }).then(function (responseData) {
+        if (responseData.user && responseData.user.locked) {
+          dispatch(_notification2.default.errorNotification(notificationsSettings.locked_user_account_error || 'User account is locked. Please contact us.'));
+          dispatch(_this10.failedUserRequest(url, notificationsSettings.locked_user_account_error));
+        } else {
+          return responseData;
+        }
+      }).then(function (responseData) {
         cachedResponseData = responseData;
         // console.debug('loginData.__returnURL', loginData.__returnURL);
         __global__returnURL = loginData.__returnURL || __returnURL;
@@ -662,25 +670,6 @@ var user = {
           timeout: responseData.timeout,
           token: responseData.token
         })), _serverSideReactNative.AsyncStorage.setItem(_constants2.default.jwt_token.PROFILE_JSON, (0, _stringify2.default)(responseData.user)), _this10.initializeAuthenticatedUser(responseData.token, false, __global__returnURL)(dispatch, getState)]);
-      }).then(function () {
-        if (loginSettings.GPS && loginSettings.GPS.login) {
-          return fetch(loginSettings.GPS.loginURL, {
-            method: loginSettings.method || 'POST',
-            headers: (0, _assign2.default)({
-              'Accept': 'application/json'
-            }, loginSettings.options.headers, {
-              username: loginData.username,
-              password: loginData.password
-            }),
-            body: (0, _stringify2.default)({
-              username: loginData.username,
-              password: loginData.password,
-              response: cachedResponseData
-            })
-          });
-        } else {
-          return _promise2.default.resolve();
-        }
       }).then(function () {
         dispatch(_this10.recievedLoginUser(url, fetchResponse, cachedResponseData));
         if (!notificationsSettings.hide_login_notification) {
