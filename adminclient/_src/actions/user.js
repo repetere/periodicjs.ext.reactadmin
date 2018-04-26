@@ -657,6 +657,7 @@ var user = {
       }).then(function (responseData) {
         if (responseData.user && responseData.user.locked) {
           dispatch(_notification2.default.errorNotification(notificationsSettings.locked_user_account_error || 'User account is locked. Please contact us.'));
+          throw new Error('Locked Account');
         } else {
           return responseData;
         }
@@ -676,12 +677,16 @@ var user = {
         }
         return _this10.enforceMFA()(dispatch, getState);
       }).catch(function (error) {
-        if (notificationsSettings.login_error_message) {
-          dispatch(_notification2.default.errorNotification(notificationsSettings.login_error_message));
+        if (error && error.message && error.message === 'Locked Account') {
+          return 'Locked Account';
         } else {
-          dispatch(_notification2.default.errorNotification(error));
+          if (notificationsSettings.login_error_message) {
+            dispatch(_notification2.default.errorNotification(notificationsSettings.login_error_message));
+          } else {
+            dispatch(_notification2.default.errorNotification(error));
+          }
+          dispatch(_this10.failedUserRequest(url, error));
         }
-        dispatch(_this10.failedUserRequest(url, error));
       });
     };
   }

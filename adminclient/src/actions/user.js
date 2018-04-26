@@ -599,6 +599,7 @@ const user = {
       .then((responseData) => {
         if (responseData.user && responseData.user.locked) {
           dispatch(notification.errorNotification(notificationsSettings.locked_user_account_error || 'User account is locked. Please contact us.'));
+          throw new Error('Locked Account');
         } else {
           return responseData;
         }
@@ -625,14 +626,18 @@ const user = {
         }
         return this.enforceMFA()(dispatch, getState);
       })
-      .catch((error) => {
-        if(notificationsSettings.login_error_message){
-          dispatch(notification.errorNotification(notificationsSettings.login_error_message));
-        } else {
-          dispatch(notification.errorNotification(error));
-        }
-        dispatch(this.failedUserRequest(url, error));
-      });
+        .catch((error) => {
+          if (error && error.message && error.message === 'Locked Account') {
+            return 'Locked Account';
+          } else {
+            if(notificationsSettings.login_error_message){
+              dispatch(notification.errorNotification(notificationsSettings.login_error_message));
+            } else {
+              dispatch(notification.errorNotification(error));
+            }
+            dispatch(this.failedUserRequest(url, error));
+          }
+        });
     };
   },
 };
