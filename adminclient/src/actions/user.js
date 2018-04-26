@@ -599,7 +599,6 @@ const user = {
       .then((responseData) => {
         if (responseData.user && responseData.user.locked) {
           dispatch(notification.errorNotification(notificationsSettings.locked_user_account_error || 'User account is locked. Please contact us.'));
-          dispatch(this.failedUserRequest(url, notificationsSettings.locked_user_account_error));
         } else {
           return responseData;
         }

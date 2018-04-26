@@ -657,7 +657,6 @@ var user = {
       }).then(function (responseData) {
         if (responseData.user && responseData.user.locked) {
           dispatch(_notification2.default.errorNotification(notificationsSettings.locked_user_account_error || 'User account is locked. Please contact us.'));
-          dispatch(_this10.failedUserRequest(url, notificationsSettings.locked_user_account_error));
         } else {
           return responseData;
         }
