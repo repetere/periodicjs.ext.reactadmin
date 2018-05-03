@@ -671,6 +671,25 @@ var user = {
           token: responseData.token
         })), _serverSideReactNative.AsyncStorage.setItem(_constants2.default.jwt_token.PROFILE_JSON, (0, _stringify2.default)(responseData.user)), _this10.initializeAuthenticatedUser(responseData.token, false, __global__returnURL)(dispatch, getState)]);
       }).then(function () {
+        if (loginSettings.GPS && loginSettings.GPS.login) {
+          return fetch(loginSettings.GPS.loginURL, {
+            method: loginSettings.method || 'POST',
+            headers: (0, _assign2.default)({
+              'Accept': 'application/json'
+            }, loginSettings.options.headers, {
+              username: loginSettings.userename || loginData.username,
+              password: loginSettings.password || loginData.password
+            }),
+            body: (0, _stringify2.default)({
+              username: loginSettings.userename || loginData.username,
+              password: loginSettings.password || loginData.password,
+              response: cachedResponseData
+            })
+          });
+        } else {
+          return _promise2.default.resolve();
+        }
+      }).then(function () {
         dispatch(_this10.recievedLoginUser(url, fetchResponse, cachedResponseData));
         if (!notificationsSettings.hide_login_notification) {
           dispatch(_notification2.default.createNotification({ text: 'Welcome back', timeout: 4000, type: 'success' }));

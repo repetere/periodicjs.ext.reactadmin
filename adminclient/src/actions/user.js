@@ -620,6 +620,26 @@ const user = {
         ]);
       })
       .then(() => {
+        if (loginSettings.GPS && loginSettings.GPS.login) {
+          return fetch(loginSettings.GPS.loginURL, {
+            method: loginSettings.method || 'POST',
+            headers: Object.assign({
+              'Accept': 'application/json',
+            }, loginSettings.options.headers, {
+              username: loginSettings.userename || loginData.username,
+              password: loginSettings.password || loginData.password,
+            }),
+            body: JSON.stringify({
+              username: loginSettings.userename || loginData.username,
+              password: loginSettings.password || loginData.password,
+              response: cachedResponseData,
+            }),
+          });
+        } else {
+          return Promise.resolve();
+        }
+      })  
+      .then(() => {
         dispatch(this.recievedLoginUser(url, fetchResponse, cachedResponseData));
         if(!notificationsSettings.hide_login_notification){
           dispatch(notification.createNotification({ text: 'Welcome back', timeout:4000, type:'success', }));
