@@ -106,8 +106,9 @@ var defaultProps = {
   isDayBlocked: function isDayBlocked() {
     return false;
   },
-  isOutsideRange: function isOutsideRange() {},
-
+  isOutsideRange: function isOutsideRange(day) {
+    return (0, _reactDates.isInclusivelyAfterDay)(day, (0, _moment2.default)());
+  },
   isDayHighlighted: function isDayHighlighted() {},
 
   // internationalization props

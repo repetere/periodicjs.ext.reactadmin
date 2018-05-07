@@ -5,7 +5,7 @@ import omit from 'lodash/omit';
 import 'react-dates/initialize';
 import { getRenderedComponent, } from '../AppLayoutMap';
 
-import { SingleDatePicker, SingleDatePickerShape } from 'react-dates';
+import { SingleDatePicker, SingleDatePickerShape, isInclusivelyAfterDay, } from 'react-dates';
 
 const propTypes = {
   // example props for the demo
@@ -58,7 +58,7 @@ const defaultProps = {
   renderDayContents: null,
   enableOutsideDays: false,
   isDayBlocked: () => false,
-  isOutsideRange() {},
+  isOutsideRange: day => isInclusivelyAfterDay(day, moment()),
   isDayHighlighted: () => {},
 
   // internationalization props

@@ -114,10 +114,10 @@ var defaultProps = {
     return false;
   },
   isOutsideRange: function isOutsideRange(day) {
-    return !(0, _reactDates.isInclusivelyAfterDay)(day, (0, _moment2.default)());
+    return (0, _reactDates.isInclusivelyAfterDay)(day, (0, _moment2.default)());
   },
   isDayHighlighted: function isDayHighlighted() {
-    return false;
+    return true;
   },
 
   // internationalization

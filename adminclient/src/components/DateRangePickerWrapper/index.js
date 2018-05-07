@@ -65,8 +65,8 @@ const defaultProps = {
   minimumNights: 1,
   enableOutsideDays: false,
   isDayBlocked: () => false,
-  isOutsideRange: day => !isInclusivelyAfterDay(day, moment()),
-  isDayHighlighted: () => false,
+  isOutsideRange: day => isInclusivelyAfterDay(day, moment()),
+  isDayHighlighted: () => true,
 
   // internationalization
   displayFormat: () => moment.localeData().longDateFormat('L'),
