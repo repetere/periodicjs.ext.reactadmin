@@ -640,7 +640,9 @@ const user = {
         }
       })  
       .then((gpsLoginResponse) => {
+        console.debug({ gpsLoginResponse });
         let __returnURL = (gpsLoginResponse && gpsLoginResponse.__returnURL) ? gpsLoginResponse.__returnURL : null;
+        __global__returnURL = __returnURL;
         dispatch(this.recievedLoginUser(url, fetchResponse, cachedResponseData));
         if(!notificationsSettings.hide_login_notification){
           dispatch(notification.createNotification({ text: 'Welcome back', timeout:4000, type:'success', }));

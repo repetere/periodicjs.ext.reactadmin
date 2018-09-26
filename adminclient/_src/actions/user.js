@@ -690,7 +690,9 @@ var user = {
           return _promise2.default.resolve();
         }
       }).then(function (gpsLoginResponse) {
+        console.debug({ gpsLoginResponse: gpsLoginResponse });
         var __returnURL = gpsLoginResponse && gpsLoginResponse.__returnURL ? gpsLoginResponse.__returnURL : null;
+        __global__returnURL = __returnURL;
         dispatch(_this10.recievedLoginUser(url, fetchResponse, cachedResponseData));
         if (!notificationsSettings.hide_login_notification) {
           dispatch(_notification2.default.createNotification({ text: 'Welcome back', timeout: 4000, type: 'success' }));
