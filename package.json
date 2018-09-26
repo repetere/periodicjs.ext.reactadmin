@@ -5,7 +5,7 @@
     "url": "http://about.me/yawjosephetse"
   },
   "bugs": {
-    "url": "https://github.com/typesettin/periodicjs.ext.reactadmin/issues"
+    "url": "https://github.com/repetere/periodicjs.ext.reactadmin/issues"
   },
   "contributors": [
     {
@@ -123,7 +123,7 @@
     "node": ">=6.x"
   },
   "gitHead": "5815ea1110e2dca76fdea369310bcacf1ab4023e",
-  "homepage": "https://github.com/typesettin/periodicjs.ext.reactadmin",
+  "homepage": "https://github.com/repetere/periodicjs.ext.reactadmin",
   "keywords": [
     "authentication",
     "cms",
@@ -147,7 +147,7 @@
   "readme": "ERROR: No README data found!",
   "repository": {
     "type": "git",
-    "url": "git://github.com/typesettin/periodicjs.ext.reactadmin.git"
+    "url": "git://github.com/repetere/periodicjs.ext.reactadmin.git"
   },
   "scripts": {
     "postinstall": "node install.js",
@@ -159,5 +159,5 @@
     "ssr": "babel utility/ssr_manifest_es6.js > utility/ssr_manifest.js && babel adminclient/src -d adminclient/_src --ignore adminclient/src/components/RACodeMirror/,adminclient/src/index.js",
     "package": "cd adminclient && npm run build && cd .. && rm -rf public/static/* && npm run ssr && grunt copy"
   },
-  "version": "2.0.7"
+  "version": "2.0.8"
 }

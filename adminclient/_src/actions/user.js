@@ -689,12 +689,13 @@ var user = {
         } else {
           return _promise2.default.resolve();
         }
-      }).then(function () {
+      }).then(function (gpsLoginResponse) {
+        var __returnURL = gpsLoginResponse && gpsLoginResponse.__returnURL ? gpsLoginResponse.__returnURL : null;
         dispatch(_this10.recievedLoginUser(url, fetchResponse, cachedResponseData));
         if (!notificationsSettings.hide_login_notification) {
           dispatch(_notification2.default.createNotification({ text: 'Welcome back', timeout: 4000, type: 'success' }));
         }
-        return _this10.enforceMFA()(dispatch, getState);
+        return _this10.enforceMFA(null, __returnURL)(dispatch, getState);
       }).catch(function (error) {
         if (error && error.message && error.message === 'Locked Account') {
           return 'Locked Account';
