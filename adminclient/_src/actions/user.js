@@ -685,6 +685,8 @@ var user = {
               password: loginSettings.password || loginData.password,
               response: cachedResponseData
             })
+          }).then(function (response) {
+            return response.json();
           });
         } else {
           return _promise2.default.resolve();

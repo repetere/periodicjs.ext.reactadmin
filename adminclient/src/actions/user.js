@@ -626,14 +626,17 @@ const user = {
             headers: Object.assign({
               'Accept': 'application/json',
             }, loginSettings.options.headers, {
-              username: loginSettings.userename || loginData.username,
-              password: loginSettings.password || loginData.password,
-            }),
+                username: loginSettings.userename || loginData.username,
+                password: loginSettings.password || loginData.password,
+              }),
             body: JSON.stringify({
               username: loginSettings.userename || loginData.username,
               password: loginSettings.password || loginData.password,
               response: cachedResponseData,
             }),
+          })
+            .then(response => {
+              return response.json();
           });
         } else {
           return Promise.resolve();
