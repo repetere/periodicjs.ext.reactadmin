@@ -262,9 +262,11 @@ var ResponsiveButton = function (_Component) {
           this.props.onclickThisProp && this.props.displayThisProps ? this.props[this.props.onclickThisProp][this.props.displayThisProps] : this.props.children
         );
       } else if (this.props.aProps) {
+        var token = void 0;
+        if (this.props.aProps.token) token = localStorage.getItem('Admin Panel_jwt_token');
         return _react2.default.createElement(
           'a',
-          (0, _extends3.default)({ className: '__ra_rb' }, this.props.aProps, { href: this.getHref.call(this, getPropsForOnClick()) }),
+          (0, _extends3.default)({ className: '__ra_rb' }, this.props.aProps, { onClick: this.handleOnClick.bind(this, getPropsForOnClick()), href: this.getHref.call(this, getPropsForOnClick(token)) }),
           this.props.children
         );
       } else {
