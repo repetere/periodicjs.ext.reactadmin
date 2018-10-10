@@ -644,7 +644,7 @@ const user = {
       })  
       .then((gpsLoginResponse) => {
         console.debug({ gpsLoginResponse });
-        let __returnURL = (gpsLoginResponse && gpsLoginResponse.__returnURL) ? gpsLoginResponse.__returnURL : null;
+        let __returnURL = (gpsLoginResponse && gpsLoginResponse.__returnURL) ? gpsLoginResponse.__returnURL : __returnURL;
         __global__returnURL = __returnURL;
         dispatch(this.recievedLoginUser(url, fetchResponse, cachedResponseData));
         if(!notificationsSettings.hide_login_notification){

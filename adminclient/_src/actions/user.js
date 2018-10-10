@@ -693,7 +693,7 @@ var user = {
         }
       }).then(function (gpsLoginResponse) {
         console.debug({ gpsLoginResponse: gpsLoginResponse });
-        var __returnURL = gpsLoginResponse && gpsLoginResponse.__returnURL ? gpsLoginResponse.__returnURL : null;
+        var __returnURL = gpsLoginResponse && gpsLoginResponse.__returnURL ? gpsLoginResponse.__returnURL : __returnURL;
         __global__returnURL = __returnURL;
         dispatch(_this10.recievedLoginUser(url, fetchResponse, cachedResponseData));
         if (!notificationsSettings.hide_login_notification) {
