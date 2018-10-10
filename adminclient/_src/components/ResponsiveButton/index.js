@@ -215,12 +215,12 @@ var ResponsiveButton = function (_Component) {
     value: function render() {
       var _this3 = this;
 
-      var getPropsForOnClick = function getPropsForOnClick() {
+      var getPropsForOnClick = function getPropsForOnClick(token) {
         return {
           clickprop: _this3.props.onClick,
           clickThisProp: _this3.props.onclickThisProp,
           clickPropObject: _this3.props.onclickPropObject,
-          clickBaseUrl: _this3.props.onclickBaseUrl,
+          clickBaseUrl: token ? _this3.props.onclickBaseUrl.includes('?') ? _this3.props.onclickBaseUrl + '&access_token=' + token : _this3.props.onclickBaseUrl + '?access_token=' + token : _this3.props.onclickBaseUrl,
           clickLinkParams: _this3.props.onclickLinkParams,
           clickPassProps: _this3.props.onclickProps,
           clickFetchProps: _this3.props.fetchProps,
