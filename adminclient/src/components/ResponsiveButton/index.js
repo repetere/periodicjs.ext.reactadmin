@@ -150,12 +150,16 @@ class ResponsiveButton extends Component {
     // console.debug({ value, selectProps });
   }
   render() {
-    let getPropsForOnClick = () => {
+    let getPropsForOnClick = (token) => {
       return {
         clickprop: this.props.onClick,
         clickThisProp: this.props.onclickThisProp,
         clickPropObject: this.props.onclickPropObject,
-        clickBaseUrl: this.props.onclickBaseUrl,
+        clickBaseUrl: token
+          ? this.props.onclickBaseUrl.includes('?')
+            ? `${this.props.onclickBaseUrl}&access_token=${token}`
+            : `${this.props.onclickBaseUrl}?access_token=${token}`
+          : this.props.onclickBaseUrl,
         clickLinkParams: this.props.onclickLinkParams,
         clickPassProps: this.props.onclickProps,
         clickFetchProps: this.props.fetchProps,
